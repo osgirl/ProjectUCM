@@ -1,0 +1,534 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<!-- ********* DEFINE PAGE TYPE: CANDIDATE OR JOB SEEKER ********************
+The type of a page is based on the section custom property HeaderType:
+1 - job seeker's page
+2 - candidate's page
+********************************************************-->
+<@dynamichtml job_or_candidate_type_inc@>
+	<$if NOT #active.PAGE_TYPE $>
+		<$ isJobSeeker = 0, isCandidateSeeker = 0, tgtaud=getCookie("tgtaud")$>
+		<$if strLength(strTrimWs(tgtaud)) gt 0$>
+			<$PAGE_TYPE = tgtaud$>
+		<$elseif #active.nodeId$>
+			<$PAGE_TYPE = ssGetNodeProperty("HeaderType") $>
+		<$else$>
+			<$PAGE_TYPE = "1"$>
+		<$endif$>
+		<$ if strEquals("2", PAGE_TYPE) $>
+			<$ isCandidateSeeker = 1 $>
+		<$else$>
+			<$ isJobSeeker = 1 $>
+		<$endif$>
+	<$endif$>
+
+<@end@>
+
+
+
+
+
+
+<!--********************************************
+************* LEFT SIDE NAVIGATION *************
+**********************************************-->
+<@dynamichtml LeftHandNav@>
+	<div class="left_nav">
+		<div class="cnr"></div>
+		<div class="ln_inner">
+			<$include build_left_navigation$>
+		</div>
+	</div>
+<@end@>
+
+
+<@dynamichtml left_nav_back@>
+	<div class="clear"></div>
+
+<div id='timeout' class="msg back">&lt; <a href="javascript: history.go(-1)"><$lc('wwBackExpertise')$></a></div>
+
+
+<@end@>
+
+<!--********************************************
+************* BUILD NAVIGATION *************
+**********************************************-->
+<@dynamichtml build_left_navigation@>
+	<$  startNodeId = '' $>
+
+	<$if NOT rsExists('HaysNavNodes') $>
+		<$ haysLoadSiteNavResultSet(siteId) $>
+	<$endif$>
+
+	<$if (rsFindRowPrimary('HaysNavNodes', #local.nodeId)) AND ( strLength(HaysNavNodes.parentNodeId) GT 0 ) $> [[% Specialism or sub-specialism page %]]
+		<$if HaysNavNodes.contributorOnly like '1' $>
+			<$include build_left_nav_admin_main_inc$>
+		<$else$>
+			<$ startNodeId = HaysNavNodes.startingNodeId $>	[[% area of navigation: jobseeker / employer %]]
+			<$if HaysNavNodes.groupingNodeId like HaysNavNodes.parentNodeId $>	[[% specialism %]]
+				<$ groupNodeId = HaysNavNodes.groupingNodeId $>
+				<$exec rsFindRowPrimary('HaysNavNodes', startNodeId) $>
+				<$loopwhile getValue('HaysNavNodes', '#isRowPresent') $>
+					<$if HaysNavNodes.nodeId like groupNodeId $><$break$><$endif$>
+					<$ exec rsNext('HaysNavNodes') $>
+				<$endloop$>
+				<$include build_left_nav_specialism_inc$>
+			<$else$>														[[% sub-specialism %]]
+				<$ specNodeId = HaysNavNodes.parentNodeId $>
+				<$exec rsFindRowPrimary('HaysNavNodes', specNodeId) $>
+				<$include build_left_nav_sub_specialism_inc$>
+			<$endif$>
+		<$endif$>
+
+	<$else$>														[[% general %]]
+		<$if #active.navType AND (navType like 'Candidates' OR navType like '2') $>
+			<$ startNodeId = getValue('#env', 'PageType_2') $>
+		<$else $>
+			<$ startNodeId = getValue('#env', 'PageType_' & ssGetNodeProperty(#local.nodeId, 'HeaderType')) $>
+		<$endif$>
+		<$exec rsFindRowPrimary('HaysNavNodes', startNodeId) $>
+		<$ exec rsNext('HaysNavNodes') $>
+		<$include build_left_nav_grouping_inc$>
+	<$endif$>
+
+<@end@>
+
+<@dynamichtml build_left_navigation_old@>
+<$if #active.test $>
+	<$include build_left_navigation_marta$>
+<$else$>
+	<$include build_left_navigation$>
+<$endif$>
+<@end@>
+
+<@dynamichtml build_left_navigation_marta@>
+	<$  startNodeId = '' $>
+Multi values in grouping
+	<$if NOT rsExists('HaysNavNodes') $>
+		<$ haysLoadSiteNavResultSet(siteId) $>
+	<$endif$>
+
+	<$if (rsFindRowPrimary('HaysNavNodes', #local.nodeId)) AND ( strLength(HaysNavNodes.parentNodeId) GT 0 ) $> [[% Specialism or sub-specialism page %]]
+		<$if HaysNavNodes.contributorOnly like '1' $>
+			<$include build_left_nav_admin_main_inc$>
+		<$else$>
+			<$ startNodeId = HaysNavNodes.startingNodeId $>	[[% area of navigation: jobseeker / employer %]]
+			<$if strIndexOf(HaysNavNodes.parentNodeId,HaysNavNodes.groupingNodeId) >=0  $>	[[% specialism %]]
+				<$ groupNodeId = HaysNavNodes.groupingNodeId $>
+				<$exec rsFindRowPrimary('HaysNavNodes', startNodeId) $>
+				<$loopwhile getValue('HaysNavNodes', '#isRowPresent') $>
+					<$if strIndexOf(HaysNavNodes.nodeId,HaysNavNodes.groupingNodeId) >=0 $><$break$><$endif$>
+					<$ exec rsNext('HaysNavNodes') $>
+				<$endloop$>
+				<$include build_left_nav_specialism_inc$>
+			<$else$>														[[% sub-specialism %]]
+				<$ specNodeId = HaysNavNodes.parentNodeId $>
+				<$exec rsFindRowPrimary('HaysNavNodes', specNodeId) $>
+				<$include build_left_nav_sub_specialism_inc$>
+			<$endif$>
+		<$endif$>
+
+	<$else$>														[[% general %]]
+		<$if #active.navType AND (navType like 'Candidates' OR navType like '2') $>
+			<$ startNodeId = getValue('#env', 'PageType_2') $>
+		<$else $>
+			<$ startNodeId = getValue('#env', 'PageType_' & ssGetNodeProperty(#local.nodeId, 'HeaderType')) $>
+		<$endif$>
+		<$exec rsFindRowPrimary('HaysNavNodes', startNodeId) $>
+		<$ exec rsNext('HaysNavNodes') $>
+		<$include build_left_nav_grouping_inc$>
+	<$endif$>
+
+<@end@>
+
+
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : GROUPING *********
+**********************************************-->
+<@dynamichtml build_left_nav_grouping_inc@>
+	<span class="h2"><$lc('wwHaysExpertise')$></span>
+	<ul id="suckerfish">
+	<$loopwhile getValue('HaysNavNodes', '#isRowPresent')  AND (HaysNavNodes.startingNodeId like startNodeId)  $>
+		<$if HaysNavNodes.parentNodeId like startNodeId $>
+			<$if NOT (HaysNavNodes.childNumber like '0') $>
+				<li class="popout"><span class="group"><$ HaysNavNodes.label $></span>
+				<$ groupingNodeId = HaysNavNodes.nodeId, numberOfKids = toInteger(HaysNavNodes.childNumber) $>
+				<$include build_left_nav_grouping_kids_inc$>
+		[[%	<$else$>
+				<li><span class="group"><$ HaysNavNodes.label $></span>
+		%]]
+			<$endif$>
+			</li>
+		<$endif$>
+		<$ exec rsNext('HaysNavNodes') $>
+	<$endloop$>
+	</ul>
+	<$include left_nav_back$>
+
+	[[% Admin pages %]]
+	<$if isTrue(#active.SSContributor) $>
+		<$include build_left_nav_admin_main_inc$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml build_left_nav_grouping_inc_only_Specialism@>
+	<span class="h2"><$lc('wwHaysExpertise')$></span>
+	<ul id="suckerfish">
+<$loopwhile getValue('HaysNavNodes', '#isRowPresent')  AND (HaysNavNodes.startingNodeId like startNodeId)  $>
+		<$if HaysNavNodes.parentNodeId like startNodeId $>
+			<$if NOT (HaysNavNodes.childNumber like '0') $>
+
+				<$ groupingNodeId = HaysNavNodes.nodeId, numberOfKids = toInteger(HaysNavNodes.childNumber) $>
+				
+					<$ exec rsNext('HaysNavNodes') $>
+						<$loopwhile  (HaysNavNodes.groupingNodeId like groupingNodeId) $>
+							<$if HaysNavNodes.parentNodeId like groupingNodeId $>
+								<$isLastSpec=HaysNavNodes.isLastChild$>
+								<$ specNodId = HaysNavNodes.nodeId, numberOfSubSpecKids = toInteger(HaysNavNodes.childNumber) $>
+								
+								<$if numberOfSubSpecKids gt 0$>
+									<li class="popout"><a href="<$ HaysNavNodes.href $>"><$ HaysNavNodes.label $></a>
+									<$include build_left_nav_specialism_popup_inc$>
+									</li>
+								<$else$>
+									<li ><a href="<$ HaysNavNodes.href $>"><$ HaysNavNodes.label $></a></li>
+								<$endif$>
+								<$if isTrue(isLastSpec) $>
+									<$ break $>
+								<$endif$>
+							<$endif$>
+							<$ exec rsNext('HaysNavNodes') $>
+						<$endloop$>
+		[[%<$else$>
+				<li><span class="group"><$ HaysNavNodes.label $></span>
+		%]]
+			<$endif$>
+		<$endif$>
+		<$ exec rsNext('HaysNavNodes') $>
+	<$endloop$>
+	</ul>
+	<$include left_nav_back$>
+
+	[[% Admin pages %]]
+	<$if isTrue(#active.SSContributor) $>
+		<$include build_left_nav_admin_main_inc$>
+	<$endif$>
+<@end@>
+
+<!--***********************************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM POPUPS OF SUBSPEC *********
+************************************************************-->
+<@dynamichtml build_left_nav_specialism_popup_inc@>
+	<$ gridClass = '' $>
+	<$if numberOfSubSpecKids GT 14  $>
+		<$ gridClass = 'grid_33' $>
+	<$elseif numberOfSubSpecKids GT 7 $>
+		<$ gridClass = 'grid_50' $>
+	<$endif$>
+
+	<$ exec rsNext('HaysNavNodes') $>
+	<ul class="<$ gridClass $>">
+		<$loopwhile  (HaysNavNodes.parentNodeId like specNodId) $>
+			<$if HaysNavNodes.parentNodeId like specNodId $>
+				<li><a href="<$ HaysNavNodes.href $>" style="min-height: 15px;"><$ HaysNavNodes.label $></a></li>
+				<$if isTrue(HaysNavNodes.isLastChild) $>
+					<$ break $>
+				<$endif$>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+	</ul>
+<@end@>
+
+<!--***********************************************************
+****** LEFT SIDE NAVIGATION : GROUPING POPUPS OF SPEC *********
+************************************************************-->
+<@dynamichtml build_left_nav_grouping_kids_inc@>
+	<$ gridClass = '' $>
+	<$if numberOfKids GT 14  $>
+		<$ gridClass = 'grid_33' $>
+	<$elseif numberOfKids GT 7 $>
+		<$ gridClass = 'grid_50' $>
+	<$endif$>
+
+	<$ exec rsNext('HaysNavNodes') $>
+	<ul class="<$ gridClass $>">
+		<$loopwhile  (HaysNavNodes.groupingNodeId like groupingNodeId) $>
+			<$if HaysNavNodes.parentNodeId like groupingNodeId $>
+				<li><a href="<$ HaysNavNodes.href $>" style="min-height: 15px;"><$ HaysNavNodes.label $></a></li>
+				<$if isTrue(HaysNavNodes.isLastChild) $>
+					<$ break $>
+				<$endif$>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+	</ul>
+<@end@>
+
+
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM *******
+**********************************************-->
+<@dynamichtml build_left_nav_specialism_inc@>
+		<$ exec rsNext('HaysNavNodes') $>
+		<$loopwhile (getValue('HaysNavNodes', '#isRowPresent')) AND (HaysNavNodes.startingNodeId like startNodeId) $>
+			<$if HaysNavNodes.parentNodeId like groupNodeId $> [[% Specialism sections %]]
+				<$if HaysNavNodes.nodeId like #local.nodeId $>	[[% current section %]]
+					<span class="h2"><$ HaysNavNodes.label $></span>
+					<ul id="suckerfish" class="deep">
+				<!--	<li><span class="group specialism"><$ HaysNavNodes.label $></span>-->
+					<$ numberOfKids = toInteger(HaysNavNodes.childNumber) , kidsCount = 0 $>
+					<$if numberOfKids GT 0 $>	 [[% sub-specialism pages for the current specialism %]]
+						<$include build_left_nav_specialism_kids_inc$>
+					<$endif$>
+					</ul>
+					<$include left_nav_back$>
+					<$break$>
+				<$endif$>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+
+		[[% Related areas %]]
+		<$exec rsFindRowPrimary('HaysNavNodes', startNodeId) $>
+		<$loopwhile getValue('HaysNavNodes', '#isRowPresent') $>
+			<$if HaysNavNodes.nodeId like groupNodeId $><$break$><$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+
+		<$relatedAreaPresent="false"$>
+
+		<$loopwhile (getValue('HaysNavNodes', '#isRowPresent')) AND (HaysNavNodes.startingNodeId like startNodeId) $>
+			<$if HaysNavNodes.parentNodeId like groupNodeId $> [[% Specialism sections %]]
+				<$if HaysNavNodes.nodeId like #local.nodeId $>	[[% current section %]]
+				<$else$>
+					<$relatedAreaPresent="true"$>
+					<$break$>
+				<$endif$>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+
+		<$if isTrue(relatedAreaPresent)$>
+
+			</div>
+		</div>
+
+		<div class="left_nav">
+			<div class="cnr"></div>
+			<div class="ln_inner">
+				<span class="h2"><$lc('wwRelatedAreas')$></span>
+				<ul>
+				<$loopwhile (getValue('HaysNavNodes', '#isRowPresent')) AND (HaysNavNodes.startingNodeId like startNodeId) $>
+					<$if HaysNavNodes.parentNodeId like groupNodeId $> [[% Specialism sections %]]
+						<$if HaysNavNodes.nodeId like #local.nodeId $>	[[% current section %]]
+						<$else$>
+							<li><a href="<$ HaysNavNodes.href $>"><$ HaysNavNodes.label $></a></li>
+						<$endif$>
+					<$endif$>
+					<$ exec rsNext('HaysNavNodes') $>
+				<$endloop$>
+				</ul>
+				<div class="clear"></div>
+		<$endif$>
+
+		[[% Admin pages %]]
+		<$if isTrue(#active.SSContributor) $>
+			<$include build_left_nav_admin_main_inc$>
+		<$endif$>
+<@end@>
+
+
+<!--**************************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM SUBSPEC *****
+****************************************************-->
+<@dynamichtml build_left_nav_specialism_kids_inc@>
+	<$ exec rsNext('HaysNavNodes') $>
+		<$loopwhile NOT (HaysNavNodes.parentNodeId like groupNodeId) $>
+			<$if HaysNavNodes.parentNodeId like nodeId $>
+				<li><a href="<$ HaysNavNodes.href $>"><$ HaysNavNodes.label $></a></li>
+				<$if isTrue(HaysNavNodes.isLastChild) $>
+					<$ break $>
+				<$endif$>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+<@end@>
+
+
+
+<!--**************************************************
+****** LEFT SIDE NAVIGATION : SUB-SPECIALISM *********
+***************************************************-->
+<@dynamichtml build_left_nav_sub_specialism_inc@>
+	<$ groupNodeId = HaysNavNodes.groupingNodeId $>
+	<$specialismNodeId=HaysNavNodes.nodeId$>
+	<$  numberOfKids = toInteger(HaysNavNodes.childNumber) $>
+	<a href="<$ HaysNavNodes.href $>"><span class="h2"><$ HaysNavNodes.label $></span></a>
+	<ul id="suckerfish" class="deep">
+	<$ exec rsNext('HaysNavNodes') $>
+	<$loop HaysNavNodes $>
+		<$if (HaysNavNodes.parentNodeId like specNodeId)$>
+			<$if HaysNavNodes.nodeId like #local.nodeId $>	[[% current section %]]
+				<li><span class="group"><$ HaysNavNodes.label $></span></li>
+			<$else$>
+				<li><a href="<$ HaysNavNodes.href $>" ><$ HaysNavNodes.label $></a></li>
+			<$endif$>
+		<$endif$>
+	<$endloop$>
+	</ul>
+	<$include left_nav_back$>
+
+	[[% Related areas %]]
+		<$exec rsFindRowPrimary('HaysNavNodes', startNodeId) $>
+		<$loopwhile getValue('HaysNavNodes', '#isRowPresent') $>
+			<$if HaysNavNodes.nodeId like groupNodeId $><$break$><$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+
+		<$relatedAreaPresent="false"$>
+
+		<$loopwhile (getValue('HaysNavNodes', '#isRowPresent')) AND (HaysNavNodes.startingNodeId like startNodeId) $>
+			<$if HaysNavNodes.parentNodeId like groupNodeId $> [[% Specialism sections %]]
+				<$if HaysNavNodes.nodeId like specialismNodeId $>	[[% current section %]]
+				<$else$>
+					<$relatedAreaPresent="true"$>
+					<$break$>
+				<$endif$>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodes') $>
+		<$endloop$>
+
+		<$if isTrue(relatedAreaPresent)$>
+
+			</div>
+		</div>
+
+		<div class="left_nav">
+			<div class="cnr"></div>
+			<div class="ln_inner">
+				<span class="h2"><$lc('wwRelatedAreas')$></span>
+				<ul>
+				<$loopwhile (getValue('HaysNavNodes', '#isRowPresent')) AND (HaysNavNodes.startingNodeId like startNodeId) $>
+					<$if HaysNavNodes.parentNodeId like groupNodeId $> [[% Specialism sections %]]
+						<$if HaysNavNodes.nodeId like specialismNodeId $>	[[% current section %]]
+						<$else$>
+							<li><a href="<$ HaysNavNodes.href $>"><$ HaysNavNodes.label $></a></li>
+						<$endif$>
+					<$endif$>
+					<$ exec rsNext('HaysNavNodes') $>
+				<$endloop$>
+				</ul>
+				<div class="clear"></div>
+		<$endif$>
+	[[% Admin pages %]]
+	<$if isTrue(#active.SSContributor) $>
+		<$include build_left_nav_admin_main_inc$>
+	<$endif$>
+
+
+<@end@>
+
+
+
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : ADMIN MAIN *******
+**********************************************-->
+<@dynamichtml build_left_nav_admin_main_inc@>
+	<$rsCopyFiltered('HaysNavNodes', 'HaysNavNodesAdmin', 'contributorOnly', '1') $>
+	<$if rsFindRowPrimary('HaysNavNodesAdmin', #local.nodeId)$>
+		<$include build_left_nav_sub_admin_inc$>
+
+	<$else$>
+		<$if rsFirst('HaysNavNodesAdmin') $>
+			<$ parentId = HaysNavNodesAdmin.parentNodeId $>
+			<$rsCopyFiltered('HaysNavNodesAdmin', 'HaysNavNodesAdminTop', 'parentNodeId', parentId) $>
+			<$ numberOfKids = HaysNavNodesAdminTop.#numRows, gridClass = ''$>
+			<$if numberOfKids GT 14  $>
+				<$ gridClass = 'grid_33' $>
+			<$elseif numberOfKids GT 7 $>
+				<$ gridClass = 'grid_50' $>
+			<$endif$>
+
+			<$if numberOfKids GT 0 $>
+						</div>
+				</div>
+				<div class="left_nav">
+					<div class="cnr"></div>
+					<div class="ln_inner">
+						<span class="h2"><$lc('wwHaysAdmin')$></span>
+						<ul >
+							<$loop HaysNavNodesAdminTop $>
+								<li><a href="<$ HaysNavNodesAdminTop.href $>" style="min-height: 15px;"><$ HaysNavNodesAdminTop.label $></a></li>
+							<$endloop$>
+						</ul>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+
+
+
+
+<!--**************************************************
+****** LEFT SIDE NAVIGATION : ADMIN PAGES    *********
+***************************************************-->
+<@dynamichtml build_left_nav_sub_admin_inc@>
+			<span class="h2"><$ HaysNavNodesAdmin.label $></span>
+			
+			<ul id="suckerfish"class="deep">
+			<$ exec rsNext('HaysNavNodesAdmin') $>
+			<$loopwhile getValue('HaysNavNodesAdmin', '#isRowPresent') $>
+			
+				<$if HaysNavNodesAdmin.parentNodeId like #local.nodeId $>
+					<li><a href="<$ HaysNavNodesAdmin.href $>" ><$ HaysNavNodesAdmin.label $></a></li>
+				<$endif$>
+				<$ exec rsNext('HaysNavNodesAdmin') $>
+				
+			<$endloop$>
+			
+			</ul>
+<@end@>
+
+
+<@dynamichtml LeftHandNav_Salary_Guide@> 
+	<div class="left_nav">
+		<div class="cnr"></div>
+		<div class="ln_inner">
+					
+	<span class="h2"><$lc('wwHaysExpertise')$></span>
+	<ul id="suckerfish">
+  <$rsCopyFiltered("HaysNavNodes", "rsGroupingAndSpecialisms", "startingNodeId",startNodeId)$>
+  <$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+  <$rsSort("rsSpecialisms","label","string","asc")$>
+ <$loop rsSpecialisms$>
+	<$specNodId = rsSpecialisms.nodeId$>
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",specNodId)$>
+	<$numberOfSubSpecKids=rsNumRows("rsSubSpecialisms")$>
+	<$if numberOfSubSpecKids gt 0$>
+		<li class="popout"><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a>
+		<$include build_left_nav_specialism_popup_inc$>
+		</li>
+	<$else$>
+		<li ><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a></li>
+	<$endif$>
+ <$endloop$>
+</ul>
+
+
+		</div>
+	</div>
+<@end@>
+</body></html>

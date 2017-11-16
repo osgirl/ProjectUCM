@@ -1,0 +1,440 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>
+OutputFormatter htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<!----------------------------------Includes For Debug Format---------------------------------------->
+
+
+<!--
+	These are string definitions
+-->
+<@wwShow=Show@>
+<@wwHide=Hide@>
+<@wwDebugView=Debug View@>
+<@wwApiViews=Api Views@>
+<@wwView=View@>
+<@wwChangeView=View@>
+<@wwPrint=Print@>
+<@wwPrintable=Printable View@>
+
+<!--
+	This include paints the debug body
+-->
+<@dynamichtml debug_paint_body_panels@>
+
+<$include debug_paint_resultset_hide_show_javascript$>
+
+<table class="xuiTitleTable" width="100%" cellpadding="0" cellspacing="20">
+	<tr>
+		<td class="xuiPageHeadingCell">
+			<h4 class="xuiPageHeadingText"><$PageTitle$></h4></td>
+		<td class="xuiPageHeadingCell" style="text-align:right" align="right">
+			&nbsp;</td>
+	</tr>
+</table>
+
+<table align=left cellspacing=20>
+	<$if IS_ERROR and rsFirst("error")$>
+		<tr><td align=left>
+			<$resultsetname="error", fields="message,stack"$>
+			<$include debug_paint_resultset_heading$>
+		</tr></td>
+
+		<tr><td align=left>
+			<$include debug_paint_resultset_div$>
+		</td></tr>
+	<$endif$>
+
+
+	<tr><td align=left>
+		<$resultsetname="localdata", fields="name,value"$>
+		<$include debug_paint_resultset_heading$>
+	</tr></td>
+	<tr><td align=left>
+		<$include debug_paint_resultset_div$>
+	</td></tr>
+
+
+	<$loop resultsetListing $>
+		<tr><td align=left>
+			<$include debug_paint_resultset_heading$>
+		</tr></td>
+		<tr><td align=left>
+			<$include debug_paint_resultset_div$>
+		</td></tr>
+	<$endloop$>
+</table>
+<@end@>
+
+<!--
+	This include paints the javascript funciton to hide and show different resultsets in the debug otuput
+-->
+<@dynamichtml debug_paint_resultset_hide_show_javascript@>
+<script>
+function debug_change_panel_display_properties(prefix, isShow)
+{
+	var output="";
+
+	if(isShow)
+	{
+		document.getElementById(prefix).style.display='block';
+		document.getElementById(prefix+"_hide").style.display='inline';
+		document.getElementById(prefix+"_show").style.display='none';
+	}
+	else if(!isShow)
+	{
+		document.getElementById(prefix).style.display='none';
+		document.getElementById(prefix+"_hide").style.display='none';
+		document.getElementById(prefix+"_show").style.display='inline';
+	}
+}
+</script>
+<@end@>
+
+<!--
+	This include paints the short heading at the top of each resultset, along with the text
+	to hide and show the resultset
+-->
+<@dynamichtml debug_paint_resultset_heading@>
+	<h1 class="xuiPageHeadingText"><$resultsetname$>
+		<span id="<$resultsetname$>_panel_div_show"> &nbsp;
+			  <a href="javascript:debug_change_panel_display_properties('<$resultsetname$>_panel_div', true)">(<$lc("wwShow")$>)</a>
+		</span>
+		<span id="<$resultsetname$>_panel_div_hide" style="display:none"> &nbsp;
+			  <a href="javascript:debug_change_panel_display_properties('<$resultsetname$>_panel_div', false)">(<$lc("wwHide")$>)</a>
+		</span>
+	</h1>
+<@end@>
+
+<!--
+	This include paints the div associated with each resultset, along with its associated content.
+-->
+<@dynamichtml debug_paint_resultset_div@>
+	<div id="<$resultsetname$>_panel_div" style="display:none; <$include debug_paint_resultset_div_style_properties$>">
+	<table align=left>
+		<tr><td align=left>
+			<$include debug_paint_resultset_panel$>
+		</td></tr>
+	</table>
+	</div>
+<@end@>
+
+<@dynamichtml debug_paint_resultset_div_style_properties@><$if debug_resultset_div_fixed and isTrue(debug_resultset_div_fixed)$> overflow:auto; oldborder-style:inset; oldborder-width:thin <$if getValue(resultsetname, "#numRows") > 20$> height:<$debug_resultset_div_height$>; <$endif$>width:<$debug_resultset_div_width$>; <$endif$><@end@>
+
+<!--
+	This include paints the visible panel associated with each resultset.
+-->
+<@dynamichtml debug_paint_resultset_panel@>
+	<$include debug_setup_panel_data$>
+	<$include debug_set_panel_properties$>
+	<$include debug_create_panel_column_properties$>
+	<$include debug_create_panel_row_data_definitions$>
+	<$include debug_paint_panel_table$>
+<@end@>
+
+<!--
+	This include prepares additional data required to paint the resultset.
+	Specifically, it generates a resultset of the fields associated with the resultset
+-->
+<@dynamichtml  debug_setup_panel_data@>
+	<$rsMakeFromString("FieldList",fields,"fieldname")$>
+<@end@>
+
+<@dynamichtml debug_set_panel_properties@>
+	<$PanelHeadingLeft=resultsetname$>
+	<$PanelHeadingRight=""$>
+	<$PanelFooterLeft=""$>
+	<$PanelFooterRight="" $>
+	<$PanelName=resultsetname$>
+	<$PanelListingCount=30000$>
+	<$PanelListingResultSet=resultsetname$>
+<@end@>
+
+<!--
+	This include sets up the data needed to paint the columns, such as the headers, size, and alignment.
+	It is primarily used to generate the headers
+-->
+<@dynamichtml debug_create_panel_column_properties@>
+	<$exec rsCreateResultSet("ColumnProperties",
+		"id,width,headerLabel,rowAlign")$>
+
+	<$loop FieldList$>
+		<$exec rsAppendNewRow("ColumnProperties")$>
+		<$ColumnProperties.id = fieldname$>
+		<$ColumnProperties.width = "auto"$>
+		<$ColumnProperties.width = "200px"$>
+		<$include debug_get_custom_column_width$>
+		<$ColumnProperties.headerLabel = fieldname$>
+		<$ColumnProperties.rowAlign = "left"$>
+	<$endloop$>
+<@end@>
+
+<@dynamichtml debug_get_custom_column_width@>
+		<$customWidth=getValue("#active","debug_global"&"_width")$>
+		<$if customWidth$><$ColumnProperties.width = customWidth$><$endif$>
+
+		<$customWidth=getValue("#active","debug_table_"&PanelName&"_width")$>
+		<$if customWidth$><$ColumnProperties.width = customWidth$><$endif$>
+
+		<$customWidth=getValue("#active","debug_global_"&fieldname&"_width")$>
+		<$if customWidth$><$ColumnProperties.width = customWidth$><$endif$>
+
+		<$customWidth=getValue("#active","debug_table_"&PanelName&"_"&fieldname&"_width")$>
+		<$if customWidth$><$ColumnProperties.width = customWidth$><$endif$>
+<@end@>
+<!--
+	This include defines the idocscript statements that are used to generate the data in the table cells
+-->
+<@dynamichtml debug_create_panel_row_data_definitions@>
+	<$exec rsCreateResultSet("RowData", fields)$>
+	<$exec rsAppendNewRow("RowData")$>
+	<$loop FieldList$>
+		<$setValue("RowData", fieldname, "<$"&resultsetname&"."&fieldname&"$>" )$>
+	<$endloop$>
+<@end@>
+
+<!--
+	This include renders teh table based on the column properties and the row data definitions.
+-->
+<@dynamichtml debug_paint_panel_table@>
+	<$include slim_table_header$>
+	<$include create_slim_table_row_include$>
+
+	<$if rsFirst(PanelListingResultSet)$><$exec listingCounter=0$>
+	<$loopwhile getValue(PanelListingResultSet, "#isRowPresent") and listingCounter < PanelListingCount$>
+		<$include slim_table_row_include$>
+		<$exec rsNext(PanelListingResultSet)$><$exec listingCounter=listingCounter+1$>
+	<$endloop$>
+	<$endif$>
+
+	<$include slim_table_footer$>
+<@end@>
+
+
+
+<!----------------------------------Includes For Json Format---------------------------------------->
+<@dynamichtml outputter_json_output_body@>
+<$if callback$><$callback$>(<$endif$>{"result":{
+	"localdata":{<$prefix=""$><$loop localdata$><$prefix$>"<$localdata.name$>":"<$js(localdata.value)$>"<$prefix=", "$><$endloop$>},
+	"resultsets":{ <$outerprefix=""$>
+	<$loop resultsetListing $>
+		<$outerprefix$><$exec outerprefix=","$>"<$resultsetname$>":[ <$rsMakeFromString("FieldList",fields,"fieldname")$><$prefix=""$>
+		<$loopwhile getValue(resultsetname, "#isRowPresent") $>
+		<$prefix$><$exec prefix=","$>{<$innerprefix=""$><$loop FieldList$><$innerprefix$><$exec innerprefix=","$>"<$fieldname$>":"<$xml(getValue(resultsetname, fieldname))$>"<$endloop$>}
+		<$exec rsNext(resultsetname)$>
+		<$endloop$>
+		]
+	<$endloop$>
+	}
+}
+<$if IS_ERROR and rsFirst("error")$>
+<$exec resultsetname="error", fields="message,stack"$>
+,"<$resultsetname$>":{<$rsMakeFromString("FieldList",fields,"fieldname")$>
+<$loopwhile getValue(resultsetname, "#isRowPresent") $><$prefix=""$>
+<$loop FieldList$>
+	<$prefix$>"<$fieldname$>":"<$js(getValue(resultsetname, fieldname))$>"<$prefix=","$>
+<$endloop$>
+<$exec rsNext(resultsetname)$>
+<$endloop$>
+}
+<$endif$>
+<$if JSON_ID$>,"id":"<$js(JSON_ID)$>"<$endif$>
+}<$if callback$><$callback$>(<$endif$>
+<@end@>
+
+<!----------------------------------Includes For Xml Format---------------------------------------->
+<@dynamichtml outputter_xml_output_body@>
+<?xml version='1.0' encoding='utf-8' ?>
+<idc:service name="<$xml(IdcService)$>" xmlns:idc="http://www.stellent.com/IdcService/">
+
+<idc:result>
+	<idc:localdata>
+		<$loop localdata $><$if strIndexOf(localdata.name, ":") < 0 $> <idc:<$localdata.name$>><$xml(localdata.value)$></idc:<$localdata.name$>>  <$endif$> <$endloop$>
+	</idc:localdata>
+
+	<idc:resultsets>
+	<$loop resultsetListing $>
+		<idc:<$resultsetname$>><$rsMakeFromString("FieldList",fields,"fieldname")$>
+			<$loopwhile getValue(resultsetname, "#isRowPresent") $>
+			<idc:row>
+				<$loop FieldList$><idc:<$fieldname$>><$xml(getValue(resultsetname, fieldname))$></idc:<$fieldname$>><$endloop$>
+			</idc:row>
+			<$exec rsNext(resultsetname)$>
+			<$endloop$>
+		</idc:<$resultsetname$>>
+	<$endloop$>
+	</idc:resultsets>
+</idc:result>
+
+<$if IS_ERROR and rsFirst("error")$>
+<$exec resultsetname="error", fields="message,stack"$>
+	<idc:<$resultsetname$>>
+<$rsMakeFromString("FieldList",fields,"fieldname")$>
+<$loopwhile getValue(resultsetname, "#isRowPresent") $>
+<$loop FieldList$>
+	<idc:<$fieldname$>><$xml(getValue(resultsetname, fieldname))$></idc:<$fieldname$>>
+<$endloop$>
+<$exec rsNext(resultsetname)$>
+<$endloop$>
+	</idc:<$resultsetname$>>
+<$endif$>
+
+</idc:service>
+<@end@>
+
+<!----------------------------------Includes For Printable Format---------------------------------------->
+
+<!--
+	Remove buttons from query page when printing
+-->
+<@dynamichtml query_form_buttons@>
+<$if outputFormat and (outputFormat like "printable|Printable") $>
+<$else$>
+	<$include super.query_form_buttons$>
+<$endif$>
+<@end@>
+
+<!--
+	Remove buttons from checkin page when printing
+-->
+<@dynamichtml std_checkin_submit_html@>
+<$if outputFormat and (outputFormat like "printable|Printable") $>
+<$else$>
+	<$include super.std_checkin_submit_html$>
+<$endif$>
+<@end@>
+<!----------------------------------Includes For isGetAllIdocData parameter---------------------------------------->
+
+<!--
+	Extend content server includes for printing html so that they record what they are doing to
+	a resultset.
+-->
+
+
+<@dynamichtml std_namevalue_separator@>
+<$include output_formatter_create_is_get_all_data_resultsets$>
+<$if maintainPageFormProfileInfo and (not isUploadFieldScript)$>
+	<$exec rsAppendNewRow("PageFormProfileInfo")$>
+	<$PageFormProfileInfo.type = "separator"$>
+	<$PageFormProfileInfo.fieldCaption = "<hr>"$>
+<$endif$>
+	<$include super.std_namevalue_separator$>
+<@end@>
+
+<@dynamichtml std_field_group_header@>
+	<$include super.std_field_group_header$>
+	<$include output_formatter_record_group_start_action$>
+<@end@>
+
+<@dynamichtml show_buddies@>
+	<$include super.show_buddies$>
+<$if rsExists(buddyTableName)$>
+	<$include output_formatter_record_group_end_action$>
+<$endif$>
+<@end@>
+
+
+<@dynamichtml std_nameentry_row@>
+	<$include output_formatter_record_field_creation_action$>
+	<$include super.std_nameentry_row$>
+<@end@>
+
+
+<@dynamichtml std_query_text_field@>
+	<$include output_formatter_record_field_creation_action$>
+	<$include super.std_query_text_field$>
+<@end@>
+
+<@dynamichtml std_query_date_field@>
+	<$include output_formatter_record_field_creation_action$>
+	<$include super.std_query_date_field$>
+<@end@>
+
+<@dynamichtml std_query_int_field@>
+	<$include output_formatter_record_field_creation_action$>
+	<$include super.std_query_int_field$>
+<@end@>
+
+<!--
+	helper functiosn used by includes above.
+ -->
+
+
+<@dynamichtml output_formatter_record_field_creation_action@>
+<$include output_formatter_create_is_get_all_data_resultsets$>
+<$if maintainPageFormProfileInfo and (not isUploadFieldScript)$>
+	<$exec rsAppendNewRow("PageFormProfileInfo")$>
+	<$PageFormProfileInfo.type = "field"$>
+
+	<$if fieldCaption$><$PageFormProfileInfo.fieldCaption = fieldCaption$><$endif$>
+	<$if fieldName$><$PageFormProfileInfo.fieldName = fieldName$><$endif$>
+	<$if fieldValue$><$PageFormProfileInfo.fieldValue = fieldValue$><$endif$>
+	<$if fieldType$><$PageFormProfileInfo.fieldType = fieldType$><$endif$>
+	<$if fieldWidth$><$PageFormProfileInfo.fieldWidth = fieldWidth$><$endif$>
+	<$if isRequired$><$PageFormProfileInfo.isRequired = isRequired$><$endif$>
+	<$if requiredMsg$><$PageFormProfileInfo.requiredMsg = requiredMsg$><$endif$>
+	<$if isInfoOnly$><$PageFormProfileInfo.isInfoOnly = isInfoOnly$><$endif$>
+	<$if isFieldInfoOnly$><$PageFormProfileInfo.isFieldInfoOnly = isFieldInfoOnly$><$endif$>
+	<$if isExcluded$><$PageFormProfileInfo.isExcluded = isExcluded$><$endif$>
+	<$if isFieldExcluded$><$PageFormProfileInfo.isFieldExcluded = isFieldExcluded$><$endif$>
+	<$if isHidden$><$PageFormProfileInfo.isHidden = isHidden$><$endif$>
+	<$if isFieldInfoOnly$><$PageFormProfileInfo.isFieldInfoOnly = isFieldInfoOnly$><$endif$>
+	<$if valueStyle$><$PageFormProfileInfo.valueStyle = valueStyle$><$endif$>
+	<$if fieldCheckValue$><$PageFormProfileInfo.fieldCheckValue = fieldCheckValue$><$endif$>
+	<$if fieldId$><$PageFormProfileInfo.fieldId = fieldId$><$endif$>
+	<$if viewName$><$PageFormProfileInfo.viewName = viewName$><$endif$>
+	<$if jsViewName$><$PageFormProfileInfo.jsViewName = jsViewName$><$endif$>
+	<$if optionListId$><$PageFormProfileInfo.optionListId = optionListId$><$endif$>
+	<$if fieldIsOptionList$><$PageFormProfileInfo.fieldIsOptionList = fieldIsOptionList$><$endif$>
+	<$if fieldOptionListType$><$PageFormProfileInfo.fieldOptionListType = fieldOptionListType$><$endif$>
+	<$if optionListName$><$PageFormProfileInfo.optionListName = optionListName$><$endif$>
+	<$if optionListResultset$><$PageFormProfileInfo.optionListResultset = optionListResultset$><$endif$>
+	<$if optionListKey$><$PageFormProfileInfo.optionListKey = optionListKey$><$endif$>
+	<$if fieldDescription$><$PageFormProfileInfo.fieldDescription = fieldDescription$><$endif$>
+	<$if fieldLongDescription$><$PageFormProfileInfo.fieldLongDescription = fieldDescription$><$endif$>
+	<$if hasOptionList$><$PageFormProfileInfo.hasOptionList = hasOptionList$><$endif$>
+
+<$endif$>
+<@end@>
+
+
+<@dynamichtml output_formatter_record_group_start_action@>
+<$include output_formatter_create_is_get_all_data_resultsets$>
+<$if maintainPageFormProfileInfo and (not isUploadFieldScript)$>
+	<$exec rsAppendNewRow("PageFormProfileInfo")$>
+	<$PageFormProfileInfo.type = "group_start"$>
+	<$PageFormProfileInfo.groupName = fieldName$>
+	<$PageFormProfileInfo.fieldGroupCaption = lc(header)$>
+	<$PageFormProfileInfo.buddyTableName = buddyTableName$>
+	<$if fieldGroupDefaultHide$><$PageFormProfileInfo.fieldGroupDefaultHide = fieldGroupDefaultHide$><$endif$>
+	<$if fieldGroupDescription$><$PageFormProfileInfo.fieldGroupDescription = fieldGroupDescription$><$endif$>
+	<$if fieldGroupLongDescription$><$PageFormProfileInfo.fieldGroupLongDescription = fieldGroupLongDescription$><$endif$>
+<$endif$>
+<@end@>
+
+<@dynamichtml output_formatter_record_group_end_action@>
+<$include output_formatter_create_is_get_all_data_resultsets$>
+<$if maintainPageFormProfileInfo and (not isUploadFieldScript)$>
+	<$exec rsAppendNewRow("PageFormProfileInfo")$>
+	<$PageFormProfileInfo.type = "group_end"$>
+	<$PageFormProfileInfo.groupName = orgFieldName$>
+<$endif$>
+<@end@>
+
+<@dynamichtml output_formatter_create_is_get_all_data_resultsets@>
+<$if OutputFormatterMenusGetAllIdocData and isTrue(OutputFormatterMenusGetAllIdocData) and not hasOutputFormatterFormResultSet$>
+	<$exec rsCreateResultSet("PageFormProfileInfo", "type,fieldCaption,fieldValue,fieldName,groupName")$>
+	<$hasOutputFormatterFormResultSet=1$>
+	<$maintainPageFormProfileInfo=1$>
+<$endif$>
+<@end@>
+
+
+
+
+</body></html>

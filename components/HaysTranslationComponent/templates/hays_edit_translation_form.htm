@@ -1,0 +1,53 @@
+<$include std_doctype_html_decl$>
+<head>
+	<$defaultPageTitle=lc("Confirm Edit", dDocTitle)$>
+	<$include std_html_head_declarations$>
+</head>
+<$include body_def$>
+
+<$include std_page_begin$>
+
+<$include std_header$>
+
+
+
+
+<table border="0" width="<$StdPageWidth$>" summary="">
+
+<tr>
+    <td>
+	    <span class=infoLabel><$lc("wwTranslationExistMessage")$></span>
+	    &nbsp;&nbsp;<span class="xxsmall">
+	    <font color="<$if navHeaderTextColor$><$navHeaderTextColor$><$else$>#999999<$endif$>">
+	    </font>
+	    </span>
+	</td>
+</tr>
+
+<tr> <td><span class=tableEntry></span></td> </tr> 
+
+<tr> <td><span class=tableEntry></span></td> </tr> <tr> <td align=center> 
+<span class="title" id="Msg"><input type="button" id="closebutton" name="closebutton" value="<$lc('wwTranslateFormEditButtonLabel')$>" onClick="contributionRedirect('<$dDocName$>');"></span> 
+<span class="title" id="Msg"><input type="button" id="closebutton" name="closebutton" value="<$lc('wwTranslateFormCloseButtonLabel')$>" onClick="contributionRedirect(null);"></span> 
+</td> 
+<td><span class=tableEntry></span></td> </tr> <tr> <td align=center> 
+
+</td>
+</tr> 
+
+</table>
+<$include std_page_end$>
+<script type="text/javascript">
+	var attemptNumber=0;
+	function contributionRedirect( dId ){ 
+		popupObj = window.opener.WCM.GetCacheObject('<$WCMPopupId$>');
+		if(dId != null){
+			popupObj.Close(dId+":Edit");			
+		}else{
+			popupObj.Close(dId);
+		}
+	}
+</script>
+
+</body>
+</html>

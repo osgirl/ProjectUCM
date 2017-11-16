@@ -1,0 +1,448 @@
+
+
+
+
+#pane1 {}
+#pane2 {
+margin:0;
+padding:0;
+width:540px;
+}
+
+/* scroll pane defaults to this if no settings */
+.scroll-pane {
+	width: 200px;
+	height: 200px;
+	overflow: auto;
+	background: #fff;
+	float: left;
+}
+
+
+.scrollheight200 {
+	height:200px;
+}
+.scrollheight220 {
+	height:220px;
+}
+.scrollheight225 {
+	height:225px;
+}
+.scroll230 {
+	height:230px;
+}
+.scrollheight235 {
+	height:235px;
+}
+.scrollheight245 {
+	height:245px;
+}
+.scroll255 {
+	height:255px;
+}
+.scroll265 {
+	height:265px;
+}
+.scrollheight270 {
+	height:270px;
+}
+
+.scroll275 {
+	height:275px;
+
+}
+.scrollheight280 {
+	height:280px;
+}.scrollheight285 {
+	height:285px;
+}
+.scrollheight290 {
+	height:290px;
+}
+.scroll295 {
+	height:295px;
+}
+.scrollheight300 {
+	height:300px;
+}
+.scroll305 {
+	height:305px;
+}
+.scroll315 {
+	height:315px;
+}
+.scroll320 {
+	height:320px;
+}
+.scroll330 {
+	height:330px;
+}
+.scroll335 {
+	height:335px;
+}
+.scrollheight340 {
+	height:340px;
+}
+.scroll350 {
+	height:350px;
+}
+.scrollheight355 {
+	height:355px;
+}
+.scroll360 {
+	height:360px;
+}
+.scrollheight365 {
+	height:365px;
+}
+.scroll400 {
+	height:400px;
+}
+/* scroller styles end */
+
+
+
+/* SCROLLBAR */
+div {
+	Margin: 0px;
+}
+/* Scrollbar & content css */						
+/* *********************** */
+
+/* sets scroll area for all scrollable blocks */
+#content1 {
+	width: 515px;
+	float:left;
+	background: #fff;
+	overflow:hidden;
+}
+#content2, #content3{
+	height: 306px;
+	width: 505px;
+	float:left;
+	background: #fff;
+	overflow:hidden;
+	}
+#content1 p{
+	margin:0;/* 10px; */
+}
+#scrollup{
+	background: url('../../Content/Images/scrollup.gif') no-repeat;
+	height: 9px;
+	width: 10px;
+	float:right;
+}
+.scrollbot{
+	background: url('../../Content/Images/scrollbot.gif') no-repeat;
+	height: 9px;
+	width: 10px;
+	float:right;
+}
+/* 305px height scrollbar */
+.scrollbar-vert{
+	background: url('../../Content/Images/scrollbar.gif') no-repeat 0 0;
+	height: 305px;
+	width: 10px;
+	float:right;
+}
+/* 230px height scrollbar */
+.scrollbar230{
+	background: url('../../Content/Images/scrollbar230.gif') no-repeat 0 0;
+	height: 230px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 255px height scrollbar */
+.scrollbar255{
+	background: url('../../Content/Images/scrollbar255.gif') no-repeat 0 0;
+	height: 255px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 265px height scrollbar */
+.scrollbar265{
+	background: url('../../Content/Images/scrollbar265.gif') no-repeat 0 0;
+	height: 265px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 275px height scrollbar */
+.scrollbar275{
+	background: url('../../Content/Images/scrollbar275.gif') no-repeat 0 0;
+	height: 275px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 295px height scrollbar */
+.scrollbar295{
+	background: url('../../Content/Images/scrollbar295.gif') no-repeat 0 0;
+	height: 295px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 305px height scrollbar */
+.scrollbar305{
+	background: url('../../Content/Images/scrollbar305.gif') no-repeat 0 0;
+	height: 305px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 315px height scrollbar */
+.scrollbar315{
+	background: url('../../Content/Images/scrollbar315.gif') no-repeat 0 0;
+	height: 315px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 320px height scrollbar */
+.scrollbar320{
+	background: url('../../Content/Images/scrollbar320.gif') no-repeat 0 0;
+	height: 320px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 330px height scrollbar */
+.scrollbar330{
+	background: url('../../Content/Images/scrollbar330.gif') no-repeat 0 0;
+	height: 330px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 335px height scrollbar */
+.scrollbar335{
+	background: url('../../Content/Images/scrollbar335.gif') no-repeat 0 0;
+	height: 335px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 350px height scrollbar */
+.scrollbar350{
+	background: url('../../Content/Images/scrollbar350.gif') no-repeat 0 0;
+	height: 350px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 360px height scrollbar */
+.scrollbar360{
+	background: url('../../Content/Images/scrollbar360.gif') no-repeat 0 0;
+	height: 360px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+/* 400px height scrollbar SITEMAP*/
+.scrollbar400{
+	background: url('../../Content/Images/scrollbar400.gif') no-repeat 0 0;
+	height: 400px;
+	width: 11px;
+	float:right;
+	padding:0 7px 0 0;
+}
+
+
+
+
+.handle-vert {
+	background:transparent url(../../Content/Images/scroller.gif) no-repeat scroll 0 0;
+	height:40px; margin: 10px 0;
+	width:11px;
+}
+/*.handle-vert{
+	height: 42px;
+	width: 20px;
+	background: url('../../Content/Images/handle.gif') no-repeat;
+}*/
+
+#content2 p{
+	margin: 0px;
+}
+.scrollbar-hor{
+	background-color: #d2e8ff;
+	height: 20px;
+	width: 300px;
+	float:left;
+}
+.handle-hor{
+	height: 20px;
+	width: 42px;
+	background: url('../../Content/Images/handle-hor.gif') no-repeat;
+}
+
+#content3 p{
+	width: 700px;
+}
+			
+
+/* SCROLLBAR END */
+/* ************* */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*.jScrollPaneContainer {
+	position: relative;
+	overflow: hidden;
+	z-index: 1;
+	background:#fff;
+	margin-top: 15px;
+}
+
+.jScrollPaneTrack {
+	position: absolute;
+	cursor: pointer;
+	right: 0;
+	top: 0;
+	height: 100%;
+	background: transparent url(../../Content/Images/scrollbar.gif) repeat-y scroll 0 0;
+}
+.jScrollPaneDrag {
+	position: absolute;
+	background: transparent url(../../Content/Images/scroller.gif) no-repeat scroll 0 0;
+	cursor: pointer;
+	overflow: hidden;
+	height:20px !important;
+}
+.jScrollPaneDragTop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
+.jScrollPaneDragBottom {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	overflow: hidden;
+}
+a.jScrollArrowUp {
+	display: block;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	text-indent: -2000px;
+	overflow: hidden;
+	height: 9px;
+}
+a.jScrollArrowUp:hover {
+}
+
+a.jScrollArrowDown {
+	display: block;
+	position: absolute;
+	z-index: 1;
+	bottom: 0;
+	right: 0;
+	text-indent: -2000px;
+	overflow: hidden;
+
+	height: 9px;
+}
+a.jScrollArrowDown:hover {
+}
+a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
+}
+
+
+/* ------------------- */
+/* styles for scroller */
+/* ------------------- */
+/*a.jScrollArrowUp {
+	background: url(../../Content/Images/basic_arrow_up.gif) repeat-x 0 0;
+}*/
+/* a.jScrollArrowUp {
+background:transparent url(../../Content/Images/basic_arrow_up.gif) no-repeat scroll 0 0;
+margin:0;
+padding:0;
+}
+
+
+
+a.jScrollArrowUp:hover {
+	background-position: 0 -15px;
+}
+a.jScrollArrowDown {
+	background: url(../../Content/Images/basic_arrow_down.gif) no-repeat scroll 0 0;
+	margin:0;
+	padding:0;
+}
+
+a.jScrollArrowDown:hover {
+	background-position: 0 -15px;
+}
+a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
+	background-position: 0 -30px;
+}
+
+
+.orange-bar .jScrollPaneTrack {
+	background: #f60;
+}
+.orange-bar .jScrollPaneDrag {
+	background: #00f url(../../Content/Images/drag_grab.gif) no-repeat 50% 50%;
+}
+.orange-bar .scroll-pane {
+	background: #69f;
+}
+			
+.holder {
+	float: left;
+	margin: 10px;
+}
+
+
+
+.wide {
+	width: 400px;
+}
+
+.super-wide {
+	width: 700px;
+}
+
+.tall {
+	height: 400px;
+}
+
+/*#pane3 {
+	height: 190px;
+}
+#pane4 {
+	height: 190px;
+}*/

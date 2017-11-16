@@ -1,0 +1,215 @@
+/* 
+   http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup,  menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after,
+q:before, q:after { content: ''; content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+a { text-decoration: none; }
+
+html {  background: #FFF url(img/career_site/gradient.jpg) left 89% repeat-x; }
+body { font: 12px Arial,Helvetica,Georgia,sans-serif; color: #424242; }
+
+.background { background: url(img/career_site/gradient.jpg) left 134px repeat-x; }
+
+/* Layout */
+
+.page_container { width: 949px; margin: 0 auto; }
+
+header { height: 100px; position: relative; }
+footer { height: 105px; text-align: center; margin-top: 20px; }
+
+.cleaner { clear: both; overflow: hidden; height: 1px; }
+
+.breadcrumbs { height: 35px; line-height: 35px; }
+	.breadcrumbs ul { overflow: hidden; } 
+		.breadcrumbs ul li { float: left; color: #00398b; margin-right: 5px; }
+			.breadcrumbs ul li a { float: left; color: #00afe3; margin-right: 5px; }
+			.breadcrumbs ul li a:hover { text-decoration: underline; }
+
+#cnt { overflow: hidden; }
+
+.section_left { width: 186px; float: left; margin-right: 10px; }			 
+.section_center { width: 550px; float: left; }
+.section_right { width: 192px; float: right; }
+
+/* Header */
+
+header .logo { width: 235px; height: 99px; }
+	header .logo a { width: 100%; height: 100%; display: block; background: url(img/career_site/logo.jpg) left top no-repeat; overflow: hidden; }
+header .header_menu { position: absolute; right: 0; top: 28px; }
+	header .header_menu ul {  }
+		header .header_menu ul li { float: left; border-left: 1px solid #00398b; position: relative; }
+		header .header_menu ul li:first-child { border-left: 0; }
+			header .header_menu ul li a { color: #00afe3; padding: 0 10px 0 10px; float: left; font-size: 11px; position: relative; z-index: 2; }
+			header .header_menu ul li a:hover { color: #00afe3; text-decoration: underline; }
+			header .header_menu ul li .last { background: url(img/career_site/header_nav_menu_bullet.jpg) right 5px no-repeat; padding-right: 15px; }
+		
+		header .header_menu ul li nav { width: 554px; height: 192px; background: url(img/career_site/dropdown.jpg) left top no-repeat; position: absolute; right: -4px; top: -8px; display: none; z-index: 1; }	
+		header .header_menu ul li nav ul { width: 120px; float: left; padding: 40px 0 0 10px;  }	
+			header .header_menu ul li nav ul li { float: none; border: 0; padding-bottom: 5px; }
+				header .header_menu ul li nav ul li a { display: inline; float: none; color: #003076; background: url(img/career_site/bullet-tertiary-link.gif) left 7px no-repeat; padding: 3px 10px; }
+				header .header_menu ul li nav ul li a:hover { background: #00aeef; color: #FFF; }
+					
+					
+		/*--- Show dropdown menu ---*/
+					
+		header .header_menu ul > li:hover nav { display: block; } 
+								
+/* Content */
+
+/*--- Home Page ---*/
+
+.overview { width: 949px; height: 413px; background: url(img/career_site/home_banner.jpg) left top no-repeat; border-bottom: 1px solid #d5d5d6; position: relative; }
+	.overview .quote { width: 414px; height: 185px; background: #FFF; position: absolute; top: 35px; left: 17px; }
+		.overview .quote h1 { font-size: 30px; color: #00398b; padding: 20px 10px 0 20px; text-transform: uppercase; font-weight: bold; line-height: 1; }
+			.overview .quote h1 span { color: #00afe3; }
+	
+.option { margin-top: 16px; }
+	.option .boxes { overflow: hidden; position: relative; left: 12px; }
+		.option .boxes .box_layout { width: 305px; overflow: hidden; float: left; margin-left: 5px; }
+		.option .boxes .box_layout:first-child { margin-left: 0; }
+			.option .boxes .box_layout .box_top { width: 305px; height: 6px; background: url(img/career_site/box_top.jpg) left top no-repeat; }
+			.option .boxes .box_layout .box_bottom { width: 305px; height: 6px; background: url(img/career_site/box_bottom.jpg) left top no-repeat; }
+			.option .boxes .box_layout .box_content { width: 305px; background: url(img/career_site/box_content.jpg) left top repeat-y; padding-bottom: 10px; }
+				.option .boxes .box_layout .box_content .inner { padding: 5px 0 0 10px; }
+					.option .boxes .box_layout .box_content .inner .title { width: 287px; height: 48px; line-height: 48px; background: url(img/career_site/box_a.jpg) left top no-repeat; }
+						.option .boxes .box_layout .box_content .inner .title a { width: 100%; height: 100%; display: block; }
+							.option .boxes .box_layout .box_content .inner .title a span { padding-left: 15px; color: #004088; font-size: 17px; font-weight: bold;}
+					.option .boxes .box_layout .box_content .inner p { padding: 20px 10px; }
+					.option .boxes .box_layout .box_content .inner .view_more { color: #00afe3; padding-left: 10px; font-weight: bold; }		
+					.option .boxes .box_layout .box_content .inner .view_more:hover { text-decoration: underline; }	
+					
+					
+/*--- Life at Hays: Page Template ---*/					
+
+.tab_navigation {  }
+	.tab_navigation ul {  }						
+		.tab_navigation ul li { float: left; margin-right: 2px; position: relative; }						
+			.tab_navigation ul li a { width: 186px; height: 34px; line-height: 34px; font-size: 13px; display: block; float: left; text-align: center; font-weight: bold; color: #FFF; background: url(img/career_site/tab.jpg) left top no-repeat; }	
+			.tab_navigation ul li .current { background: url(img/career_site/tab.jpg) left -34px no-repeat; color: #004088; }					
+				.tab_navigation ul li ul { width: 184px; position: absolute; left: 0; top: 34px; display: none; z-index: 1; border: 1px solid #c7c7c7; }
+					.tab_navigation ul li ul li { float: none; margin: 0; }			
+						.tab_navigation ul li ul li a { width: 184px; height: 28px; line-height: 28px; display: block; background: url(img/career_site/dropdown_gradient.jpg) left top repeat-x; color: #003076; font-size: 12px; text-align: left; float: none; font-weight: normal; }
+						.tab_navigation ul li ul li a:hover { background: #e3e3e3; }
+							.tab_navigation ul li ul li a span { padding-left: 10px; }
+							
+			.tab_navigation ul > li:hover ul { display: block; } 			
+			
+			
+.sidebar_menu { width: 186px; padding-top: 5px; background: url(img/career_site/sidebar_menu_top.jpg) left top no-repeat; }					
+ .sidebar_menu ul {  }
+	 .sidebar_menu ul li { width: 186px; background: url(img/career_site/sidebar_menu_content.jpg) left top repeat-y; }
+		 .sidebar_menu ul li a { width: 179px; height: 32px; line-height: 32px; display: block; background: url(img/career_site/sidebar_menu_a.jpg) left top repeat-x; margin: 0 auto; color: #00398b; font-weight: bold; }
+		 .sidebar_menu ul li a:hover { background: #e2e2e2; }
+		 .sidebar_menu ul li .current { color: #009ed9; }
+			 .sidebar_menu ul li a span { padding-left: 10px; }
+					
+.find_the_career { margin-top: 30px; background: url(img/career_site/find_the_career_content.jpg) left top repeat-x; }				
+ .find_the_career .ftc_bottom { width: 186px; height: 13px; background: url(img/career_site/find_the_career_bottom.jpg) left top no-repeat; }
+ .find_the_career .find_the_career_inner { padding: 12px 12px 0 12px; }
+	 .find_the_career .find_the_career_inner h3 { font-size: 14px; color: #003f86; padding-bottom: 18px; font-weight: bold; }
+	 .find_the_career .find_the_career_inner p { font-size: 11px; color: #424242; }
+	 .find_the_career .find_the_career_inner strong { color: #00afe3; padding: 16px 0 5px 0; display: block; font-weight: bold; }
+	 .find_the_career .find_the_career_inner .explore { width: 64px; height: 23px; line-height: 23px; background: url(img/career_site/explore.jpg) left top no-repeat; text-align: center; font-size: 11px; color: #FFF; display: block; margin-top: 5px; }
+			
+.rendering { width: 550px; height: 285px; background: url(img/career_site/life_at_hays_banner.jpg) left top no-repeat; position: relative; }			
+	.rendering .rendering_info { width: 315px; height: 235px; border-left: 1px solid #b7bdc6; border-bottom: 1px solid #e6e7ea; position: absolute; top: 34px; left: 16px; background: #FFF; }		
+		.rendering .rendering_info .inner { padding: 8px 0 10px 17px; }	
+			.rendering .rendering_info .inner h1 { font-size: 22px; color: #00398b; font-weight: bold; text-transform: uppercase; }
+				.rendering .rendering_info .inner h1 span { color: #00afe3; }
+			.rendering .rendering_info .inner q { width: 243px; height: 30px; background: url(img/career_site/quote.jpg) left top no-repeat; margin-top: 25px; display: block; }
+				.rendering .rendering_info .inner q span { display: block; padding: 0 0 0 25px; }
+			.rendering .rendering_info .inner small { font-size: 11px; padding: 10px 0 0 25px; display: block; }
+				.rendering .rendering_info .inner small strong { font-weight: bold; }	
+				
+.video { width: 115px; height: 25px; position: absolute; bottom: 17px; right: 53px; }
+	.video a { width: 100%; height: 100%; line-height: 25px; text-align: center; color: #FFF; font-weight: bold; font-size: 11px; display: block; background: url(img/career_site/video.jpg) left top no-repeat; }
+
+.services { margin-top: 20px; }
+	.section { overflow: hidden; margin-bottom: 20px; }		
+	
+	.mod { width: 179px; float: left; overflow: hidden; margin-left: 6px; }
+	.mod:first-child { margin-left: 0; }
+		.mod .mod_top { width: 179px; height: 6px; background: url(img/career_site/box_top_inside_page.jpg) left top no-repeat; }
+		.mod .mod_bottom { width: 179px; height: 6px; background: url(img/career_site/box_bottom_inside_page.jpg) left top no-repeat; }
+		.mod .mod_content { width: 179px; min-height: 200px;  background: url(img/career_site/box_content_inside_page.jpg) left top repeat-y; padding-bottom: 10px; }
+			.mod .mod_content .inner { padding: 5px 0 0 6px; }
+				.mod .mod_content .inner .title { width: 166px; height: 48px; line-height: 48px; background: url(img/career_site/title_inside_page.jpg) left top no-repeat; }
+					.mod .mod_content .inner .title a { width: 100%; height: 100%; display: block; }	
+						.mod .mod_content .inner .title a span { padding-left: 10px; color: #004088; font-size: 17px; font-weight: bold;}
+					.mod .mod_content .inner p { padding: 5px 10px 10px 10px; }
+					.mod .mod_content .inner img { position: relative; top: 5px; }
+					.mod .mod_content .inner .find_more { color: #00afe3; padding-left: 10px; font-weight: bold; } 
+					.mod .mod_content .inner .find_more:hover { text-decoration: underline; }
+			
+.recruitment { width: 186px; background: #f5f5f5; }
+	.recruitment .recruitment_bottom { width: 186px; height: 5px; background: url(img/career_site/recruitment.jpg) left top no-repeat; }					
+	.recruitment .inner { padding: 13px 15px 0 12px; }
+		.recruitment .inner h3 { font-size: 14px; color: #003f86; padding-bottom: 10px; font-weight: bold; }
+		.recruitment .inner p { font-size: 11px; padding-bottom: 5px; }
+		.recruitment .inner img { position: relative; left: 5px; }
+		.recruitment .inner .challenge { width: 166px; height: 36px; line-height: 28px; text-align: center; font-weight: bold; font-size: 11px; background: url(img/career_site/challenge.jpg) left top no-repeat; display: block; color: #FFF; }
+
+.select_country { margin-top: 27px; }
+	.select_country .sc_top { width: 192px; height: 23px; background: url(img/career_site/select_contry_top.jpg) left top no-repeat; }				
+	.select_country .sc_content { width: 192px; background: url(img/career_site/select_contry_content.jpg) left top repeat-y;  }
+		.select_country .sc_content img { position: relative; left: 5px; }
+		.select_country .sc_content p { padding: 0 10px 0 15px; }
+		.select_country .sc_content .select { width: 161px; height: 20px; background: url(img/career_site/select.jpg) left top no-repeat; position: relative; margin: 15px 0 15px 15px; }
+			.select_country .sc_content .select a { width: 100%; height: 100%; display: block; line-height: 20px; }
+				.select_country .sc_content .select a span { padding-left: 10px; color: #00398b; font-size: 11px; }
+				
+		.select_country .sc_content .select nav { width: 554px; height: 165px; background: url(img/career_site/list-countries-bg1.png) left top no-repeat; position: absolute; right: 0; top: 21px; display: none; z-index: 1; }	
+		.select_country .sc_content .select nav ul { width: 120px; float: left; padding: 20px 0 0 10px;  }	
+			.select_country .sc_content .select nav ul li { float: none; border: 0; padding-bottom: 5px; }
+				.select_country .sc_content .select nav ul li a { width: auto; height: auto; line-height: normal; display: inline; float: none; background: url(img/career_site/bullet-tertiary-link.gif) left 7px no-repeat; padding: 3px 10px; }
+					.select_country .sc_content .select nav ul li a span { padding-left: 0; }
+				.select_country .sc_content .select nav ul li a:hover { background: #00aeef; text-decoration: underline; color: #FFF; }
+					.select_country .sc_content .select nav ul li a:hover span { color: #FFF; padding-left: 0; }
+					
+		.example_social_icon { margin: 5px 0 0 13px; }
+		
+	.select_country .sc_bottom { width: 192px; height: 21px; background: url(img/career_site/select_contry_bottom.jpg) left top no-repeat; }			
+		
+	
+/*--- About ---*/	
+	
+.about {  }
+	.about  .rendering { width: 550px; height: 202px; background: url(img/career_site/about_banner.jpg) left top no-repeat; position: relative; }			
+		.about .rendering .rendering_info { width: 374px; height: 71px; line-height: 71px; text-align: center; border-left: 1px solid #b7bdc6; border-bottom: 1px solid #e6e7ea; position: absolute; left: 15px; top: 112px; background: #FFF; }		
+			.about .rendering .rendering_info h1 { font-size: 22px; color: #00398b; font-weight: bold; text-transform: uppercase; font-weight: bold; }
+				.about .rendering .rendering_info h1 span { color: #00afe3; }
+
+	.information { margin-top: 20px; }
+		.information p { padding-bottom: 20px; }
+			.information p strong { font-weight: bold; }
+			
+.about .mod .mod_content { min-height: 100px; }			
+
+/*--- Roles at Hays ---*/			
+			
+.roles_at_hays {  }
+	.roles_at_hays  .rendering { width: 550px; height: 202px; background: url(img/career_site/roles-at-hays_banner.jpg) left top no-repeat; position: relative; }			
+		.roles_at_hays .rendering .rendering_info { width: 234px; height: 71px; line-height: 71px; text-align: center; border: 0; position: absolute; left: 15px; top: 112px; background: #FFF; }
+			.roles_at_hays .rendering .rendering_info h1 { font-size: 22px; color: #00398b; font-weight: bold; text-transform: uppercase; }
+				.roles_at_hays .rendering .rendering_info h1 span { color: #00afe3; }
+					
+/* Footer */			
+		
+footer .footer_menu {  }
+	footer .footer_menu ul { padding-top: 15px; }	
+		footer .footer_menu ul li { display: inline; }	
+			footer .footer_menu ul li a { color: #87898b; font-size: 11px; display: inline; padding-right: 40px; }	
+			footer .footer_menu ul li a:hover { text-decoration: underline; }
+	footer .footer_menu p { font-size: 11px; color: #87898b; padding-top: 45px; }			

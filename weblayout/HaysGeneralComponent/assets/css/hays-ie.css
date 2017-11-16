@@ -1,0 +1,34 @@
+@charset "utf-8";
+/* CSS Document */
+
+#search input#searchfield {
+	padding: 5px 0 7px 6px;
+}
+
+/* #### Link list with bullet image (IE margin adjust) ####
+.module ul.mod-links {
+	margin: 0 0 0 16px;
+}
+*/
+
+
+
+.tabs-narrow .selected-tab-content .col-1 {
+	padding: 8px 10px 0 10px;
+}
+.tabs-narrow .selected-tab-content .col-1 ul.hilight-list {
+	padding: 0 0 12px 0;
+}
+.tabs-narrow .selected-tab-content .col-1 ul.hilight-list li {
+	padding: 5px 0 6px 0;
+}
+
+table.share-detail thead th.price {
+	padding: 5px 0 9px 0;
+}
+
+
+	.sIFR-active .tabs-narrow ul.hilight-list strong object {
+		vertical-align: top;
+		margin: 2px 0 0 0;
+	}

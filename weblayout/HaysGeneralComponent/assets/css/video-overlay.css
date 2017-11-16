@@ -1,0 +1,134 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* ===== Structure ===================================================================== */
+
+body {
+	background: url(../images/bg-cbox-content-video.gif) #fff bottom repeat-x;
+	font-family: Arial, Helvetica, sans-serif;
+	width: 580px;
+/*
+	height: 580px;
+*/
+	margin: 0;
+	padding: 27px 0 0 0;
+}
+
+#main-preview {
+	width: 560px;
+	height: 450px;
+/*
+*/
+	padding: 0 10px;
+}
+#main-preview .preview-info {
+	clear: both;
+	padding: 19px 10px 0 10px;
+}
+
+#thumbs-preview {
+	background: url(../images/bg-carousel.gif) repeat-x bottom;
+	width: 540px;
+	height: 167px;
+	padding: 0 20px;
+}
+
+
+/* ===== Global styles ================================================================= */
+
+img {
+	display: block;
+	border: 0;
+}
+
+.clear {
+	clear: both;
+	margin: 0;
+	padding: 0;
+	font-size: 0;
+	line-height: 0;
+}
+
+
+/* ===== Content styles ================================================================ */
+#main-preview h1 {
+	color: #4d4d4d;
+	font-size: .75em;
+	margin: 0;
+}
+#main-preview p {
+	color: #4d4d4d;
+	font-size: .75em;
+	margin: 0 0 10px 0;
+}
+
+
+
+
+#thumbs-preview h2 {
+	color: #000;
+	font-size: .75em;
+	margin: 0;
+	padding: 9px 0 0 0;
+	height: 22px;
+}
+
+
+
+/* ===== Carousel styles ================================================================ */
+#carousel-wrap {
+	clear: both;
+	position: relative;
+	padding: 0 20px;
+	height: 135px;
+}
+#carousel-wrap ul#carousel {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#carousel-wrap ul#carousel li {
+	float: left;
+	width: 140px;
+	padding: 0 10px;
+}
+#carousel-wrap ul#carousel li .thumbpic {
+	margin: 0 0 6px 0;
+}
+#carousel-wrap ul#carousel li p {
+	font-size: .7em;
+	color: #4d4d4d;
+	line-height: 1.2em;
+	margin: 0 0 10px 0;
+}
+
+#carousel-wrap a#carousel-prev {
+	position: absolute;
+	top: 25px;
+	left: 0px;
+	display: block;
+	background: url(../images/btn-carousel-prev.png) no-repeat;
+	width: 13px;
+	height: 26px;
+}
+#carousel-wrap a#carousel-prev:hover {
+	background: url(../images/btn-carousel-prev-over.png) no-repeat;
+}
+#carousel-wrap a#carousel-next {
+	position: absolute;
+	top: 25px;
+	right: 0px;
+	display: block;
+	background: url(../images/btn-carousel-next.png) no-repeat;
+	width: 13px;
+	height: 26px;
+}
+#carousel-wrap a#carousel-next:hover {
+	background: url(../images/btn-carousel-next-over.png) no-repeat;
+}
+
+#carousel-wrap a span {
+	display: none;
+}
+
+

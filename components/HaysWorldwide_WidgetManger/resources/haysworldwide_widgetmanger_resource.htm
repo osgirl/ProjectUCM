@@ -1,0 +1,464 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysWorldwide_WidgetManger htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml worldwide_widget_form@>
+	<script type="text/javascript">
+	//alert("inside worldwide_widget_form............");
+	</script>
+	<$include worldwide_main_widget_javascript_include$>
+	<$include worldwide_main_widget_selection$>
+<@end@>
+
+<@dynamichtml abc@>
+
+<@end@>
+
+<@dynamichtml worldwide_main_widget_javascript_include@>
+
+	<script type="text/javascript">
+	//alert("inside worldwide_main_widget_javascript_include...");
+	//****************************************************************************
+	//****************************************************************************
+
+	WidgetCollectionAPI =  function() {
+
+		this.widgetList;
+		this.currentlySelectedWidgetName;
+		this.widgetNamesList;
+		this.error = '';
+	}
+
+	//**********************************************************************
+	// Public Methods
+	//**********************************************************************
+
+		WidgetCollectionAPI.prototype.Initialize = function( widgetNames )
+		{
+			//alert("Initilise WidgetCollectionAPI..." + widgetNames);
+			if( typeof widgetNames == 'string') {
+				widgetNames = widgetNames.split(',');
+			}
+			if(typeof widgetNames  == 'object') {
+					this.widgetList ={};
+					this.currentlySelectedWidgetName = 'none';
+					this.defaultWidgetName = 'none';
+					this.widgetNamesList = widgetNames;
+			}
+		}
+
+	//********************************************************************
+
+		WidgetCollectionAPI.prototype.setSite = function( siteId )
+		{
+			//alert("setSite ..." + siteId);
+			if( this.widgetList != null && siteId != null) {
+				for (var i in this.widgetList) {
+						this.widgetList[i].setSiteId( siteId );
+				}
+			}
+
+		}
+
+
+	//*********************************************************************
+
+		WidgetCollectionAPI.prototype.addWidget = function( widgetObject )
+		{
+				//alert("addWidget ..." + widgetObject);
+				if( this.widgetNamesList.indexOf( widgetObject.name ) >= 0 ) {
+					this.widgetList[widgetObject.name] = widgetObject;
+					//alert("If  ..." + this.widgetList[widgetObject.name]);
+				} else alert(widgetObject.name + "<$lc('wwWidgetAlertText')$>");		
+		};
+
+
+	//****************************************************************************
+
+		WidgetCollectionAPI.prototype.getCurrentWidgetName = function()
+		{
+				//alert("getCurrentWidgetName ..." + this.currentlySelectedWidgetName);
+				return this.currentlySelectedWidgetName;
+		};
+
+
+	//****************************************************************************
+
+		WidgetCollectionAPI.prototype.setCurrentWidgetName = function( activeWidget)
+		{
+				//alert("setCurrentWidgetName ..." + activeWidget);
+				if( this.widgetNamesList.indexOf( activeWidget ) >= 0 ) {
+					this.currentlySelectedWidgetName = activeWidget;
+					if( this.currentlySelectedWidgetName == this.defaultWidgetName && originalXMLData != null)
+						this.getCurrentWidget().setResultDataStr( originalXMLData );
+				} else if( activeWidget == 'none')
+					this.currentlySelectedWidgetName = activeWidget;
+
+		};
+
+	//****************************************************************************
+
+		WidgetCollectionAPI.prototype.setDefaultWidgetName = function( defaultWidgetName)
+		{
+				//alert("setDefaultWidgetName ..." + defaultWidgetName);
+				if( this.getWidgetNamesList().indexOf( defaultWidgetName ) < 0 )
+						//alert("<$lc('wwWidgetDefaultEmpty')$>");
+				this.defaultWidgetName = defaultWidgetName;
+				this.setCurrentWidgetName( defaultWidgetName );
+		};
+
+	//****************************************************************************
+
+		WidgetCollectionAPI.prototype.setWidgetNamesList = function( namesList)
+		{
+				//alert("setWidgetNamesList ..." + namesList);
+				this.widgetNamesList = namesList;
+		}
+
+	//****************************************************************************
+
+		WidgetCollectionAPI.prototype.getWidgetNamesList = function()
+		{
+				//alert("getWidgetNamesList ..." + this.widgetNamesList);
+				return this.widgetNamesList;
+		}
+
+	//****************************************************************************
+
+		WidgetCollectionAPI.prototype.getCurrentWidget = function()
+		{
+				//alert("getCurrentWidget ..." + this.currentlySelectedWidgetName);
+				return  this.widgetList[ this.currentlySelectedWidgetName];
+		};
+
+	//****************************************************************************
+
+	function WidgetObjectAPI (name) {
+
+		//alert("inside WidgetObjectAPI");
+		this.name = name;
+		this.errorMessage = "";
+		this.siteId = null;
+
+	}
+
+	//**********************************************************************
+	// Public Methods
+	//**********************************************************************
+
+		WidgetObjectAPI.prototype.getResultDataStr = function()
+		{
+			return "";
+		};
+
+	//*************************************************************************
+
+		WidgetObjectAPI.prototype.setResultDataStr = function( xmlObject)	{};
+
+
+	//***************************************************************************
+
+	WidgetObjectAPI.prototype.registerEventHandlers = function(  )	{ return null; };
+
+	//***************************************************************************
+
+	WidgetObjectAPI.prototype.isValid = function(  )	{ return true; };
+
+	//***************************************************************************
+
+	WidgetObjectAPI.prototype.getErrorMessage = function(  )	{ return this.errorMessage; };
+
+	//****************************************************************************
+
+	WidgetObjectAPI.prototype.setSiteId = function(  siteId)	{ this.siteId  = siteId; };
+
+	//****************************************************************************
+
+	var Custom = {};
+
+	//****************************************************************************
+
+	Custom.Initialize = function()	{
+
+		//alert("Custom.Initialize ...");
+		// register widgets events
+		for(key in WidgetCollection	.widgetList) {
+			WidgetCollection.widgetList[ key ].registerEventHandlers();
+		}
+		//alert("before calling element setcallback ...");
+		// Set callback methods for the Contributor Form to send notifications to this Element.
+		ElementAPI.SetCallback('GetElementContent', function(callback)
+		{
+			//alert("inside SetCallback");
+			callback(Custom.GetData());
+		});
+		//alert("after calling element setcallback ..." );
+		ElementAPI.SetCallback('ActivateElement', function(callback){ callback(); });
+		ElementAPI.SetCallback('Show', function(callback){ callback(); });
+		ElementAPI.SetCallback('Hide', function(callback){ callback(); });
+		ElementAPI.SetCallback('IsDirty', function()
+		{
+			return { isDirty: (Custom.GetData() !== Custom.GetDefaultData()) };
+		});
+		ElementAPI.SetCallback("CanCloseElement", function(callback)
+		{
+			callback( Custom.IsValid() );
+		});
+
+		// Set the height of the Custom Element form's host.
+		var height = ( ElementAPI.GetElementCount() == 1 ) ? '100%' : '400px';
+		var flags = ElementAPI.GetElementConfigProperty('flags') || {};
+		var config = ElementAPI.GetElementConfiguration() || {};
+		if( flags.canSetHeight && config.height && ( config.height.length > 0 ) )
+		{
+			height = config.height;
+		}
+		height = ElementAPI.SetHostHeight(height);
+
+
+		// Add base styles
+		WCM.DHTML.AddStyleSheet({path: WCM.path + './base/wcm.base.css', context: window});
+
+
+		// Get the default content stored within the data file.
+		Custom.SetSelected(Custom.GetDefaultData());
+
+		// Let the Contributor Form know this Custom Element is ready. (required)
+		ElementAPI.Ready();
+
+		 //set reference to siteID
+		WidgetCollection.setSite( ElementAPI.GetFormProperty('siteId') );
+		//alert("exiting");
+	};
+
+
+
+	//****************************************************************************
+
+		Custom.GetDefaultData = function()
+	{
+		return ElementAPI.GetDefaultData() || '';
+	};
+
+	//****************************************************************************
+
+	Custom.SetWidgetChoice = function( defaultWidget )
+	{
+		//alert("Custom.SetWidgetChoice ..." + defaultWidget);
+		var select = null;
+		selectElements = document.getElementsByTagName("select");
+		//alert("selectElements:::"+selectElements);
+		for( i=0; i< selectElements.length; i++) {
+			if (selectElements[i].id == "widgetsChoice")	{
+				select = selectElements[i];
+				break;
+			}
+		}
+		//alert("select:::"+select);
+		if( select != null )   
+		{
+				//alert("select if:::");
+				if( defaultWidget != null) 
+				{
+					//alert("inside defaultWidget if.........");
+						$ID(defaultWidget + "_op").selected = true;
+						WCM.DHTML.SetStyle(  "none_main_div", "display", "none")
+				}
+
+				WCM.DHTML.AddEvent(select, 'change', function(e)	
+				{
+					//alert("inside AddEvent:::"+WidgetCollection.getCurrentWidgetName());
+						// first hide the previous widget
+						//if( WidgetCollection.getCurrentWidgetName() !=  'none') {
+								WCM.DHTML.SetStyle( WidgetCollection.getCurrentWidgetName() + "_main_div", "display", "none");
+						//}
+					//	alert("after set style");
+						var currentChoice = select.options[select.selectedIndex].value;
+						//alert("currentChoice :::"+currentChoice);
+						WidgetCollection.setCurrentWidgetName( currentChoice );
+						WCM.DHTML.SetStyle( currentChoice + "_main_div", "display", "block");
+
+						return WCM.DHTML.CancelEvent(e);
+				});
+			}
+	};
+
+	//****************************************************************************
+
+
+	//*****************************************************************************
+	Custom.IsValid = function()
+	{
+		//alert("Custom.IsValid ...");
+		var currentWidget = WidgetCollection.getCurrentWidget();
+		if( currentWidget == null || (currentWidget != null && currentWidget.isValid()) ) {
+			return {canClose: true};
+		} else return {canClose: false, reason: currentWidget.getErrorMessage()};
+	};
+
+	//****************************************************************************
+
+	Custom.SetSelected = function(html)
+	{
+		//alert("Custom.SetSelected ..."+ html);
+		WCM.DHTML.SetStyle( "widgetList", "display", "block");
+
+		if( html.length > 0) 
+		{
+			//alert("inside outer if....");
+			var defaultWidgetName = null;
+			try
+			{
+				originalXMLData = parseXML( html );
+				defaultWidgetName = originalXMLData.getElementsByTagName("Name")[0].firstChild.data;
+				//alert("defaultWidgetName:::"+defaultWidgetName);
+			}
+			catch (ex)			{ 	}
+
+			if( defaultWidgetName != null) 
+			{ 
+				//alert("inside inner if...");
+				WidgetCollection.setDefaultWidgetName( defaultWidgetName);
+				Custom.SetWidgetChoice( defaultWidgetName  );
+				WCM.DHTML.SetStyle( defaultWidgetName + "_main_div", "display", "block");
+			} 
+			else
+			{
+				//alert("inside inner else...");
+				Custom.SetWidgetChoice(  );
+			}
+		} 
+		else 
+		{
+			//alert("inside outer else....");
+			Custom.SetWidgetChoice(  );
+		}
+	};
+
+	//****************************************************************************
+
+	Custom.GetData = function()
+	{
+		//alert("Custom.GetData ...");
+		currentWidget = WidgetCollection.getCurrentWidget();
+		if ( currentWidget != null )
+		{
+			returnValue = currentWidget.getResultDataStr()
+			returnValue = returnValue.replace(/&amp;/g, "MMM");
+			returnValue = returnValue.replace(/&/g, "&amp;");
+			returnValue = returnValue.replace( /MMM/g, "&amp;");
+			return ( returnValue );
+		}
+		return "";
+	};
+
+	//***************************************************************************
+	//****************************************************************************
+
+	function parseXML( text ) {
+	    //alert("parseXML ...");
+		var xmlDoc = null;
+
+		if( text != null) {
+				// in case there is a query
+		//		text = text.replace(/<(matches|substring|starts|ends|not substring|not matches|and|or|not)>/gi, '[$1]');
+
+				//Internet Explorer
+				try   {
+					  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+					  xmlDoc.async=false;
+					  xmlDoc.loadXML(text);
+					  
+				 }
+				catch(e) 	  {
+					//Firefox, Mozilla, Opera, etc.
+						 
+						 try 	{
+								parser=new DOMParser();
+								xmlDoc=parser.parseFromString(text ,"text/xml");
+						}
+						catch(e) {
+								alert(e.message);
+						 }
+				}
+		}
+		 return xmlDoc;
+	}
+
+	//****************************************************************************
+	//****************************************************************************
+
+	try {
+		//alert("trying ...");
+		var WidgetCollection = new WidgetCollectionAPI();
+		WidgetCollection.Initialize('<$#env.worldwideWidgetsList$>');
+
+		var originalXMLData = null;
+
+		// Tell the Contributor Form to load the Custom Element dependent JavaScript libraries. (required)
+		// PARAMETERS
+		// 1st parameter: The context (window) in which the form loads the Custom Element dependent JavaScript libraries into.
+		// 2nd parameter: A user defined function pointer for the Contributor Form to call when initialization is complete.
+		
+		window.top.WCM.InitializeCustomElement(window, Custom.Initialize);
+		
+
+	} catch(e) { 
+				alert(e.message);
+	        }
+
+</script>
+<@end@>
+
+<@dynamichtml worldwide_main_widget_selection@>
+<div id="page">
+	<br/><!--in inc-->
+	<div id="main">
+		<div class="widgettype" name="widgetList" id="widgetList" style="display: none">
+			<$if #env.worldwideWidgetsList $>
+				<$ labelsAreSet = 0$>
+				<$ rsMakeFromString("widgetsListRS",  #env.worldwideWidgetsList, "widget") $>
+				<$if #env.worldwideWidgetsListLabels $>
+						<$ rsMakeFromString("widgetsListLabelsRS",  #env.worldwideWidgetsListLabels, "widget") $>
+						<$exec rsFirst("widgetsListLabelsRS")$>
+						<$ labelsAreSet = 1$>
+				<$endif$>
+				<select name="widgetsChoice" id="widgetsChoice" class="jumpmenu">
+						<option value="none" name="none_op"  id="none_op" selected><$lc("widget.crWidgetEmpty")$>
+						<$exec rsFirst("widgetsListRS")$>
+						<$loopwhile getValue("widgetsListRS", "#isRowPresent")$>
+									<option value='<$getValue("widgetsListRS","widget")$>' name='<$getValue("widgetsListRS","widget")$>_op' id='<$getValue("widgetsListRS","widget")$>_op'><$if labelsAreSet>0 $><$getValue("widgetsListLabelsRS","widget")$><$ exec rsNext("widgetsListLabelsRS") $><$else$><$getValue("widgetsListRS","widget")$><$endif$>
+									<$exec rsNext("widgetsListRS")$>
+						<$endloop$>
+				</select>
+			<$endif$>
+		</div>
+		<$include widget_sub_selection$>
+	</div>
+</div>
+<@end@>
+
+<@dynamichtml widget_sub_selection@>
+			<div class="editwidget" id="none_main_div" name="none_main_div" style="display: block">
+				<$lc('wwWidgetSelectionEmpty')$>
+			</div>
+		<$if widgetsListRS $>
+				<$exec rsFirst("widgetsListRS")$>
+				<$loopwhile getValue("widgetsListRS", "#isRowPresent")$>
+						<div name='<$getValue("widgetsListRS","widget")$>_main_div' id='<$getValue("widgetsListRS","widget")$>_main_div'  class="editwidget" style="display: none">
+						<$inc("widget_" & getValue("widgetsListRS","widget") & "_form" ) $>
+						</div>
+						<$exec rsNext("widgetsListRS")$>
+				<$endloop$>
+		<$endif$>	
+<@end@>
+
+
+
+
+</body></html>

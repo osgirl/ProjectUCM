@@ -1,0 +1,55 @@
+<project name="FacetedBrowsing" default="dist" basedir=".">
+  <description>
+  	OracleSupportDiagnostics component build
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="classes"/>
+  <property name="projectName" value="OracleSupportDiagnostics"/>
+	<property name="configName" value=""/>
+		<target name="clean" description="clean up">
+			<!-- Delete the ${build} and ${dist} directory trees -->
+			<echo>************ Removing directory starts ************</echo>
+			<delete dir="${src}/../manifest_${projectName}"/>
+			<delete verbose="true" file="${src}/../${projectName}.zip"/>
+			<echo>************ Removing directory finished ************</echo>
+		 </target>
+		<!-- Define the CLASSPATH -->
+		<path id="compile.classpath">
+			<fileset dir="${src}/../lib">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="${src}/../../../dependencies">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+	  <target  name="compile" depends="clean" description="compile the source code if any">
+		<!-- Compile the java code from ${src} into ${src} -->
+		<echo>************ Compiling starts ************</echo>
+		<javac verbose="true" srcdir="${src}" destdir="${src}">
+		<classpath refid="compile.classpath" />
+		 </javac>
+		<echo>************ Compiling ends ************</echo>
+	  </target>
+	
+	 <target name="fileSetup" depends="compile" description="arrange files to put in components besides the source/class files">
+	 	<echo>************ Create new directory ************</echo>
+		<mkdir dir="${src}/../manifest_${projectName}/component/${projectName}"/>
+	 	<!--copy file="${src}/../manifest.hda" todir="${src}/../manifest_${projectName}"/-->
+	 	<copy verbose="true" todir="${src}/../manifest_${projectName}/component/${projectName}">
+	 	    <fileset dir="${src}/.." excludes="*.classpath,*.project,build.xml,*.cfg"/>
+	 	  </copy>
+		  
+	 	<!--copydir dest="${src}/../manifest_${projectName}/component" src="${src}/.."/-->
+	 	<delete verbose="true" dir="${src}/../manifest_${projectName}/component/${projectName}/config"/>
+		<copy verbose="true" file="${src}/../config/${region}/${env}/${stype}/${configName}.cfg" todir="${src}/../manifest_${projectName}/component/${projectName}/"/>
+		<copy verbose="true" file="${src}/../manifest.hda" todir="${src}/../manifest_${projectName}/"/>
+	 	<delete verbose="true" dir="${src}/../manifest_${projectName}/component/${projectName}/manifest_${projectName}"/>
+	 	
+	  </target>
+	  
+	  <target name="dist" depends="fileSetup" description="generate the distribution">
+		<zip destfile="${src}/../${projectName}.zip" basedir="${src}/../manifest_${projectName}"/>
+	  </target>
+
+  
+</project>

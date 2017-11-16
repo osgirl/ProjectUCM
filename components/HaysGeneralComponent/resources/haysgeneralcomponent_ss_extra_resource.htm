@@ -1,0 +1,116 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<@dynamichtml ss_layout_head_info@>
+        <$if (not #env.DisableSiteStudioContribution) or isFalse(#env.DisableSiteStudioContribution)$>
+                <$include super.ss_layout_head_info$>
+		<$else$>
+		<script id="SSNavigationFunctionsScript" type="text/javascript" src="<$HttpRelativeWebsitesRoot$><$siteId$>/sitenavigationfunctions.js"></script>
+        <$endif$>
+
+<@end@>
+		<!--script type="text/javascript"> var g_httpCgiUrl = "< $HttpRelativeWebRoot$ >idcplg?IdcService=SS_GET_PAGE&";</script-->
+
+
+<@dynamichtml ss_region_close_extras@>
+	<$include super.ss_region_close_extras$>
+	<$include hays_new_content_script$>
+<@end@>
+
+
+<@dynamichtml std_doc_page_definitions@>
+	<$include super.std_doc_page_definitions$>
+	<$if idcService and strEquals( idcService, "CHECKIN_NEW" )$>
+		<$if useHaysCheckin and isTrue( useHaysCheckin ) $>
+			<$idcService="HAYS_CHECKIN_NEW"$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml std_checkin_form_end@>
+	<$if #active.useHaysCheckin AND isTrue(useHaysCheckin) $>
+		<input type="hidden" name="WCMPopupId" value="<$WCMPopupId$>"/>
+	<$endif$>
+	<$include super.std_checkin_form_end$>
+<@end@>
+
+
+
+<!-------------------------------------------
+Create additional 'Create New Content' action option for pl_main_region_1 placeholder
+if the user has 'edit' permission
+--------------------------------------------->
+<@dynamichtml hays_new_content_script@>
+	<$if haysIncludeNewContent and isTrue( haysIncludeNewContent )$>
+	<$haysIncludeNewContent = ""$>
+	<script type="text/javascript">
+		
+		WCM.CONTRIBUTOR.CreateNewContent = function(regionConfig)
+		{
+			$D().log(function(){ return 'CreateNewContent'; }, window);
+
+			var cgiUrl = window.location.protocol + '//' + window.location.host + WCM.ToString(regionConfig['httpCgiPath']);
+			var suffix = '?IdcService=SELECT_DOC_PROFILES_FORM&SiteLocale=<$#active.SiteLocale$>&LanguageCode=<$#active.LanguageCode$>&CountryCode=<$#active.CountryCode$>&section=<$siteid & ":" & nodeId$>';
+			suffix += "&coreContentOnly=1";
+
+			// window.location.href = cgiUrl + suffix;
+			// window.open( cgiUrl + suffix, "_blank" );
+			var options = {url: cgiUrl + suffix};
+			options.callback = function(returnparam)
+			{
+				window.setTimeoutEx(function()
+				{
+					if(returnparam != null) {
+						var url = (WCM.GetUrlServer() + "<$HttpCgiPath$>?IdcService=SS_GET_PAGE&ssDocName=" + returnparam);
+					} else {
+						var url = (WCM.GetUrlBase() + WCM.RemoveQueryStringValue(WCM.CONTRIBUTOR.editTarget, WCM.GetQueryString()) + WCM.GetBookmark());
+						$D().log(function(){ return '<$lc('wwCreateNewContentReloadingMessage')$>' + url; }, window);
+					}
+					WCM.ReloadURL(url);
+				}, 2000);
+			};
+
+			var popup = new WCM.Popup(options);
+			popup.Open();
+			popup.Focus();
+		}
+
+
+
+	</script>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml ss_create_actions_table@>
+	<$include super.ss_create_actions_table$>
+	<$edited = 0$>
+	<$if strEquals(SS_REGIONID, 'Main Region')==1 or  strEquals(SS_REGIONID, 'Main Region')==1
+	and strEquals(#active.siteId, 'HaysWorldwide') == 0 $>
+		<$loop SSRegionActionsTable$>
+			<$if strEquals( SSRegionActionsTable.letter, "E" )$>
+				<$edited = 1$>
+				<$break$>
+			<$endif$>
+		<$endloop$>
+		<$if isTrue(edited) $>
+			<$ haysIncludeNewContent = '1' $>
+			<$ssAction = "createNewContent"$>
+			<$ssCaption= "wwCreateContentLabel"$>
+			<$rsAppendRowValues("SSActions", ssAction & "," & ssCaption & "," & lc(ssCaption) )$>
+		<$endif$>
+	<$endif$>
+<@end@>
+<!-------------------------------------------
+Finish additional 'Create New Content' action option 
+--------------------------------------------->
+
+</body></html>

@@ -1,0 +1,157 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml widget_featuredEmployer_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function featuredEmployerObject(name) {
+					this.name = name;
+				};
+
+				featuredEmployerObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					featuredEmployerObject.prototype.getResultDataStr = function()
+					{	
+							var featuredEmployerStr = "<Widget><Name>featuredEmployer</Name></Widget>";
+							 return 	featuredEmployerStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				featuredEmployerObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+					};
+
+			//*****************************************************************************
+
+
+				featuredEmployerObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new featuredEmployerObject("featuredEmployer")); 
+
+		</script>
+<@end@>
+
+<@dynamichtml widget_featuredEmployer_form@>
+
+	<$include widget_featuredEmployer_javascript $>
+<@end@>
+
+
+<@dynamichtml widget_featuredEmployer_display@>
+	
+	
+			
+			<$xLocale = SiteLocale$>
+			
+			<$executeService("Get_Featured_Employers")$>
+			<$numRows=rsNumRows("FEATURED_EMPLOYERS")$>	
+			
+			<$if strEquals(isoCountryCode,"IT") or strEquals(isoCountryCode,"JP") or strEquals(isoCountryCode,"CN") or strEquals(isoCountryCode,"FR")$>
+			<style>
+			.comb_5_6 li{
+			margin-left:19px;
+			margin-right:19px;
+			}
+			</style>
+			<$endif$>
+
+			
+			<$if numRows GT 0$>		
+				<$if fe_block EQ 1$>
+					<$if rowSum EQ 2$>
+						<$if (numRows EQ 1) OR (numRows EQ 7) OR (numRows EQ 8) $>
+							<div class="main_box promo_box partners_box featured_boxes subpage" >
+						<$elseif (numRows EQ 5) OR (numRows EQ 6) $>
+							<div class="main_box promo_box partners_box featured_boxes subpage comb_5_6">
+						<$else$>
+							<div class="main_box promo_box partners_box featured_boxes subpage comb_2_4">
+						<$endif$>					
+					<$else$>
+						<$if (numRows EQ 1) OR (numRows EQ 7) OR (numRows EQ 8) $>
+							<div class="main_box promo_box partners_box featured_boxes subpage" style="margin-left:5px">
+						<$elseif (numRows EQ 5) OR (numRows EQ 6) $>
+							<div class="main_box promo_box partners_box featured_boxes subpage comb_5_6" style="margin-left:5px">
+						<$else$>
+							<div class="main_box promo_box partners_box featured_boxes subpage comb_2_4" style="margin-left:5px">
+						<$endif$>
+					<$endif$>
+				<$else$>
+					<$if (numRows EQ 1) OR (numRows EQ 7) OR (numRows EQ 8) $>
+						<div class="main_box promo_box partners_box featured_boxes subpage" style="margin-right:5px">
+					<$elseif (numRows EQ 5) OR (numRows EQ 6) $>
+						<div class="main_box promo_box partners_box featured_boxes subpage comb_5_6" style="margin-right:5px">
+					<$else$>
+						<div class="main_box promo_box partners_box featured_boxes subpage comb_2_4" style="margin-right:5px">
+					<$endif$>
+				<$endif$>
+				<!-- WEBCACHETAG="featuredEmployer"-->
+					<div class="pb_inner">
+				
+						<h2><$lc("wwPartneredCompaniesLabel")$></h2>
+						<ul>
+							
+							<$loop FEATURED_EMPLOYERS$>
+								<$link=haysIncludeXML(FEATURED_EMPLOYERS.CONTENT_ID,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+								<$if not strEquals(link,'')$>								
+									<li><a href="<$link$>" target="_blank"><$haysIncludeXML(FEATURED_EMPLOYERS.CONTENT_ID,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>								
+								<$endif$>
+																										
+							<$endloop$>	
+						
+						</ul>
+							<!-- BAU 18293 -->
+						<$queryString="dDocType<matches>`SponsoredEmployer`<AND>(xIsFeatured<matches>`yes`)"$>
+						<$include set_query_string_no_empty_catagory$>
+				<$if strLength(queryString) GT 0 $>
+							<$ queryString = queryString & "&SortField=dInDate" $>
+							<$ queryString = queryString & "&SortOrder=Desc" $>
+					<!-- BAU 18293 -->
+						<$endif$>
+	<!-- added for Ticket 6809822 on 06/04/2012 -->
+							<$SortField='dInDate'$>
+							<$SortOrder='DESC'$>
+						<!--end -->						<$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>		
+						<div class="msg"> 
+							<a href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>"><$lc('wwViewMore')$>
+								<span class="access">Sponsored Employers</span>
+							</a>
+						</div>						
+					</div>
+					 <!-- WEBCACHEEND-->	
+						
+			<$endif$>
+			 
+			
+			
+
+<@end@>
+
+
+</body>
+
+</html>

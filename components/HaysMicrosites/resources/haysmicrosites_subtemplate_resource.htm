@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysMicroSites htmlIncludeOrString
+</title>
+
+</head>
+<body>
+
+<@dynamichtml subtmp_microsite_breadcrumbs_inc@>
+	<$if NOT rsExists('SiteStudioNavNodes') $>
+		<$ssLoadSiteNavResultSet(siteId)$> 
+	<$endif$>
+	<$currentSection=#active.nodeId$>	
+	<$rsAddFields('ssNavNodeList', 'label,href')$>
+	<$rsMergeReplaceOnly('ssNavNodeList', 'SiteStudioNavNodes', 'nodeId') $>
+	<$ length = ssNavNodeList.#numRows -1 $>
+	<div id="breadcrumbs">
+	<$loop ssNavNodeList$>
+		<$if strLength(ssGetNodeProperty(currentSection, 'urlDirName'))>0$>
+			<$if ssNavNodeList.#row == length $>
+				<$if #active.ssDocName $>
+					<$dDocName = ssDocName $>
+					<$ executeService( 'DOC_INFO_BY_NAME_SIMPLE' ) $>
+					<a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;
+					<$ DOC_INFO.dDocTitle $>
+				<$else$>
+					<$ ssGetNodeProperty('label')$>
+				<$endif$>
+			<$else$>
+				<a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;
+			<$endif$>
+		<$endif$>
+	<$endloop$>	
+	</div>	
+<@end@>
+
+</body></html>

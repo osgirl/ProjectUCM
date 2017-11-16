@@ -1,0 +1,1029 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent service
+</title>
+</head>
+<body>
+
+<@table HaysGeneralComponent_Services@>
+<table border=1><caption><strong>Scripts For Custom Services</strong></caption>
+<tr>
+	<td>Name</td><td>Attributes</td><td>Actions</td>
+</tr>
+<tr>
+	<td>JOB_ALERT_SEARCH</td>
+	<td>DocService
+		33
+		MSG_PAGE
+		null
+		null<br>
+		null</td>
+	<td>3:jobSeekerAlertSearch:::null</td>
+</tr>
+
+<tr>
+	<td>GET_SCHEMA_VIEW_VALUES_CUSTOM</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:setLocalValues:Include,generic_results::null
+		3:getViewValues::0:null</td>
+</tr>
+
+
+<tr>
+<td>GET_WIDGET_DATA</td>
+<td>Service
+33
+null
+null
+null<br>
+null</td>
+<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:getWidgetDetails:SystemDatabase,widgetRS,Qwidget::null</td>
+</tr>
+
+<tr>
+<td>SET_WIDGET_DATA</td>
+<td>Service
+33
+null
+null
+null<br>
+null</td>
+<td>3:setWidgetDetails:SystemDatabase,QwidgetInsert::null</td>
+</tr>
+
+
+<tr>
+	<td>GET_ALL_WIDGET_NAMES</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getPageWidgetsFromDB:SystemDatabase,allWidgetRS,QallWidget::null</td>
+</tr>
+
+<tr>
+<td>GET_PAGE_NAMES</td>
+<td>Service
+33
+null
+null
+null<br>
+null</td>
+<td>3:getPageWidgetsFromDB:SystemDatabase,widgetPagesRS,QwidgetMappingPages::null</td>
+</tr>
+
+
+<tr>
+	<td>GET_SPONSORED_EMPLOYERS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSponsoredEmployers:SystemDatabase,HAYS_RESULT_SET,SponsoredEmployersQuery,SponsoredEmployer,Jobs::null</td>
+</tr>
+
+<tr>
+	<td>GET_SPONSORED_JOBS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:executeProviderQuery:SystemDatabase,HAYS_RESULT_SET,SponsoredJobsQuery::null</td>
+</tr>
+
+<tr>
+	<td>SEARCH_LOCATIONS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:setSelect:::null   
+3:getAllMatchingLocations:SystemDatabase,LOCATION_RESULT_LIST,GetMatchingLocations_Name,GetMatchingLocations_PostCode,GetMatchingLocations_Name_For_Domain,GetMatchingLocations_PostCode_For_Domain,GetMatchingLocations_Name_For_Domain_HRBE::null</td>
+</tr>
+
+<tr>
+	<td>HAYS_GET_DOMAIN_ID</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getDomainId:QGetDomainId::null</td>
+</tr>
+<tr>
+	<td>SELECT_DOC_PROFILES_FORM</td>
+	<td>DocProfileService
+		34
+		SELECT_DOC_PROFILES_FORM
+		null
+		null<br>
+		null</td>
+	<td>3:getDocumentProfiles:::null</td>
+</tr>
+
+
+<tr>
+	<td>HAYS_CHECKIN_NEW</td>
+	<td>DocService
+		2
+		REDIRECT_TEMPLATE
+		null
+		documents<br>
+		!csUnableToCheckIn(dDocName)</td>
+	<td>3:translationAddFile:::null
+		3:prepareCheckinSecurity::0:null
+		3:checkSecurity::0:null
+		3:doSubService:CHECKIN_NEW_SUB:12:null
+		3:prepareRedirect:IdcService=HAYS_CHECKIN_CONFIRM_FORM&dID=<$dID$>&dDocTitle=<$url(dDocTitle)$>&dDocName=<$url(dDocName)$>&dDocAuthor=<$url(dDocAuthor)$><$if coreContentOnly and isTrue(coreContentOnly)$>&coreContentOnly=1<$endif$>&WCMPopupId=<$WCMPopupId$>::null</td>
+</tr>
+<tr>
+	<td>HAYS_CHECKIN_CONFIRM_FORM</td>
+	<td>DocService
+		50
+		HAYS_CHECKIN_CONFIRM
+		null
+		null<br>
+		!csUnableToBuildCheckInForm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GET_META_OPTION_LIST</td>
+	<td>hays.co.uk.HaysMetaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getDocMetaLists:LISTS_VIEW::null</td>
+</tr>
+<tr>
+	<td>HAYS_MAIL</td>
+	<td>DocService
+		33
+		HaysMail_Response
+		null
+		null<br>
+		null</td>
+	<td>3:HaysMail:::null</td>
+</tr>
+<tr>
+	<td>HAYS_CUSTOM_MAIL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:HaysMail:MAILRESPONSE::null</td>
+</tr>
+<tr>
+	<td>GET_REMOTE_FEED</td>
+	<td>DocService
+		32
+		GENERIC_RSS_FEED
+		null
+		null<br>
+		!csUnableToLoadRssFeed(feedUrl)</td>
+	<td>3:setProxy:::null
+		3:getRssFeedForUrl::0:!csUnableToLoadRssFeed(feedUrl)</td>
+</tr>
+<tr>
+	<td>HAYS_CANDIDATE_VIEW_STATS</td>
+	<td>Service
+		35
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:populateCandJobViewStats:ECRM_Databse,HAYS_CANDIDATE_STATSVIEW_QUERY,HAYS_JOB_STATSVIEW_QUERY::null</td>
+</tr>
+
+<tr>
+	<td>HAYS_EXPIRE_JOB_CANDIDATE</td>
+	<td>Service
+		35
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:checkContentExpired:SystemDatabase,QtestForActiveDocName,ResultSetStatus::null</td>
+</tr>
+
+<tr>
+	<td>HAYS_EXPIRE_JOB_CANDIDATE_FINAL</td>
+	<td>DocService
+		35
+		null
+		null
+		null<br>
+		!csUnableToUpdateInfo(dDocName)</td>
+	<td>1:QtestForActiveDocName:dDocName:mustExist,doNotLog:null
+		3:determineID:QdocInfo,DOC_INFO:mustExist:!csUnableToGetRevInfo2(dDocName)
+		5:QdocInfo:DOC_INFO:2:!csItemNotUpdated(dDocName)!csRevisionNoLongerExists
+		3:mapNamedResultSetValues:DOC_INFO,dRevClassID,dRevClassID,dCreateDate,dCreateDate:0:null
+		3:mapResultSet:QlatestID,dID,dCurRevID:0:null
+		3:checkIsLatestRev:setLocalIfTrue:0:null
+		5:Qdocuments:DOC_LIST:0:!csItemNotUpdated(dDocName)
+		3:populateMissingDocumentValues:DOC_INFO::null
+		3:setLocalValues:IsUpdateMetaOnly,1,isUpdate,1,isInfoOnly,,isEditMode,1:0:null
+		3:validateCheckinData:Urevision2,updateInfo::null
+		3:updateDocInfo:DOC_INFO,DOC_LIST:0:null
+		3:doSubserviceIfMetafile:REMOVE_METAFILE_SUB:0:null
+		2:Urevision2::0:null
+		2:Umeta::0:null
+		3:setLocalValues:wfAction,META_UPDATE:0:null
+		3:doSubserviceIfMetafile:REPLACE_METAFILE_SUB,UPDATE_DOCINFO_STATUS:0:null
+		3:docHistoryInfo:Update,IdocHistory:1:null</td>
+</tr>
+
+<tr>
+	<td>SEARCH_LOCATIONS_APAC</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:setSelect:::null
+	   5:QGetLocations_Name_For_Domain_APAC:LOCATION_RESULT_LIST_APAC:2:!csRevisionNoLongerExists</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_HAYS_SPECIALISMS_PAGE</td>
+	<td>Service
+		3
+		Office_screen
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>GET_SCHEMA_VIEW_VALUES_CUSTOM</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:setLocalValues:Include,generic_results::null
+		3:getViewValues::0:null</td>
+</tr>
+
+
+<tr>
+	<td>GET_ALL_OFFICES</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+  <td>5:QGetAllOffices:OFFICES_RESULT_SET:2:!csRevisionNoLongerExists</td>
+</tr>
+
+<tr>
+	<td>GET_ALL_OFFICES_DROP_DOWN</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetAllOfficesForDropDown:OFFICES_RESULT_SET_DD:2:!csRevisionNoLongerExists</td>
+</tr>
+
+<tr>
+	<td>GET_OFFICE_SPECIALISM</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeSpecialisms:OFFICE_SPECIALISMS:mustExist:null</td>
+</tr>
+
+
+<tr>
+	<td>GET_OFFICES_FOR_SPECIALISM</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getOfficeForSpecialisms:SystemDatabase,OFFICE_SPECIALISMS,QGetSpecialismOffices,QGetSpecialismOfficesISNULL:mustExist:null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_DETAILS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeDetails:OFFICE_DETAILS:ignoreError:null</td>
+</tr>
+
+<tr>
+	<td>GET_OFFICE_SPECIALISM_ATTRIBUTES</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeSpecialismsNULL:EMAIL_IDS:mustExist:null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_SUBSPECIALISM_ATTRIBUTES</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+		<td>3:getOfficeSubspecialism:SystemDatabase,EMAIL_IDS,QGetOfficeSubSpecialismsAttributes,QGetOfficeSpecialismsNULL:mustExist:null</td>
+</tr>
+
+<tr>
+	<td>UPDATE_INSERT_OFFICE_SPECIALISM_DETAILS</td>
+	<td>DocService
+		34
+		Office_screen
+		null
+		null<br>
+		null</td>
+	<td>3:setTimeStamp:::null
+          3:updateInsertOfficeSpecialismsDetails:SystemDatabase,UpdateInsertOfficeSpecialismsDetails,UpdateInsertOfficeSpecialismsDetailsIsNull:ignoreError:null</td>
+</tr>
+
+<tr>
+	<td>GET_OFFICE_SPECIALISM_DETAIL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getOfficeSpecialisms:SystemDatabase,OFFICE_SPECIALISMS,QGetOfficeSpecialisms:mustExist:null</td>
+</tr>
+
+<tr>
+	<td>GET_ROTATION_COUNT</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetRotationCount:ROTATION_COUNT:2:!csRevisionNoLongerExists</td>
+</tr>
+
+<tr>
+	<td>Get_Featured_Employers</td>
+	<td>DocService
+		33
+		Survey_Tmp
+		null
+		null<br>
+		null</td>
+	<td>3:getFeaturedEmployers:SystemDatabase,FEATURED_EMPLOYERS,QGetAlwaysCount,QNormalRowNumCount:mustExist:null</td>
+</tr>
+
+<tr>
+	<td>REDIRCT_SURVEY_TEMP</td>
+	<td>DocService
+		33
+		Survey_Tmp
+		null
+		null<br>
+		null</td>
+	 
+</tr>
+<tr>
+	<td>INSERT_SURVEY_DETAILS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:InsertSurveyContent:SystemDatabase,QInsertSurvey::null</td>
+</tr>
+ <tr>
+	<td>GET_OFFICE_STATE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeState:OFFICE_STATE:ignoreError:null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_LOCATIONS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeLocations:OFFICE_LOCATIONS:ignoreError:null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_LOC_ALL_STATE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeLocFORallState:OFFICE_LOC_ALL_STATE:ignoreError:null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_LOC_ALL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeLocFORALL:OFFICE_LOC_ALL:ignoreError:null</td>
+</tr>
+
+<tr>
+	<td>GET_OFFICE_LOC_ALL_SPECI</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetOfficeLocFORallSpeci:OFFICE_LOC_ALL_SPECI:ignoreError:null</td>
+</tr>
+
+
+ <tr>
+	<td>GET_SURVEY_RESULTS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetSurvayData:SURVEY_RESULTS:ignoreError:null</td>
+</tr>
+
+ <tr>
+	<td>GET_CEROW_SURVEY_RESULTS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetCerowSurvayData:SURVEY_CEROW_RESULTS:ignoreError:null</td>
+</tr>
+
+ <tr>
+	<td>UCM_REQ_CAND_INFO_EMAIL_WEB_SERVICE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:handleCandInfoReqEmailWS:::null</td>
+</tr>
+<tr>
+	<td>GET_COUNTRY_REGION</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+  <td>5:QGetCountryRegion:COUNTRYREGION_RESULT_SET:ignoreError:null</td>
+</tr>
+
+<tr>
+	<td>GET_RECOMMENDED_JOBS_TMP</td>
+	<td>Service
+		33
+		RECOMMENDED_JOBS_TMP
+		null
+		null<br>
+		null</td>	  
+	<td></td>	 
+</tr>
+
+<tr>
+	<td>GET_RECOMMENDED_JOBS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>	  
+	<td>3:getJobsById:SystemDatabase,JOB_INFO,QGetJobDescription:ignoreError:null</td>	 
+</tr>
+
+<tr>
+	<td>CHECK_MIN_USER_MAX_CALL</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>	  
+	<td>3:checkUpdate1:SystemDatabase,QGetUserPiCalls,UpdateUserPiCalls,UpdateTotalPiCalls:ignoreError:null</td>	 
+</tr>
+<tr>
+	<td>GET_GlobalCARRER_APPLYFORM</td>
+	<td>Service
+		1
+		GlobalcareerAPP
+		null
+		null<br>
+		null</td>
+	<td></td>	 
+</tr>
+<tr>
+	<td>GET_GlobalCARRER_SubmitCV</td>
+	<td>Service
+		1
+		GCSubmitYourCV_TMP
+		null
+		null<br>
+		null</td>
+	<td></td>	 
+</tr>  
+ <tr>
+	<td>SEND_GlobalCARRER_DEXTRAEMAIL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:globalCareerDextraEmailWS:::null</td>
+</tr>
+<tr>
+	<td>GET_APAC_APPLYFORM</td>
+	<td>Service
+		1
+		APACAPP
+		null
+		null<br>
+		null</td>
+	<td></td>	 
+</tr>
+<tr>
+	<td>GET_ROBOTS</td>
+	<td>Service
+		1
+		GET_ROBOTS
+		null
+		null<br>
+		null</td>
+	<td></td>	 
+</tr>
+<tr>
+<td>GET_ROBOTS_DOMAINS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QrobotsDomain:robot_domain:1:null</td>
+</tr>
+<tr>
+	<td>HAYS_GET_OAUTH_URL</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLinkedinAuthURL:::null</td>
+</tr>
+<tr>
+	<td>HAYS_GET_OAUTH_TOKEN</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLinkedinCallbackParams:::null</td>
+</tr>
+<tr>
+	<td>HAYS_SAVE_ALERTS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:saveAlertsAnonymous:::null</td>
+</tr>
+<tr>
+	<td>HAYS_SAVE_ACCESS_CONSENT</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:saveLinkedInAccessConsent:::null</td>
+</tr>
+<tr>
+	<td>HAYS_SAVE_GLOBAL_ACCESS_CONSENT</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:saveGlobalAccessConsent:::null</td>
+</tr>
+<tr>
+	<td>GET_COMPLEXMETA_COUNTER</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QcomplexMetadataCount:COUNTER:1:null</td>
+</tr>
+<tr>
+	<td>GET_COUNTRY_DETAILS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetCountryDetails:rsHaysWebsites:0:Unable to load the HaysWebsites table data</td>
+</tr>
+<tr>
+	<td>GET_DOMAIN_ID</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetDomainIdtemp:domainIdtemp:1:null</td>
+</tr>
+<tr>
+	<td>HAYS_GET_OFFICES_UKCEROW</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getUCMOffices:SystemDatabase,HAYS_OFFICE_LOCATIONS:0:null</td>
+</tr>
+<tr>
+	<td>GET_ALL_OFFICES_DROP_DOWN_UKCEROW</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>5:QGetAllOfficesForDropDown_UKCEROW:OFFICES_RESULT_SET_DD:2:!csRevisionNoLongerExists</td>
+</tr>
+<tr>
+	<td>GET_INT_JCD</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getIntJobCandDetails:::null</td>
+</tr>
+<tr>
+	<td>GET_SOCIALMEDIA_BLOGS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSocialMediaBlogs:BLOGS_RESULT_SET::null</td>
+</tr>
+<tr>
+	<td>GET_SOCIALMEDIA_BLOGS_BY_TAGNAME</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSocialMediaBlogsByTagName:BLOGS_RESULTSET_BYTAGNAME::null</td>
+</tr>
+<tr>
+	<td>GET_ALL_CEROW_LOCALE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+  <td>5:QGetAllCerowLocale:CEROW_LOCALE_RESULT_SET::null</td>
+</tr>
+<tr>
+	<td>GET_WIDGET_PROP_PAGE</td>
+	<td>DocService
+		33
+		HAYS_WIDGET_PROP_FORM
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GET_CONTENT_WIDGET_PROP_PAGE</td>
+	<td>DocService
+		33
+		HAYS_CONTENT_WIDGET_PROP_FORM
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DOC_PATH_BY_NAME</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getImagePath:::null</td>
+</tr>
+<tr>
+	<td>LOAD_CONVERSION_CODE</td>
+	<td>Service
+		33
+		conversion_code_cz
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GET_KILLER_QS_PAGE</td>
+	<td>Service
+		3
+		capture_killer_qs_pg
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GET_QUESTIONS_BY_LOCALE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getQuestionsByLocale:SystemDatabase,HAYS_QUESTIONS:0:null</td>
+</tr>
+<tr>
+	<td>UPDATE_KILLER_QUESTIONS</td>
+	<td>DocService
+		33
+		capture_killer_qs_pg
+		null
+		null<br>
+		null</td>
+	<td>3:setTimeStamp:::null
+		3:updateKillerQuestions:SystemDatabase,HAYS_QUESTIONS:0:null</td>
+</tr>
+<tr>
+	<td>GET_QUESTIONS_BY_LOCALE_CATEGORY</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getQuestionsByLocaleCategory:SystemDatabase,HAYS_QUESTIONS:0:null</td>
+</tr>
+<tr>
+	<td>COLLECTION_ISVALID_META</td>
+	<td>Service
+		32
+		null
+		null
+		null<br>
+		!csCollectionInvalidMeta(dDocName)</td>
+	<td>3:verifyCollectionExists:::null
+		3:verifyNotStatic:::null
+		3:verifyContentNotMaxed:dDocName::null
+		3:verifyPreviousRevisionSameName:::null
+		3:canWriteInCollection:::null
+		3:canPlaceInCollectionHays:::null</td>
+</tr>
+<tr>
+	<td>HAYS_MAIL_APAC</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:HaysMailApac:::null</td>
+</tr>
+<tr>
+	<td>HAYS_WEBSITE_LIST</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getPrimaryWebsiteDetails:::null</td>
+</tr>
+<tr>
+	<td>GET_ALL_SPECIALISM_OFFICES</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getAllSpecialismsMappedToOffices:SystemDatabase,SPECIALISM_OFFICE,QGetSpecialismsHavingOffices::null</td>
+</tr>
+<tr>
+	<td>HAYS_REGULAR_MARKETING_REPORT</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:sendRegularMarketingReport:QregularMarketingReport,systemdatabase::null</td>
+</tr>
+<tr>
+	<td>SET_CONTENT_WIDGET_DATA</td>
+	<td>Service
+	33
+	null
+	null
+	null<br>
+	null</td>
+	<td>1:QcheckContentWidgetUnique:widget_name:mustNotExist:!csRevisionNoLongerExists
+		3:setContentWidgetDetails:SystemDatabase::null</td>
+</tr>
+<tr>
+	<td>GET_ALL_CONTENT_WIDGET_NAMES</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getContentWidgetsFromDB:SystemDatabase,allCWidgetRS,QallContentWidget::null</td>
+</tr>
+<tr>
+	<td>GET_TOTAL_JOB_COUNT</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getTotalJobCount:SystemDatabase,totalJobCountRS,QtotalJobCount::null</td>
+</tr>
+<tr>
+	<td>GET_TOTAL_JOB_COUNT_APAC</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getTotalJobCountAPAC:SystemDatabase,totalJobCountAPACRS,QtotalJobCount::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_CATEGORY</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuideCategoryFromDB:SystemDatabase,allCategoryRS,QallCategorySG,QallCategoryDDocnameSG::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_AOE</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuideAOEFromDB:SystemDatabase,allAOERS,QaoeSG::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_POSITION</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuidePositionTypeFromDB:SystemDatabase,allPositionTypeRS,QPositionTypeSG::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_TITLE</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuideTitleFromDB:SystemDatabase,allTitleRS,QTitleSG::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_REGION</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuideRegionFromDB:SystemDatabase,allRegionRS,QRegionSG::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_DETAILS</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuideDetailsFromDB:SystemDatabase,salaryGuideRS,QsectorSGUK,QPositionTypeSGUK,QAreaSGUK,QCompanySGUK,QPositionNameSGUK,QLocationNameSGUK::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_SALARY_RANGE</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalarySalaryRangeFromDB:SystemDatabase,allResultRS,QResultSGUK::null</td>
+</tr>
+<tr>
+	<td>HAYS_SALARY_GUIDE_GET_RESULT</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSalaryGuideResultFromDB:SystemDatabase,allResultRS,QResultSG::null</td>
+</tr>
+<tr>
+	<td>DOWNLOADPDF_DATA_INSERT</td>
+	<td>SchemaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:pushSGUserData:SystemDatabase,QInsertSGData::null</td>
+</tr>
+</table>
+<@end@>
+</body></html>

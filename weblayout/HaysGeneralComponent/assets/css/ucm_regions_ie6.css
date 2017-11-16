@@ -1,0 +1,62 @@
+@media screen, projection {
+	html {filter: expression(document.execCommand("BackgroundImageCache", false, true));}
+	body {padding-bottom:40px;}
+	.tabs, .toggle, .tpane, .hays_form ol, .featured_boxes ul {width:100%;}
+	.half_intro, .step_tracker, .sb_inner {zoom:1;}
+	.sb_inner p {margin:8px;}
+	.featured_boxes img {right:6px;}
+	#suckerfish li ul li a {padding:10px 5px;}
+	#suckerfish .sfhover a {width:159px!important;}
+	#suckerfish.deep li a {width:141px!important;}
+	#suckerfish .sfhover span {color:#fff;background: #082D71 url('/haysassets/HaysGeneralComponent/assets/css/img/sprites/arrows.png') no-repeat 98% -233px;}
+	#suckerfish .sfhover li span {background:none;color:#898989;}
+	#suckerfish .sfhover ul {left:0!important;}
+	#suckerfish .sfhover span.group {background-position:right -236px;}
+	#suckerfish.deep .sfhover span.group {background:0 -400px #f5f5f5 url("img/sprites/bg.png") repeat-x;color:#002776;}
+	#suckerfish li .grid_50 li, #suckerfish li .grid_50 li a {width:150px!important;}
+	.user_nav .first a:hover {background:left -300px url('img/sprites/user_nav.png') no-repeat!important;}
+	.user_nav .last a:hover {background:right -300px url('img/sprites/user_nav.png') no-repeat!important;}
+	.user_nav a.active, .user_nav .active:hover {background:#002776!important;}
+	.grid_2.suffix_1, .grid_6.suffix_4 {padding-right:0px!important;} /*Double classes might be a problem?*/
+	input {width:92%!important;}
+	.button, .hays_form .checkbox_row input, .select_row input {width:auto!important;}
+	.select_row input {clear:left;}
+	.content_boxes ul li {padding-bottom:20px;}
+	.site_map li {width:100%!important;}
+	.site_map.grid_33 ul ul li {float:left;width:33%!important;}
+	.content_boxes .pb_links li {padding:0;}
+	.js .multiselect .multitoggle {background:#fff right center url("/haysassets/HaysGeneralComponent/assets/css/img/icons/select_button.gif") no-repeat;border:1px solid #b2b2b2;font-size:12px;height:19px;line-height:19px;cursor:pointer;display:none!important}
+	.featured_boxes.grid_33 ul li {float:left;width:33%;clear:none;}
+	.ui-tabs-panel {border-top:2px solid #42aae3!important;padding-top:20px!important;}
+	/*Daves fixes*/
+	.side_box h2,.side_box .h2 {padding-top:0;}
+	.ehc_box input {width:20px !important; border:none;}
+	.ehc_box label, .filter form label, .js .ehc_box .multiselect ol label {float:none;display:inline;}
+	.news_list li h3 {display:inline;}
+	.news_list li p {margin:0;}
+	table.job_results th a {color:#fff!important;}
+	table.job_results .details th a {color:#009fda!important;}
+	.h_green .h2 {padding-top:8px!important;}
+	.left_nav .h2 {height:1%;padding-top:0;}
+	#suckerfish.deep li, .featured_boxes .med_inner li, .center, .filter ul, .filter form, .counter, .content_boxes .med_inner li, fieldset.rc_grey {width:100%!important;}
+	.button_1 {width:auto!important;}
+	.user_nav a {float:left;color:#fff!important;}
+	.ehc_search, .pb_inner {zoom:1;}
+	.ehc_box fieldset legend span {width:149px!important;}
+	.ehc_box label {position:relative;top:-2px;padding-left:0;}
+	.wysiwyg .less {background:left 3px url("img/icons/arrow-up-blue.gif") no-repeat;}
+	.search_box .min .grid_50 input  {width:36px!important;}
+	.container_flex .promo_box, .featured_boxes .promo_box {height:180px;}
+	form .multiselect label {padding:0 15px 0 0;}
+	.hays_table tbody td div {width:100%;padding:15px 0 10px;}
+	/* ADF Fixes*/
+	.hays_form .error_msg {height:1%;}
+	.af_panelGroupLayout {zoom:1;}
+	#d1 {width:100%;}
+	.af_panelTabbed {height:auto!important;position:static!important;}
+	.af_panelTabbed div {position:static!important;width:100%;height:auto!important;}
+	.p_AFSelected {padding:0!important;}
+	.p_AFSelected, .af_panelTabbed_tab-content a {border:none!important;}
+	.af_panelTabbed_tab-content a {padding:8px 15px 10px 20px!important;}
+	.af_panelTabbed .af_panelTabbed_tab-content, .af_panelTabbed .af_panelTabbed_tab, .af_panelTabbed .s_mrg {width:auto!important;}
+}

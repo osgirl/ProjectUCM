@@ -1,0 +1,84 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUK_WidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_choose_section_javascript_head_inc@>
+		
+		<link rel="STYLESHEET" type="text/css" href="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/dhtmlxtree.css">
+		<link rel="stylesheet" type="text/css" href="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/skins/dhtmlxmenu_standard.css">
+		<link rel='STYLESHEET' type='text/css' href='<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/common/style.css'>
+
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/dhtmlxcommon.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/dhtmlxtree.js"></script>
+		<script src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/ext/dhtmlxtree_ed.js" type="text/javascript"></script>
+		<script  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/ext/dhtmlxtree_kn.js"></script>
+		<script  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/ext/dhtmlxtree_sb.js"></script>
+		<script  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/ext/dhtmlxtree_xw.js"></script>    
+		<script  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/ext/dhtmlxtree_li.js"></script>    
+		<script  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/ext/dhtmlxtree_dragin.js"></script>    
+		<script language="JavaScript" src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxMenu/codebase/dhtmlxmenu.js"></script>
+
+		<script type="text/javascript" src="<$HttpCommonRoot$>custom/JavaScript/ajax.js"></script>		
+		<script type="text/javascript" src="<$HttpCommonRoot$>custom/JavaScript/commonParseXML.js"></script>		
+
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/JavaScript/sp_admin.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>SecondaryPageNavigation/JavaScript/pagination_admin.js"></script>
+
+		<script>
+				var SP_GET_SITE_STRUCTURE_SERVICE = "<$HttpCgiPath$>?IdcService=CR_GET_SITE_DEFINITION&siteId=";
+				var WEBSITE_XSLT_TEMPLATE = "<$HttpRelativeWebRoot$>CRUK_WidgetsForm/xml/website_xslt.xslt";	
+		</script>
+
+<@end@>
+
+
+<@dynamichtml widget_choose_websection_javascript_inc@>
+		<script>
+
+
+			function loadWebsiteTree( siteId ) {	
+				transformedXMLTree = parseXMLDocument(SP_GET_SITE_STRUCTURE_SERVICE + siteId, WEBSITE_XSLT_TEMPLATE); 
+				tree.deleteChildItems(0); 
+				tree.enableSmartXMLParsing(true);
+				tree.loadXMLString( transformedXMLTree );//load root level from xml 
+
+				if( selectedSection.length > 0 ) {
+						list = selectedSection.split(',');
+						for(i=0; i < list.length; i++) {
+								tree.setCheck(list[i], true);
+						}
+				}
+			}
+
+	
+			function doCheck(isUncheck) {
+				tree.setSubChecked(0, isUncheck);
+			}
+
+//=============================================
+
+			tree = new dhtmlXTreeObject('treeboxbox_website',"100%","100%",0); 				
+			tree.setImagePath("<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/imgs/csh_bluefolders/");
+			tree.setIconsPath("<$HttpRelativeWebRoot$>SecondaryPageNavigation/dhtmlxTree/codebase/imgs/");				
+			tree.enableKeySearch(true);
+			tree.enableKeyboardNavigation(true);
+			tree.enableCheckBoxes(1);
+				
+			var selectedSite = '<$#active.siteId $>'; 
+			var selectedSection = '<$#active.nodeId$>';
+
+
+			if( selectedSite.length > 0 ) {
+					loadWebsiteTree(selectedSite);					
+			}
+
+		</script>
+<@end@>
+
+
+</body></html>

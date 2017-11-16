@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+WebUpload_Integration staticResTable
+</title>
+</head>
+<body>
+
+<@dynamichtml officeLocationMapIntegrationjavaScriptCode@>
+<table><tr><td></td></tr><tr><td>
+	<script type="text/javascript" src="<$#env.GoogleMapsRequestUrl$>"></script>
+	<script type="text/javascript">
+		function HAYSval() {
+			if (window.jQuery && jQuery.isReady){
+
+				$(document).ready(initialize);
+			}
+			else {
+				window.setTimeout(HAYSval, 100);
+			}
+		}
+
+		function initialize(){
+			//initialize map
+			var latitude = '<$#active.latitude$>';
+			var longitude = '<$#active.longitude$>';
+			var latlng1 = new google.maps.LatLng(latitude,longitude);
+			 var myOptions = {
+      				zoom: 16,
+      				center: latlng1,
+	  			disableDefaultUI: true,
+	  			navigationControl: true,
+	  			mapTypeControl: false,
+	  			scaleControl: false,
+      				mapTypeId: google.maps.MapTypeId.ROADMAP
+    			};
+			var map = new google.maps.Map(document.getElementById("haysMap"), myOptions);
+			var markersArray = [];
+			var marker = new google.maps.Marker({
+      				position: latlng1,
+      				map: map,
+      				title:"Office Location"
+			});
+			markersArray.push(marker);
+			showOverlays(map, markersArray);
+
+		}
+
+		// Shows any overlays currently in the array
+		function showOverlays(map, markersArray) {
+			//alert(markersArray.length);
+  			if (markersArray) {
+				var str='';
+    				for (i=0;i< markersArray.length;i++) {
+						//alert(i+" "+markersArray[i]);
+	 					str = str+' '+markersArray[i].position;
+      					markersArray[i].setMap(map);
+    				}
+				//alert(str);
+  			}
+		}
+		HAYSval();
+	</script>
+</td></tr></table>
+<@end@>
+</body></html>

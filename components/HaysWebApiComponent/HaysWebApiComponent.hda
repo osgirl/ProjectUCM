@@ -1,0 +1,73 @@
+<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysWebApiComponent
+blDateFormat=dd/MM/yyyy {H:mm[:ss] [zzz]}!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes;$COMPONENT_DIR/lib/mail.jar
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+serverVersion=7.1
+version=2014_01_09 (MR10 Build)
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+service
+resources/hayswebapicomponent_service.htm
+HaysWebApiComponent_Services
+10
+query
+resources/hayswebapicomponent_query.htm
+HaysWebApiComponent_Queries
+50
+resource
+resources/hayswebapicomponent_handlers.htm
+null
+10
+environment
+hays_web_api_component_environment.cfg
+null
+10
+template
+templates/hays_web_api_component_template.hda
+null
+10
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+HaysWebApiComponent_Handlers
+ServiceHandlers
+null
+10
+HaysWebApiComponent_Templates
+IntradocTemplates
+name
+10
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet StateCfgExportedVars
+2
+name
+value
+LanguageSource_HaysWebApiComponent
+$COMPONENT_DIR/resources/lang
+@end

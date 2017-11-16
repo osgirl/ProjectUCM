@@ -1,0 +1,3148 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysSearchComponent resource
+</title>
+</head>
+<body>
+
+<@dynamichtml check_nav_type@>
+<$ navType = '0', headerType = '0' $>
+
+	<$if #active.contentType $>
+		<$if contentType like 'Candidates'$>
+			<$ navType = 2 $>
+		<$elseif contentType like 'Jobs'$>
+			<$ navType = 1 $>
+		<$endif$>
+	<$endif$>
+	<$if navType like '0' and #active.nodeId$>
+		<$ headerType = ssGetNodeProperty("HeaderType") $>
+		<$if headerType like '1|2' $>
+			<$ navType = headerType $>
+  		<$endif$>
+  	<$endif$>
+
+  	<$if navType like '0' $>
+
+  		<$userRole=getCookie("tgtaud")$>
+  		<$if strLength(userRole) gt 0$>
+  			<$if strEquals(userRole,'2')$>
+  					<$ navType = 2 $>
+  			<$else$>
+  					<$ navType = 1 $>
+  			<$endif$>
+  		<$endif$>
+  	<$endif$>
+   <$if navType like '0' $>
+
+   		<$employerUrlPageName=ssGetNodeProperty("employer","urlDirName")$>
+ 		<$if HTTP_REFERER  and strIndexOf(HTTP_REFERER,employerUrlPageName) gt 0$>
+
+			<$ navType = 2 $>
+		<$endif$>
+   <$endif$>
+
+    <$if navType like '0' $>
+
+ 		<$if currentNavType  and strLength(currentNavType) gt 0$>
+			<$ navType = currentNavType $>
+		<$endif$>
+   <$endif$>
+
+  	<$if navType like '2' $>
+  			<$isEmployer=1$>
+	<$else$>
+			<$isEmployer=0$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml job_basket_header_label@>
+	
+	<$executeService("GET_COUNTRY_REGION")$>
+	<$include check_login$>
+	<$include check_portal_url$>
+	<$userId=getCookie("usr")$>
+	<$include check_nav_type$> 
+	<$if (#active.nodeId)$>
+	<$if not (isTrue(ssGetNodeProperty("hideBasket")) and (domainId == 38)) $>
+	<$if isEmployer==1$>
+	<$baskt=getCookie("candbkt")$>
+	<$baskt=strTrimWs(baskt)$>
+	<$exec rsMakeFromString("rsJobs", baskt)$>
+    
+          
+     <$if strEquals(loggedIn,"Y")$>
+	
+		<$ if domainId ==1$>
+		   <a class="basket-count" href="<$WC_JOB_BASKET$>?user=<$userId$>" onclick="return Hays_gaq_push(this.href)">
+ 	    <$else$>
+			<a class="basket-count" href="<$WC_JOB_BASKET$>?user=<$userId$>" >
+		<$endif$>	
+		
+		<$if strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"uk") OR strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"cerow")$>
+			<$lc('wwBasketContentCandidates', rsJobs.#numRows)$>
+			</a>
+			<$else$>
+			<a class="basket-count1" href="<$WC_JOB_BASKET$>?user=<$userId$>" >
+			<$lc('wwBasketContentCandidates_tmp')$>
+			</a>
+		<$endif$>
+		   
+     <$else$>
+	   
+	    <$ if domainId ==1$>
+ 			 <a class="" href="<$ssGetServerRelativeUrl(siteId,"candidates-basket")$>" onclick="return Hays_gaq_push(this.href)">
+			<$else$>  
+			 <a class="" href="<$ssGetServerRelativeUrl(siteId,"candidates-basket")$>" >
+		<$endif$>
+		
+		<$if strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"uk") OR  strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"cerow")$>
+		<$lc('wwBasketContentCandidates', rsJobs.#numRows)$>
+		</a>
+		<$else$>
+		<$lc('wwBasketContentCandidates_tmp')$>
+        </a>	
+		<$endif$>
+   
+    
+   <$endif$>
+ 
+ <$else$>
+<$if isFalse(isProjectSEnabled)$>
+  <$baskt=getCookie("jobbkt")$>
+  <$baskt=strTrimWs(baskt)$>
+  <$exec rsMakeFromString("rsJobs", baskt)$>
+ 
+      
+    <$if strEquals(loggedIn,"Y")$>
+	
+		<$ if domainId ==1$>
+            <a class="basket-count" href="<$WC_JOB_BASKET$>?user=<$userId$>" onclick="return Hays_gaq_push(this.href)">
+        <$else$>
+			<a class="basket-count" href="<$WC_JOB_BASKET$>?user=<$userId$>">
+		<$endif$>	
+		
+		
+			<$if strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"uk") OR  strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"cerow")$>
+			<$lc('wwBasketContentJobs', rsJobs.#numRows)$>
+			</a>
+			<$else$>
+			<a class="basket-count1" href="<$WC_JOB_BASKET$>?user=<$userId$>"> 
+			<$lc('wwBasketContentJobs_tmp')$>
+			</a>
+			<$endif$>	  
+	
+    <$else$>
+	    
+		<$ if domainId ==1$>
+			<a class="" href="<$ssGetServerRelativeUrl(siteId,"jobs-basket")$>" onclick="return Hays_gaq_push(this.href)">
+		<$else$> 	
+			<a class="" href="<$ssGetServerRelativeUrl(siteId,"jobs-basket")$>" >
+		<$endif$>
+		
+		
+		<$if strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"uk") OR  strEqualsIgnoreCase(COUNTRYREGION_RESULT_SET.CONTRY_REGION,"cerow")$>
+		<$lc('wwBasketContentJobs', rsJobs.#numRows)$>
+		</a>
+		<$else$>
+		<$lc('wwBasketContentJobs_tmp')$>
+	    </a>
+		<$endif$>	
+   
+    <$endif$>
+ <$endif$> 
+ <$endif$>
+ <$endif$>
+ <$endif$> 
+ 
+<@end@>
+
+
+ <!--*************** JOB FUNCTION FILTER***********************
+**********************************************************---->
+<@dynamichtml job_search_results_title_filter@>
+			<$counter=0, className = '' $>
+			<$ itemsPerFacet = toInteger(numItemsPerSearchResultNavigation), multiSelectCount = itemsPerFacet + 1, maxMultiSelectCount = toInteger(numMaxItemsPerSearchResultNavigation) $>
+			<$ numRows = getValue(SearchResultNavigation, '#numRows') $>
+
+			<$if rsFirst(SearchResultNavigation)$>
+				<ol>
+				<$loopwhile getValue(SearchResultNavigation, "#isRowPresent") AND (counter LT itemsPerFacet) $>
+					<$counter=counter+1$>
+					<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+					<$filterCount=getValue(SearchResultNavigation, "count")$>
+					<$filterDesc=ontGetTermLabel("xAutomatedTitle", filterId, LanguageCode)$>
+
+
+						<li>
+					<$if TotalRows EQ filterCount $>
+							<span class="label"><$filterDesc$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+					<$else$>
+							<input type="checkbox" id="<$filterId$>" name="<$filterDesc$>" value="<$filterId$>">
+							<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+					<$endif$>
+						</li>
+
+					<$exec rsNext(SearchResultNavigation)$>
+				<$endloop$>
+					</ol>
+
+
+				<$if numRows GT itemsPerFacet $>
+					<$if numRows GT maxMultiSelectCount $>
+						<$ className = ' class="grid_50"' $>
+					<$endif$>
+					<div class="multiselect" title="<$lc('wwMoreoptions')$>">
+					<ol <$className$> >
+					<$ exec rsSetRow(SearchResultNavigation, counter) $>
+					<$loopwhile getValue(SearchResultNavigation, "#isRowPresent")$>
+						<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+						<$filterCount=getValue(SearchResultNavigation, "count")$>
+						<$filterDesc=ontGetTermLabel("xAutomatedTitle", filterId, LanguageCode)$>
+						<li>
+						<$if TotalRows EQ filterCount $>
+							<span class="label"><$filterDesc$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+						<$else$>
+							<input type="checkbox" name="<$filterDesc$>" id="<$filterId$>" value="<$filterId$>" <$if job_job_title_filter AND strIndexOf(job_job_title_filter, filterId) GE 0$> checked<$endif$> />
+							<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+						<$endif$>
+						</li>
+							<$exec rsNext(SearchResultNavigation)$>
+					<$endloop$>
+					</ol>
+					</div>
+				<$endif$>
+			<$endif$>
+<@end@>
+
+
+
+<!--****************** INDUSTRY FILTER***********************
+**********************************************************---->
+<@dynamichtml job_search_results_industry_filter@>
+		<$counter=0, className = '' $>
+		<$ itemsPerFacet = toInteger(numItemsPerSearchResultNavigation), multiSelectCount = itemsPerFacet + 1, maxMultiSelectCount = toInteger(numMaxItemsPerSearchResultNavigation) $>
+		<$ numRows = getValue(SearchResultNavigation, '#numRows') $>
+        <$rsSort(SearchResultNavigation,"count","int","desc")$>
+		<$if rsFirst(SearchResultNavigation)$>
+			<$metadata="xIndustry"$>
+			<$executeService("GET_META_OPTION_LIST")$>
+			<ol>
+			<$loopwhile getValue(SearchResultNavigation, "#isRowPresent") AND (counter LT itemsPerFacet) $>
+				<$counter=counter+1$>
+				<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+				<$filterCount=getValue(SearchResultNavigation, "count")$>
+				<$filterDesc=haysGetFieldViewDisplayValue("HaysIndustryList", filterId, SiteLocale)$>
+
+					<li>
+					<$if TotalRows EQ filterCount $>
+						<span class="label"><$filterDesc$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+					<$else$>
+						<input type="checkbox" id="<$filterId$>" name="<$filterId$>" value="<$filterId$>" />
+						<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+					<$endif$>
+					</li>
+
+				<$exec rsNext(SearchResultNavigation)$>
+			<$endloop$>
+				</ol>
+
+			<$if numRows GT itemsPerFacet $>
+				<$maxMultiSelectCount = 0$>
+				<$maxMultiSelectCount = numRows/2$>			
+				<$if numRows GT maxMultiSelectCount $>
+					<$ className = ' class="grid_50"' $>
+				<$endif$>				
+				<div class="filter_more" id="industry_filter">
+				<div class="filterdialog" title="<$lc('wwIndustryOrSection')$>">	
+				<$counter=0$>				
+				<ol <$className$> >				
+				<$ exec rsSetRow(SearchResultNavigation, counter) $>
+				<$loopwhile getValue(SearchResultNavigation, "#isRowPresent")$>
+					<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+					<$filterCount=getValue(SearchResultNavigation, "count")$>
+					<$filterDesc=haysGetFieldViewDisplayValue("HaysIndustryList", filterId, SiteLocale)$>
+					
+					<$if TotalRows EQ filterCount $>
+					<li>
+						<span class="label"><$filterDesc$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+					</li>
+					<$else$>
+					<li>
+						<input type="checkbox" name="<$filterId$>" id="<$filterId$>"  value="<$filterId$>"  />
+						<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+					</li>
+					<$endif$>
+					
+						<$exec rsNext(SearchResultNavigation)$>
+				<$endloop$>
+				</ol>
+				</div>
+				</div>
+			<$endif$>
+		<$endif$>
+<@end@>
+
+<!--****************** AREA OF EXPERTISE FILTER***********************
+**********************************************************---->
+
+
+<@dynamichtml job_search_results_expertise_filter@>
+		<$locale=#active.SiteLocale$>
+		<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+	     <$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		 <$endif$>
+		<$endif$>
+		<$counter=0, className = '' $>
+		<$ itemsPerFacet = toInteger(numItemsPerSearchResultNavigation), multiSelectCount = itemsPerFacet + 1, maxMultiSelectCount = toInteger(numMaxItemsPerSearchResultNavigation) $>
+		<$ numRows = getValue(SearchResultNavigation, '#numRows') $>
+        <$rsSort(SearchResultNavigation,"count","int","desc")$>
+		<$if rsFirst(SearchResultNavigation)$>
+			<ol>
+			<$loopwhile getValue(SearchResultNavigation, "#isRowPresent") AND (counter LT itemsPerFacet) $>
+				<$counter=counter+1$>
+				<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+				<$filterCount=getValue(SearchResultNavigation, "count")$>
+				<$filterDesc=ontGetTermLabel("xCategory", filterId, Language)$>
+				
+
+					<li>
+					<$if TotalRows EQ filterCount $>
+						<span class="label"><$filterDesc$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+					<$else$>
+						<input type="checkbox" id="<$filterId$>" name="<$filterId$>" value="<$filterId$>" />
+						<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+					<$endif$>
+					</li>
+
+				<$exec rsNext(SearchResultNavigation)$>
+			<$endloop$>
+				</ol>
+
+			<$if numRows GT itemsPerFacet $>
+				<$maxMultiSelectCount = 0$>
+				<$maxMultiSelectCount = numRows/2$>	
+				<$if numRows GT maxMultiSelectCount $>
+					<$ className = ' class="grid_50"' $>
+				<$endif$>				
+				<div class="filter_more" id="category_filter">
+				<div class="filterdialog" title="<$lc('wwAreasOfExpertise')$>">		
+				<$counter=0$>				
+				<ol <$className$> >				
+				<$ exec rsSetRow(SearchResultNavigation, counter) $>
+				<$loopwhile getValue(SearchResultNavigation, "#isRowPresent")$>
+					<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+					<$filterCount=getValue(SearchResultNavigation, "count")$>
+					<$filterDesc=ontGetTermLabel("xCategory", filterId, Language)$>					
+					<$if TotalRows EQ filterCount $>
+					[[%<li>
+						<span class="label"><$filterId$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+					</li>%]]
+					<$else$>
+					<li>	
+						<input type="checkbox" name="<$filterId$>" id="<$filterId$>"  value="<$filterId$>" />
+						<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+					</li>
+					<$endif$>
+					
+						<$exec rsNext(SearchResultNavigation)$>
+				<$endloop$>
+				</ol>
+				</div>
+				</div>
+			<$endif$>
+			
+		<$endif$>
+<@end@>
+
+
+<!--****************** JOB TYPE SLIDER FILTER***********************
+**********************************************************---->
+<@dynamichtml job_search_results_type_slider_filter@>
+
+	<$if rsFirst(SearchResultNavigation)$>	
+	
+		[[%<$if rsExists("SearchResultNavigationERMMIN")$>
+			<$rsSort("SearchResultNavigationERMMIN","drillDownOptionValue","int","asc")$>
+			<$exec rsFirst("SearchResultNavigationERMMIN")$>					
+			<$perm_min=SearchResultNavigationERMMIN.drillDownOptionValue$>				
+		<$endif$>
+		
+		<$if rsExists("SearchResultNavigationERMMAX")$>
+			<$rsSort("SearchResultNavigationERMMAX","drillDownOptionValue","int","desc")$>
+			<$exec rsFirst("SearchResultNavigationERMMAX")$>			
+			<$perm_max=SearchResultNavigationERMMAX.drillDownOptionValue$>				
+		<$endif$>
+		
+		<$if rsExists("SearchResultNavigationEMPMIN")$>
+			 <$rsSort("SearchResultNavigationEMPMIN","drillDownOptionValue","int","asc")$>
+			 <$exec rsFirst("SearchResultNavigationEMPMIN")$>			 
+			 <$temp_min=SearchResultNavigationEMPMIN.drillDownOptionValue$>			 
+		<$endif$>
+		
+		<$if rsExists("SearchResultNavigationEMPMAX")$>
+			 <$rsSort("SearchResultNavigationEMPMAX","drillDownModifier","int","desc")$>
+			 <$exec rsFirst("SearchResultNavigationEMPMAX")$>			
+			 <$temp_max=SearchResultNavigationEMPMAX.drillDownModifier$>			
+		<$endif$>
+		
+		<$if rsExists("SearchResultNavigationONTMIN")$>
+			 <$rsSort("SearchResultNavigationONTMIN","drillDownOptionValue","int","asc")$>
+			 <$exec rsFirst("SearchResultNavigationONTMIN")$>			
+			 <$cont_min=SearchResultNavigationONTMIN.drillDownOptionValue$>			
+		<$endif$>
+		
+		<$if rsExists("SearchResultNavigationONTMAX")$>
+			 <$rsSort("SearchResultNavigationONTMAX","drillDownOptionValue","int","desc")$>
+			 <$exec rsFirst("SearchResultNavigationONTMAX")$>			
+			 <$cont_max=SearchResultNavigationONTMAX.drillDownOptionValue$>			
+		<$endif$>
+
+
+			<$perm_min="10000"$>
+			<$perm_max="150000"$>
+	 Fixed for FR, LU and ES. Converted the range from per hr to per annum ( multiplied by 2080)
+	<$if strEquals(job_type_Temp,'A')$>
+			<$temp_min="10400"$>
+			<$temp_max="104000"$>
+	 Fixed for NL. Converted the range from per hr to per month ( multiplied by 22 * 8)
+	<$elseif strEquals(job_type_Temp,'M')$>
+			<$temp_min="880"$>	
+			<$temp_max="8800"$>
+	<$else$>
+			<$temp_min="5"$>
+			<$temp_max="50"$>
+	 <$endif$> 
+	Fixed for FR, LU and ES. Converted the range from per day to per annum ( multiplied by 260)
+	 <$if strEquals(job_type_Cont,'A')$>
+			<$cont_min="9100"$>
+			<$cont_max="260000"$>
+	 Fixed for NL. Converted the range from per day to per hr ( divided by 8)
+	<$elseif strEquals(job_type_Cont,'H')$>
+			<$cont_min="4"$>
+			<$cont_max="125"$>
+	<$else$>
+			<$cont_min="35"$>
+			<$cont_max="1000"$>
+	 <$endif$> %]]
+	
+
+	
+
+
+		 <ol>
+		 <$loopwhile getValue(SearchResultNavigation, "#isRowPresent")$>
+			
+			<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+			
+			<$if strLength(filterId) gt 0$>
+				<$filterCount=getValue(SearchResultNavigation, "count")$>
+					<$if     filterId like 'P'$><$jobb_type='job_permanent_slider'$><$minField='job_min_permanent_slider'$><$maxField='job_max_permanent_slider'$><$payType=job_type_Perm$><$pay_type_label='job_select_perm_slider'$><$if #active.job_permanent_slider like 'on'$><$min=#active.job_min_permanent_slider$><$max=#active.job_max_permanent_slider$><$else$><$min=perm_min$><$max=perm_max$><$endif$><$filterField="job_permanent_filter"$><$filterDesc=lc('wwJobType_Permanent')$>
+					<$elseif filterId like 'T'$><$jobb_type='job_temporary_slider'$><$minField='job_min_temporary_slider'$><$maxField='job_max_temporary_slider'$><$payType=job_type_Temp$><$pay_type_label='job_select_temp_slider'$><$if #active.job_temporary_slider like 'on'$><$min=#active.job_min_temporary_slider$><$max=#active.job_max_temporary_slider$><$else$><$min=temp_min$><$max=temp_max$><$endif$><$filterField="job_temporary_filter"$><$filterDesc=lc('wwJobType_Temporary')$>
+					<$elseif filterId like 'C'$><$jobb_type='job_contract_slider'$><$minField='job_min_contract_slider'$><$maxField='job_max_contract_slider'$><$payType=job_type_Cont$><$pay_type_label='job_select_cont_slider'$><$if #active.job_contract_slider like 'on'$><$min=job_min_contract_slider$><$max=job_max_contract_slider$><$else$><$min=cont_min$><$max=cont_max$><$endif$><$filterField="job_contract_filter"$><$filterDesc=lc('wwJobType_Contract')$><$endif$>
+				<$include JobType_Range$>
+				<$if (strLength(min) gt 0) and (strLength(max) gt 0)$>
+				<input type="hidden" value="<$payType$>" name="<$pay_type_label$>"/>				
+				<li class="slider">					
+					<input type="checkbox" id="<$jobb_type$>" name="<$jobb_type$>" />
+					<label for="<$jobb_type$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+				    <div id="<$filterField$>" class="slider_text"><$if isTrue(jobtypeCurrencyPos)$><$min$><$lc('wwCurrency')$> - <$max$><$lc('wwCurrency')$> <$jobTypeSlider$><$else$><$lc('wwCurrency')$><$min$> - <$lc('wwCurrency')$><$max$> <$jobTypeSlider$><$endif$></div>
+				    <div class="slider_cont"><div id="job_<$filterId$>_cont"></div></div>
+					
+					<script type="text/javascript">
+							<!--//--><![CDATA[//><!--
+							function HAYS_slider_<$filterId$>() {
+								if (window.jQuery && jQuery.ui && jQuery.isReady) {	
+									var currencyPosition="<$jobtypeCurrencyPos$>";	
+									//alert("Position="+currencyPosition);
+									$( "#job_<$filterId$>_cont" ).slider({
+										range: true,
+										min: <$min$>,
+										max: <$max$>,
+										values: [ <$min$>, <$max$> ],
+										step:<$range$>,
+										slide: function( event, ui ) {
+											if (currencyPosition>0)
+											{												
+												$( "#<$filterField$>" ).html("<span>" + ui.values[0] + "</span><$lc('wwCurrency')$>" + " - <span>" + ui.values[1]+"</span><$lc('wwCurrency')$> <$jobTypeSlider$>" );
+											}
+											else
+											{											   
+											   $( "#<$filterField$>" ).html( "<$lc('wwCurrency')$><span>" + ui.values[0] + "</span> - <$lc('wwCurrency')$><span>" + ui.values[1] + "</span> <$jobTypeSlider$>" );
+											}
+											//$("#<$filterField$> span:eq(0)").text(ui.values[0]);
+											//$("#<$filterField$> span:eq(1)").text(ui.values[1]);
+										},
+										create: function(event,ui) {
+											$("a:first",this).addClass("first");
+										}
+									});
+								}
+								else{
+									window.setTimeout(HAYS_slider_<$filterId$>, 100);
+								}
+							}
+							HAYS_slider_<$filterId$>();
+							//--><!]]>
+						</script>
+						<input type="hidden" value="<$min$>" name="<$minField$>" class="min" />
+						<input type="hidden" value="<$max$>" name="<$maxField$>" class="max" />
+				</li>
+				<$endif$>
+			<$endif$>
+			<$exec rsNext(SearchResultNavigation)$>
+		<$endloop$>
+		</ol>		
+	<$endif$>
+<@end@>
+
+
+<!--****************** JOB TYPE FILTER***********************
+**********************************************************---->
+<@dynamichtml job_search_results_type_filter@>    
+	<$if rsFirst(SearchResultNavigation)$>	  
+		<ol>
+		<$loopwhile getValue(SearchResultNavigation, "#isRowPresent")$>
+			<$filterId=getValue(SearchResultNavigation, "drillDownOptionValue")$>
+			<$if strLength(filterId) gt 0$>
+				<$filterCount=getValue(SearchResultNavigation, "count")$>
+					<$if     filterId like 'P'$><$filterField="job_permanent_filter"$><$filterDesc=lc('wwJobType_Permanent')$>
+					<$elseif filterId like 'T'$><$filterField="job_temporary_filter"$><$filterDesc=lc('wwJobType_Temporary')$>
+					<$elseif filterId like 'C'$><$filterField="job_contract_filter"$><$filterDesc=lc('wwJobType_Contract')$><$endif$>
+				<li>
+				<$if TotalRows EQ filterCount $>
+					<span class="label"><$filterDesc$> (<$ filterCount $><span class="access"> <$contentType$></span>)</span>
+				<$else$>
+					<input type="checkbox" id="<$filterId$>" name="<$filterField$>" value="<$filterId$>" />
+					<label for="<$filterId$>"><$filterDesc$> (<$filterCount$><span class="access"> <$contentType$></span>)</label>
+				<$endif$>
+				</li>
+			<$endif$>
+			<$exec rsNext(SearchResultNavigation)$>
+		<$endloop$>
+		</ol>
+	<$endif$>
+<@end@>
+
+
+<!--****************** LOCATION FILTER***********************
+**********************************************************---->
+<@dynamichtml job_search_results_location_filter@>
+	<$if #active.StartLocationLevel $>
+	<$else$>
+		<$ StartLocationLevel = 3 $>
+	<$endif$>
+
+	<$ SearchResultNavigationOuter = SearchResultNavigation & StartLocationLevel, stratLevel = StartLocationLevel $>
+	
+
+
+	<$if rsExists(SearchResultNavigationOuter) AND rsFirst(SearchResultNavigationOuter) $>
+	<$rsSort(SearchResultNavigationOuter,"count","int","desc")$>
+		<$ exec rsFirst(SearchResultNavigationOuter)$>
+	<ol>
+		<$ locationId = getValue(SearchResultNavigationOuter, 'drillDownOptionValue')$>
+		<$ locationDesc = getValue(SearchResultNavigationOuter, 'locationDescription')$>
+		<$ LocationIdforFilter = getValue(SearchResultNavigationOuter, 'LocationId')$>
+		<$if (strLength(locationDesc) EQ 0)$>
+			<$ locationDesc = ' ' $>
+		<$endif$>
+		<$ count = getValue(SearchResultNavigationOuter, 'count') $>
+
+		<$if (strLength(locationDesc) gt 0)$> [[%and (locationLevel eq stratLevel) - to be added when real content is present%]]
+					<li>
+						<span class="label"><$locationDesc$> (<$count$><span class="access"> <$contentType$></span>)</span>
+
+						<$ StartLocationLevel = toInteger(StartLocationLevel) + 1, SearchResultNavigationInternalLocation = SearchResultNavigation & StartLocationLevel, stratLevel = StartLocationLevel $>	
+			
+						
+						<$rsSort(SearchResultNavigationInternalLocation,"locationDescription","string","asc")$>
+						<$if rsExists(SearchResultNavigationInternalLocation) AND  rsFirst(SearchResultNavigationInternalLocation)   $>
+						<ol>
+						<$exec rsCopyFiltered(SearchResultNavigationInternalLocation,"SearchResultNavigationInternal",'ParentLocationId',LocationIdforFilter)$>
+						
+						<$loopwhile getValue("SearchResultNavigationInternal", '#isRowPresent') $>
+							<$ coordinates = getValue("SearchResultNavigationInternal", 'drillDownOptionValue')$>
+							<$ locationDesc = getValue("SearchResultNavigationInternal", 'locationDescription')$>
+							<$ count = getValue("SearchResultNavigationInternal", 'count') $>
+							<$ index = strIndexOf(coordinates, '#'), locationLongitude = strSubstring(coordinates, 0, index), locationLatitude = strSubstring(coordinates, index+1) $>
+							<$ coordValue = '' $>
+							<$if #active.level_filter AND strLength(level_filter) GT 0 $>
+							
+							<$ coordValue = level_filter & ';' $>
+							<$endif$>
+
+
+							<$ coordValue = coordValue & stratLevel & ',' $>
+
+
+
+							<$if #active.ne_longitude_filter AND strLength(ne_longitude_filter) GT 0$>
+							    
+								<$ coordValue = coordValue & ne_longitude_filter & ';' $>
+							<$endif$>
+
+
+							<$ coordValue = coordValue & locationLongitude & ',' $>
+
+
+
+							<$if #active.ne_latitude_filter AND strLength(ne_latitude_filter) GT 0$>
+								<$ coordValue = coordValue & ne_latitude_filter & ';' $>
+							<$endif$>
+
+
+							<$ coordValue = coordValue & locationLatitude $>
+
+
+							<li>
+								<input type="radio" class="joff" name="location" id="<$coordinates$>" value="<$ coordValue $>"/>
+								<label for="<$coordinates$>"><$locationDesc$>(<$count$><span class="access"> <$contentType$></span>)</label>
+							</li>
+
+							<$ exec rsNext("SearchResultNavigationInternal") $>
+						<$endloop$>
+						</ol>
+						<$endif$>
+					</li>
+		<$endif$>
+		<$ exec rsNext(SearchResultNavigationOuter) $>
+
+	</ol>
+	<$endif$>
+<@end@>
+
+<!--****************** LOCATION FILTER APAC***********************
+**********************************************************---->
+
+<@dynamichtml job_search_results_location_filter_apac@>
+ 	<$ StartLocationLevel6 = 6 $>
+	    <$ StartLocationLevel5 = 5 $>
+		<$ StartLocationLevel4 = 4 $>
+		<$ StartLocationLevel3 = 3 $>
+	<!--(a)Initializing with first non-empty resultset, strating from bottom-up-->		   
+	<$if rsExists(SearchResultNavigation & StartLocationLevel6) AND rsFirst(SearchResultNavigation & StartLocationLevel6)$>
+		  	<$ SearchResultNavigationInternal = SearchResultNavigation & StartLocationLevel6, stratLevel = StartLocationLevel6$>
+		<$elseif rsExists(SearchResultNavigation & StartLocationLevel5) AND rsFirst(SearchResultNavigation & StartLocationLevel5)$>
+			<$ SearchResultNavigationInternal = SearchResultNavigation & StartLocationLevel5, stratLevel = StartLocationLevel5$>
+	  	<$elseif rsExists(SearchResultNavigation & StartLocationLevel4) AND rsFirst(SearchResultNavigation & StartLocationLevel4) $>
+			<$ SearchResultNavigationInternal = SearchResultNavigation & StartLocationLevel4, stratLevel = StartLocationLevel4$>
+		<$elseif rsExists(SearchResultNavigation & StartLocationLevel3) AND rsFirst(SearchResultNavigation & StartLocationLevel3) $>
+		   <$ SearchResultNavigationInternal = SearchResultNavigation & StartLocationLevel3, stratLevel = StartLocationLevel3$>
+		 <$endif$>  
+ 
+ 
+	<$ SearchResultNavigationInternal6 = SearchResultNavigationInternal$>
+	<!--end of (a)-->
+	 
+	 <$ SearchResultNavigationInternal6new = SearchResultNavigation & StartLocationLevel6$>
+ 
+	<!--(b)Creating copy of existing result set(returend in the service execution), to avoid the override -->	 
+	 <$rsCreateResultSet("SearchResultNavigationInternafinal","LocationId")$>
+	  
+	 <$rsMerge("SearchResultNavigationInternafinal",SearchResultNavigationInternal6,"LocationId")$>
+	 <!--end of (b)-->
+	
+	 <$ SearchResultNavigationInternal5 = SearchResultNavigation & StartLocationLevel5$>
+	 
+		<$ SearchResultNavigationInternalnew5 = SearchResultNavigation & StartLocationLevel5$>
+		
+		
+		<$ SearchResultNavigationInternal4 = SearchResultNavigation & StartLocationLevel4$>
+		
+		<$ SearchResultNavigationInternal3 = SearchResultNavigation & StartLocationLevel3$>
+ 
+ 
+ 
+ 
+
+
+<!--*******For level 5 and 6 location*******-->
+
+ <$lParentLocatlist=""$>	
+ 
+ <!---(a)Find out Parent location for Level 6-->
+ <$exec rsFirst(SearchResultNavigationInternal6new)$>
+ <$loopwhile getValue(SearchResultNavigationInternal6new, '#isRowPresent') $>
+ <$ exec rsNext(SearchResultNavigationInternal6new) $>
+	 <$ParentLocationId6 = getValue(SearchResultNavigationInternal6new, 'ParentLocationId')$>
+	 
+	 <$if  strLength(ParentLocationId6)  GT 0 $>
+	 
+		<$lParentLocatlist = strCommaAppendNoDuplicates(lParentLocatlist,ParentLocationId6)$>
+	 <$endif$>
+	 <$ exec rsNext(SearchResultNavigationInternal6new) $>			
+	
+<$endloop$> 
+
+ 
+ <$locationId5list=""$>	
+<$rsMakeFromString("lParentLocatlist6",lParentLocatlist,"ParentLocID")$>
+<!---End of (a)-->
+<$if rsExists("lParentLocatlist6")$> <!--(b)If level 6 is empty, skip (c)-->
+<$exec rsFirst(SearchResultNavigationInternal5)$> <!--** (c)Looping over Level 5 locations to find locations not existing as parents in level 6**-->
+<$loopwhile getValue(SearchResultNavigationInternal5, '#isRowPresent')$>
+
+<$ LocationId = getValue(SearchResultNavigationInternal5, 'LocationId')$>
+   <$locationExist4 = 'false'$>
+ <$exec rsFirst("lParentLocatlist6")$>
+ 
+		<$loopwhile getValue("lParentLocatlist6", '#isRowPresent') $>				
+			 <$locationId4 =""$>
+			<$ locationId4 = getValue("lParentLocatlist6", 'ParentLocID')$>
+			
+			 
+			<$if strEquals(locationId4,LocationId)$>	
+			 
+			  <$locationExist4 = 'true'$>
+			  <$break$>
+			<$endif$> 
+			 
+			 <$ exec rsNext("lParentLocatlist6") $>						
+		<$endloop$>
+  <$if strEquals(locationExist4,"false")$>	
+	
+    <$locationId5list = strCommaAppendNoDuplicates(locationId5list,LocationId)$>
+  <$endif$>
+   <$ exec rsNext(SearchResultNavigationInternal5) $>		
+<$endloop$> 
+<!--End of (c)-->
+<$endif$>
+ <!--End of (b)-->
+
+
+
+
+<$rsMakeFromString("locationlist",locationId5list,"LocationId")$>
+
+<$loop locationlist$>
+	 
+<$ LocationIdforFilter = getValue("locationlist", 'LocationId')$>
+	<$rsCopyFiltered(SearchResultNavigationInternalnew5,"selectedLocation",
+				"LocationId",LocationIdforFilter)$>
+	 <$setValue("selectedLocation","level",5)$>
+	   <$exec rsAppend("SearchResultNavigationInternafinal","selectedLocation")$>  
+	
+<$endloop$>
+
+<!--End-->
+
+
+
+<!--*******For level 4 and 5 location*******-->
+
+<$lParentLocatlistl5=""$>
+ <!---(a)Find out Parent location for Level 5-->
+ <$exec rsFirst(SearchResultNavigationInternalnew5)$>
+ <$loopwhile getValue(SearchResultNavigationInternalnew5, '#isRowPresent') $>
+    
+	 <$ParentLocationIdl5 = getValue(SearchResultNavigationInternalnew5, 'ParentLocationId')$>
+		 <$if  strLength(ParentLocationIdl5)  GT 0 $>
+	   		<$lParentLocatlistl5 = strCommaAppendNoDuplicates(lParentLocatlistl5,ParentLocationIdl5)$>
+	 <$endif$>
+	 <$ exec rsNext(SearchResultNavigationInternalnew5) $>			
+	
+<$endloop$> 
+<$rsMakeFromString("lParentLocatlist5",lParentLocatlistl5,"ParentLocID5")$>
+<!---End of (a)-->
+<$locationId4list=""$>
+
+<$if rsExists("lParentLocatlist5")$> <!--(b)If level 5 is empty, skip (c)-->
+<$exec rsFirst(SearchResultNavigationInternal4)$> <!--** (c)Looping over Level 4 locations to find locations not existing as parents in level 5**-->
+<$loopwhile getValue(SearchResultNavigationInternal4, '#isRowPresent')$>
+
+<$ LocationId = getValue(SearchResultNavigationInternal4, 'LocationId')$>
+   <$locationExist4 = 'false'$>
+ <$exec rsFirst("lParentLocatlist5")$>
+
+		<$loopwhile getValue("lParentLocatlist5", '#isRowPresent') $>				
+			 <$locationId4 =""$>
+			<$ locationId4 = getValue("lParentLocatlist5", 'ParentLocID5')$>
+			
+			 
+			<$if strEquals(locationId4,LocationId)$>	
+			 
+			  <$locationExist4 = 'true'$>
+			  <$break$>
+			<$endif$> 
+			 
+			 <$ exec rsNext("lParentLocatlist5") $>						
+		<$endloop$>
+  <$if strEquals(locationExist4,"false")$>	
+	
+    <$locationId4list = strCommaAppendNoDuplicates(locationId4list,LocationId)$>
+  <$endif$>
+   <$ exec rsNext(SearchResultNavigationInternal4) $>		
+<$endloop$> 
+<!--End of (c)-->
+<$endif$>
+<!--End of (b)-->
+
+
+<$rsMakeFromString("locationlist4",locationId4list,"LocationId")$>
+<$loop locationlist4$>
+	
+<$ LocationIdforFilter4 = getValue("locationlist4", 'LocationId')$>
+	<$rsCopyFiltered(SearchResultNavigationInternal4,"selectedLocation4",
+				"LocationId",LocationIdforFilter4)$>
+	  <$setValue("selectedLocation4","level","4")$>
+	   <$exec rsAppend("SearchResultNavigationInternafinal","selectedLocation4")$>  
+	
+<$endloop$>
+ <$abc = rsNumRows("SearchResultNavigationInternafinal")$>
+<!--End-->
+
+ 
+
+<!--*******For level 3 and 4 location*******-->
+
+ <!---(a)Find out Parent location for Level 4-->
+<$lParentLocatlist4l=""$>
+ <$exec rsFirst(SearchResultNavigationInternal4)$>
+ <$loopwhile getValue(SearchResultNavigationInternal4, '#isRowPresent') $>
+ 	 <$ParentLocationId4 = getValue(SearchResultNavigationInternal4, 'ParentLocationId')$>
+	 
+	 <$if  strLength(ParentLocationId4)  GT 0 $>
+	 
+		<$lParentLocatlist4l = strCommaAppendNoDuplicates(lParentLocatlist4l,ParentLocationId4)$>
+	 <$endif$>
+	 <$ exec rsNext(SearchResultNavigationInternal4) $>			
+	
+<$endloop$> 
+
+<$rsMakeFromString("lParentLocatlist4",lParentLocatlist4l,"ParentLocID4")$>
+<!---End of (a)-->
+
+<$locationId3list=""$>
+<$if rsExists("lParentLocatlist4")$><!--(b)If level 4 is empty, skip (c)-->
+
+<$exec rsFirst(SearchResultNavigationInternal3)$> <!--** (c)Looping over Level 3 locations to find locations not existing as parents in level 4**-->
+<$loopwhile getValue(SearchResultNavigationInternal3, '#isRowPresent')$>
+
+<$ LocationId = getValue(SearchResultNavigationInternal3, 'LocationId')$>
+   <$locationExist4 = 'false'$>
+ <$exec rsFirst("lParentLocatlist4")$>
+ 
+		<$loopwhile getValue("lParentLocatlist4", '#isRowPresent') $>				
+			 <$locationId4 =""$>
+			<$ locationId4 = getValue("lParentLocatlist4", 'ParentLocID4')$>
+			
+			 
+			<$if strEquals(locationId4,LocationId)$>	
+			 
+			  <$locationExist4 = 'true'$>
+			  <$break$>
+			<$endif$> 
+			 
+			 <$ exec rsNext("lParentLocatlist4") $>						
+		<$endloop$>
+ 
+ <$if strEquals(locationExist4,"false")$>	
+	    <$locationId3list = strCommaAppendNoDuplicates(locationId3list,LocationId)$>
+  <$endif$>
+   <$ exec rsNext(SearchResultNavigationInternal3) $>		
+<$endloop$> 
+<!--End of (c)-->
+<$endif$>
+<!--End of (b)-->
+
+
+<$rsMakeFromString("locationlist3",locationId3list,"LocationId")$>
+<$loop locationlist3$>
+	 
+<$ LocationIdforFilter3 = getValue("locationlist3", 'LocationId')$>
+
+	<$rsCopyFiltered(SearchResultNavigationInternal3,"selectedLocation3",
+				"LocationId",LocationIdforFilter3)$>
+	 <$setValue("selectedLocation3","level","3")$>
+	   <$exec rsAppend("SearchResultNavigationInternafinal","selectedLocation3")$>  
+	
+<$endloop$>
+
+<!--End-->
+
+<!--*******For Display of the Final ResultSet*******-->
+<$exec rsFirst(SearchResultNavigationInternafinal)$>
+ 
+ 
+	
+    			<$rsSort("SearchResultNavigationInternafinal","locationDescription","string","asc")$>
+				<$if rsExists("SearchResultNavigationInternafinal") AND  rsFirst("SearchResultNavigationInternafinal")   $>
+						<ol>
+						<$loopwhile getValue("SearchResultNavigationInternafinal", '#isRowPresent') $>
+							<$ coordinates = getValue("SearchResultNavigationInternafinal", 'drillDownOptionValue')$>
+							<$ locationDesc = getValue("SearchResultNavigationInternafinal", 'locationDescription')$>
+							<$ count = getValue("SearchResultNavigationInternafinal", 'count') $>
+							<$ index = strIndexOf(coordinates, '#'), locationLongitude = strSubstring(coordinates, 0, index), locationLatitude = strSubstring(coordinates, index+1) $>
+							<$ coordValue = '' $>
+							<$if #active.level_filter AND strLength(level_filter) GT 0 $>
+						    <$ coordValue = level_filter & ';' $>
+							<$endif$>
+
+                            
+							
+							<$if strLength(SearchResultNavigationInternafinal.level) GT 0$>
+						     <$stratLevel1 = SearchResultNavigationInternafinal.level$>
+							 <$ coordValue = coordValue & stratLevel1 & ',' $> 
+							<$else$>
+							 	<$stratLevel = #active.stratLevel $> 
+                              	 <$ coordValue = coordValue & stratLevel & ',' $> 					 
+						   <$endif$>
+							
+							
+							<$if #active.ne_longitude_filter AND strLength(ne_longitude_filter) GT 0$>
+							    
+								<$ coordValue = coordValue & ne_longitude_filter & ';' $>
+							<$endif$>
+
+
+							<$ coordValue = coordValue & locationLongitude & ',' $>
+
+
+
+							<$if #active.ne_latitude_filter AND strLength(ne_latitude_filter) GT 0$>
+								<$ coordValue = coordValue & ne_latitude_filter & ';' $>
+							<$endif$>
+
+
+							<$ coordValue = coordValue & locationLatitude $>
+
+
+							<li>
+								<input type="radio" class="joff" name="location" id="<$coordinates$>" value="<$ coordValue $>"/>
+								<label for="<$coordinates$>"><$locationDesc$>(<$count$><span class="access"> <$contentType$></span>)</label>
+							</li>
+
+							<$ exec rsNext("SearchResultNavigationInternafinal") $>
+						<$endloop$>
+						</ol>
+					<$endif$>
+					</li>
+	</ol>
+<!---endof display-->
+	  
+<@end@>
+
+
+
+
+<!--****************** LEFT_HAND FACETS **********************
+**********************************************************---->
+<@dynamichtml LeftHandJobSearchResults@>
+	<$if rsExists('SearchResults') AND SearchResults.#numRows GT 0 $>
+		<$inc("search_result_" & searchFacetsSuffix & "_facets") $>
+	<$endif$>
+<@end@>
+
+<@dynamichtml search_result_cerow1_facets@>
+	<$if NOT (#env.numItemsPerSearchResultNavigation AND #env.numMaxItemsPerSearchResultNavigation) $>
+			<$ numItemsPerSearchResultNavigation= 6, numMaxItemsPerSearchResultNavigation = 12 $>
+	<$endif$>
+
+<div class="ehc_search">
+	<p class="head"><$lc('wwEnhanceSearch')$></p>	
+	<$if contentType like "Jobs"$>
+		<$include search_result_facet_posted_date$>
+	<$endif$>
+	<$isAPACCountry=''$>
+		<$if isoCountryCode like "AU|NZ|JP|CN|HK|SG|MY"$>
+			<$isAPACCountry=1$>
+		<$endif$>
+	<$inc("search_result_facet_" & jobtypeWidgetSuffix & "_jobtype")$>
+	[[%<$include search_result_facet_keywords$>%]]
+	<$include search_result_facet_locations$>
+	<$include search_result_facet_industry$>
+	[[%<$include search_result_facet_jobtype$>%]]
+	<$include search_result_facet_expertise$>
+</div>
+<div class="s_mrg center">
+<form action="index.htm" method="GET">
+
+<button type= "submit" class="button_1 regfs"><div class="ie-button-fixed"><$lc('wwClearAllFilters')$></div></button>
+
+<$include job_search_results_buildsearchquery_basic$>
+<$include job_search_results_clear_filters_inc$>
+
+</form>
+</div>
+<div class="s_mrg center">
+	<$if contentType like "Candidates"$>
+		<$searchPagelink = ssNodeLink('candidates-search', siteId) $>
+	<$else$>
+		<$searchPagelink = ssNodeLink('jobs-search', siteId) $>
+	<$endif$>
+	
+	<a href="<$searchPagelink$>" class="button_1 regfs"><$lc('wwStartNewSearch')$></a>
+</div>
+
+
+
+<@end@>
+<@dynamichtml search_result__facets@>
+
+	<$if NOT (#env.numItemsPerSearchResultNavigation AND #env.numMaxItemsPerSearchResultNavigation) $>
+			<$ numItemsPerSearchResultNavigation= 6, numMaxItemsPerSearchResultNavigation = 12 $>
+	<$endif$>
+
+<div class="ehc_search">
+	<p class="head"><$lc('wwEnhanceSearch')$></p>
+	<!--POC Changes for Search Start -->
+	[[%<$include search_result_facet_automated_title$>%]]
+	<!--POC Changes for Search End -->
+	<!--added on 12/08/2011 for R7.0 change of Posted Date facet -->	
+	<$if contentType like "Jobs"$>
+		<$include search_result_facet_posted_date$>
+	<$endif$>
+	<!--end -->
+	<$isAPACCountry=''$>
+		<$if isoCountryCode like "AU|NZ|JP|CN|HK|SG|MY"$>
+			 <$isAPACCountry=1$>
+		<$endif$>
+	<$inc("search_result_facet_" & jobtypeWidgetSuffix & "_jobtype")$>
+	[[%<$include search_result_facet_keywords$>%]]
+	<$include search_result_facet_locations$>
+	<$include search_result_facet_industry$>
+	[[%<$include search_result_facet_jobtype$>%]]
+	<$include search_result_facet_expertise$>
+</div>
+<div class="s_mrg center">
+<form action="index.htm" method="GET">
+
+<button type= "submit" class="button_1 regfs"><div class="ie-button-fixed"><$lc('wwClearAllFilters')$></div></button>
+
+<$include job_search_results_buildsearchquery_basic$>
+<$include job_search_results_clear_filters_inc$>
+
+</form>
+</div>
+
+<div class="s_mrg center">
+	<$if contentType like "Candidates"$>
+		<$searchPagelink = ssNodeLink('candidates-search', siteId) $>
+	<$else$>
+		<$searchPagelink = ssNodeLink('jobs-search', siteId) $>
+	<$endif$>
+	<a href="<$searchPagelink$>" class="button_1 regfs"><$lc('wwStartNewSearch')$></a>
+</div>
+
+
+
+<@end@>
+
+<@dynamichtml search_result_facet_automated_title@>
+	<$if rsExists("SearchResultNavigationxAutomatedTitle")$>
+	<div class="ehc_box">
+		<form action="index.htm" method="GET">
+			<fieldset>
+				<legend id="legend1"><span><$lc('wwJobTitleSearchFilterLabel')$></span></legend>
+				<$SearchResultNavigation="SearchResultNavigationxAutomatedTitle"$>
+				<$include job_search_results_title_filter$>
+			</fieldset>
+			<div>
+				<button type="submit" class="button_1 clear_ehc"><$lc('wwTitleFilter')$></button>
+				<$if strLength(#active.job_job_title_filter) gt 0$><$lc('wwOrClearFilter')$><$endif$>
+				<$formName="jobtitleform"$>
+				<$include job_search_results_buildsearchquery_basic$>
+				<input type="hidden" value="<$if #active.job_job_title_filter AND strLength(job_job_title_filter) GT 0 $><$job_job_title_filter$>;<$endif$>" name="job_job_title_filter" class="ehc"/>
+			</div>
+		</form>
+	</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml search_result_facet_industry@>
+	[[% Industry %]]
+	<$if rsExists("SearchResultNavigationxIndustry")$>
+	<div class="ehc_box">
+		<form action="index.htm" method="GET">
+			<fieldset>
+				<legend id="legend2"><span><$lc('wwIndustryOrSection')$></span></legend>
+				<$jobtypevalue=0$>
+				<$SearchResultNavigation="SearchResultNavigationxIndustry"$>
+				<$include job_search_results_industry_filter$>
+			</fieldset>
+			<div class="clearfilter">
+				<$if strLength(#active.job_industry_filter) gt 0$>
+					<button class="button_1 clear_ehc" ><$ lc('wwOrClearFilter') $></button>					
+				<$endif$>
+				<button type="submit" class="button"><$lc('wwIndustryFilter')$><span class="access"></span></button>
+				<$formName="industryform"$>
+				<$include job_search_results_buildsearchquery_basic$>
+				<input type="hidden" value="<$if #active.job_industry_filter AND strLength(job_industry_filter) GT 0 $><$job_industry_filter$>;<$endif$>" name="job_industry_filter" class="ehc"/>
+			</div>
+		</form>
+	</div>
+	<$endif$>
+<@end@>
+
+
+
+<@dynamichtml search_result_facet_expertise@>
+	[[% Expertise %]]
+	<$if rsExists("SearchResultNavigationxSpecialismId")$>
+	<div class="ehc_box">
+		<form action="index.htm" method="GET">
+			<fieldset>
+				<legend id="legend2"><span><$lc('wwAreasOfExpertise')$></span></legend>
+				<$jobtypevalue=0$>
+				<$SearchResultNavigation="SearchResultNavigationxSpecialismId"$>
+				<$include job_search_results_expertise_filter$>
+			</fieldset>
+			<div class="clearfilter">
+				<$if strLength(#active.job_category_filter) gt 0$>
+					<button class="button_1 clear_ehc" ><$ lc('wwOrClearFilter') $></button>
+				<$endif$>
+				<button type="submit" class="button"><$lc('wwIndustryFilter')$><span class="access"></span></button>
+				<$formName="areaofexpertise"$>
+				<$include job_search_results_buildsearchquery_basic$>
+				<input type="hidden" value="<$if #active.job_category_filter AND strLength(job_category_filter) GT 0 $><$job_category_filter$>&<$endif$>" name="job_category_filter" class="ehc"/>
+			</div>
+		</form>
+	</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml search_result_facet_keywords@>
+		[[% Keywords %]]
+	<$if strLength(#active.job_keywords) gt 0$>
+	<div class="ehc_box">
+		<form action="index.htm" method="GET">
+			<fieldset>
+				<legend id="legend3"><span><$lc('wwSkillsKeywords')$></span></legend>
+				<ol>
+
+			<$rsMakeFromString("rsSpecialKeywords", #env.specialKeyWordsForHaysSearch, "specialkeyword")$>
+
+			<$if #active.job_keywords_filter and strLength(#active.job_keywords_filter)$>
+				<$newKeywords=#active.job_keywords_filter$>
+			<$else$>
+				<$newKeywords=#active.job_keywords$>
+			<$endif$>
+
+			<$loop rsSpecialKeywords$>
+				<$strRegularExpression=strReplace(rsSpecialKeywords.specialkeyword,"\\","")$>
+				<$exec rsNext("rsSpecialKeywords")$>
+				<$strNewString=rsSpecialKeywords.specialkeyword$>
+				<$newKeywords=strReplaceIgnoreCase(newKeywords, strNewString, strRegularExpression)$>
+			<$endloop$>
+
+			[[%$job_keywords=newKeywords$ %]]
+			<$if #active.job_keywords_filter and strLength(#active.job_keywords_filter)$>
+				<$rsMakeFromString("rsKeywords", job_keywords_filter, "keyword")$>
+			<$else$>
+				<$rsMakeFromString("rsKeywords", job_keywords, "keyword")$>
+			<$endif$>
+
+			<$rsMakeFromString("rsNewKeywords", newKeywords, "newkeyword")$>
+			<$exec rsFirst("rsNewKeywords")$>
+			
+			<$if rsNumRows("rsKeywords") eq 1$>
+				<$exec rsFirst("rsKeywords")$>				 
+				<li><span class="label"><$newkeyword$></span></li>
+				
+			<$else$>
+				<$loop rsKeywords$>
+						<$rsKeywords.keyword=strReplace(rsKeywords.keyword,"\"","\&quot;")$>
+						<$rsNewKeywords.newkeyword=strReplace(rsNewKeywords.newkeyword,"\"","\&quot;")$>						
+						<li>
+							<input type="checkbox" id="<$keyword$>" name="<$keyword$>" value="<$newkeyword$>" />
+							<label for="<$keyword$>"><$newkeyword$></label>
+						</li>
+						<$exec rsNext("rsNewKeywords")$>
+				<$endloop$>
+			<$endif$>
+				</ol>
+			</fieldset>
+
+			<div class="clearfilter">
+				<$if strLength(#active.job_keywords_filter) gt 0$>
+					<button  class="button_1 clear_ehc" ><$ lc('wwOrClearFilter') $></button>
+				<$endif$>
+				<button type="submit" class="button"><$lc('wwKeywordsFilter')$><span class="access"></span></button>
+			<$formName="keywordsform"$>
+			<$include job_search_results_buildsearchquery_basic$>
+			
+			<input type="hidden" value="" name="job_keywords_filter" class="ehc" />
+		     </div>
+		</form>
+	</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml search_result_facet_locations@>
+			[[% Locations %]]
+			
+	<$if rsExists("SearchResultNavigationxHaysLocation1")$>
+	<div class="ehc_box">
+		<form class="select" action="index.htm" method="GET">
+			<fieldset>
+				<legend id="legend4"><span><$lc('wwLocationFilter')$></span></legend>
+				<$jobtypevalue=0$>
+				<$ SearchResultNavigation = "SearchResultNavigationxHaysLocation"$>
+				<$if strEquals(isAPACCountry,'1')$>
+				  <$include job_search_results_location_filter_apac$>
+				<$else$>
+				 <$include job_search_results_location_filter$>
+				<$endif$>
+			</fieldset>
+			<div>
+				<$if strLength(#active.level_filter) gt 0$>
+				<button type="submit" class="button_1 clear_ehc" ><$lc('wwOrClearFilter')$></button>
+     	    	<$endif$>
+			<$formName="locationform"$>
+			<$include job_search_results_buildsearchquery_basic$>
+
+			<!--div class="joff"-->
+				<input type="hidden" name="ne_longitude_filter" value="<$ #active.ne_longitude_filter$>" class="ehc"/>
+				<input type="hidden" name="ne_latitude_filter" value="<$ #active.ne_latitude_filter $>" class="ehc"/>
+				<input type="hidden" name="level_filter" value="<$ #active.level_filter $>" class="ehc"/>
+			<!--/div-->
+			</div>
+		</form>
+
+
+
+
+			[[% Radius %]]
+		<$if #active.ne_longitude_filter $>
+		<$elseif #active.ne_longitude AND strLength(ne_longitude) GT 0 AND NOT strEquals(ne_longitude, '0')  AND #active.ne_latitude AND strLength(ne_latitude) GT 0 AND NOT strEquals(ne_latitude, '0')  $>
+			
+		<$endif$>
+	</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml search_result_facet_slider_jobtype@>
+	<!-- ****************** JOB TYPE Slider****************
+	*************************************************-->	
+	<$if rsExists("SearchResultNavigationxJobType")$>
+	<div class="ehc_box">	 
+		<form action="index.htm" method="GET">	
+		    <$formName="jobtypeform"$>
+			<$jobtypevalue=1$>
+		   <$include job_search_results_buildsearchquery_basic$>
+			<fieldset>
+				<legend><span><$lc('wwJobType')$></span></legend>
+				<$rsSort("SearchResultNavigationxJobType","count","int","desc")$>
+				<$SearchResultNavigation="SearchResultNavigationxJobType"$>
+				<$include job_search_results_type_slider_filter$>				
+			</fieldset>
+			<div class="clearfilter">
+				<$if (strLength(#active.job_type_slider_filter) gt 0)$>
+					<button  class="button_1 clear_ehc" ><$lc('wwOrClearFilter')$></button>
+				<$endif$>		
+				<button type="submit" class="button"><$lc('wwJobTypeFilter')$><span class="access"></span></button>
+				<input type="hidden" value="true" name="job_type_slider_filter" class="ehc" />
+			[[%<input type="hidden" value="<$if #active.job_type_filter AND strLength(job_type_filter) GT 0 $><$job_type_filter$>;<$endif$>" name="job_type_filter" class="ehc" />%]]
+			</div>
+		</form>
+	</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml search_result_facet__jobtype@>
+	<!-- ****************** JOB TYPE ****************
+	*************************************************-->
+	<$if rsExists("SearchResultNavigationxJobType")$>
+	<div class="ehc_box">
+		<form action="index.htm" method="GET">
+			<$formName="jobtypeform"$>
+			<$include job_search_results_buildsearchquery_basic$>
+			<fieldset>
+				<legend><span><$lc('wwJobType')$></span></legend>
+				<$SearchResultNavigation="SearchResultNavigationxJobType"$>
+				<$include job_search_results_type_filter$>
+			</fieldset>
+			<div class="clearfilter">
+				<$if (strLength(#active.job_permanent_filter) gt 0) or (strLength(#active.job_contract_filter) gt 0) or (strLength(#active.job_temporary_filter) gt 0)$>
+					<button  class="button_1 clear_ehc" ><$lc('wwOrClearFilter')$></button>
+				<$endif$>
+				<button type="submit" class="button"><$lc('wwJobTypeFilter')$><span class="access"></span></button>
+
+			<input type="hidden" value="<$if #active.job_type_filter AND strLength(job_type_filter) GT 0 $><$job_type_filter$>;<$endif$>" name="job_type_filter" class="ehc" />
+		      </div>
+		</form>
+	</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml job_search_results_buildsearchquery_google_url@>
+	<$ queryStr = '' $>
+	<$ paramName = 'q' $><$include buildsearchquery_include$>
+	<$ paramName = 'locationToSearch' $><$include buildsearchquery_include$>
+	<$ paramName = 'ne_latitude' $><$include buildsearchquery_include$>
+	<$ paramName = 'contentType' $><$include buildsearchquery_include$>
+	<$ paramName = 'ne_longitude' $><$include buildsearchquery_include$>
+	<$ paramName = 'level' $><$include buildsearchquery_include$>
+	<$ paramName = 'partialfields' $><$include buildsearchquery_include$>
+	<$queryStr = queryStr & '&amp;' &  'site=' & GoogleSite$>
+	<$queryStr = queryStr & '&amp;' &  'proxyreload=0' $>
+	<$queryStr = queryStr & '&amp;' &  'filter=0'$>
+	<$queryStr = queryStr & '&amp;' &  'btnG=' & GoogleBtnG$>
+	<$queryStr = queryStr & '&amp;' &  'client=' & lc('GoogleClient')$>
+	<$queryStr = queryStr & '&amp;' &  'proxystylesheet=' & lc('GoogleClient')$>
+	<$queryStr = queryStr & '&amp;' &  'getfields=*' $>
+	<$queryStr = queryStr & '&amp;' &  'entsp=' & lc('GoogleEntsp')$>
+	<$queryStr = queryStr & '&amp;' &  'oe=UTF-8'$>
+	<$queryStr = queryStr & '&amp;' &  'exclude_apps=1' $>
+	<$queryStr = queryStr & '&amp;' &  'ud=1' $>
+	<$queryStr = queryStr & '&amp;' &  'siteLocale=' & SiteLocale$>
+	<$if strEquals(isInternationalWebsite,"1") $>
+		<$queryStr = queryStr & '&amp;' &  'requiredfields=MicrositeID:' & ssGetSiteProperty(siteId,"micrositeCode")&'|IsInternationalPosting:Y|OilandGasPosting:Y'$>
+		
+	<$else$>
+		<$queryStr = queryStr & '&amp;' &  'requiredfields=xlocale:' & SiteLocale$>	
+	<$endif$>	
+	<$queryStr = queryStr & '&amp;' &  'sort=date:D:L:d1' $>
+	<$queryStr = queryStr & '&amp;' &  'domainId=' &domainId $>
+	<$queryStr = strSubstring(queryStr,5)$>
+	<$builtQuery = queryStr $>
+<@end@>
+
+<@dynamichtml job_search_results_buildsearchquery_url@>
+	<$ queryStr = '' $>
+	<$ paramName = 'job_title' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_job_title' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_title_ref' $><$include buildsearchquery_include$>
+	<$ paramName = 'contentType' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_type' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_keywords' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_category' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_industry' $><$include buildsearchquery_include$>
+	<$ paramName = 'ne_latitude' $><$include buildsearchquery_include$>
+	<$ paramName = 'ne_longitude' $><$include buildsearchquery_include$>
+	<$ paramName = 'radius' $><$include buildsearchquery_include$>
+	<$ paramName = 'level' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_permanent' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_min_permanent' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_max_permanent' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_select_permanent' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_temporary' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_min_temporary' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_max_temporary' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_select_temporary' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_contract' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_min_contract' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_max_contract' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_select_contract' $><$include buildsearchquery_include$>
+
+	<$ paramName = 'job_job_title_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_keywords_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_industry_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_type_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'ne_latitude_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'ne_longitude_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'radius_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'level_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_permanent_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_temporary_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_contract_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_category_filter' $><$include buildsearchquery_include$>
+
+	<$ paramName = 'ResultsPerPage' $><$include buildsearchquery_include$>
+	<$ paramName = 'SortField' $><$include buildsearchquery_include$>
+	<$ paramName = 'SortOrder' $><$include buildsearchquery_include$>
+	<$ paramName = 'do_search' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_location' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_international' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_nonEU' $><$include buildsearchquery_include$>
+	<$ paramName = 'isOnlyJobTitle' $><$include buildsearchquery_include$>
+	<$ paramName = 'isFuzzy' $><$include buildsearchquery_include$>
+	<$ paramName = 'isHomePageSearch' $><$include buildsearchquery_include$>
+	<$ paramName = 'isAdvanceSearch' $><$include buildsearchquery_include$>
+	<!-- added for posted date facet-->
+	<$ paramName = 'job_posteddate_filter' $><$include buildsearchquery_include$>	
+	<!--end-->
+	<$ paramName = 'job_postcode' $><$include buildsearchquery_include$><!--added for alert form requirement for release 7-->
+	<$ paramName = 'location_set' $><$include buildsearchquery_include$>	
+	
+	[[% Added for R7 Job Type Facet %]] 	
+	<$ paramName = 'job_type_slider_filter' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_min_permanent_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_max_permanent_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_min_temporary_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_max_temporary_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_min_contract_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_max_contract_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_permanent_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_temporary_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_contract_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_select_perm_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_select_temp_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'job_select_cont_slider' $><$include buildsearchquery_include$>
+	<$ paramName = 'MicrositeCode' $><$include buildsearchquery_include$>
+	
+	<$builtQuery = queryStr $>
+<@end@>
+
+
+
+
+<@dynamichtml job_search_results_buildsearchquery@>
+	<$include job_search_results_buildsearchquery_basic$>
+
+	<$ paramName = 'StartRow' $><$include buildsearch_form_include $>
+	<$ paramName = 'PageNumber' $><$include buildsearch_form_include $>
+<@end@>
+
+
+
+
+
+
+<@dynamichtml job_search_results_buildsearchquery_basic@>
+	<$ paramName = 'contentType' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_title' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_job_title' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_title_reference' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_keywords' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_category' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_type' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_industry' $><$include buildsearch_form_include $>
+	<$ paramName = 'ne_latitude' $><$include buildsearch_form_include $>
+	<$ paramName = 'ne_longitude' $><$include buildsearch_form_include $>
+	<$ paramName = 'radius' $><$include buildsearch_form_include $>
+	<$ paramName = 'level' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_permanent' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_min_permanent' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_max_permanent' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_select_permanent' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_temporary' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_min_temporary' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_max_temporary' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_select_temporary' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_contract' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_min_contract' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_max_contract' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_select_contract' $><$include buildsearch_form_include $>
+
+	<$ paramName = 'job_job_title_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_keywords_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_industry_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_type_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'ne_latitude_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'ne_longitude_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'radius_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'level_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_permanent_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_temporary_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_contract_filter' $><$include buildsearch_form_include $>
+	<$ paramName = 'SortField' $><$include buildsearch_form_include $>
+	<$ paramName = 'SortOrder' $><$include buildsearch_form_include $>
+	<$ paramName = 'do_search' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_location' $><$include buildsearch_form_include $>
+	<$ paramName = 'job_international' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_nonEU' $><$include buildsearch_form_include$>
+	<$ paramName = 'isOnlyJobTitle' $><$include buildsearch_form_include$>
+	<$ paramName = 'isFuzzy' $><$include buildsearch_form_include$>
+	<$ paramName = 'isHomePageSearch' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_title_ref' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_category_filter' $><$include buildsearch_form_include$>
+	<$ paramName = 'isAdvanceSearch' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_postcode' $><$include buildsearch_form_include$><!--added for alert form requirement for release 7-->
+	[[% Added for R7 Job Type Facet %]]
+	<$ paramName = 'job_type_slider_filter' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_min_permanent_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_max_permanent_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_min_temporary_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_max_temporary_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_min_contract_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_max_contract_slider' $><$include buildsearch_form_include$>
+	
+	<$if jobtypevalue !=1$>
+	<$ paramName = 'job_permanent_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_temporary_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_contract_slider' $><$include buildsearch_form_include$>
+	<$endif$>
+	
+	<$ paramName = 'job_select_perm_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_select_temp_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_select_cont_slider' $><$include buildsearch_form_include$>
+	<$ paramName = 'job_posteddate_filter' $><$include buildsearch_form_include$>
+    <$ paramName = 'location_set' $><$include buildsearch_form_include$>	
+	
+	
+<@end@>
+
+
+
+
+
+
+<@dynamichtml buildsearchquery_include@>
+
+	<$ val = getValue('#active', paramName)  $>
+	<$if strLength(val) GT 0 $>
+		<!-- URL encode -->
+	<$val=url(val)$>
+	
+		<!-- end URL encode -->
+		<$ queryStr = queryStr & '&amp;' &  paramName & '=' & val $>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml buildsearch_form_include@>
+	<$ val = getValue('#active', paramName)  $>
+	<$if strLength(val) GT 0 $>
+	<$if strEquals(nodeId,'candidatessearchresults') and (strEquals(paramName,"SortField") OR strEquals(paramName,"SortOrder"))$>
+	<$else$>
+	<$val=strReplace(val,"\"","\&quot;")$>
+		<input type="hidden" name="<$paramName$>" value="<$ val $>"/>
+	 <$endif$>
+	 <$endif$>
+<@end@>
+
+
+
+<@dynamichtml job_search_results_subtmp_inc@>
+	<!--main content -->
+	<$include job_search_results_buildsearchquery_url$>
+	<div class="content_main">
+		<h1><$strUpper(ssGetNodeProperty("label"))$></h1>
+
+	<$if rsExists("SearchResults") and SearchResults.#numRows gt 0$>
+		<$include job_search_results_counter_inc$>
+		<$include job_search_results_filter_inc$>
+		<table summary="Job search results" class="hays_table job_results">
+		<$include job_search_results_tableheader_inc$>
+		<tbody>
+			<$include job_search_results_displayresults_inc$>
+		</tbody>
+		</table>
+		<$include job_search_results_counter_bottom_inc$>
+	<$else$>
+		[[% NO RESULT was found %]]
+
+		<$lc('wwNoResultFound')$>
+		<$parentnodeId=ssGetRelativeNodeId(siteId,nodeId,"parent")$>
+		<$if strEquals(parentnodeId,"candidates-search")$>
+		<p><a href="<$ssNodeLink('candidates-search', siteId)$>" class="button_1"><span><$lc('wwStartNewSearch')$></span></a></p>
+              <$else$>
+		<p><a href="<$ssNodeLink('jobs-search', siteId)$>" class="button_1"><span><$lc('wwStartNewSearch')$></span></a></p>
+              <$endif$>
+
+	<$endif$>
+		</div>
+		</div>
+	</div>
+	<!--/main content -->
+<@end@>
+
+
+
+
+
+<@dynamichtml job_search_results_getresults_inc@>
+	<$include job_search_results_set_params_inc$>
+	<$include validate_search_params_inc$>
+		<$ executeService('HAYS_VALIDATE_SEARCH_PARAMS_NEW')$>  <!-- To avoid 303 redirect web crash issue-->
+	<$if strLength(#active.STATUS) == 0$>
+	<$if isTrue(isValid) $>
+        <$executeService("HAYS_GET_SEARCH_RESULTS")$>
+	<$endif$>
+	 <$else$>
+	
+           <$urlToRedirectTo = HTTP_REFERER$>
+		   <$if strIndexOf(urlToRedirectTo,'?') gt 0$>
+		      <$ urlToRedirectTo = urlToRedirectTo & "&STATUS=" & STATUS$>
+		   <$else$>
+		      <$ urlToRedirectTo = urlToRedirectTo & "?STATUS=" & STATUS$>
+		   <$endif$>
+	      <$if not (strIndexOf(HTTP_REFERER,"jobssearchresults") or strIndexOf(HTTP_REFERER,"candidatessearchresults"))$>
+		   		<$redirectToUrl(urlToRedirectTo)$>
+		   <$endif$>	
+			 
+	<$endif$>
+	<$ne_latitude=lat, ne_longitude=lon, radius=rad, level=lev$>
+<@end@>
+
+
+
+
+<@dynamichtml job_search_results_getresults_simple_inc@>
+	<$include job_search_results_set_params_inc$>
+	<$include validate_search_params_inc$>
+	<$if isTrue(isValid) $>
+		<$executeService("HAYS_GET_SEARCH_RESULTS_SIMPLE")$>
+	<$endif$>
+	<$ne_latitude=lat, ne_longitude=lon, radius=rad, level=lev$>
+<@end@>
+
+
+
+<@dynamichtml validate_search_params_inc@>
+	<$ replacement = '', regExp = "[\\]\\[_\\\\{}\\^\\$\\,\\.\\|\\?\\*\\+\\(\\)/% #]+", isValid = 0 $>
+	<$if #active.job_title AND strLength(strReplaceReg(job_title, regExp, replacement)) GT 0 $>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_job_title AND strLength(strReplaceReg(job_job_title, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_job_title_descr AND strLength(strReplaceReg(job_job_title_descr, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_title_ref AND strLength(strReplaceReg(job_title_ref, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_industry AND strLength(strReplaceReg(job_industry, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_keywords AND strLength(strReplaceReg(job_keywords, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_industry AND strLength(strReplaceReg(job_industry, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_category AND strLength(strReplaceReg(job_category, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>
+	<$elseif  #active.job_location AND strLength(strReplaceReg(job_location, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>	
+	<$elseif  #active.do_search AND strLength(strReplaceReg(do_search, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>	
+	<$elseif  #active.location_set AND strLength(strReplaceReg(location_set, regExp, replacement)) GT 0$>
+		<$ isValid = 1 $>	
+	<$endif$>
+<@end@>
+
+
+
+
+<@dynamichtml job_search_results_set_params_inc@>
+	<$if #active.job_job_title_filter like "*clear*"$>	<$job_job_title_filter=""$>	<$endif$>
+	<$if #active.job_keywords_filter like "*clear*"$>		<$job_keywords_filter=""$>	<$endif$>
+	<$if #active.job_industry_filter like "*clear*"$>		<$job_industry_filter=""$>	<$endif$>
+	<$if #active.ne_latitude_filter like "*clear*"$>		<$ne_latitude_filter=""$>	<$endif$>
+	<$if #active.ne_longitude_filter like "*clear*"$>		<$ne_longitude_filter=""$>	<$endif$>
+	<$if #active.radius_filter like "*clear*"$>			<$radius_filter=""$>		<$endif$>
+	<$if #active.level_filter like "*clear*"$>			<$level_filter="", ne_latitude_filter="", ne_longitude_filter=""$>	<$endif$>
+	<$if #active.job_type_filter like "**clear**"$>		<$job_type_filter="", job_permanent_filter="", job_temporary_filter="", job_contract_filter=""$>	<$endif$>
+	<$if #active.job_type_slider_filter like "*clear*"$><$job_type_slider_filter=""$><$job_permanent_slider=""$><$job_temporary_slider=""$><$job_contract_slider=""$><$endif$>
+	<$if #active.job_category_filter like "*clear*"$>		<$job_category_filter=""$>	<$endif$>
+	<$if #active.job_posteddate_filter like "*clear*" $>  <$job_posteddate_filter=""$> <$endif$>
+	<$lat=#active.ne_latitude, lon=#active.ne_longitude, rad=#active.radius, lev=#active.level$>
+	<$if #active.ResultCount gt 3$>
+		<$if #active.ResultsPerPage$>
+			<$ResultCount=ResultsPerPage$>
+		<$else$>
+			<$ResultCount=10, ResultsPerPage=10$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml job_search_results_clear_filters_inc@>
+
+<input type="hidden" value="clear" name="job_keywords_filter" />
+<input type="hidden" value="clear" name="job_industry_filter" />
+<input type="hidden" value="clear" name="job_type_filter" />
+<input type="hidden" value="clear" name="ne_latitude_filter" />
+<input type="hidden" value="clear" name="ne_longitude_filter" />
+<input type="hidden" value="clear" name="radius_filter" />
+<input type="hidden" value="clear" name="level_filter" />
+<input type="hidden" value="clear" name="job_permanent_filter" />
+<input type="hidden" value="clear" name="job_temporary_filter" />
+<input type="hidden" value="clear" name="job_industry_filter" />
+<input type="hidden" value="clear" name="job_contract_filter" />
+<input type="hidden" value="clear" name="job_category_filter" />
+<input type="hidden" value="clear" name="job_posteddate_filter" />
+<input type="hidden" value="clear" name="job_type_slider_filter" />
+<input type="hidden" value="clear" name="job_permanent_slider" />
+<input type="hidden" value="clear" name="job_temporary_slider" />
+<input type="hidden" value="clear" name="job_contract_slider" />
+
+<@end@>
+
+
+
+
+<!--==================================================
+		Main Search Result Pagination
+=====================================================-->
+<@dynamichtml job_search_results_counter_inc@>
+
+	<$if rsExists("SearchResults") and SearchResults.#numRows gt 0$>
+		<$ NumPages = TotalRows / ResultCount $>
+		<$if (TotalRows % ResultCount) GT 0 $>
+			<$ NumPages = NumPages + 1 $>
+		<$endif$>
+		<div class="counter<$#active.counterPosition$>">
+			<div class="grid_7 alpha">
+				<$if (EndRow+StartRow-1) lt TotalRows$><$endCount = EndRow+StartRow-1$><$else$><$ endCount = TotalRows$><$endif$>
+				<$if #active.contentType like "Jobs"$>
+					<$type=lc('wwJob')$>
+					<$lc('wwShowResultCount', type, StartRow, endCount, TotalRows)$>
+				<$else$>
+					<$type=lc('wwCandidate')$>
+					<$lc('wwShowCandidateResultCount', type, StartRow, endCount, TotalRows)$>
+				<$endif$>
+				
+			</div>
+			<div class="grid_7 omega">
+				<ul>
+				<$if PageNumber gt 1$>
+					<li><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;ResultCount=<$ResultCount$>&amp;<$builtQuery$>" class="prev"><$lc('wwPreviousPage') $></a></li>
+				<$endif$>
+				<$pageIndex = 1$>
+				<$loopwhile ((pageIndex le NumPages) and (NumPages ne 1))$>
+					<$if (pageIndex eq PageNumber)$>
+					<li><span class="strong"><span class="access"><$lc('wwPage')$> </span><$pageIndex$></span></li>
+					<$else$>
+					<li><a href="index.htm?PageNumber=<$pageIndex$>&amp;StartRow=<$(pageIndex-1)*ResultCount+1$>&amp;ResultCount=<$ResultCount$>&amp;<$builtQuery$>"><span class="access"><$lc('wwPage')$> </span><$pageIndex$></a></li>
+					<$endif$>
+					<$pageIndex=pageIndex+1$>
+				<$endloop$>
+				<$if PageNumber lt NumPages$>
+					<li><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>&amp;ResultCount=<$ResultCount$>&amp;<$builtQuery$>" class="next"><$lc('wwNextPage')$></a></li>
+				<$endif$>
+				</ul>
+			</div>
+		</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml job_search_results_counter_bottom_inc@>
+	<$counterPosition=" bottom"$>
+	<$include job_search_results_counter_inc$>
+	<$include add_search_save_link$>
+	<$include handle_wcm_call_inc$>
+<@end@>
+
+
+<@dynamichtml map_links_inc@>
+	<!--Release 3.4-->
+	<$rssLink  = 'HAYSrss' $>
+	<!--End Release 3.4-->
+	<$if currentPage like 'table' $>
+		<$ returnLink = 'google-map', returnTitle = lc('wwViewonmap') $>
+	<$else$>
+		<$ returnTitle = lc('wwViewresultstable')$>
+		<$if contentType like "Candidates" $>
+			<$ returnLink = 'candidatessearchresults' $>
+		<$else$>
+			<$ returnLink = 'jobssearchresults' $>
+		<$endif$>
+	<$endif$>
+	<div class="jaccess">		
+		<div class="grid_7 alpha"><a class="button_1 save_search" href=""><$lc('wwSaveSearch')$></a>
+		<!--a class="button_1 save_job" href=""> commented for alert form requirement for release 7-->
+		<!--added for release 7 requirement start-->
+		<script type="text/javascript">
+				function computeURL1() 
+				{
+				   if (window.jQuery && jQuery.ui && jQuery.isReady) 
+				   {
+						var completeURL=location.href;
+						var builtQuery = "<$builtQuery$>";
+						builtQuery=builtQuery.replace(/&amp;/gi,"&");
+						//var hrefValue = "<$ssNodeLink('alert-form', siteId)$>?<$builtQuery$>&amp;completeURL="+completeURL;
+						var hrefValue = "<$ssNodeLink('alert-form', siteId)$>?"+builtQuery+"&completeURL="+completeURL;
+						//alert("hrefValue:::"+hrefValue); 
+						$("#alertSaveButton").attr("href", hrefValue);
+					}
+					else 
+					{
+						window.setTimeout(computeURL1, 100);
+					 }
+				}
+				computeURL1();
+				</script>
+				
+				<a id="alertSaveButton" class="button_1" href=""> <!--added for alert form requirement for release 7 end-->
+		<!--added for release 7 requirement end-->
+				<$if contentType like "Jobs"$><$lc('wwSaveAsJobAlert')$><$else$><$lc('wwSaveAsCandidateAlert')$><$endif$></a></div>
+		<!--Release 3.4-->
+		<div class="grid_3"><a class="rsslink" href="<$ssNodeLink(rssLink, siteId)$>?<$builtQuery$>&amp;lat=<$#active.ne_latitude$>&amp;lon=<$#active.ne_longitude$>&amp;lev=<$#active.level$>&amp;location=<$#active.job_location$>"><img alt="RSS Feed" src="/haysassets/HaysGeneralComponent/assets/img/icons/feed-icon-14x14.png" align="texttop"/><span>RSS <br />Feed</span></a></div>
+		<!--End Release 3.4-->
+		<$if contentType like "Jobs"$>
+			<div class="grid_3 omega"><a href="<$ssNodeLink(returnLink, siteId)$>?<$builtQuery$>&amp;lat=<$#active.ne_latitude$>&amp;lon=<$#active.ne_longitude$>&amp;lev=<$#active.level$>&amp;location=<$#active.job_location$>" class="map" ><$ returnTitle $></a></div>
+		<$endif$>
+	</div>
+<@end@>
+
+
+
+
+
+<@dynamichtml job_search_results_filter_inc@>
+<div class="filter">
+	<$ currentPage = 'table'$>
+	<$include map_links_inc$>
+	<form action="index.htm" id="sortform" method="GET">
+	  <div>
+		<$formName="filterform"$>
+		<$include job_search_results_buildsearchquery$>
+	  </div>
+		<ol>
+			<!--li class="grid_4 alpha">
+				<div class="box">
+					<input type="checkbox" id="EHC_15" />
+					<label for="EHC_15">Show one line view</label>
+				</div>
+			</li-->
+			<li class="grid_6 alpha">
+				<div class="box">
+					<label for="EHC_16"><$lc('wwSortBy')$></label>
+					<select id="EHC_16" name="SortField">
+						<option value="" <$if not #active.SortField$>selected="selected"<$endif$>><$lc('wwRelevance')$></option>
+						<option value="dDocTitle" <$if #active.SortField like "dDocTitle"$>selected="selected"<$endif$>><$lc('wwJobTitle')$></option>
+						<option value="xLocationDescription" <$if #active.SortField like "xLocationDescription"$>selected="selected"<$endif$>><$lc('wwLocation')$></option>
+						<!--<$if isTrue(#active.display_salary_rate)$>
+							<option value="xAverageSalary" <$if #active.SortField like "xAverageSalary"$>selected="selected"<$endif$>><$lc('wwPay')$></option>
+						<$endif$>-->
+		<!--<$if contentType like "Jobs"$>
+						<option value="dInDate" <$if #active.SortField like "dInDate"$>selected="selected"<$endif$>><$lc('wwPostingDate')$></option>
+		<$else$>
+						<option value="xAvailableFrom" <$if #active.SortField like "xAvailableFrom"$>selected="selected"<$endif$>><$lc('wwAvailableFrom')$></option>
+		<$endif$>-->
+					</select>
+
+					<$if #active.SortOrder AND SortOrder like "Asc"$>
+						<$ sortOrder = "Desc" $>
+					<$else$>
+						<$ sortOrder = "Asc" $>
+					<$endif$>
+
+					<input type="hidden" name="SortOrder" value="<$ sortOrder $>" />
+				</div>
+			</li>
+			<li class="grid_5">
+				<div class="box">
+					<$if contentType like "Jobs"$><$type=lc('wwJobPerPage')$><$else$><$type=lc('wwCandidatePerPage')$><$endif$>
+					<label for="EHC_17" style="width:100px;" ><$type$></label>
+					<select id="EHC_17" name="ResultsPerPage">
+						<option value="10" <$if ResultsPerPage eq 10$>selected="selected"<$endif$>>10</option>
+						<option value="20" <$if ResultsPerPage eq 20$>selected="selected"<$endif$>>20</option>
+						<option value="30" <$if ResultsPerPage eq 30$>selected="selected"<$endif$>>30</option>
+						<option value="40" <$if ResultsPerPage eq 40$>selected="selected"<$endif$>>40</option>
+						<option value="50" <$if ResultsPerPage eq 50$>selected="selected"<$endif$>>50</option>
+						<option value="100" <$if ResultsPerPage eq 100$>selected="selected"<$endif$>>100</option>
+					</select>
+				</div>
+			</li>
+			<li class="grid_3 omega">
+				<div class="box">
+					<button type="submit" class="button"><$lc('wwSort')$></button>
+				</div>
+			</li>
+		</ol>
+	</form>
+</div>
+<@end@>
+
+
+<@dynamichtml job_search_results_tableheader_inc@>
+	<!--<caption class="access"><$lc('wwSearchResult', 'Job')$></caption>-->
+	<thead>
+		<tr>
+			<$ className = '', tail = '&amp;SortField=dDocTitle&amp;SortOrder=Desc' $>
+			<$if #active.SortField like "dDocTitle"$>
+				<$if #active.SortOrder AND SortOrder like 'Asc'$>
+					<$ className = 'active' $>
+				<$else$>
+					<$ className = 'up_active', , tail = '&amp;SortField=dDocTitle&amp;SortOrder=Asc' $>
+				<$endif$>
+			<$endif$>
+			<th id="Job" class="<$ className $>"><a href="index.htm?<$ builtQuery $><$ tail $>"><span><strong><$lc('wwJobTitle')$></strong></span></a></th>
+
+			<$ className = '', tail = '&amp;SortField=xLocationDescription&amp;SortOrder=Desc' $>
+			<$if #active.SortField like "xLocationDescription"$>
+				<$if #active.SortOrder AND SortOrder like 'Asc'$>
+					<$ className = 'active' $>
+				<$else$>
+					<$ className = 'up_active', , tail = '&amp;SortField=xLocationDescription&amp;SortOrder=Asc' $>
+				<$endif$>
+			<$endif$>
+			<th id="Location" class="<$ className $>"><a href="index.htm?<$ builtQuery $><$ tail $>"><span><$lc('wwLocationFacet')$></span></a></th>
+			
+			<$if isTrue(#active.display_salary_rate)$>
+				<$ className = '', tail = '&amp;SortField=xAverageSalary&amp;SortOrder=Desc' $>
+				<$if #active.SortField like "xAverageSalary"$>
+					<$if #active.SortOrder AND SortOrder like 'Asc'$>
+						<$ className = 'active' $>
+					<$else$>
+						<$ className = 'up_active', , tail = '&amp;SortField=xAverageSalary&amp;SortOrder=Asc' $>
+					<$endif$>
+				<$endif$>
+				<th id="Pay" class="<$ className $>"><a href="index.htm?<$builtQuery$><$ tail $>"><span><$lc('wwPay')$></span></a></th>
+			<$endif$>
+		<$if contentType like "Jobs"$>
+			<$ className = '', tail = '&amp;SortField=dInDate&amp;SortOrder=Desc' $>
+			<$if #active.SortField like "dInDate"$>
+				<$if #active.SortOrder AND SortOrder like 'Asc'$>
+					<$ className = 'active' $>
+				<$else$>
+					<$ className = 'up_active', , tail = '&amp;SortField=dInDate&amp;SortOrder=Asc' $>
+				<$endif$>
+			<$endif$>
+			<th id="Closing" class="<$ className $>"><a href="index.htm?<$builtQuery$><$ tail $>"><span><$lc('wwPostingDate')$></span></a></th>
+		<$else$>
+			<$ className = '', tail = '&amp;SortField=xAvailableFrom&amp;SortOrder=Desc' $>
+			<$if #active.SortField like "xAvailableFrom"$>
+				<$if #active.SortOrder AND SortOrder like 'Asc'$>
+					<$ className = 'active' $>
+				<$else$>
+					<$ className = 'up_active', , tail = '&amp;SortField=xAvailableFrom&amp;SortOrder=Asc' $>
+				<$endif$>
+			<$endif$>
+			<th id="Available" class="<$className$>"><a href="index.htm?<$builtQuery$><$tail$>"><span><$lc('wwAvailableFrom')$></span></a></th>
+		<$endif$>
+		</tr>
+	</thead>
+<@end@>
+
+
+
+
+
+<@dynamichtml job_search_results_displayresults_inc@>
+	<$include ReadJobBasket$>
+	<$if #active.contentType like "Jobs"$><$content = lc('wwJob')$><$else$><$content = lc('wwCandidate')$><$endif$>
+	<$loop SearchResults$>	
+	<$xPostingType = SearchResults.xPostingType$>
+	<tr class="details">
+		<th id="<$dDocName$>" headers="Job"><a href="<$ssLink(SearchResults.dDocName)$>?rowNumber=<$CURRENT_ROW+StartRow$>&amp;<$builtQuery$>"><$SearchResults.dDocTitle$></a></th>
+		<td headers="Location">
+			<$if strEquals(SearchResults.xLocationDescription,"")$>
+				&nbsp;
+			<$else$>
+				<$SearchResults.xLocationDescription$>
+			<$endif$>
+
+		</td>
+		<$ crXmlToResultSet(SearchResults.xSalaryType, 'SalaryRS') $>
+		<$colspan=3$>
+		<$if isTrue(#active.display_salary_rate)$>
+		<$colspan=4$>
+			<td headers="Pay">
+			[[%	<$loop SalaryRS$>
+					<$ minSalary = formatCurrency(SalaryRS.min, #active.SiteLocale) $>
+					<$ maxSalary = formatCurrency(SalaryRS.max, #active.SiteLocale) $>
+					<$ minSalary $> - <$ maxSalary $> <$include format_pay_type_inc $>
+				<$endloop$>
+			%]]
+	
+				<$if strEquals(SearchResults.xSalaryDescription,"")$>
+					&nbsp;
+				<$else$>
+					<$SearchResults.xSalaryDescription$>
+				<$endif$>
+	
+			</td>
+		<$endif$>
+		<$if contentType like "Jobs"$>
+			<td headers="Closing">
+			<$if strEquals(dInDate,"")$>
+				&nbsp;
+			<$else$>
+				<$formatDateWithPattern(dInDate,#active.websiteDateFormat)$>
+			<$endif$>
+
+</td>
+		<$else$>
+			<td headers="Avalable">
+				<$if strEquals(xAvailableFrom,"")$>
+					&nbsp;
+				<$else$>
+					<$formatDateWithPattern(xAvailableFrom,#active.websiteDateFormat)$>
+				<$endif$>
+
+			</td>
+		<$endif$>
+	</tr>
+	<tr>
+		<td headers="<$dDocName$>" colspan="<$colspan$>">
+			<$if xDescription and strLength(xDescription) gt 200$>
+				<span><$strSubStringHtmlTags(xDescription,200)$>...</span>
+			<$else$>
+				<span><$strSubStringHtmlTags(xDescription,strLength(xDescription))$>...</span>
+			<$endif$>
+			<div>
+				<ul>
+					<li><a href="<$ssLink(SearchResults.dDocName)$>?rowNumber=<$CURRENT_ROW+StartRow$>&amp;<$builtQuery$>" class="button_1"><span><$lc('wwGotoDetails', content)$></span></a></li>
+					<$if isFalse(isProjectSEnabled)$>
+						<$include AddRemoveFromJobBasket$>
+					<$endif$>
+
+					<!--Added for Release 1.2-->
+				       <$if strLength(SearchResults.xSponsored) gt 0$>
+					<$SponsoredEmployer_Job=SearchResults.xSponsored$>
+					<li><$ssIncludeXml(SponsoredEmployer_Job,"wcm:root/wcm:element[@name='Image']/text()")$></li>
+					<$endif$>
+					<!--end-->
+					
+				</ul>
+			</div>
+		</td>
+	</tr>
+	<$endloop$>
+<@end@>
+
+
+
+
+<@dynamichtml tesr12345@>
+
+--<$#active.contentType$>--
+<@end@>
+
+
+
+
+
+
+<@dynamichtml get_locationDesc_DEPR@>
+	<$locationDesc=""$>
+	<$exec rsRemove("LOCATION_DETAILS")$>
+	<$if strLength(#active.locationId) gt 0$>
+		<$exec locationDetails(locationId,'LOCATION_DETAILS')$>
+		<$loop LOCATION_DETAILS$>
+			<$locationDesc=locationDesc & DEFAULT_DESCRIPTION$>
+			<$locationLatitude=latitude$>
+			<$locationLongitude=longitude$>
+			<$locationLevel=LOCATION_DETAILS.level$>
+			<$if CURRENT_ROW lt (LOCATION_DETAILS.#numRows-1)$>
+				<$locationDesc=locationDesc & ", "$>
+			<$endif$>
+		<$endloop$>
+	<$endif$>
+<@end@>
+
+
+
+<!--********************* JOB DESCRIPTION: NEXT PREVIOUS LINKS *************
+****************************************************************************-->
+<@dynamichtml job_search_navigation_elements@>
+	<$include Addthis_redirect$>
+	<$include google_search_enabled_countries$>
+	<$if (contentType like "Jobs") and (isGoogleSearch EQ 1)$>	
+	<div class="job_flick">
+			<div class="grid_4 alpha top_pad">				
+				<$include job_search_results_buildsearchquery_google_url$>
+				<p><$if not isTrue(hideBackToSearch)$><a href="<$HTTP_REFERER$>"><$lc('wwBackToSearch')$></a><$endif$></p>
+			</div>
+	</div>	
+	<$else$>
+	<$if #active.rowNumber$>
+		<$if not rsExists("HaysSearchResults")$>
+			<$ResultCount=3$>
+			<$if rowNumber eq 1$>
+				<$StartRow=1$>
+			<$else$>
+				<$StartRow=rowNumber-1$>
+			<$endif$>
+			<$include job_search_results_getresults_simple_inc$>
+			<$exec rsRename("SearchResults","HaysSearchResults")$>
+		<$endif$>
+		<$include job_search_results_buildsearchquery_url$>
+		[[% JSBLOCK will only show if the user has come from a job search %]]
+		<div class="job_flick">
+			<div class="grid_4 alpha top_pad">
+				<$if not strEquals(siteId,"jpJP")$>		
+					<p><span class=""><$lc('wwShowing')$></span> <$if contentType like "Jobs"$><$lc('wwJob')$><$else$><$lc('wwCandidate')$><$endif$> <span class=""><$rowNumber$></span> <$lc('wwhaysOf')$> <span class=""><$TotalRows$></span></p>
+				<$endif$>
+				<$if contentType like "Jobs"$>
+					<$ backURL = ssNodeLink('jobssearchresults', siteId)$>
+				<$else$>
+					<$ backURL = ssNodeLink('candidatessearchresults', siteId)$>
+				<$endif$>
+				<p><a href="<$ backURL $>?<$builtQuery$>"><$lc('wwBackToSearch')$></a></p>
+			</div>
+			<div class="grid_10 omega">
+				<$if rowNumber gt 1$>
+					<$exec rsFirst("HaysSearchResults")$>
+				<div class="grid_5 alpha"><div class="jf_inner"> <a href="<$HaysSearchResults.dDocName$>?rowNumber=<$rowNumber-1$>&amp;<$builtQuery$>" class="prev"><$if contentType like "Jobs"$><$lc('wwPreviousJob')$><$else$><$lc('wwPreviousCandidate')$><$endif$></a>
+					<p><span class="strong"><$HaysSearchResults.dDocTitle$></span></p>
+				</div></div>
+				<$endif$>
+				<$if rowNumber lt TotalRows$>
+					<$exec rsFirst("HaysSearchResults")$><$exec rsNext("HaysSearchResults")$><$if rowNumber gt 1$><$exec rsNext("HaysSearchResults")$><$endif$>
+
+				<div class="grid_5 alpha"><div class="jf_inner"> <a href="<$HaysSearchResults.dDocName$>?rowNumber=<$rowNumber+1$>&amp;<$builtQuery$>" class="next"><$if contentType like "Jobs"$><$lc('wwNextJob')$><$else$><$lc('wwNextCandidate')$><$endif$></a>
+					<p><span class="strong"><$HaysSearchResults.dDocTitle$></span></p>
+				</div></div>
+				<$endif$>
+			</div>
+		</div>
+		<!-- end of JSBLOCK-->
+	<$endif$>
+	<$endif$>
+<@end@>
+
+
+
+
+
+<!-- ******************************************************************
+*****************     SITE SEARCH        *******************************
+***********************************************************************-->
+<@dynamichtml subtmp_site_search@>
+
+	<$ aTitleLbl = '' $>
+	<$ strContentType = ssGetNodeProperty("ContentType"), strSubContentType=ssGetNodeProperty("SubContentType")$>
+	<$strNodeLabel=ssGetNodeProperty("label")$>
+
+	 <$if strLength(strContentType) GT 0 $>
+			[[%<$if strLength(strSubContentType) GT 0 $>
+				<$ aTitleLbl = lc('wwSiteSearchFor', strLower(getFieldViewDisplayValue('xSubType', 'SubType_view', strSubContentType))) $>
+			<$else$>
+				<$ aTitleLbl = lc('wwSiteSearchFor', strLower(strContentType)) $>
+			<$endif$>%]]
+			<$ aTitleLbl = lc('wwSiteSearchFor', strLower(strNodeLabel)) $>
+	  <$else$>
+		<$ aTitleLbl = lc('wwSiteSearchLabel')$>
+	 <$endif$>
+
+	 
+<script type="text/javascript" language="javascript">
+<!--//--><![CDATA[//><!--
+
+
+function HAYSsitesearch() {
+	if (window.jQuery && jQuery.validator && jQuery.isReady) {
+	
+	jQuery.extend(jQuery.validator.messages, {
+					required: "<$lc('wwJsmandatory_msg_input')$>"	
+				});
+
+		$("#sitesearch").validate({
+		onkeyup: false,
+		submitHandler: function (form) {
+			form.submit();
+		}
+	});
+		
+	}
+	else  {
+		window.setTimeout(HAYSsitesearch, 100);
+	}
+}
+
+HAYSsitesearch();
+
+//--><!]]>
+
+</script>
+	 
+	 
+   <$if isHDBTemplate eq 1$>	 
+<div class="box press-release-box">
+	<h2 class="underline"><$ aTitleLbl $></h2>
+<$else$>
+	<h1><$ strUpper(aTitleLbl) $></h1>
+	<$endif$>
+	<form action="index.htm" class="hays_form" id="sitesearch" method="get">
+	    <$if isHDBTemplate eq 1$>
+	<section class="job-search">
+					<ul class="form">
+						<li>
+							<label class="required"><$lc('wwKeywords')$></label>
+							<$searchParametersValue=encodeForHTML(#active.searchParameters)$>
+						     <div class="input"><input type="text"name="searchParameters" id="QueryText" value="<$searchParametersValue$>" placeholder="<$lc('wwKeywords')$>"/></div>
+						</li>
+						<li>
+							<div class="action"><input type="submit" value="<$lc('wwSearch')$>" class="btn-primary"></div>
+						</li>
+					</ul>
+     </section>
+	<$else$>
+		<fieldset class="rc_grey">
+			<legend><$lc('wwSiteSearchLabel')$></legend>
+
+			<ol>
+				<li>
+					<div class="grid_4 alpha">
+						<label for="QueryText"><em>*</em> <$lc('wwKeywords')$></label>
+					</div>
+					<div class="grid_6 omega">
+						<$searchParametersValue=encodeForHTML(#active.searchParameters)$>
+						<input type="text" class="required" name="searchParameters" id="QueryText" value="<$searchParametersValue$>" />
+					</div>
+				</li>
+			</ol>
+		</fieldset>
+		<div>
+			<input type="submit" value="<$lc('wwSearch')$>" class="button" />
+		</div>
+	<$endif$>	
+		<div class="clear"></div>
+	</form>
+<$if isHDBTemplate eq 1$>
+</div>
+<$endif$>
+	
+	<$if strLength(#active.searchParameters) gt 0 OR strLength(#active.QueryText) GT 0$>
+<$if isHDBTemplate eq 1$>	
+<div class="news">
+    <$include subtmp_site_search_results$>
+	</div>
+<$else$>	
+         <$include subtmp_site_search_results$>
+	<$endif$>
+	<$endif$>
+
+<@end@>
+
+
+
+
+
+
+
+
+<!-- ***************** SITE SEARCH RESULT ****************************
+***********************************************************************-->
+<@dynamichtml subtmp_site_search_results@>
+	<!--main content1 -->
+	<$include site_search_results_getresults_inc$>
+
+	<$if rsExists("SearchResults") and SearchResults.#numRows gt 0$>
+		<$if isHTSSite eq 1$>	
+			<$include site_search_results_displayresults_hts_inc$>
+		<$else$>
+			<$include site_search_results_displaycommon_inc$>
+		<$endif$>
+	<$else$>
+		<p><$lc('wwYouSearched')$> <strong><$ searchParametersValue $></strong></p>
+		<p><$lc('wwNoRes')$></p>
+	<$endif$>
+
+	<!--/main content -->
+<@end@>
+
+<@dynamichtml site_search_results_displaycommon_inc@>
+<$if isHDBTemplate eq 1$>
+<$include site_search_results_counter_hdb_inc$>
+<$else$>
+	<$include site_search_results_counter_inc$>
+<$endif$>
+			<div class="content_main">
+			<$if #active.searchParameters$>
+				<$if isHDBTemplate ne 1$>
+				<p><$lc('wwYouSearched')$>
+				<strong><$ searchParametersValue $></strong>
+				- <$TotalRows$> <$lc('wwResFound')$></p>
+			<$endif$>
+			<$endif$>
+
+
+		</div>
+		<table class="hays_table job_results" summary="Site Search Results">
+			<caption class="access"><$lc('wwSiteSearchResLabel')$></caption>
+			<thead>
+				<tr>
+					<$ className = '', tail = '&amp;SortField=dDocTitle&amp;SortOrder=desc' $>
+					<$if #active.SortField like "dDocTitle"$>
+						<$if #active.SortOrder AND SortOrder like 'asc'$>
+							<$ className = 'active' $>
+						<$else$>
+							<$ className = 'up_active', , tail = '&amp;SortField=dDocTitle&amp;SortOrder=asc' $>
+						<$endif$>
+					<$else$>
+							<$ className = 'up_active', , tail = '&amp;SortField=dDocTitle&amp;SortOrder=asc' $>
+					<$endif$>
+					<$ initialQuery = strReplace(initialQuery,"SortOrder=asc&","") $>
+					<$ initialQuery = strReplace(initialQuery,"SortOrder=desc&","") $>
+					<$ initialQuery = strReplace(initialQuery,"SortField=dDocTitle&","") $>
+					<$ initialQuery = strReplace(initialQuery,"SortField=xEventDate&","") $>
+					<$if isHDBTemplate ne 1 $>
+					<th class="<$ className $>" id="Title"><a href="index.htm?<$initialQuery$><$tail$>&amp;currentNavType=<$navType$>"><span><strong><$lc('wwTitleLabel')$></strong></span></a></th>
+					<$endif$>
+
+					<$if strSubContentType like 'Event'$>
+						<$ className = '', tail = '&amp;SortField=xEventDate&amp;SortOrder=asc' $>
+					
+					<$else$>
+						<$ className = '', tail = '&amp;SortField=dInDate&amp;SortOrder=desc' $>
+					<$endif$>
+					
+					<$if strSubContentType like 'Press releases'$>
+					    <$ className = '', tail = '&amp;SortField=xEventDate&amp;SortOrder=desc' $>
+					<$endif$>
+					
+					<$if #active.SortField like 'dInDate' $>
+						<$if #active.SortOrder AND SortOrder like 'asc'$>
+							<$ className = 'active' $>
+						<$else$>
+							<$ className = 'up_active',  tail = '&amp;SortField=dInDate&amp;SortOrder=asc' $>
+						<$endif$>
+					<$elseif strSubContentType like 'Event'$>
+						<$if #active.SortOrder AND SortOrder like 'desc'$>
+							<$ className = 'active' $>
+						<$else$>
+							<$ className = 'up_active',  tail = '&amp;SortField=xEventDate&amp;SortOrder=desc' $>
+						<$endif$>
+					<$else$>
+					    <$if strSubContentType like 'Press releases'$>
+						<$ className = 'up_active',  tail = '&amp;SortField=xEventDate&amp;SortOrder=desc' $>
+						<$endif$>
+						<$ className = 'up_active',  tail = '&amp;SortField=dInDate&amp;SortOrder=asc' $>
+					<$endif$>
+					<$ initialQuery = strReplace(initialQuery,"SortOrder=asc&","") $>
+					<$ initialQuery = strReplace(initialQuery,"SortOrder=desc&","") $>
+					<$ initialQuery = strReplace(initialQuery,"SortField=dDocTitle&","") $>
+					<$ initialQuery = strReplace(initialQuery,"SortField=xEventDate&","") $>
+					<$if isHDBTemplate ne 1 $>
+					<th class='<$ className $>' id="Date"><a href="index.htm?<$initialQuery$><$tail$>&amp;currentNavType=<$navType$>"><span><$lc('wwDateLabel')$></span></a></th>
+					<$endif$>
+				</tr>
+			</thead>
+			<tbody>
+		<$include site_search_results_displayresults_inc$>
+			</tbody>
+		</table>
+		<$include site_search_results_counter_bottom_inc$>
+<@end@>
+
+
+
+<!-- ***************** SITE SEARCH : BUILD QUERY INCLUDE ****************
+***********************************************************************-->
+<@dynamichtml site_search_results_getresults_inc@>
+	<$if #active.PageNumber AND #active.QueryText $>
+		<$if strSubContentType like 'Event'$>
+			<$ SortField="xEventDate"$>
+			<$if NOT #active.SortOrder $>
+				<$ SortOrder="desc"$>
+			<$endif$>
+			<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & #active.SortOrder & '&ResultCount=' & #active.ResultCount  $>
+		<$elseif strSubContentType like 'Press releases' $>	
+		    <$ SortField="xEventDate" $>
+			<$ SortOrder="desc"$>
+		    <$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount  $> 
+		<$else$>
+			<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & #active.SortField & '&SortOrder=' & #active.SortOrder & '&ResultCount=' & #active.ResultCount  $>
+		<$endif$>
+		<$if #active.searchParameters $>
+			<$ initialQuery = initialQuery & '&searchParameters=' & searchParametersValue $>
+		<$endif$>
+	<$elseif #active.QueryText and strLength(QueryText) GT 0$>
+		<$if strSubContentType like 'Event'$>
+			<$ SortField="xEventDate"$>
+			<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & #active.SortOrder & '&ResultCount=' & #active.ResultCount  $>
+        <$elseif strSubContentType like 'Press releases' $>	
+		    <$ SortField="xEventDate" $>
+			<$ SortOrder="desc"$>
+
+		    <$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount  $>  
+			<$else$>
+			<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & #active.SortField & '&SortOrder=' & #active.SortOrder & '&ResultCount=' & #active.ResultCount  $>
+		<$endif$>
+		<$if #active.searchParameters $>
+			<$ initialQuery = initialQuery & '&searchParameters=' & searchParametersValue $>
+		<$endif$>
+	<$else$>
+		<$if NOT #active.QueryText $>
+			<$ QueryText = ''$>
+		<$endif$>
+
+		<$ ResultCount = 10, LimitScope = "true",  SortField="dInDate", SortOrder="desc" $>
+
+		<$if strSubContentType like 'Event'$>
+			<$ SortField="xEventDate", SortOrder="desc" $>
+		<$endif$>
+		<$if strSubContentType like 'Press releases'$>
+
+			<$ SortField="xEventDate", SortOrder="desc" $>
+		<$endif$>
+		
+
+		<$if  strLength(strContentType) GT 0 $>
+			<$if strLength(QueryText) GT 0 $>
+				<$ QueryText = QueryText & ' <AND> ' $>
+			<$endif$>
+			<$ QueryText = QueryText & " dDocType <matches> `" & strContentType  & "`" $>
+
+			<$if strLength(strSubContentType) GT 0 $>
+				<$ QueryText = QueryText & " <AND> xSubType <matches> `" & strSubContentType & "`" $>
+			<$endif$>
+		<$else$>
+			<$ QueryText="(dDocType <matches> `General` <or> dDocType <matches> `News` <or> dDocType <matches> `PromotionalContent`)" $>
+		<$endif$>
+		<$if #active.searchParameters $>
+		    <$if strLength(QueryText) GT 0 $>
+				<$ QueryText = QueryText & ' <AND> ' $>
+			<$endif$>
+			<$ QueryText = QueryText & "  (<ftx>" & searchParameters & "</ftx>)" $>
+		<$endif$>
+		<$queryString = QueryText$>
+		<$include set_query_string$>
+		<$QueryText=queryString$>
+
+		<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount $>
+		<$if #active.searchParameters $>
+			<$ initialQuery = initialQuery & '&searchParameters=' & searchParametersValue $>
+		<$endif$>
+	<$endif$>
+  
+	<$executeService("SS_GET_SEARCH_RESULTS")$>
+<@end@>
+
+
+
+
+<!-- ***************** SITE SEARCH : PAGINATION INCLUDE **************
+***********************************************************************-->
+
+<@dynamichtml site_search_results_counter_inc@>
+<div class="counter<$#active.counterPosition$>">
+	<div class="grid_7 alpha">
+		<$if (EndRow+StartRow-1) lt TotalRows$><$endCount = EndRow+StartRow-1$><$else$><$ endCount = TotalRows$><$endif$>
+		<$paginationCount = lc('wwShowSiteSearchResultCount', StartRow, endCount, TotalRows)$>
+		<$paginationCount= strReplace(paginationCount,'Strong','')$>
+		<$paginationCount= strReplace(paginationCount,'strong','')$>
+		<$paginationCount$>
+	</div>
+	<$if #active.NumPages AND NumPages GT 1 $>
+		<div class="grid_7 omega">
+			<ul>
+			<$if PageNumber gt 1$>
+				<li><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>" class="prev"><$lc('wwPrevious')$><span class="access"> <$lc('wwPage')$></span></a></li>
+			<$endif$>
+			<$pageIndex = 1$>
+			<$loopwhile pageIndex le NumPages$>
+				<$if pageIndex eq PageNumber$>
+				<li><span class="strong"><span class="access"><$lc('wwPageCapital')$> </span><$pageIndex$></span></li>
+				<$else$>
+				<li><a href="index.htm?PageNumber=<$pageIndex$>&amp;StartRow=<$(pageIndex-1)*ResultCount+1$>&amp;<$ initialQuery $>"><span class="access"><$lc('wwPageCapital')$> </span><$pageIndex$></a></li>
+				<$endif$>
+				<$pageIndex=pageIndex+1$>
+			<$endloop$>
+			<$if PageNumber lt NumPages$>
+				<li><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>&amp;<$initialQuery$>" class="next"><$lc('wwNext')$><span class="access"> <$lc('wwPage')$></span></a></li>
+			<$endif$>
+			</ul>
+		</div>
+	<$endif$>
+</div>
+<@end@>
+
+<!-----------------------------------------------------10082 MR8 Start--------------------------------------->
+<@dynamichtml site_search_results_counter_fcHC_inc@>
+
+<div class="counterHC">
+	<$event="search"$>
+     <$include fire_events$>
+	<$if rsExists("SearchResults") and SearchResults.#numRows gt 0$>
+		<$ NumPages = TotalRows / ResultCount $>
+		<$if (TotalRows % ResultCount) GT 0 $>
+			<$ NumPages = NumPages + 1 $>
+		<$endif$>
+		<$if not #active.PageNumber or #active.PageNumber lt 1$>
+			<$PageNumber=1$>
+		<$endif$>
+		<$if (EndRow+StartRow-1) lt TotalRows$><$endCount = EndRow+StartRow-1$><$else$><$ endCount = TotalRows$><$endif$>
+		<$endif$>
+	<$if #active.NumPages AND NumPages GT 1 $>
+		<div class="grid_7 omega">
+			<ul class="pagination_mod">
+			<li>
+				<$if PageNumber gt NumPages$>
+                   <$PageNumber = NumPages$>
+				<$endif$> 
+						<span><$lc('wwGCHCPagination', PageNumber, NumPages)$></span>
+				</li>
+				<$numPagesToShow=5$>
+			<$if PageNumber gt 3$>
+				<li><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>" class="prev">&nbsp;</a></li>
+				<$else$>
+				<li class="prev_none"></li>
+			<$endif$>
+			<$if PageNumber gt (numPagesToShow/2+1)$>
+					<$pageIndex=PageNumber-(numPagesToShow/2)$>
+				<$else$>
+					<$pageIndex=1$>
+				<$endif$>
+				<$if (NumPages-pageIndex) lt numPagesToShow$>
+					<$pageIndex=(NumPages-numPagesToShow)+1$>
+					<$if pageIndex lt 1$>
+						<$pageIndex =1$>
+					<$endif$>
+				<$endif$>
+				<$endIndex=pageIndex+numPagesToShow-1$>
+				<$if endIndex gt NumPages$>
+					<$endIndex=NumPages$>
+				<$endif$>
+			<$loopwhile ((pageIndex le endIndex) and (NumPages ne 1))$>
+					<$if pageIndex ge (numPagesToShow/2+1)$>
+						<$nextStart=pageIndex-(numPagesToShow/2)$>
+					<$else$>
+						<$nextStart=startIndex$>
+					<$endif$>
+					<$if (pageIndex eq PageNumber)$>
+				<li class="active"><span class="strong"><$pageIndex$></span></li>
+				<$else$>
+				<li><a href="index.htm?PageNumber=<$pageIndex$>&amp;StartRow=<$(pageIndex-1)*ResultCount+1$>&amp;<$ initialQuery $>"><$pageIndex$></a></li>
+				<$endif$>
+				<$pageIndex=pageIndex+1$>
+			<$endloop$>
+			<$if PageNumber lt NumPages$>
+				<li><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>" class="next">&nbsp;</a></li>
+			<$endif$>
+			</ul>
+		</div>
+	<$endif$>
+</div>
+<@end@>
+
+<!-----------------------------------------------------10082 MR8 end--------------------------------------->
+
+
+<@dynamichtml site_search_results_counter_bottom_inc@>
+	<$counterPosition=" bottom"$>
+	<$if isHDBTemplate eq 1$>
+<$include site_search_results_counter_hdb_inc$>
+<$else$>
+	<$include site_search_results_counter_inc$>
+<$endif$>
+<@end@>
+
+
+
+<!-- ***************** SITE SEARCH : ITEM DISPLAY INCLUDE **************
+***********************************************************************-->
+<@dynamichtml site_search_results_displayresults_inc@>
+	
+	<$loop SearchResults$>
+	
+		
+	
+	
+	<$ contentValue = ssGetNodeProperty(nodeId, 'ContentType')$>
+		<$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+		
+		<$if strLength(strTrimWs(link)) gt 0 and  contentValue like 'SponsoredEmployer'$>
+	<$if isHDBTemplate eq 1$>
+		<div class="box news">
+			<article>
+		<h3><a href="<$link$>" class="<$dDocName$>" target="_blank"><$dDocTitle$></a>
+		
+		<$if strEquals(strSubContentType,"Event")$>
+				<em><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></em>
+			<$else$>
+				<em><$formatDateWithPattern(dInDate,#active.websiteDateFormat)$></em>
+			<$endif$>
+		</h3>
+		
+			
+
+				
+					<$if #active.strContentType and strEquals(#active.strContentType,"SponsoredEmployer")$>
+						<!--$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$-->
+						 <div class="content-img">
+ <div class="image-container">
+							<a href="<$link$>" style="width: 160px;height: 160px;" target="_blank" title = "<$xDescription$>" ><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a>
+						</div>
+				<$endif$>
+					 <p style="/*! font-size: 14px; */width: 100%;"><$xDescription$></p>
+				
+				<div>
+					
+					
+					<a class="btn" href="<$link$>" target="_blank"><span><$lc('wwViewNow')$></a>
+					<$if isTrue(#active.SSContributor)$>                      <!--MR 4.1 Item 85-->
+					   <a href ="<$ssUrl$>"><$lc('wwEditContent')$></a>
+					 <$endif$>  
+					                       					   
+					
+					
+					
+					
+				</div>
+					
+				</article>
+</div>
+	<$else$>
+	
+		<tr class="details">
+		<tr class="details">
+		<th headers="Title" id="<$dDocName$>"><a href="<$link$>" target="_blank"><$dDocTitle$></a></th>
+		
+		<$if strEquals(strSubContentType,"Event")$>
+				<td headers="Date"><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></td>	
+			<$else$>
+				<td headers="Date"><$formatDateWithPattern(dInDate,#active.websiteDateFormat)$></td>
+			<$endif$>
+		</tr>
+		<tr>
+			<td colspan="2" headers="<$dDocName$>">
+
+				<span>
+					<$if #active.strContentType and strEquals(#active.strContentType,"SponsoredEmployer")$>
+						<!--$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$-->
+						
+							<a href="<$link$>" target="_blank" title = "<$xDescription$>" ><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a>
+						
+				<$endif$>
+					<$xDescription$>
+				</span>
+				<div>
+					<ul>
+					
+					<li><a class="button_1" href="<$link$>" target="_blank"><span><$lc('wwViewNow')$></span></a></li>
+					<$if isTrue(#active.SSContributor)$>                      <!--MR 4.1 Item 85-->
+					   <a href ="<$ssUrl$>"><$lc('wwEditContent')$></a>
+					 <$endif$>  
+					                       					   
+					
+					</ul>
+					
+					
+				</div>
+			</td>
+		</tr>
+		<$endif$>
+		<$elseif not (contentValue like 'SponsoredEmployer') $>
+		<$url = ''$>
+		<$if  (contentValue like 'Survey') $>
+			 <$tmpURL = wcmUrl('link',dDocName,'SurveyAdmin')$>
+				<$url = tmpURL$>
+			<$else$>
+			<$url = ssUrl$>
+				 
+			<$endif$>
+			<$if isHDBTemplate eq 1$>
+	<div class="box news">
+			<article>
+
+			<h3>
+			<$if strEquals(SiteLocale,"jp-JP") or strEquals(SiteLocale,"cn-CHN")$>
+			<a style="font-weight:bold;" href="<$url$>"><$dDocTitle$></a>
+			<$else$>
+			<a href="<$url$>"><$dDocTitle$></a>
+			<$endif$>
+			<$if strEquals(strSubContentType,"Press releases") $>
+			<$if not strEquals(xEventDate,"")$>
+				<em><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></em>
+				<$endif$>
+			<$else$>
+				<em><$formatDateWithPattern(dInDate,#active.websiteDateFormat)$></em>
+			<$endif$>
+			</h3>
+                        <p><$xDescription$></p>
+                               <div class="a-right"><a class="btn" href="<$url$>"><$lc('wwReadMore')$></a></div>
+  
+			</article>
+</div>
+
+
+			<$else$>
+		<tr class="details">
+			<th headers="Title" id="<$dDocName$>"><a href="<$url$>"><$dDocTitle$></a></th>
+			<$if strEquals(strSubContentType,"Event")$>
+				<td headers="Date"><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></td>
+			<$elseif strEquals(strSubContentType,"Press releases") $>
+				<td headers="Date"><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></td>
+				<$else$>
+				<td headers="Date"><$formatDateWithPattern(dInDate,#active.websiteDateFormat)$></td>
+			<$endif$>
+		</tr>
+		<tr>
+			<td colspan="2" headers="<$dDocName$>">
+
+				<span>
+					<$xDescription$>
+				</span>
+				<div>
+					<ul>
+						<li><a class="button_1" href="<$url$>"><span><$lc('wwReadMore')$></span></a></li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+		<$endif$>
+			<$endif$>
+	<$endloop$>
+<@end@>
+
+<!--added by Komal -->
+<@dynamichtml search_result_facet_posted_date@>
+	
+	<div class="ehc_box">
+		<form class="radio_select" action="index.htm" method="GET">
+			<fieldset>
+				<legend id="legend2"><span><$ lc('wwPostedDateTitle')$></span></legend>
+				<$include job_search_results_posted_date_filter$>
+				
+			</fieldset>
+			<div class="clearfilter">
+							
+				<$if strLength(#active.job_posteddate_filter) gt 0$>
+					<$posted_date_v = #active.job_posteddate_filter$>
+					
+					<$ if strIndexOf(posted_date_v, ",")  >=0 $>
+						<$exclude_update=strSubstring(posted_date_v,strIndexOf(posted_date_v, ",")+1,strLength(posted_date_v))$>
+						<$posted_date_v= strSubstring(posted_date_v,0,strIndexOf(posted_date_v, ","))$>
+						
+					<$endif$>
+							
+					<$if strEquals(posted_date_v ,value1)$>
+						<li><span class="label"><label for="job_1"><$ lc('wwWithIn24Hours') $></label></span></li>	
+					<$elseif strEquals(posted_date_v ,value2)$>
+						<li><span class="label"><label for="job_2"><$ lc('wwWithIn3Days') $></label></span></li>	
+					<$elseif strEquals(posted_date_v ,value3)$>
+						<li><span class="label"><label for="job_3"><$ lc('wwWithIn7Days') $></label></span></li>
+					<$elseif strEquals(posted_date_v ,value4)$>	
+						<li><span class="label"><label for="job_4"><$ lc('wwWithIn2Weeks') $></label></span></li>
+					<$elseif strEquals(posted_date_v ,value5)$>
+						<li><span class="label"><label for="job_5"><$ lc('wwWithIntheLastMonth') $></label></span></li>
+					<$endif$>
+					<!-- Rel 8.0 Sec 5.2.3 8B -->
+					<$if strEquals(exclude_update," 1")$>
+						<li>
+							<input id="Job6" type="checkbox" name="job_posteddate_exclude" value="1" checked  />
+							<label for="Job6"><$ lc('wwExcludeUpdatedJobs') $></label>
+						</li>
+					<$else$>
+						<li>
+							<input id="Job6" type="checkbox" name="job_posteddate_exclude" value="1" />
+							<label for="Job6"><$ lc('wwExcludeUpdatedJobs') $></label>
+						</li>
+					<$endif$>
+				
+					<!-- end -->
+					<button class="button_1 clear_ehc"><$ lc('wwOrClearFilter') $></button>
+					
+				<$endif$>
+				
+				<button type="submit"  id="saveFilterButton" class="button"><$lc('wwPostedDateFilter')$><span class="access"></span></button>
+				<$formName="postedDateform"$>
+				<$include job_search_results_buildsearchquery_basic$>
+				
+
+				<input type="hidden" value="<$if #active.job_posteddate_filter AND strLength(job_posteddate_filter) GT 0 $><$posted_date_v$><$endif$>" name="job_posteddate_filter" class="ehc"/>
+				
+			</div>
+			
+		</form>
+	</div>
+	
+<@end@>
+
+<@dynamichtml job_search_results_posted_date_filter@>
+<ol>
+	<$value1=formatDateWithPattern(dateCurrent(-1),"yyyy-MM-dd")$>
+	<$value2=formatDateWithPattern(dateCurrent(-3),"yyyy-MM-dd")$>
+	<$value3=formatDateWithPattern(dateCurrent(-7),"yyyy-MM-dd")$>
+	<$value4=formatDateWithPattern(dateCurrent(-14),"yyyy-MM-dd")$>
+	<$value5=formatDateWithPattern(dateCurrent(-30),"yyyy-MM-dd")$>
+	<$if strLength(#active.job_posteddate_filter) eq 0$>
+		<li>
+			<input id="job_1" type="radio" name="posted_date" value="<$value1$>" />
+			<label for="job_1"><$ lc('wwWithIn24Hours') $></label>
+		</li>
+		
+		<li>
+			<input id="job_2" type="radio" name="posted_date" value="<$value2$>" />
+			<label for="job_2"><$ lc('wwWithIn3Days') $></label>
+		</li>
+		
+		<li>
+			<input id="job_3" type="radio" name="posted_date" value="<$value3$>" />
+			<label for="job_3"><$ lc('wwWithIn7Days') $></label>
+		</li>
+		
+		<li class="s_mrg">
+			<input id="job_4" type="radio" name="posted_date" value="<$value4$>" />
+			<label for="job_4"><$ lc('wwWithIn2Weeks') $></label>
+		</li>
+		
+		<!--<li class="s_mrg">
+			<input id="job_5" type="radio" name="posted_date" value="<$value5$>" />
+			<label for="job_5"><$ lc('wwWithIntheLastMonth') $></label>
+		</li>-->
+		
+		<li style="visibility: hidden;">
+			<input id="ExcludeJobs" type="checkbox" name="job_posteddate_exclude" value="1" />
+			<label for="ExcludeJobs"><$ lc('wwExcludeUpdatedJobs') $></label>
+		</li>	
+		
+		
+	<$endif$>
+	
+	
+	
+</ol>
+<@end@>
+<!--end -->
+
+<@dynamichtml JobType_Range@>
+<$if payType like 'H'$>
+<$range=#env.Hourly$>
+<$jobTypeSlider=lc('wwPayHourly')$>
+<$elseif payType like 'D'$>
+<$range=#env.Daily$>
+<$jobTypeSlider=lc('wwPayDaily')$>
+<$elseif payType like 'M'$>
+<$range=#env.Monthly$>
+<$jobTypeSlider=lc('wwPayMonthly')$>
+<$elseif payType like 'A'$>
+<$range=#env.Annualy$>
+<$jobTypeSlider=lc('wwPayAnnualy')$>
+<$endif$>
+<@end@>
+
+<@dynamichtml Addthis_redirect@>
+<$hideBackToSearch=0$>
+<$httpref=HTTP_REFERER$>
+<$if strLength(HTTP_REFERER) <= 0 OR strIndexOf(HTTP_REFERER,'&redirect=y') GT 0$>
+	<$hideBackToSearch=1$>
+<$endif$>
+<@end@>
+
+
+<!--********************************************BAU REL 3 16457 ****************************************************-->
+<!--****************************************************************************************************************-->
+<@dynamichtml subtmp_exceptional_featured_employers@>
+
+	 <h1><$ strUpper("Featured Employers In Exception") $> </h1>
+	 		
+		<$strContentType="SponsoredEmployer"$>
+		<$QueryText="dDocType <matches> `" & strContentType & "`" & " <AND> xIsFeatured <matches> `Yes`"$>
+		<$initialQuery="QueryText=" & url(QueryText)$>				
+		<$ SortField="dInDate" $>
+		<$ SortOrder="desc"$>		
+		<$ResultCount = 500$>		
+		<$initialQuery="QueryText=" & url(QueryText)$>
+		<$queryString=QueryText$>
+	    <$include set_query_locale_include $>
+	    <$QueryText=queryString$>
+	    <$initialQuery="QueryText=" & url(QueryText)$>
+		 <$executeService("SS_GET_SEARCH_RESULTS")$>
+		
+	
+
+	
+	<$include  subtmp_exceptional_featured_employers_displaycommon_inc$>
+<@end@>
+
+<@dynamichtml subtmp_exceptional_featured_employers_displaycommon_inc@>
+	<$include exceptional_featured_employer_results_counter_inc$>
+	<table class="hays_table job_results" summary="Site Search Results">
+		<caption class="access"><$lc('wwSiteSearchResLabel')$></caption>
+			<thead>
+				<tr>
+					<$ className = '', tail = '&amp;SortField=dDocTitle&amp;SortOrder=desc' $>
+					<$if #active.SortField like "dDocTitle"$>
+						<$if #active.SortOrder AND SortOrder like 'asc'$>
+							<$ className = 'active' $>
+						<$else$>
+							<$ className = 'up_active', , tail = '&amp;SortField=dDocTitle&amp;SortOrder=asc' $>
+						<$endif$>
+					<$else$>
+							<$ className = 'up_active', , tail = '&amp;SortField=dDocTitle&amp;SortOrder=asc' $>
+					<$endif$>
+					<th class="<$ className $>" id="Title"><a href="index.htm?<$initialQuery$><$tail$>&amp;currentNavType=<$navType$>"><span><strong><$lc('wwTitleLabel')$></strong></span></a></th>
+					<$ className = '', tail = '&amp;SortField=dInDate&amp;SortOrder=desc' $>
+					<th class='<$ className $>' id="Date"><a href="index.htm?<$initialQuery$><$tail$>&amp;currentNavType=<$navType$>"><span><$lc('wwDateLabel')$></span></a></th>
+				</tr>
+			</thead>
+			<tbody>
+		<$include subtmp_exceptional_featured_employers_displayresults_inc$>
+			</tbody>
+		</table>
+		<$include exceptional_featured_employer_results_counter_bottom_inc$>
+<@end@>
+
+
+
+<!-- ***************** SITE SEARCH : ITEM DISPLAY INCLUDE **************
+***********************************************************************-->
+<@dynamichtml subtmp_exceptional_featured_employers_displayresults_inc@>
+	
+	<$loop SearchResults$>	
+	<$link=ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+	
+	<$if strLength(link) EQ 0$>			
+		<$if strEquals(SearchResults.dDocType,"SponsoredEmployer")$>																  
+		<tr class="details">
+		<th headers="Title" id="<$dDocName$>"><a><$dDocTitle$></a></th>		
+		<$if strEquals(strSubContentType,"Event")$>
+				<td headers="Date"><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></td>	
+			<$else$>
+				<td headers="Date"><$formatDateWithPattern(dInDate,#active.websiteDateFormat)$></td>
+			<$endif$>
+		</tr>
+		<tr>
+			<td colspan="2" headers="<$dDocName$>">
+				<span>
+					<$xDescription$>  
+				</span>
+				<div>
+					<ul>
+					<$if isTrue(#active.SSContributor)$>                      <!--MR 4.1 Item 85-->
+					   <a href ="<$ssUrl$>" target="_blank"><$lc('wwEditContent')$></a>
+					 <$endif$> 
+					</ul>	
+				</div>
+			</td>
+		</tr>
+				
+	
+	<$endif$>	
+	<$endif$>
+	<$endloop$>
+<@end@>
+
+
+<@dynamichtml exceptional_featured_employer_results_counter_inc@>
+<div class="counter<$#active.counterPosition$>">
+	<div class="grid_7 alpha">
+	
+		<$if (EndRow+StartRow-1) lt TotalRows$>
+			<$endCount = EndRow+StartRow-1$>
+		<$else$>
+			<$ endCount = TotalRows$>
+		<$endif$>
+		<$lc('wwShowSiteSearchResultCount', StartRow, endCount, TotalRows)$>
+	</div>
+	<$if #active.NumPages AND NumPages GT 1 $>
+	
+		<div class="grid_7 omega">
+			<ul>
+			<$if PageNumber gt 1$>
+		
+				<li><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>" class="prev"><$lc('wwPrevious')$><span class="access"> <$lc('wwPage')$></span></a></li>
+			<$endif$>
+			<$pageIndex = 1$>
+			<$loopwhile pageIndex le NumPages$>
+				<$if pageIndex eq PageNumber$>
+				
+				<li><span class="strong"><span class="access"><$lc('wwPageCapital')$> </span><$pageIndex$></span></li>
+				<$else$>
+				<li><a href="index.htm?PageNumber=<$pageIndex$>&amp;StartRow=<$(pageIndex-1)*ResultCount+1$>&amp;<$ initialQuery $>"><span class="access"><$lc('wwPageCapital')$> </span><$pageIndex$></a></li>
+				<$endif$>
+				<$pageIndex=pageIndex+1$>
+			<$endloop$>
+			<$if PageNumber lt NumPages$>
+				<li><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>&amp;<$initialQuery$>" class="next"><$lc('wwNext')$><span class="access"> <$lc('wwPage')$></span></a></li>
+			<$endif$>
+			</ul>
+		</div>
+	<$endif$>
+</div>
+<@end@>
+
+
+<@dynamichtml exceptional_featured_employer_results_counter_bottom_inc@>
+	<$counterPosition=" bottom"$>
+	<$include exceptional_featured_employer_results_counter_inc$>
+<@end@>
+
+<!--********************************************BAU REL 3 16457 ****************************************************-->
+<!--****************************************************************************************************************-->
+<!--***************************************************************************************************************-->
+
+<!-- ******************************************************************
+*****************     SITE SEARCH  HTS      *******************************
+***********************************************************************-->
+<@dynamichtml subtmp_site_search_hts@>
+
+	<$ aTitleLbl = '' $>
+	<$ strContentType = ssGetNodeProperty("ContentType"), strSubContentType=ssGetNodeProperty("SubContentType")$>
+	<$strNodeLabel=ssGetNodeProperty("label")$>
+
+	 <$if strLength(strContentType) GT 0 $>
+			[[%<$if strLength(strSubContentType) GT 0 $>
+				<$ aTitleLbl = lc('wwSiteSearchFor', strLower(getFieldViewDisplayValue('xSubType', 'SubType_view', strSubContentType))) $>
+			<$else$>
+				<$ aTitleLbl = lc('wwSiteSearchFor', strLower(strContentType)) $>
+			<$endif$>%]]
+			<$ aTitleLbl = lc('wwSiteSearchFor', strLower(strNodeLabel)) $>
+	  <$else$>
+		<$ aTitleLbl = lc('wwSiteSearchLabel')$>
+	 <$endif$>
+
+	 
+<script type="text/javascript" language="javascript">
+<!--//--><![CDATA[//><!--
+
+
+function HAYSsitesearch_HTS() {
+	if (window.jQuery && jQuery.validator && jQuery.isReady) {
+	
+	jQuery.extend(jQuery.validator.messages, {
+					required: "<$lc('wwJsmandatory_msg_input')$>"	
+				});
+
+		$("#sitesearch").validate({
+		onkeyup: false,
+		submitHandler: function (form) {
+			
+		}
+	});
+		
+	}
+	else  {
+		window.setTimeout(HAYSsitesearch_HTS, 100);
+	}
+}
+
+HAYSsitesearch_HTS();
+
+//--><!]]>
+
+</script>
+	 
+	<div id="page">
+		<div class="row">
+			<div class="col col-12">
+            			<div class="row">
+            				<div class="col col-9">
+						<div class="box"> 
+							<h2><$ strUpper(aTitleLbl) $></h2>
+							<form action="index.htm" class="hays_form" id="sitesearch" method="get">
+							<ul class="form">
+							<li>
+							<div class="grid_4 alpha">
+								<label for="QueryText"><em>*</em> <$lc('wwKeywords')$></label>
+							</div>
+							<div class="input">
+								<$searchParametersValue=encodeForHTML(#active.searchParameters)$>
+								<input type="text" class="required" name="searchParameters" id="QueryText" value="<$searchParametersValue$>" />
+							</div>
+							</li>
+							<li>
+								<div class="action"><input type="submit" value="<$lc('wwSearch')$>" class="btn-primary"></div>	
+							</li>
+							</ul>
+		
+							<div class="clear"></div>
+							</form>
+							<$if strLength(#active.searchParameters) gt 0 OR strLength(#active.QueryText) GT 0$>
+							       <$include subtmp_site_search_results$>
+							<$endif$>
+						</div>
+					</div>
+
+<@end@>
+
+
+<!-- ***************** SITE SEARCH : ITEM DISPLAY INCLUDE **************
+***********************************************************************-->
+<@dynamichtml site_search_results_displayresults_hts_inc@>
+	
+<div class="results">
+	<$ include site_search_results_counter_hts_inc$>
+	<$loop SearchResults$>	
+		<div class="results-details">
+			<$ contentValue = ssGetNodeProperty(nodeId, 'ContentType')$>
+			<$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+			<h5><$dDocTitle$></h5>
+			<p><$xDescription$></p>
+			<$if strEquals(strSubContentType,"Event")$>
+				<td headers="Date"><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></td>
+			<$elseif strEquals(strSubContentType,"Press releases") $>
+				<td headers="Date"><$formatDateWithPattern(xEventDate,#active.websiteDateFormat)$></td>
+			<$else$>
+				<i><$formatDateWithPattern(dInDate,#active.websiteDateFormat)$></i>
+			<$endif$>
+			<td colspan="2" headers="<$dDocName$>">
+			<div class="btn">
+				<a href="<$ssUrl$>"><span><$lc('wwReadMore')$></span></a>
+			</div>
+			</td>
+		</div>
+	<$endloop$>
+	<$ include site_search_results_counter_hts_inc$>
+</div>
+<@end@>
+	
+	
+<!-- ***************** SITE SEARCH : PAGINATION INCLUDE HTS **************
+***********************************************************************-->
+
+<@dynamichtml site_search_results_counter_hts_inc@>
+<div class="pagination">
+<$EndRow= 10 $>
+	<$if (EndRow+StartRow-1) lt TotalRows$>
+		<$ endCount = EndRow+StartRow-1$>
+	<$else$>
+		<$ endCount = TotalRows$>
+	<$endif$>
+		<$lc('wwShowSiteSearchResultCount', StartRow, endCount, TotalRows)$>
+	<$if #active.NumPages AND NumPages GT 1 $>
+		
+			<ul>
+			<$if PageNumber gt 1$>
+				<li><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>" class="prev"><$lc('wwPreviousHTS')$><span class="access"></span></a></li>
+			<$endif$>
+			<$pageIndex = 1$>
+			<$loopwhile pageIndex le NumPages$>
+				<$if pageIndex eq PageNumber$>
+					<li><a class="active"><span class="access"></span><$pageIndex$></a></li>
+				<$else$>
+					<li><a href="index.htm?PageNumber=<$pageIndex$>&amp;StartRow=<$(pageIndex-1)*ResultCount+1$>&amp;<$ initialQuery $>"><span class="access"></span><$pageIndex$></a></li>
+				<$endif$>
+				<$pageIndex=pageIndex+1$>
+			<$endloop$>
+				<$if PageNumber lt NumPages$>
+					<li><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>&amp;<$initialQuery$>" class="next"><$lc('wwNextHTS')$><span class="access"> </span></a></li>
+				<$endif$>
+			</ul>
+
+	<$endif$>
+</div>
+<@end@>
+
+<@dynamichtml site_search_results_counter_hdb_inc@>
+<div class="box">
+<div class="counter">
+<$PageNumber = #active.PageNumber$>
+	<$if strLength(PageNumber) eq 0$>
+	<$PageNumber = 1$>
+	<$endif$>
+	<$prevPage = PageNumber -1$>
+	<$nextPage = PageNumber +1$>
+	<div class="grid_7 alpha pagination-results">
+		<$if (EndRow+StartRow-1) lt TotalRows$>
+                    <$endCount = EndRow+StartRow-1$>
+
+                <$else$>
+                    <$ endCount = TotalRows$>
+
+                <$endif$>
+		<$if PageNumber eq 1$>
+		<$StartRow = 1$>
+		<$endif$>
+		<$paginationCount = lc('wwShowSiteSearchResultCount', StartRow, endCount, TotalRows)$>
+		<$paginationCount= strReplace(paginationCount,'Strong','')$>
+		<$paginationCount= strReplace(paginationCount,'strong','')$>
+		<$paginationCount$>
+	</div>
+	<$if #active.NumPages AND NumPages GT 1 $>
+		<div class="grid_7 omega pagination">
+		   <ol>
+
+
+
+			<$if prevPage gt 0 $>
+			<li class="previous"><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>"></a></li>
+			<li ><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>"><$prevPage$></a></li>
+			<$endif$>
+
+
+
+
+				<$if (PageNumber gt 0) and (PageNumber le NumPages)$>
+				   <li class="active"><a href="index.htm?PageNumber=<$PageNumber$>&amp;StartRow=<$(PageNumber-1)*ResultCount+1$>&amp;<$ initialQuery $>"><$PageNumber$></a></li>
+
+
+      		<$endif$>
+
+
+
+
+
+
+
+			<$if nextPage le NumPages $>
+				<li><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>&amp;<$initialQuery$>" ><$nextPage$></a></li>
+				<li class="next"><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>&amp;<$initialQuery$>"></a></li>
+			<$endif$>
+			
+		   </ol>
+		</div>
+	<$endif$>
+</div>
+</div>
+<@end@>
+
+
+</body></html>

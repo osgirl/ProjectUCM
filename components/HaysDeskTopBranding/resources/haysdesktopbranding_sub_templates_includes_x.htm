@@ -1,0 +1,79 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysDeskTopBranding htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml jobs_sponsored_hdb@>
+	<$if #active.ssDocName $>
+		<$include reset_search_params_inc $>
+		<$ job_sponsored = 'Y', job_location = '', radius = #env.DefaultRadius, job_type='',job_rate = '', job_min = '', job_max = '', contentType= 'Jobs', job_title_ref='' $>
+
+		<$if strLength(job_category) GT 0 $>
+			<$include related_block_inc$>
+		<$endif$>
+	<$else$>
+		<$ queryString = 'dDocType <MATCHES> `Jobs` <AND> <NOT> (xSponsored <CONTAINS> `idcnull`)' $>
+		<$ include set_query_string $>
+		
+		<$ QueryText = queryString, SortField='dInDate', SortOrder="Desc", ResultCount=5 $>
+		
+		<$ executeService("GET_SEARCH_RESULTS") $>
+	<$endif$>
+
+	<$if rsFirst('SearchResults') $>
+		<$if  rsFindRowPrimary('SearchResults', DOC_INFO.dDocName) AND SearchResults.#numRows EQ 1   $>
+		<$else$>
+		<$if isProjectSEnabled eq 1$>
+			<div class="side_box">
+				<div class="rc_blue">
+					<div class="cnr"></div>
+					<h2><$lc('wwSponsoredJobsTitle')$></h2>
+				</div>
+				<div class="rc_grey sb_inner pull block_list even">
+				<ul>
+				<$loop SearchResults$>
+					<li>
+						<$Sponsored = SearchResults.xSponsored$>
+						<h3>
+							<$jobUrl = portalUrl & #env.ProjectS_Job_Details & dDocName$>
+							<a href="<$jobUrl$>"><$SearchResults.dDocTitle$></a>
+						</h3>
+						<p><$SearchResults.xLocationDescription$></p>
+						<$if isTrue(#active.display_salary_rate)$>
+							<p><span class="strong"><$SearchResults.xSalaryDescription $></span></p>
+						<$endif$>
+						<$ imagePath = haysIncludeXML(Sponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+						<$if strLength(imagePath) GT 0 $><$ imagePath $><$endif$>
+					</li>
+				 <$endloop$>
+				</ul>
+				</div>
+			</div>
+		<$else$>
+				<div class="box">
+					<h3><$lc('wwSponsoredJobsTitle')$></h3>
+					<ul class="list sponsored-list">
+					<$loop SearchResults$>
+					<li>
+						<$Sponsored = SearchResults.xSponsored$>
+						<a href="<$ssLink(SearchResults.dDocName)$>">
+							<strong><$SearchResults.dDocTitle$></strong>
+							<small><$SearchResults.xLocationDescription$></small>
+							<small><$if isTrue(#active.display_salary_rate)$><$SearchResults.xSalaryDescription $><$endif$></small>
+							<$ imagePath = haysIncludeXML(Sponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+							<$if strLength(imagePath) GT 0 $><$ imagePath $><$endif$>
+						</a>
+					</li>
+					<$endloop$>
+					</ul>	
+							
+				</div>			
+		<$endif$>
+		<$endif$>
+	<$endif$>
+
+<@end@>
+</body></html>	

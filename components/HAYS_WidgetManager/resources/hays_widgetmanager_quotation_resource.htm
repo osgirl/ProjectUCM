@@ -1,0 +1,135 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_featuredEmployer_javascript@>
+		<script type="text/javascript">
+
+
+				function featuredEmployerWidgetObject(name) {
+					this.name = name;
+				};
+
+				QuoteWidgetObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					QuoteWidgetObject.prototype.getResultDataStr = function()
+					{						
+							var quotedText = WCM.DHTML.GetAttribute("quoted_text", 'value') || '';
+							var addText = WCM.DHTML.GetAttribute("add_text", 'value') || '';
+							var personText = WCM.DHTML.GetAttribute("person_text", 'value') || '';
+							var title = WCM.DHTML.GetAttribute('quoted_title', 'value') || '';
+
+							if( quotedText.indexOf('Enter') == 0 )
+								quotedText = '';
+							if( addText.indexOf('Enter') == 0 )
+								addText = '';
+							if( personText.indexOf('Enter') == 0 )
+								personText = '';
+
+							var quotationStr = "<Widget><Name>quotation</Name>";
+							quotationStr += "<QuotedTitle>" + title + "</QuotedTitle>";
+							quotationStr += "<QuotedText>" + quotedText + "</QuotedText>";
+							quotationStr += "<PersonText>" + personText + "</PersonText>";
+							quotationStr += "<AddText>" + addText + "</AddText></Widget>";
+
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				QuoteWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							var quotedTitle = xmlObject.getElementsByTagName('QuotedTitle')[0].firstChild.data || ''; 
+							WCM.DHTML.SetAttribute( "quoted_title", 'value',  quotedTitle);
+							var quotedText = xmlObject.getElementsByTagName('QuotedText')[0].firstChild.data || ''; 
+							WCM.DHTML.SetAttribute( "quoted_text", 'value',  quotedText);
+							var addText = xmlObject.getElementsByTagName('AddText')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("add_text", 'value', addText);
+							var personText = xmlObject.getElementsByTagName('PersonText')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("person_text", 'value', personText);
+					};
+
+				//*************************************************************************
+
+				QuoteWidgetObject.prototype.isValid = function(  )	
+				{ 
+					var quotedText = WCM.DHTML.GetAttribute("quoted_text", 'value') || '';
+					if( quotedText.length > 0) { 
+							return true; 
+					}
+					return false;
+				};
+
+
+				//***************************************************************************
+
+				QuoteWidgetObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new QuoteWidgetObject("quotation") ); 
+		
+	
+	
+		</script>
+<@end@>
+
+
+<@dynamichtml widget_quotation_form@>
+
+	<$include widget_quotation_javascript $>
+	<h2><$lc('wwWidgetQuotationHeading')$></h2>
+	<form class="quotations" method="get" action="#">
+				
+				<div class="textarea">
+					<label for="quoted_title"><$lc('wwWidgetQuotationTitle')$></label>
+					<textarea id="quoted_title" name="quoted_title" cols="40" rows="8"><$lc('wwWidgetQuotationTitleDesc')$></textarea>
+				</div>
+				<div class="textarea">
+					<label for="quoted_text"><$lc('wwWidgetQuotationText')$></label>
+					<textarea id="quoted_text" name="quoted_text" cols="40" rows="8"><$lc('wwWidgetQuotationTextDesc')$></textarea>
+				</div>
+				<div class="textarea">
+					<label for="add_text"><$lc('wwWidgetQuotationAddText')$></label>
+					<textarea id="add_text" name="add_text" cols="40" rows="3"><$lc('wwWidgetQuotationAddTextDesc')$></textarea>
+				</div>	
+				<div class="textarea">
+					<label for="person_text"><$lc('wwWidgetQuotationPerson')$></label>
+					<textarea id="person_text" name="person_text" cols="40" rows="3"><$lc('wwWidgetQuotationPersonDesc')$></textarea>
+				</div>	
+		</form>
+<@end@>
+
+
+
+<@dynamichtml widget_quotation_display@>
+		<div class="excerpt s_mrg">
+			<span class="h3"><strong><$getValue("widgetRS","QuotedTitle") $></strong> </span>
+			<p><$getValue("widgetRS","QuotedText") $></p>
+			
+			<blockquote><div>
+				<$if strLength(getValue("widgetRS","AddText") ) > 0 $>“<q><$getValue("widgetRS","AddText") $></q>”<$endif$> 
+				<$if strLength(getValue("widgetRS","PersonText") ) > 0 $><cite><$getValue("widgetRS","PersonText") $></cite><$endif$>
+			</div></blockquote>
+			
+		</div>
+		
+<@end@>
+
+
+
+</body></html>

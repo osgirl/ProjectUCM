@@ -1,0 +1,1062 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysDeskTopBranding htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml home_main_blocks_R6_HDB_LEFT1@>
+inside home_main_blocks_R6_HDB_LEFT
+<@end@>
+
+<@dynamichtml home_main_blocks_R6_HDB_LEFT@>
+<$fe_count = 0$>
+<$survey_count = 0$>
+<$rsCreateResultSet("2ColIndexes", "index,type") $>
+[[%Find Indexes%]]
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>			
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		<$if strLength(widgetXML) GT 0$>	
+			[[%<$if (strIndexOf(widgetXML , 'featuredEmployer') GT 0)$>
+				<$fe_count = fe_count+1 $>
+				<$res=rsAppendRowValues("2ColIndexes", wcmListIndex1 & ", featuredEmployer")$>
+			<$endif$>%]]
+			<$if (strIndexOf(widgetXML , 'survey') GT 0)$>		
+				<$survey_count = survey_count+1 $>
+				<$ rsAppendRowValues("2ColIndexes", wcmListIndex1 & ",survey")$>
+			<$endif$>
+		<$endif$>
+		<$wcmListIndex1 = wcmListIndex1 + 1$>	
+	<$endloop$>	
+<$wcmListEnd("SelectedContent")$>
+	<$rsName="2ColIndexes"$>
+[[%Draw%]]
+<div class="col col-8">
+<$rsCreateResultSet("1ColBoxes", "title,icon,body,image,link,widget") $>
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>			
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		<$if strLength(widgetXML) GT 0 AND (strIndexOf(widgetXML , 'survey') GT 0)$>			
+			<$include home_main_blocks_R6_HDB_Draw_Double$>
+		<$else$>
+			<$widgetname = widgetXML$>
+			<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex1)$>
+			<$queryString=wcmListElement("Query", wcmListIndex1)$>
+			<$if strLength(queryString) GT 0 $>
+					<$include set_query_locale_include$>
+					<$ QueryText = queryString & "<AND> xWebsiteObjectType <MATCHES> `Data File`"$>
+					<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount='1'$>
+					<$executeService("SS_GET_SEARCH_RESULTS")$>
+					<$if rsFirst('SearchResults')$>
+						<$ dataFileName = dDocName $>
+					<$endif$>
+			<$endif$>
+
+			<$contributableTitle = wcmListElement("Title", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableTitle)) EQ 0 $>
+				<$ contributableTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+			<$endif$>
+			<$contributableIcon = wcmListElement("Icon", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableIcon)) EQ 0 $>
+				<$ contributableIcon = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Icon']/text()")$>
+			<$endif$>
+			<$ contributableContent = wcmListElement("Content", wcmListIndex1)$>
+			<$if strLength(contributableContent) EQ 0 $>
+				<$ contributableContent = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']")$>
+			<$endif$>
+			<$ contributablelink = wcmListElement("Link", wcmListIndex1)$>
+			<$ contributableImage = wcmListElement("BigImage", wcmListIndex1)$>
+			<$if strLength(contributableImage) EQ 0 $>
+				<$ contributableImage = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Image']/text()")$>
+			<$endif$>
+			[[%<$if strLength(contributableImage) GT 0 $>
+				<$ contributableImage = strReplace(contributableImage, '<img ', '<img height="60" width="60" ') $>
+			<$endif$>%]]
+		[[%%<$ rsAppendRowValues("1ColBoxes", contributableTitle & "," & contributableIcon & "," & contributableContent & "," & contributableImage & "," & contributablelink)$>%]]
+		<$rsAppendNewRow("1ColBoxes")$>
+		<$setValue("1ColBoxes","title",contributableTitle)$>
+		<$setValue("1ColBoxes","icon",contributableIcon)$>
+		<$setValue("1ColBoxes","body",contributableContent)$>
+		<$setValue("1ColBoxes","image",contributableImage)$>
+		<$setValue("1ColBoxes","link",contributablelink)$>
+		<$setValue("1ColBoxes","widget",widgetname)$>
+		[[%Draw all single boxes if another double box approaching or we are at end of list%]]
+		<$if (wcmListIndex1 == wcmListNumRows-1) OR rsFindRowPrimary("2ColIndexes", (wcmListIndex1+1))$>
+			<$include home_main_blocks_R6_HDB_Draw_Singles$>
+			<$rsCreateResultSet("1ColBoxes", "title,icon,body,image,link,widget") $>
+		<$endif$>
+		<$endif$>
+		<$wcmListIndex1 = wcmListIndex1 + 1$>	
+	<$endloop$>	
+<$wcmListEnd("SelectedContent")$>
+</div>
+<@end@>
+
+<@dynamichtml rsPrint@>	
+	numRows:<$rsNumRows(rsName)$>:
+	<$rsFirst(rsName)$>
+	<$loopwhile getValue(rsName, "#isRowPresent")$>
+			index:<$getValue(rsName, "index")$>
+			type:<$getValue(rsName, "type")$>
+		<$rsNext(rsName)$>
+	<$endloop$>
+<@end@>
+
+<@dynamichtml home_main_blocks_R6_HDB_Draw_Singles@>	
+	<div class="row">
+	<$index=0$>
+	<$numRows1Col = rsNumRows("1ColBoxes")$>
+	<$loop 1ColBoxes$>
+		<$num=numRows1Col$>
+		<$include get_half_ceil$>
+		<$if index ==0 OR index == half$>
+				<div class="col col-4">
+		<$endif$>	
+		<$if (strLength(1ColBoxes.widget) GT 0) AND (strIndexOf(1ColBoxes.widget, 'featuredEmployer') GT 0)$>
+			<$include widget_featuredEmployer_display_hdb$>
+		<$else$>	
+			<div class="box">
+				<$if strLength(1ColBoxes.image) GT 0 $><div class="box-pix"><$1ColBoxes.image$></div><$endif$>
+				<h2><$1ColBoxes.icon$><$1ColBoxes.title$></h2>
+				<p><$1ColBoxes.body$></p>
+				<$strReplace(1ColBoxes.link,"<a ","<a class='btn' ")$>
+			</div>
+		<$endif$>
+		<$if index == half-1 OR index ==numRows1Col-1$>
+			</div>
+		<$endif$>	
+		<$index=index+1$>
+	<$endloop$>
+	</div>
+<@end@>
+<@dynamichtml home_main_blocks_R6_HDB_Draw_Double@>	
+  <$if (strIndexOf(widgetXML , 'survey') GT 0)$>	
+	<$include widget_survey_display_hdb$>
+ <$endif$> 
+<@end@>
+
+<@dynamichtml home_main_blocks_R6_HDB_RIGHT@>	
+
+<div class="col col-4">
+
+[[%Draw%]]
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>	
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		<$if strLength(widgetXML) GT 0  AND (strIndexOf(widgetXML, 'featuredEmployer') GT 0)$>	
+			<$include widget_featuredEmployer_display_hdb$>
+		<$else$>
+			<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex1)$>
+			<$queryString=wcmListElement("Query", wcmListIndex1)$>
+			<$if strLength(queryString) GT 0 $>
+					<$include set_query_locale_include$>
+					<$ QueryText = queryString & "<AND> xWebsiteObjectType <MATCHES> `Data File`"$>
+					<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount='1'$>
+					<$executeService("SS_GET_SEARCH_RESULTS")$>
+					<$if rsFirst('SearchResults')$>
+						<$ dataFileName = dDocName $>
+					<$endif$>
+			<$endif$>
+
+			<$contributableTitle = wcmListElement("Title", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableTitle)) EQ 0 $>
+				<$ contributableTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+			<$endif$>
+			<$contributableIcon = wcmListElement("Icon", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableIcon)) EQ 0 $>
+				<$ contributableIcon = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Icon']/text()")$>
+			<$endif$>
+			<$ contributableContent = wcmListElement("Content", wcmListIndex1)$>
+			<$if strLength(contributableContent) EQ 0 $>
+				<$ contributableContent = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']")$>
+			<$endif$>
+			<$ contributablelink = wcmListElement("Link", wcmListIndex1)$>
+			<$ contributableImage = wcmListElement("BigImage", wcmListIndex1)$>
+			<$if strLength(contributableImage) EQ 0 $>
+				<$ contributableImage = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Image']/text()")$>
+			<$endif$>
+			[[%<$if strLength(contributableImage) GT 0 $>
+				<$ contributableImage = strReplace(contributableImage, '<img ', '<img height="60" width="60" ') $>
+			<$endif$>%]]
+		
+			<div class="box">
+				<$if strLength(contributableImage) GT 0 $><div class="box-pix"><$contributableImage$></div><$endif$>
+				<h2><$contributableIcon$><$contributableTitle$></h2>
+				<p><$contributableContent$></p>
+				<$strReplace(contributablelink,"<a ","<a class='btn' ")$>
+			</div>
+		<$endif$>	
+		<$wcmListIndex1 = wcmListIndex1 + 1$>	
+	<$endloop$>	
+<$wcmListEnd("SelectedContent")$>
+</div>
+<@end@>
+
+<@dynamichtml get_half_ceil@>
+<$if num%2 == 0$>
+	<$half=num/2$>
+<$else$>	
+	<$half=(num/2)+1$>
+<$endif$>	
+<@end@>
+
+<@dynamichtml widget_display_hdb@>
+		<$ if strLength( widgetXML) GT 0 $>
+				<$if strEquals(#active.siteId,"news")$>
+					<$addThisParam = "?v=250&username=NandR"$>
+				<$else$>
+					<$addThisParam = ""$>
+				<$endif$>
+				<$crXmlToResultSet(widgetXML, "widgetRS") $>
+				<$if getValue("widgetRS", "#numRows") > 0 $>
+						<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+				<$endif$>
+		<$endif$>
+<@end@>
+
+<@dynamichtml widget_featuredEmployer_display_hdb@>
+			<$xLocale = SiteLocale$>
+			<$executeService("Get_Featured_Employers")$>
+			<$numRows=rsNumRows("FEATURED_EMPLOYERS")$>	
+			<$if strEquals(isoCountryCode,"IT") or strEquals(isoCountryCode,"JP") or strEquals(isoCountryCode,"CN")$>
+			[[%<style>
+			.comb_5_6 li{
+			margin-left:19px;
+			margin-right:19px;
+			}
+			</style> %]]
+			<$endif$>
+				
+					<div class="box">
+						<h2><$lc("wwPartneredCompaniesLabel")$></h2>
+						<ul class="list emp-list">
+							<$loop FEATURED_EMPLOYERS$>
+								<$urlLink=haysIncludeXML(FEATURED_EMPLOYERS.CONTENT_ID,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+								<$if not strEquals(urlLink,'')$>								
+									<li><a href="<$urlLink$>" target="_blank"><$haysIncludeXML(FEATURED_EMPLOYERS.CONTENT_ID,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>								
+								<$endif$>
+							<$endloop$>	
+						</ul>
+							<!-- BAU 18293 -->
+						<$queryString="dDocType<matches>`SponsoredEmployer`<AND>(xIsFeatured<matches>`yes`)"$>
+						<$include set_query_string_no_empty_catagory$>
+				<$if strLength(queryString) GT 0 $>
+							<$ queryString = queryString & "&SortField=dInDate" $>
+							<$ queryString = queryString & "&SortOrder=Desc" $>
+					<!-- BAU 18293 -->
+						<$endif$>
+	<!-- added for Ticket 6809822 on 06/04/2012 -->
+							<$SortField='dInDate'$>
+							<$SortOrder='DESC'$>
+						<!--end -->						<$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>		
+					
+					 <a href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>" class="btn"><$lc('wwViewMore')$></a>
+						</div>
+			
+<@end@>
+
+
+
+<@dynamichtml widget_survey_display_hdb@>
+
+<$if ((strEquals(SiteLocale,'en-GB')) OR (strEquals(SiteLocale,'en-AUS')) OR (strEquals(SiteLocale,'en-HKG')) OR (strEquals(SiteLocale,'cn-CHN')) OR (strEquals(SiteLocale,'en-CHN')) OR (strEquals(SiteLocale,'jp-JP')) OR (strEquals(SiteLocale,'en-JP')) OR (strEquals(SiteLocale,'en-MLS')) OR (strEquals(SiteLocale,'en-NZL')) OR (strEquals(SiteLocale,'en-SGP')) )$>
+
+<$ResultCount = 1$>
+<$isRHS = "false"$>
+<$PrimaryTemplateUrl=ssGetNodeProperty("primaryTemplateUrl")$> 
+<$if regexMatches(PrimaryTemplateUrl,".*Right Block.*=SUBTMP_SURVEY_DISPLAY.*")$>
+  <$isRHS = "true"$>
+<$endif$>
+ <$include widget_search_survey_queryresults$>
+
+<$JobSearchDirName=ssGetNodeProperty('jobs-search','urlDirName')$>
+<$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0$>
+	 
+		<div class="box">
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						 <h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop SearchResults$>
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								<ul class="form">
+									<li><strong><$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>	
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+								  </div>
+							   </li>
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+								  </div>
+							   </li>   
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+								  </div>
+							   </li>   	
+								<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+						  </ul>
+							<$endloop$>
+			</form>
+		</div>
+	
+<$else$>
+
+<$if strEquals(isRHS,"true") $>
+	[[%	<div class="box" >
+		%]]
+<$endif$>
+ 
+		<div class="box">
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						 <h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop SearchResults$>
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								<ul class="form">
+									<li><strong><$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>	
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+								  </div>
+							   </li>
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+								  </div>
+							   </li>   
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+								  </div>
+							   </li>   	
+								<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+						  </ul>
+							<$endloop$>
+			</form>
+		</div>
+	
+<$if strEquals(isRHS,"true") $>
+	[[%
+	</div>
+		</div> %]]
+<$endif$>
+		
+<$endif$>
+
+<$else$>
+
+<!--From Here below 9411 requirment is implemented for CEROW Regions-->
+       <$include widget_survey_cerow_display_hdb$>
+    
+<$endif$>
+<@end@>
+
+
+<@dynamichtml widget_survey_cerow_display_hdb@>
+
+<$ ResultCount = 1$>
+    <$isRHS = "false"$>
+    <$PrimaryTemplateUrl=ssGetNodeProperty("primaryTemplateUrl")$> 
+    <$if regexMatches(PrimaryTemplateUrl,".*Right Block.*=SUBTMP_SURVEY_DISPLAY.*")$>
+      <$isRHS = "true"$>
+    <$endif$>
+    <$include widget_search_survey_queryresults$>
+    <$widgetXMLsurvey=strReplace(widgetXML,"survey","")$> 
+    <$crXmlToResultSet(widgetXMLsurvey, "rstSurvey")$>
+	
+
+  <$JobSearchDirName=ssGetNodeProperty('jobs-search','urlDirName')$>
+  <$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0 and strEqualsIgnoreCase(isRHS,'false')$>
+	 <div class="box">
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						<h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop rstSurvey$>
+								
+								<input type="hidden" name="SER_DDOCNAME" value="<$rstSurvey.SurveyId$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								<ul class="form">
+									<li><strong><$ssIncludeXml(rstSurvey.SurveyId,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>
+
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+								<$if strLength(Ans2) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+									</ul>
+							<$endloop$>
+			</form>
+		</div>
+		<$elseif strIndexOf(ssoriginalurl,JobSearchDirName)>=0 and strEqualsIgnoreCase(isRHS,'true')$>	
+			 <$include widget_cerow_subtemplate_survey_display_hdb$>
+		<$else$>
+			<$if strEquals(isRHS,"true") $>		
+				 <$include widget_cerow_subtemplate_survey_display_hdb$>
+			<$else$>
+				 <$include widget_cerow_other_survey_display_hdb$>
+			<$endif$>			
+		<$endif$>
+<@end@>
+
+<!--MR9 9411 Changes-->
+<@dynamichtml widget_search_survey_queryresults_hdb@> 
+ [[%Query text%]]
+	<$ QueryText = ''$>
+	<$strdocContentType = "Survey" $>
+	<$ QueryText = QueryText & "dDocType <matches> `" & strdocContentType  & "`"  $> 
+
+	<$queryString = QueryText$>
+	<$include subtmp_worldwide_set_query_locale_include$>
+	<$QueryText=queryString$>
+	<$ ssLimitScope  = "false",  SortField="xEventDate", SortOrder="desc" $>
+	<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount  & '&LimitScope='&ssLimitScope$>
+ 	<$executeService("SS_GET_SEARCH_RESULTS")$>
+<@end@>
+
+<@dynamichtml widget_cerow_subtemplate_survey_display_hdb@>
+<div class="box">
+	<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+	<input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+	<h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+	<$loop SearchResults$>
+
+		<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+		<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+		
+		<$Ans1 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+		<$Ans2 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+		<$Ans3 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+		<$Ans4 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+		<$Ans5 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+
+		<ul class="form">
+		<li><strong><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+		
+		<$if strLength(Ans1) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans2) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans3) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans4) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans5) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+			  </div>
+		   </li>
+		<$endif$>
+			
+		<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+		</ul>
+	<$endloop$>
+		</form>
+		</div>
+     
+<@end@> 
+
+<@dynamichtml widget_cerow_other_survey_display_hdb@> 
+	
+	<$if regexMatches(SS_PLACEHOLDER_DEFINITION,"PLDEF_RIGHT_HAND_BLOCK.*")$>
+
+	<$else$>
+		<div class="row">
+					<div class="col col-8">
+	<$endif$>
+			<div class="box">
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						<h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop rstSurvey$>
+								
+								<input type="hidden" name="SER_DDOCNAME" value="<$rstSurvey.SurveyId$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								<ul class="form">
+									<li><strong><$ssIncludeXml(rstSurvey.SurveyId,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>
+
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+								<$if strLength(Ans2) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+									</ul>
+							<$endloop$>
+			</form>
+		</div>
+      	<$if regexMatches(SS_PLACEHOLDER_DEFINITION,"PLDEF_RIGHT_HAND_BLOCK.*")$>
+
+		<$else$>
+		</div>
+		</div>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml LeftHandNav_r6_hdb@> 
+			<$include build_left_navigation_r6_hdb$>
+<@end@>
+
+<@dynamichtml build_left_navigation_r6_hdb@>
+	<$  startNodeId = '' $>
+	<$if NOT rsExists('HaysNavNodes') $>
+		<$ haysLoadSiteNavResultSet(siteId) $>
+	<$endif$>
+	
+	[[%Added for release 9.0 start%]] 
+	<$country= strUpper(strSubstring(siteId,strLength(siteId)-2,strLength(siteId)))$>
+	<$customizeLHNav = strUpper(getValue('#env','customizeLHNavigationCountryList'))$>
+	<$isCountryCNorJP=''$>
+	<$if (strIndexOf(customizeLHNav,country) < 0)$>
+	<$isCountryCNorJP=0$>
+	<$else$>
+	<$isCountryCNorJP=1$>
+	<$endif$>
+	[[%Added for release 9.0 end%]]
+	
+	<$if (rsFindRowPrimary('HaysNavNodes', #local.nodeId)) AND ( strLength(HaysNavNodes.parentNodeId) GT 0 ) $> [[% Specialism or sub-specialism page %]]
+		<$if HaysNavNodes.contributorOnly like '1' $>
+			<$include build_left_nav_admin_main_r6_hdb_inc$>
+		<$else$>
+		
+			[[% commented for release 9.0 <$if HaysNavNodes.level == 2$>	
+							<$ startNodeId = #local.nodeId $>
+					<$else$>											
+							<$ startNodeId = HaysNavNodes.parentNodeId $>
+					<$endif$>%]]
+			
+			 [[%Added for release 9.0 start%]]
+			   <$if isCountryCNorJP == 0$>
+					<$if HaysNavNodes.level == 2$> [[% specialism %]]
+					 <$ startNodeId = #local.nodeId $>
+					<$else$>           [[% sub-specialism %]]
+					 <$ startNodeId = HaysNavNodes.parentNodeId $>
+					<$endif$>
+			   <$else$>
+					<$if HaysNavNodes.level == 2$> 
+							<$ startNodeId = HaysNavNodes.parentNodeId  $>
+					<$else$>
+						<$ startNodeId = #local.nodeId  $>
+					<$endif$>
+			   <$endif$>
+			   [[%Added for release 9.0 end%]]
+			
+			<$include build_left_nav_specialisms_r6_hdb_inc$>
+		<$endif$>
+	<$else$>														[[% general %]]
+		<$if #active.navType AND (navType like 'Candidates' OR navType like '2') $>
+			<$ startNodeId = getValue('#env', 'PageType_2') $>
+		<$else $>
+			<$ startNodeId = getValue('#env', 'PageType_' & ssGetNodeProperty(#local.nodeId, 'HeaderType')) $>
+		<$endif$>
+		<$include build_left_nav_general_inc_r6_hdb$>
+	<$endif$>
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : ADMIN MAIN *******
+**********************************************-->
+<@dynamichtml build_left_nav_admin_main_r6_hdb_inc@>
+	<$rsCopyFiltered('HaysNavNodes', 'HaysNavNodesAdmin', 'contributorOnly', '1') $>
+	<$if rsFindRowPrimary('HaysNavNodesAdmin', #local.nodeId)$>
+		<$include build_left_nav_sub_admin_hdb_inc$>
+	<$else$>
+		<$if rsFirst('HaysNavNodesAdmin') $>
+			<$ parentId = HaysNavNodesAdmin.parentNodeId $>
+			<$rsCopyFiltered('HaysNavNodesAdmin', 'HaysNavNodesAdminTop', 'parentNodeId', parentId) $>
+			<$ numberOfKids = HaysNavNodesAdminTop.#numRows, gridClass = ''$>
+			
+			<$if numberOfKids GT 0 $>
+						
+				<div class="box expandable-in-mobile">
+				<h3><$lc('wwHaysAdmin')$></h3>
+				<ul class="list job-list exp-list">
+					<$loop HaysNavNodesAdminTop $>
+						<li><a href="<$ HaysNavNodesAdminTop.href $>"><$ HaysNavNodesAdminTop.label $></a></li>
+					<$endloop$>
+				</ul>
+				</div>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+
+<!--**************************************************
+****** LEFT SIDE NAVIGATION : ADMIN PAGES    *********
+***************************************************-->
+<@dynamichtml build_left_nav_sub_admin_hdb_inc@>
+	<div class="box expandable-in-mobile">
+		<h3><$ HaysNavNodesAdmin.label $></h3>
+		<ul class="list job-list exp-list">
+		<$ exec rsNext('HaysNavNodesAdmin') $>
+		<$loopwhile getValue('HaysNavNodesAdmin', '#isRowPresent') $>
+			<$if HaysNavNodesAdmin.parentNodeId like #local.nodeId $>
+				<li><a href="<$ HaysNavNodesAdmin.href $>" ><$ HaysNavNodesAdmin.label $></a></li>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodesAdmin') $>
+		<$endloop$>
+		</ul>
+	</div>	
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM *******
+**********************************************-->
+<@dynamichtml build_left_nav_specialisms_r6_hdb_inc@>
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",startNodeId)$>
+	<div class="box expandable-in-mobile">
+	<$if startNodeId like #local.nodeId$>
+		<h3><$ ssGetNodeProperty(startNodeId, "label") $></h3>
+	<$else$>
+		<h3><a href="<$ ssNodeLink(startNodeId,siteId) $>"><$ ssGetNodeProperty(startNodeId, "label") $></a></h3>
+	<$endif$>
+	<ul class="list job-list exp-list">
+	<$loop rsSubSpecialisms$>
+		<$if rsSubSpecialisms.nodeId like #local.nodeId$>
+			<li><a href="#" class="active"><$ rsSubSpecialisms.label $></a></li>
+		<$else$>
+			<li><a href="<$ rsSubSpecialisms.href $>"><$ rsSubSpecialisms.label $></a></li>
+		<$endif$>
+	<$endloop$>
+	</ul>
+	<$include left_nav_back_hdb$>
+	</div>
+		[[% Admin pages %]]
+		<$if isTrue(#active.SSContributor) $>
+			<$include build_left_nav_admin_main_r6_hdb_inc$>
+		<$endif$>
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : GROUPING *********
+**********************************************-->
+<@dynamichtml build_left_nav_general_inc_r6_hdb@>
+	<div class="box expandable-in-mobile">
+	<h3><$lc('wwHaysExpertise')$></h3>
+	<ul class="list job-list exp-list">
+  <$rsCopyFiltered("HaysNavNodes", "rsGroupingAndSpecialisms", "startingNodeId",startNodeId)$>
+  
+  [[% commented for release 9.0
+  <$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+  <$rsSort("rsSpecialisms","label","string","asc")$>%]]
+  
+   [[%Added for release 9.0 start%]]
+	
+	<$if isCountryCNorJP == 0$>
+	<$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+	<$rsSort("rsSpecialisms","label","string","asc")$>
+	<$else$>
+	<$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","1")$>
+	<$endif$>
+	[[%Added for release 9.0 end%]]
+  
+ <$loop rsSpecialisms$>
+	<$specNodId = rsSpecialisms.nodeId$>
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",specNodId)$>
+	<$numberOfSubSpecKids=rsNumRows("rsSubSpecialisms")$>
+	<$if numberOfSubSpecKids gt 0$>
+		<li><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a>
+			<$include build_left_navigation_specialism_popup__hdb_inc$>
+		</li>
+	<$else$>
+		<li ><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a></li>
+	<$endif$>
+ <$endloop$>
+</ul>
+<$include left_nav_back_hdb$>
+</div>
+	[[% Admin pages %]]
+	<$if isTrue(#active.SSContributor) $>
+		<$include build_left_nav_admin_main_r6_hdb_inc$>
+	<$endif$>
+<@end@>
+
+
+<!--***********************************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM POPUPS OF SUBSPEC *********
+************************************************************-->
+<@dynamichtml build_left_navigation_specialism_popup__hdb_inc@>
+	<ul class="box expandable-in-mobile">
+		<$loop rsSubSpecialisms$>
+				<li><a href="<$ rsSubSpecialisms.href $>"><$ rsSubSpecialisms.label $> <$lc('wwLeftNavJobSuffix')$></a></li>
+		<$endloop$>
+	</ul>
+<@end@>
+
+<@dynamichtml left_nav_back_hdb@>
+	<a href="javascript: history.go(-1)" class="btn btn-block"><$lc('wwBackExpertise')$></a>
+<@end@>
+
+<@dynamichtml rgtmp_half_width_blocks_r6_hdb_inc@>
+<$if strEquals(#active.IdcService,"WCM_PLACEHOLDER")$> <!--Thank You Page Event firing-->
+	<$event = "buy"$>
+	<$include fire_events$>
+<$endif$>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+
+		<div class="row">
+		
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$num=wcmListNumRows$>
+				<$include get_half_ceil$>
+				<$if wcmListIndex ==0 OR wcmListIndex == half$>
+					<div class="col col-3">
+				<$endif$>	
+				<$ temp = dDocName, adDocName = '', aTitle = '',aIcon='', aSummary = '', aLink = '', friendlyURL = '' $>
+				
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<div class="box">
+							<h2><$shortcutTitle$></h2>
+							<p><$ shortcutText $></p>
+							<a href="<$ shortcutTarget$>"><$ shortcutLink $></a>
+							</div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+							 <$contextStringIcon = wcmListElement("Icon", wcmListIndex)$>
+								<$if NOT strEquals(contextStringIcon, '&nbsp;') AND strLength(contextStringIcon) GT 0 $>
+								<$ aIcon = contextStringIcon $>
+							<$endif$>
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+							 <$ anImage = wcmListElement("BigImage", wcmListIndex)$>
+								<div class="box">
+								<$if strLength(anImage) GT 0 $>
+									<div class="box-pix"><$ anImage $></div>
+								<$endif$>
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$aIcon$><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(aSummary) GT 0 $>
+										<$aSummary$>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<a href="<$ aLink$>">more....</a>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<a href="<$ aLink$>">more....</a>
+									<$endif$>
+								<$else$>
+									<$ aLink$>
+								<$endif$>
+								</div>
+					<$endif$>
+				<$if wcmListIndex == half-1 OR wcmListIndex ==wcmListNumRows-1$>
+					</div>
+				<$endif$>	
+				
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		</div>
+		<$wcmListEnd(blockName)$>
+		
+<@end@>
+
+<@dynamichtml rgtmp_full_width_blocks_r6_hdb_inc@>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+
+		<div class="row">
+			<div class="col col-6">
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$ temp = dDocName, adDocName = '', aTitle = '', aSummary = '', aLink = '', friendlyURL = '' $>
+				
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<div class="box">
+							<h2><$shortcutTitle$></h2>
+							<p><$ shortcutText $></p>
+							<a href="<$ shortcutTarget$>"><$ shortcutLink $></a>
+							</div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+							 <$ anImage = wcmListElement("BigImage", wcmListIndex)$>
+								<div class="box">
+								<$if strLength(anImage) GT 0 $>
+									<div class="box-pix"><$ anImage $></div>
+								<$endif$>
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(aSummary) GT 0 $>
+										<$aSummary$>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<a href="<$ aLink$>">more....</a>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<a href="<$ aLink$>">more....</a>
+									<$endif$>
+								<$else$>
+									<$ aLink$>
+								<$endif$>
+								</div>
+					<$endif$>
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+			</div>
+			</div>
+		<$wcmListEnd(blockName)$>
+<@end@>
+</body></html>	

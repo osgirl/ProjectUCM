@@ -1,0 +1,1157 @@
+/* nav global - nav-horizontal
+-----------------------*/
+#nav-global {
+position:relative;
+z-index:10;
+float:left;
+height:50px;
+margin:0;
+width:960px;
+}
+
+#nav-global ul.nav {
+	margin:0;
+	padding:0;
+	overflow:hidden;
+	width:817px;
+	height:26px;
+	
+}
+#nav-global li {
+background:transparent url(../../Content/Images/bullet-nav.png) no-repeat scroll right 8px;
+float:left;
+font-size:1.6em;
+font-weight:bold;
+height:22px;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:2px 0;
+}
+#nav-global li a {
+background:transparent none repeat scroll 0 0;
+color:#009FDA;
+margin-top:0;
+padding:0.5em 0.75em;
+text-decoration:none;
+}
+#nav-global li a:hover,
+#nav-global li a:focus 
+{	background-color: #009fda;
+ 	color:#fff;
+ 	text-decoration:none;
+ 	height:26px !important;
+}
+#nav-global .selected
+{	color: #002776;
+ 	text-decoration:none;
+}
+/* top menu selected dark blue 30-06-10 */
+#nav-global .menunextSelected {
+	color:#002776;
+}
+
+/* selected end */
+
+#nav-global li.last {
+background:none repeat scroll 0 0;
+float:left;
+font-size:1.6em;
+font-weight:bold;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+height:22px;
+padding:2px 0;
+}
+
+/*join hays*/
+#nav-global li.first {
+background:#009FDA none repeat scroll 0 0;
+color:#FFFFFF;
+display:inline-block;
+float:left;
+font-size:1.8em;
+font-weight:bold;
+height:21px;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:1px 8px 1px 19px;
+width:115px;
+}
+.joinhays {
+	width:143px;
+ 	float:left;
+ 	margin:0;
+ 	padding:0;
+}
+
+/*country popout start */
+#nav-country {}
+ul#nav-country {}
+li#nav-country  {
+background:#EEEEEE none repeat scroll 0 0;
+border:medium none;
+float:right;
+font-size:1.6em;
+font-weight:bold;
+margin:0;
+padding:1px 0 2px;
+width:209px;
+height:21px;
+}
+
+li#nav-country a {
+background:transparent url(../../Content/Images/bullet-dropdown.gif) no-repeat scroll 98% 50%;
+float:left;
+padding:0 0.8em 0 0.4em;
+}
+li#nav-country a:visited {
+ background-color: transparent;
+}
+li#nav-country a:hover,
+li#nav-country a:focus,
+li#nav-country.here,
+li#nav-country:hover{
+color:#009fda  !important;
+text-decoration:none;
+background: transparent url("../../Content/Images/nav-country-lnk.gif") no-repeat scroll 0 0; 
+width:209px;
+margin:0;
+}
+li#nav-country:hover div#nav-country-list {
+display:block;
+}
+#nav-global .popout {
+background:transparent url(../../Content/Images/popoutbg.gif) no-repeat scroll 0 100%;
+font-size:0.6em;
+font-weight:normal;
+height:170px/*151px*/;/*Css code is edited by shilpi as on 23rd sept 2010*/
+padding:13px 0 3px 5px;
+position:absolute;
+right:-7px;
+top:20px;
+width:554px;
+z-index:99;
+}
+#nav-global .popout li {
+background:transparent none repeat scroll 0 0;
+border:medium none;
+padding:0 0 0 8px;
+width:126px;
+height:21px;
+}
+#nav-global .popout a {
+background:transparent url(../../Content/Images/bullet-tertiary-link.gif) no-repeat scroll 0 60%;
+float:left;
+padding:2px 2px 2px 4px;
+font-size:10px;
+color:#009fda;
+}
+#nav-global .popout a:hover, 
+#nav-global .popout a:focus {
+background-color: #009fda;
+background:#009fda url(../../Content/Images/bullet-tertiary-link.gif) no-repeat scroll 0 20%;
+text-decoration:none;
+color:#fff !important;
+width:11em;
+display:block;
+margin:0;
+padding:0 0 0 4px;
+}
+.js-hide {
+display:none;
+}
+/* country popout end */
+
+
+/* menu structure */
+/*#blue-nav {
+float:left;
+font-size: 1.6em;
+font-weight:bolder;
+height:50px;
+padding:0;
+width:960px;
+}
+#blue-nav2 {
+float:left;
+font-size: 1.6em;
+font-weight:bolder;
+height:27px;
+padding:0;
+width:155px;
+}
+#blue-nav ul {
+margin:0;
+padding:0;
+height:28px;
+}*/
+/* sub menu settings */
+/*#blue-nav ul ul {
+height:27px;
+margin:0;
+padding:0;
+top:-2px !important;
+}
+#blue-nav li li {
+background:#009fda none repeat scroll 0 0;
+border-bottom:1px solid #FFFFFF;
+font-size:0.8em;
+font-weight: normal;
+width:149px;
+}
+#blue-nav a.menudoubleline,
+#blue-nav a:hover.menudoubleline,
+#blue-nav .menudoubleline a:hover
+{	padding-bottom: 10px !important;
+}
+#blue-nav li li .menunopadding a:hover {
+	padding:0 !important;
+}
+
+#blue-nav .menusubabout {
+background:#009fda none repeat scroll 0 0;
+border-top:1px solid #009fda;
+color:#FFFFFF;
+font-size:1em;
+font-weight:bold;
+height:27px;
+padding:0 10px !important;
+width:90px;
+}
+#blue-nav .menusubabout a, 
+#blue-navs .menusubabout a:visited {
+background-color:#009fda !important;
+padding:0 10px 0 0 !important;
+}
+#blue-nav li.menusubabout a:hover, 
+#blue-nav li.menusubabout a:focus{
+background-color: #009fda !important;
+padding:0 10px 0 0 !important;
+}
+	
+#blue-nav li li a, 
+#blue-navs li li a:visited {
+color:#fff !important;
+display:block;
+height:27px !important;
+margin:0;
+padding:10px 10px 0 10px !important;
+text-decoration:none;
+background-color: #009fda !important;
+}
+#blue-nav li li a:hover, 
+#blue-nav li li a:focus{
+color:#fff !important;
+background-color: #002776 !important;
+display:block!important;
+margin:0!important;
+padding:10px 10px 0px 10px !important;
+height: 27px!important;
+}*/
+/* sub menu end */
+
+/*
+#blue-nav li {
+display:inline-block;
+float:left;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0 10px 0 5px;
+}
+#blue-nav a, 
+#blue-navs a:visited {
+color:#009FDA;
+display:block;
+margin:0;
+padding:2px 5px;
+text-decoration:none;
+}
+#blue-nav li.last a, 
+#blue-navs li.last a:visited {
+color:#002776;
+display:block;
+margin:0;
+padding:2px 5px;
+text-decoration:none;
+}
+#blue-nav li.last a:hover, 
+#blue-navs li.last a:focus {
+background-color:#002776;
+text-decoration:none;
+height: 19px !important;
+}
+#blue-nav li.first a, 
+#blue-navs li.first a:visited {
+color:#009FDA;
+display:block;
+margin:0;
+padding:2px 5px 2px 0;
+text-decoration:none;
+}
+#blue-nav li.first a:hover, 
+#blue-nav li.first a:focus{
+color:#666;
+display:block;
+margin:0;
+padding:2px 5px 2px 0;
+}*/
+/* menulist next */
+/*#blue-nav li.menunext {
+	padding:2px 0 0 0;
+	background:transparent url(../../Content/Images/bullet-nav.png) no-repeat scroll right 8px;
+}
+#blue-nav li.menunextSelected {
+	padding:2px 0 0 0;
+	background:transparent url(../../Content/Images/bullet-nav.png) no-repeat scroll right 8px;
+}
+#blue-nav li.menunext a, 
+#blue-navs li.menunext a:visited {
+color:#009FDA;
+display:block;
+height:27px;
+margin:0;
+padding:0 10px;
+text-decoration:none;
+}
+#blue-nav li.menunext a:hover, 
+#blue-nav li.menunext a:focus{
+color:#fff;
+background-color: #009fda;
+display:block;
+margin:0;
+padding:0px 10px;
+}*/
+/* menulist end */
+/*
+#blue-nav a:hover, 
+#blue-nav a:focus{
+color:#fff !important;
+background-color: #009fda;
+display:block;
+margin:0;
+padding:0px 10px;
+height:27px !important;
+}
+
+
+#blue-nav a.bluenavselected {
+color:#002776;
+display:block;
+height:27px;
+margin:0;
+padding:0 10px;
+text-decoration:underline;
+}
+
+#blue-nav li.firstlang {
+background-image:none;
+display:inline-block;
+float:left;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0;
+width:125px;
+font-size:1em;
+color:#009fda;
+}
+#blue-nav .firstlang a, 
+#blue-navs .firstlang a:visited {
+color:#009FDA;
+display:block;
+font-size:0.8em;
+height:25px;
+margin:0;
+padding:5px 0 0 5px;
+text-decoration:none;
+}
+#blue-nav .firstlang a:hover, 
+#blue-navs .firstlang a:focus {
+background-color:#002776;
+text-decoration:none;
+color: #fff;
+}
+#blue-nav li.experts {
+background: none;
+display:inline-block;
+float:left;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0 10px 0 5px;
+}
+
+#blue-nav li.last {
+background-color:#EEEEEE;
+background-image:none;
+border-left:1px solid #FFFFFF;
+color:#009FDA;
+display:inline-block;
+float:right;
+font-size:1em;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0;
+width:217px;
+}*/
+/* menu end */
+
+/* scroll vertical css */
+#Scroller {
+  position: relative;
+  width: 545px;
+  height: 300px;
+  overflow: hidden;
+}
+.Scroller-Container {
+  position: absolute;
+}
+
+#Scroller-1 {
+height:200px;
+overflow:hidden;
+position:absolute;
+width:400px;
+}
+.Scroller-Container {
+left:0;
+position:absolute;
+top:0;
+}
+.Scrollbar-Up {
+cursor:pointer;
+position:absolute;
+}
+.Scrollbar-Down {
+cursor:pointer;
+position:absolute;
+top:187px;
+}
+.Scrollbar-Track {
+background:transparent url(../../Content/Images/scrollbar_track.gif) no-repeat scroll center center;
+height:262px;
+left:460px;
+position:absolute;
+top:372px;
+width:20px;
+}
+.Scrollbar-Handle {
+height:22px;
+position:absolute;
+width:20px;
+}
+
+#Scrollbar-Container {
+left:60px;
+position:absolute;
+top:40px;
+}
+.Container2 {
+background:#FFFFFF url(../../Content/Images/container_background.gif) no-repeat scroll 0 0;
+height:200px;
+left:100px;
+position:absolute;
+top:50px;
+width:400px;
+}
+
+
+
+
+
+
+
+
+
+
+/* second try at scrollbar */
+div#scrollbar {
+    display:block; /* initially display:none; to hide from incapable */
+    }
+
+    
+div#scrollbar { 
+  position:relative;
+  width:11px; height:200px; 
+  font-size:1px;  /* so no gap or misplacement due to image vertical alignment */
+  }
+div#track { 
+  position:absolute; left:0; top:12px;
+  width:11px; height:176px;
+  background: #336;
+  }
+div#dragBar {
+  position:absolute; left:1px; top:1px;
+  width:9px; height:20px;
+  background-color:#ceced6;
+  }  
+div#up { position:absolute; left:0; top:0; }  
+div#down { position:absolute; left:0; bottom:0; }
+
+/* for safari, to prevent selection problem  */
+div#scrollbar, div#track, div#dragBar, div#up, div#down {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+}
+
+
+/* so no gap or misplacement due to image vertical alignment
+font-size:1px in scrollbar has same effect (less likely to be removed, resulting in support issues) */
+div#scrollbar img {
+    display:block; 
+    } 
+
+
+div#wn {
+margin:6px;
+}
+
+div#wn {
+height:200px;
+overflow:hidden;
+position:relative;
+width:280px;
+}
+div#scrollbar {
+float:right;
+margin-top:6px;
+}
+
+div#scrollbar, div#track, div#dragBar, div#up, div#down {
+-moz-user-select:none;
+}
+
+div#scrollbar {
+height:200px;
+position:relative;
+width:11px;
+}
+
+#scroll_controls, #scrollbar {
+display:block;
+}
+
+#scroll_controls, #scrollbar {
+display:none;
+}
+
+
+
+
+
+
+
+
+/* top nav popout */
+
+#nav-top {
+position:relative;
+z-index:10;
+margin:10px 0 0 0;
+float:right;
+margin-right:0;
+width:138px /*79px*/;
+}
+#nav-top ul {
+display:block;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0;
+overflow:hidden;
+width:100%;
+}
+/* #top-nav .nav, #top-nav .nav ul {
+margin:0;
+overflow:hidden;
+width:100%;
+}*/
+#nav-top  li {
+background:transparent url(../../Content/Images/bullet-nav.png) no-repeat scroll 0 90%;
+float:left;
+font-size:1em;
+padding-top:5px;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:5px 0 0 6px;
+}
+#nav-top a, 
+#nav-top a:visited {
+color:#002776;
+text-decoration:none;
+line-height:1.5em;
+padding:0 0.8em;
+display:block;
+text-decoration:none;
+}
+#nav-top a:hover, 
+#nav-top a:focus {
+color:#009fda;
+text-decoration:none;
+}
+
+/* ====================== */
+/* search jobs navigation */
+#top-nav {
+float:left;
+height:27px;
+margin:0;
+padding:0;
+width:214px;
+z-index:10;
+}
+#top-nav ul {
+/* display:block;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none; */
+margin:0;
+overflow:hidden;
+padding:0;
+width:100%;
+}
+#top-nav  li {
+background:transparent url(../../Content/Images/bullet-nav.png) no-repeat scroll 0 90%;
+float:left;
+font-size:1em;
+padding-top:5px;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:5px 0 0 6px;
+}
+#top-nav a, 
+#top-nav a:visited {
+color:#009FDA;
+display:inline-block;
+font-size:1em;
+font-weight:bold;
+padding:2px 8px 5px 4px;
+text-decoration:none;
+width:198px;
+}
+#top-nav a:hover, 
+#top-nav a:focus {
+color:#009fda  !important;
+text-decoration:none;
+background-color: Transparent;
+}
+
+/* #nav-country-list 
+{	
+}
+li#nav-country {
+background:#EEEEEE none repeat scroll 0 0;
+border:medium none;
+float:right;
+font-size:1.7em;
+font-weight:bold;
+margin:0;
+padding:0;
+width:212px;
+}
+li#nav-country a {
+background:transparent url(../../Content/Images/bullet-dropdown.gif) no-repeat scroll 98% 50%;
+float:left;
+}
+li#nav-country a:visited {
+ background-color: transparent;
+}
+li#nav-country .flag
+{
+    display: block;
+    float: left;
+    width: 18px;
+    height:18px;
+    margin: 2px 0 0 4px;
+}
+
+/* li#nav-country .flag-GB
+{
+    background: url("images/icon-flag-uk.png") no-repeat 0 0;
+}*/
+
+/*li#nav-country a:hover,
+li#nav-country a:focus,*/
+/* li#nav-country.here,
+li#nav-country:hover{
+color:#002776  !important;
+text-decoration:none;
+background-color: Transparent;
+background: transparent url("../../Content/Images/nav-country-lnk.gif") no-repeat scroll 0 0; 
+width:210px;
+margin:0;
+
+}
+
+li#nav-country:hover div#nav-country-list {
+display:block;
+}
+
+#top-nav li li a:hover,
+#top-nav li li a:focus {
+color:#fff  !important;
+text-decoration:none;
+background-color: Transparent;
+background: #009fda;
+}
+
+.js-hide {
+	display: none;
+}
+*/
+
+
+/* countries popout
+------------------*/
+/*#top-nav .popout {
+background:transparent url(../../Content/Images/popoutbg.gif) no-repeat scroll 0 100%;
+font-size:0.6em;
+font-weight:normal;
+height:151px;
+margin-top:20px;
+padding:13px 0 3px 7px;
+position:absolute;
+right:141px;
+width:554px;
+z-index:99;
+}
+
+
+#nav-country-list  .connector
+{
+    position: absolute;top: 20px; height:5px;
+
+    right: 75px;
+    width: 482px;
+    padding: 3px 0 3px 6px;
+    background: #fff url("../../Content/Images/list-countries-top.gif") no-repeat -1px 0;
+}
+
+* html #top-nav .popout .connector
+{
+    padding-top:0;padding-bottom:0;line-height:0;margin:0;font-size:0;height:10px;
+}
+
+#top-nav .popout ul
+{
+   background: #EFF2FA;
+    float: left;
+    padding-bottom: 5px;
+    border-right: 1px solid #fff;
+    width: 24.7%;
+    min-height: 130px;
+}
+
+#top-nav .popout ul.last
+{
+ border-right: none; 
+}
+
+#top-nav .popout li {
+background:transparent none repeat scroll 0 0;
+border:medium none;
+padding:0 0 0 5px;
+width:130px;
+}
+
+
+#top-nav .popout a
+{
+   padding: 4px 2px 2px 4px;
+   float: left;
+   padding-left: 4px;
+   background: url("../../Content/Images/bullet-tertiary-link.gif") no-repeat 0% 60%;
+}
+
+
+#top-nav .popout a:hover
+{
+ background: #009fda;
+ color: #fff;
+
+ margin:0;
+ width: 11em;
+}
+#blue-nav li.menunext a:hover, 
+#blue-nav li.menunext a:focus{
+color:#fff;
+background-color: #009fda;
+display:block;
+margin:0;
+padding:0px 10px;
+}
+
+#top-nav .popout li.global a
+{
+    padding: 4px 2px 2px 20px;
+    background: #fff url("../../Content/Images/icon-globe.png") no-repeat 3px 5px;
+}
+#top-nav .popout li.global a:hover
+{
+    text-decoration: underline;
+    color: #3E5991;
+} */
+/* country popout end */
+/* ================== */
+/* ================== */
+/* ================== */
+
+
+
+/* scrollbar */
+/*.makeScroll{
+	overflow:hidden;
+	height:290px;
+	width:520px;
+	margin: 0 10px 0 0;
+	padding:0;
+	position:relative;
+}
+
+.scroll-handle {
+background-image:url(../../Content/Images/BlueVFill.png);
+background-repeat:repeat;
+width:10px;
+cursor:pointer;
+}
+#scroll-handle-top-2 {
+background-image:url(../../Content/Images/top.png);
+background-repeat:no-repeat;
+height:8px;
+width:10px;
+}
+#scroll-handle-bot-2 {
+background-image:url(../../Content/Images/bot.png);
+height:8px;
+width:10px;
+}
+.scroll-track {
+background-image:url(../../Content/Images/VScrollTrackFill.png);
+background-repeat:repeat;
+height:8px;
+width:10px;
+}
+#scroll-track-top-2 {
+background-image:url(../../Content/Images/up.png);
+height:10px;
+width:10px;
+}
+#scroll-track-bot-2 {
+background-image:url(../../Content/Images/down.png);
+height:10px;
+width:10px;
+}
+*/
+
+
+/* scrollbar end */
+
+.scroll-track{
+height:8px;
+width:10px;
+background-image: url('../../Content/Images/VScrollTrackFill.png');
+background-repeat: repeat;
+}
+
+.scroll-handle{
+border: 0px;
+height:10px;
+width:10px;
+background-image: url('../../Content/Images/BlueVFill.png');
+background-repeat: repeat;
+cursor:pointer;
+}
+
+#scroll-track-top-2{
+height:10px;
+width:10px;
+background-image: url('../../Content/Images/up.png');
+}
+
+#scroll-handle-bot-2{
+height:8px;
+width:10px;
+background-image: url('../../Content/Images/bot.png');
+}
+
+#scroll-handle-top-2{
+height:8px;
+width:10px;
+background-image: url('../../Content/Images/top.png');
+background-repeat: no-repeat;
+}
+
+#scroll-track-bot-2{
+height:10px;
+width:10px;
+background-image: url('../../Content/Images/down.png');
+}
+
+.splitpane-divider {
+    border: 1px solid black;
+    background:#5B207B;
+    /*opacity: .5;
+   filter: alpha(opacity=50);*/
+}
+
+/* The classes/ids below are just used in this example. You can use whatever you like */
+#parent {
+    width: 100%;
+    background: #eeeeee;
+}
+
+.column {
+    float: left; /* This is forces the page content to adjust to changes in height of the columns */
+    overflow: hidden; /* As a precaution, all content is clipped to the column width */
+    margin: 0; /* This and padding need to be zero */
+    padding: 0;
+    z-index: 1;
+    background:#E7FECD;
+    color: #666666;
+    width: 33%; /* Default value, overridden by class */
+}
+
+/* Any spacing must be on a child of the column, not the column itself */
+.content {
+border: 1px solid black;
+margin: 5px;
+padding: 5px;
+}
+
+
+/* search results css - values=joblinks */	
+/* ------------------------------------- */
+#pane2 h1 {
+color:#002776;
+font-size:2.3em;
+font-weight:bold;
+line-height:1em;
+padding:0;/*10px 0 0;*/
+}
+
+.title {
+color:#002776;
+font-size:1.4em;
+font-weight:bold;
+line-height:1em;
+margin:15px 0; 
+padding:0;
+}
+
+#jobslinks {
+color:#002776;
+float:left;
+margin:0;
+padding:0;
+width:96%;
+}
+#jobslinks p{			color: #000; text-align:justify; padding-bottom: 8px; font-size: 0.9em;}
+#jobslinks a:link, 
+#jobslinks a:visited, 
+#jobslinks a:active {
+color:#002776;
+margin:0;
+padding:0;
+text-decoration:none;
+width:75px !important;
+}
+#jobslinks a:hover{ 	color: #009fda; text-decoration: underline; padding:0px;}
+#jobslinks h1 {			color: #002776; font-size: 2.2em;  								}
+#jobslinks h2 {			color: #009fda; font-size: 2.0em; font-weight:bold;                              }
+#jobslinks h3 {			color: #009fda; font-size: 0.9em; border: #67a0ad  dotted 1px;padding: 10px;}
+#jobslinks h6 {
+background-color:#002776;
+color:#FFFFFF;
+font-size:1.8em;
+font-weight:bold;
+padding:5px 0 5px 2px;
+}
+#jobslinks ul, li {font-size: 1.0em;list-style-type: square; text-align:left;}
+
+/*  *** J O B S    T A B L E    C L A S S E S    B E L O W    ***   */       
+
+/* p.Micro = 1 to X of X results found text */
+p.Micro {
+border-bottom:1px dotted #002776;
+color:#002776;
+font-size:1.1em !important;
+font-weight:normal;
+margin:0 0 5px;
+padding:5px 0 20px;
+}
+ 
+/* SECOND COLUMN FOR JOBS ADVERTISED - EG LOCATION, SALARY ETC  */
+/* MicroHeader = title, location, salary headers */
+tr.MicroHeader {
+background-image:none;
+font-family:arial;
+font-size:1.7em;
+font-weight:bold;
+height:21px;
+padding:5px;
+text-align:left;
+}
+tr.MicroHeader th {
+margin:0;
+padding:0;
+text-align:left;
+}
+table.Micro {			 color:#fff; font-size:0.9em; padding:5px; font-family: Verdana, Arial, Helvetica;  }
+/* MicroItems = JOBS ADVERTISED AND background cells for job links listings */
+tr.MicroItem {
+
+
+color:#002776;
+font-size:0.9em;
+font-weight:normal;
+height:25px;
+padding:0px;
+}
+tr.MicroAltItem {
+	padding:0px; 
+	color:#002776; 
+	background-color: #f7f7f7; 
+	font-size: 0.9em;
+	height:25px;
+	font-weight:normal;border-top:1px dotted #009fda; border-bottom: 1px dotted #009fda;
+
+}
+tr.MicroAltItem td {
+border-top:1px dotted #009fda;
+font-size:1.2em;
+padding:0;
+margin:0;
+}
+tr.MicroItem td {
+border-top:1px dotted #009fda;
+font-size:1.2em;
+padding:0;
+margin:0;
+}
+.recordInfo {
+font-size:1.2em;
+line-height:1.5em;
+}
+tr.MicroItem td a:link, tr.MicroItem td a:visited, tr.MicroAltItem td a:link, tr.MicroAltItem td a:visited {
+color:#002776;
+}
+tr.MicroItem td a:link, tr.MicroItem td a:visited, tr.MicroAltItem td a:link, tr.MicroAltItem td a:visited {
+color:#002776;
+font-weight:normal;
+text-decoration:none;
+}
+/* jobdetails page classes below */
+#middleContent p.title {font-size:1.6em;  font-weight:bold; color: #796800; text-align: left; }
+
+#middleContent .apply { 			font-size: 0.8em; font-family: Verdana, Arial, Helvetica; color: #fff; background-color:#002776;}
+#middleContent a.applylinks {			color: #fff; background-color: #b1c6cb; font-size: 0.9em; padding: 8px 8px 8px 8px;}
+#middleContent a:link.applylinks{		background-color: #b1c6cb; text-decoration:underline;padding: 8px 8px 8px 8px;}
+#middleContent a:visited.applylinks {	background-color: #b1c6cb; text-decoration:underline;padding: 8px 8px 8px 8px;}
+#middleContent a:hover.applylinks {		background-color: #ccc; text-decoration:none;		 padding: 8px 8px 8px 8px;}
+#middleContent a:active.applylinks {	background-color: #b1c6cb; text-decoration:underline;padding: 8px 8px 8px 8px;}
+hr {display: none;}
+
+#MDetails { padding: 10px;}
+/* search results css END */	
+/* ---------------------- */
+/*Below CSS code is added by shilpi garg as 3rd june 2011*/
+/*country popout start */
+#nav-country {
+/*background:#EEEEEE none repeat scroll 0 0;*/
+border:medium none;
+float:left;
+font-size:1.6em;
+font-weight:bold;
+margin:0;
+padding:1px 0 2px;
+width:209px;
+height:21px;
+}
+
+#nav-country a {
+/*background:transparent url(Content/Images/bullet-dropdown.gif) no-repeat scroll 98% 50%;*/
+float:left;
+padding:0 0.8em 0 0;
+}
+#nav-country a img {
+border:none;
+}
+#nav-country a:visited {
+ background-color: transparent;
+}
+#nav-country a:hover,
+#nav-country a:focus,
+#nav-country.here,
+#nav-country:hover{
+color:#009fda  !important;
+text-decoration:none;
+background: transparent url("Content/Images/nav-country-lnk.gif") no-repeat scroll 0 0; 
+width:209px;
+margin:0;
+}
+#nav-country:hover div#nav-country-list {
+display:block;
+}
+#nav-country-list .popout {
+background:transparent url(../Images/popoutbg.gif) no-repeat scroll 0 0;
+ font-size: 0.6em;
+    font-weight: normal;
+    height: 180px;
+    left: 534px;top:310px;
+    padding: 8px 0 3px 5px;
+    position: absolute;
+    width: 554px;
+}
+*html #nav-country-list .popout {
+top:315px;
+}
+*+html #nav-country-list .popout {
+top:315px;
+   }
+#nav-country-list .popout li {
+background:transparent none repeat scroll 0 0;
+border:medium none;
+width:126px;padding:0 0 0 5px;
+height:21px;float:left; 
+list-style:none;
+}
+#nav-country-list .popout a {
+background:transparent url(../Images/bullet-tertiary-link.gif) no-repeat scroll 0 50%;
+float:left;
+padding:2px 2px 2px 10px;
+font-size:10px;
+color:#009fda;
+}
+#nav-country-list .popout a:hover, 
+#nav-country-list .popout a:focus {
+background-color: #009fda;
+background:#009fda url(../Images/bullet-tertiary-link.gif) no-repeat scroll 0 50%;
+text-decoration:none;
+color:#fff !important;
+width:11em;
+display:block;
+margin:0;
+padding:2px 2px 2px 10px;
+}
+.js-hide {
+display:none;
+}
+/* country popout end */
+/*Above CSS code is added by shilpi garg as 3rd june 2011*/

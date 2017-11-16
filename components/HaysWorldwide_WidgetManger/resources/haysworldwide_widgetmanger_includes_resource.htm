@@ -1,0 +1,963 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_share_price_form@>
+<script type="text/javascript">
+//alert("inside widget share price form...");
+</script>
+	<$include widget_share_price_javascript $>
+<@end@>
+
+<@dynamichtml widget_share_price_javascript@>
+	<script type="text/javascript">
+		//alert("widget_share_price_javascript......lllllllll");	
+
+				function SharePriceObject(name) {
+					this.name = name;
+				};
+
+				SharePriceObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SharePriceObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE");
+							var quotationStr = "<Widget><Name>share_price</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				SharePriceObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				SharePriceObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				SharePriceObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new SharePriceObject("share_price") ); 
+		
+	
+	
+		</script>
+<@end@>
+
+
+
+
+
+
+<@dynamichtml widget_latest_video_form@>
+	<$include widget_latest_video_javascript $>
+<@end@>
+
+<@dynamichtml widget_latest_video_javascript@>
+		<script type="text/javascript">
+
+
+				function LatestVideoObject(name) {
+					this.name = name;
+				};
+
+				LatestVideoObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					LatestVideoObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE");
+							var quotationStr = "<Widget><Name>latest_video</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				LatestVideoObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				LatestVideoObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				LatestVideoObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new LatestVideoObject("latest_video") ); 
+		
+	
+	
+		</script>
+<@end@>
+
+
+<@dynamichtml widget_press_releases_form@>
+	<$include widget_press_releases_javascript $>
+<@end@>
+
+<@dynamichtml widget_press_releases_javascript@>
+		<script type="text/javascript">
+
+
+				function PressReleasesObject(name) {
+					this.name = name;
+				};
+
+				PressReleasesObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					PressReleasesObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE");
+							var quotationStr = "<Widget><Name>press_releases</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				PressReleasesObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				PressReleasesObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				PressReleasesObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new PressReleasesObject("press_releases") ); 
+		
+	
+	
+		</script>
+<@end@>
+
+<@dynamichtml widget_media_contacts_form@>
+	<$include widget_media_contacts_javascript $>
+<@end@>
+
+<@dynamichtml widget_media_contacts_javascript@>
+		<script type="text/javascript">
+				function MediaContactsObject(name) {
+					this.name = name;
+				};
+
+				MediaContactsObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					MediaContactsObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE");
+							var quotationStr = "<Widget><Name>media_contacts</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				MediaContactsObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				MediaContactsObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				MediaContactsObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new MediaContactsObject("media_contacts") ); 
+		</script>
+<@end@>
+
+
+<!-- Business Overview Widget added by Komal on 13th July 2011 -->
+
+<@dynamichtml widget_business_overview_form@>
+
+	<$include widget_business_overview_javascript $>
+<@end@>
+
+<@dynamichtml widget_business_overview_javascript@>
+	<script type="text/javascript">
+			
+
+				function BusinessOverviewObject(name) {
+					this.name = name;
+				};
+
+				BusinessOverviewObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					BusinessOverviewObject.prototype.getResultDataStr = function()
+					{						
+						
+							var quotationStr = "<Widget><Name>business_overview</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				BusinessOverviewObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				BusinessOverviewObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				BusinessOverviewObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new BusinessOverviewObject("business_overview") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--end by Komal -->
+
+
+<!--Recent Initiatives by Kanika-->
+  
+<@dynamichtml widget_recent_initiative_form@>
+	<script type="text/javascript">
+
+	</script>
+	<$include widget_recent_initiative_javascript $>
+<@end@>
+
+<@dynamichtml widget_recent_initiative_javascript@>
+	<script type="text/javascript">
+		//alert("widget_recent_initiative_javascript......lllllllll");	
+
+				function RecentInitiativeObject(name) {
+					this.name = name;
+				};
+
+				RecentInitiativeObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					RecentInitiativeObject.prototype.getResultDataStr = function()
+					{						
+							
+							var quotationStr = "<Widget><Name>recent_initiative</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				RecentInitiativeObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				RecentInitiativeObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				RecentInitiativeObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new RecentInitiativeObject("recent_initiative") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--Recent Initiatives by Kanika-->
+
+
+
+
+
+<!--Start CR REPORT by Pushpa-->
+
+<@dynamichtml widget_cr_report_form@>
+****************************************
+	<$include widget_cr_report_javascript $>
+ 
+<@end@>
+
+<@dynamichtml widget_cr_report_javascript@>
+ ********
+	<script type="text/javascript">
+
+ 
+				function CRReport(name) {
+					this.name = name;
+				};
+
+				CRReport.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					CRReport.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE");
+							var quotationStr = "<Widget><Name>cr_report</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				CRReport.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				CRReport.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				CRReport.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new CRReport("cr_report") ); 
+		
+	
+	
+		</script>
+<@end@>
+
+
+<!--END CR REPORT by Pushpa-->
+
+<!--Highlights widget by Kanika-->
+  
+<@dynamichtml widget_highlights_form@>
+	<script type="text/javascript">
+
+	</script>
+	<$include widget_highlights_javascript $>
+<@end@>
+
+<@dynamichtml widget_highlights_javascript@>
+	<script type="text/javascript">
+		//alert("widget_highlights_javascript......lllllllll");	
+
+				function highlightsObject(name) {
+					this.name = name;
+				};
+
+				highlightsObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					highlightsObject.prototype.getResultDataStr = function()
+					{						
+							
+							var quotationStr = "<Widget><Name>highlights</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				highlightsObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				highlightsObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				highlightsObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new highlightsObject("highlights") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--end Highlights widget by Kanika-->
+
+
+<!--news widget by Sameer-->
+  
+<@dynamichtml widget_news_form@>
+	<script type="text/javascript">
+
+	</script>
+	<$include widget_news_javascript $>
+<@end@>
+
+<@dynamichtml widget_news_javascript@>
+	<script type="text/javascript">
+		//alert("widget_news_javascript......lllllllll");	
+
+				function newsObject(name) {
+					this.name = name;
+				};
+
+				newsObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					newsObject.prototype.getResultDataStr = function()
+					{						
+							
+							var quotationStr = "<Widget><Name>news</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				newsObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				newsObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				newsObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new newsObject("news") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--end news widget by Sameer-->
+
+
+
+<!--Intraday share price widget start-->
+<@dynamichtml widget_intraday_share_price_form@>
+<script type="text/javascript">
+//alert("inside widget_detailed_share_price_form..");
+</script>
+	<$include widget_intraday_share_price_javascript $>
+<@end@>
+
+<@dynamichtml widget_intraday_share_price_javascript@>
+	<script type="text/javascript">
+		//alert("widget_detailed_share_price_javascript......lllllllll");	
+
+				function IntradaySharePriceObject(name) {
+					this.name = name;
+				};
+
+				IntradaySharePriceObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					IntradaySharePriceObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Detailed Share PRICE");
+							var quotationStr = "<Widget><Name>intraday_share_price</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				IntradaySharePriceObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				IntradaySharePriceObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				IntradaySharePriceObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new IntradaySharePriceObject("intraday_share_price") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!-- end intraday share price Widget-->
+
+<!-- Detailed Share Price Widget-->
+
+<@dynamichtml widget_detailed_share_price_form@>
+<script type="text/javascript">
+//alert("inside widget_detailed_share_price_form..");
+</script>
+	<$include widget_detailed_share_price_javascript $>
+<@end@>
+
+<@dynamichtml widget_detailed_share_price_javascript@>
+	<script type="text/javascript">
+		//alert("widget_detailed_share_price_javascript......lllllllll");	
+
+				function DetailedSharePriceObject(name) {
+					this.name = name;
+				};
+
+				DetailedSharePriceObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					DetailedSharePriceObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Detailed Share PRICE");
+							var quotationStr = "<Widget><Name>detailed_share_price</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				DetailedSharePriceObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				DetailedSharePriceObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				DetailedSharePriceObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new DetailedSharePriceObject("detailed_share_price") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!-- end Detailed Share Price Widget-->
+
+
+<!-- Share Price Chart Widget-->
+
+<@dynamichtml widget_share_price_chart_form@>
+<script type="text/javascript">
+//alert("inside widget_share_price_chart_form..");
+</script>
+	<$include widget_share_price_chart_javascript $>
+<@end@>
+
+<@dynamichtml widget_share_price_chart_javascript@>
+	<script type="text/javascript">
+	//	alert("widget_share_price_chart_javascript......lllllllll");	
+
+				function SharePriceChartObject(name) {
+					this.name = name;
+				};
+
+				SharePriceChartObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SharePriceChartObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE Chart");
+							var quotationStr = "<Widget><Name>share_price_chart</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				SharePriceChartObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				SharePriceChartObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				SharePriceChartObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new SharePriceChartObject("share_price_chart") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!-- end  Share Price chart Widget-->
+
+
+<!--TSR Chart widget start-->
+
+<@dynamichtml widget_TSR_chart_form@>
+<script type="text/javascript">
+//alert("inside widget_share_price_chart_form..");
+</script>
+	<$include widget_TSR_chart_javascript $>
+<@end@>
+
+<@dynamichtml widget_TSR_chart_javascript@>
+	<script type="text/javascript">
+	//	alert("widget_share_price_chart_javascript......lllllllll");	
+
+				function TSRChartObject(name) {
+					this.name = name;
+				};
+
+				TSRChartObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					TSRChartObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE Chart");
+							var quotationStr = "<Widget><Name>TSR_chart</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				TSRChartObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				TSRChartObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				TSRChartObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new TSRChartObject("TSR_chart") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--TSR Chart widget end-->
+
+
+<!--share price download widget start-->
+
+<@dynamichtml widget_share_price_download_form@>
+<script type="text/javascript">
+//alert("inside widget_share_price_chart_form..");
+</script>
+	<$include widget_share_price_download_javascript $>
+<@end@>
+
+<@dynamichtml widget_share_price_download_javascript@>
+	<script type="text/javascript">
+	//	alert("widget_share_price_chart_javascript......lllllllll");	
+
+				function SharePriceDownloadObject(name) {
+					this.name = name;
+				};
+
+				SharePriceDownloadObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SharePriceDownloadObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE Chart");
+							var quotationStr = "<Widget><Name>share_price_download</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				SharePriceDownloadObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				SharePriceDownloadObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				SharePriceDownloadObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new SharePriceDownloadObject("share_price_download") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--Share price download widget end-->
+
+
+
+<!--share price calculator widget start-->
+
+<@dynamichtml widget_share_price_calculator_form@>
+<script type="text/javascript">
+//alert("inside widget_share_price_chart_form..");
+</script>
+	<$include widget_share_price_calculator_javascript $>
+<@end@>
+
+<@dynamichtml widget_share_price_calculator_javascript@>
+	<script type="text/javascript">
+	//	alert("widget_share_price_chart_javascript......lllllllll");	
+
+				function SharePriceCalculatorObject(name) {
+					this.name = name;
+				};
+
+				SharePriceCalculatorObject.prototype = new WidgetObjectAPI();
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SharePriceCalculatorObject.prototype.getResultDataStr = function()
+					{						
+							//alert("Saving Share PRICE Chart");
+							var quotationStr = "<Widget><Name>share_price_calculator</Name></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				SharePriceCalculatorObject.prototype.setResultDataStr = function( xmlObject )
+					{			
+							//alert("Set");
+					};
+
+				//*************************************************************************
+
+				SharePriceCalculatorObject.prototype.isValid = function(  )	
+				{ 
+					return true; 					
+				};
+
+
+				//***************************************************************************
+
+				SharePriceCalculatorObject.prototype.getErrorMessage = function(  )	{ return "<$lc('wwWidgetQuotationErrorMessage')$>"; };
+
+				//*****************************************************************************
+
+
+			// register with WidgetCollection
+
+			WidgetCollection.addWidget( new SharePriceCalculatorObject("share_price_calculator") ); 
+		
+	
+	
+		</script>
+<@end@>
+<!--Share price calculator widget end-->
+
+</body></html>

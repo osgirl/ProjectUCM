@@ -1,0 +1,443 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+Widget Display
+</title>
+</head>
+<body>
+
+
+<!--generic include , used to display a widget using dynamically generated include -->
+<@dynamichtml worldwide_widgets_template@>
+
+	<$include worldwide_widgets_template_inc$> 
+			
+<@end@>
+
+
+<@dynamichtml worldwide_widgets_template_inc@> 
+
+ <$ widgetXML = wcmListElement("Widget", wcmListIndex)$>
+		<$if strLength(wcmListElement("Widget", wcmListIndex)) EQ 0$>
+			<$ widgetXML = wcmElement("Widget")$>   
+		<$endif$>
+		<$if strLength(widgetXML) GT 0 $>
+			<$crXmlToResultSet(widgetXML, "widgetRS") $>
+			<$if getValue("widgetRS", "#numRows") > 0 $>
+				<$inc("widget_" & getValue("widgetRS", "Name") & "_display" ) $>
+			<$endif$>
+		<$endif$>		
+		
+<@end@>
+
+
+
+
+<!-- ***************** HAYSWORLDWIDE - SITE SEARCH : BUILD QUERY INCLUDE ****************
+***********************************************************************-->
+<@dynamichtml haysworldwide_getresults_inc@>  
+
+	<$if NOT #active.QueryText $>
+		<$ QueryText = ''$>
+	<$endif$>
+	
+	<$if strLength(strdocContentType) GT 0 $> 
+ 
+		<$ strdocContentType = "" $>	
+		<$ QueryText = ''$>
+	<$endif$>
+	
+	<$strdocContentType = strContentType$>
+	
+	<$if strContentType like 'PromotionalContent'$>
+	<$ QueryText = QueryText & "dDocType <matches> `" & strdocContentType  & "`" & "<AND>" & "xSubType <matches> `" & strSubContentType  & "`" $>
+	<$else$>
+		<$ QueryText = QueryText & "dDocType <matches> `" & strdocContentType  & "`"  $>
+	<$endif$>
+	
+	<$queryString = QueryText$>
+	<$include subtmp_worldwide_set_query_locale_include$>
+	<$QueryText=queryString$>
+	<$ ResultCount = 3, ssLimitScope  = "false",  SortField="xEventDate", SortOrder="desc" $>
+	<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount  & '&LimitScope='&ssLimitScope$>
+	<!-- call SS_GET_SEARCH_RESULTS service-->
+
+	<$executeService("SS_GET_SEARCH_RESULTS")$>
+<@end@>
+ 
+ <!-- ***************** HAYSWORLDWIDE -  Specific SEARCH RESULT ****************************
+***********************************************************************-->
+ 
+<@dynamichtml haysworldwide_specific_search_results@>
+	<!--main content -->
+ 
+	<$include haysworldwide_getresults_inc$>    
+	<$if rsExists("SearchResults") and SearchResults.#numRows gt 0$>		  
+		<$inc("haysworldwide_" & strContentType & "_search_results" ) $>		  
+	<$else$>
+		Your search for <$strContentType$> produced 0 results
+	<$endif$>
+	<!--/main content -->
+<@end@>
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing    *******************************
+***********************************************************************-->
+<@dynamichtml widget_cr_report_display@>
+ 
+		<$ strContentType = "CRReport"$>
+		<$include haysworldwide_specific_search_results$>		
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing  (news)   *******************************
+***********************************************************************-->
+<@dynamichtml widget_news_display@>
+ 
+		<$ strContentType = "News"$>
+		<$include haysworldwide_specific_search_results$>		
+<@end@>
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing  (news)  Display *******************************
+***********************************************************************-->
+<@dynamichtml haysworldwide_News_search_results@>
+ 
+<$count = 0$>
+<$numRows = rsNumRows("SearchResults")$>
+
+<ul class="mod-list">
+	<$loop SearchResults$>
+		<$dID = SearchResults.dID$>
+		<$executeService('DOC_INFO_SIMPLE')$>
+		<$if count == 0$>
+			<li class="first">
+		<$else$>
+			<li>
+		<$endif$>
+		<div class="date"><em class="day"><$formatDateWithPattern(xEventDate,"d")$>
+		</em> <span class="monthyr"><$formatDateWithPattern(xEventDate, "MMM y ")$></span></div>
+		<div class="list-content">
+			<h4><a href="<$ssUrl$>"><$dDocTitle$></a></h4>
+			<p><$DOC_INFO.xDescription$></p>
+			<ul class="mod-links">
+				<li><a href="<$ssUrl$>"><$dDocTitle$></a></li>
+			</ul>
+		</div>
+			</li>
+		<$count = count+ 1$>
+	<$endloop$>
+</ul>	
+
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing  (CR Report)   *******************************
+***********************************************************************-->
+
+<@dynamichtml haysworldwide_CRReport_search_results@>
+	<$count = 1$>
+	
+	<$numRows = rsNumRows("SearchResults")$>
+	 
+	<$loop SearchResults$>	 	
+	 	 <$CrReportImage=ssIncludeXml(SearchResults.dDocName,
+		 "wcm:root/wcm:element\[@name='MainImage'\]/text()")$>
+	 
+		<$if count == 1 $>
+			 
+			<div class="mod-feature-keyline">
+				<a href="<$ssUrl$>"><$CrReportImage$></a> 		
+			</div> 
+			
+			<div class="mod-content">
+				<ul class="mod-links">
+		<$endif$>
+		
+				<li><a href="<$ssUrl$>"><$dDocTitle$></a></li>	
+		
+		<$count = count+1$>			
+	<$endloop$></ul></div>		
+	
+		
+<@end@>
+
+
+<!--============================added by devendra start================================ -->
+
+<!--widget for displaying the share price graph on the home page-->
+<@dynamichtml widget_share_price_display@>
+		<iframe width="220" scrolling="no" height="200" frameborder="0" marginwidth="0" marginheight="0" src="http://ir2.flife.de/data/hays/minichart_v1.php">	
+		</iframe>
+<@end@>
+
+<!--widget for displaying the latest videos block in the lower region of the media centre page-->
+<@dynamichtml widget_latest_video_display@>
+	<$ strContentType = "Video"$>
+	<$include haysworldwide_specific_search_results$>	
+	
+<@end@>
+
+<@dynamichtml haysworldwide_Video_search_results@>
+	<div class="mod-left">
+		<$include latest_video_left_block_inc$>
+	</div>
+	<ul id="video-preview-list" class="mod-right-list">
+		<$include latest_video_right_block_inc$>
+	</ul>
+<@end@>
+
+<@dynamichtml latest_video_left_block_inc@>
+	<$count = 0$>
+	<$loop SearchResults$>
+	 <$VideoIntro=ssIncludeXml(SearchResults.dDocName,
+		 "wcm:root/wcm:element\[@name='Introduction'\]/text()")$>
+		 
+	<$VideoImage=ssIncludeXml(SearchResults.dDocName,
+		 "wcm:root/wcm:element\[@name='MainImage'\]/text()")$>	 
+ 
+		<$if count == 0 $>
+			<div id="preview<$count+1$>" class="preview-content" style="display: block;">
+		<$else$>
+			<div id="preview<$count+1$>" class="preview-content" style="display:none;">
+		<$endif$>
+				<div class="mod-feature-keyline">
+					<a href="<$ssUrl$>">
+					 <$VideoImage$>						 
+					</a>
+				</div>
+				<div class="mod-content">
+					<p>
+						<$VideoIntro$>
+					</p>
+					<ul class="mod-links">
+						<li>
+							<a href="<$ssUrl$>"><$lc('wwGCWatchVideo')$></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+	<$count = count+1$>	
+	<$endloop$>	
+<@end@>
+
+<@dynamichtml latest_video_right_block_inc@>
+	<$count1 = 0$>
+		<$loop SearchResults$>
+		<$if count1 == 0 $>
+
+			<li id="list-preview<$count1+1$>" class="first activeitem">
+		<$else$>
+			<li id="list-preview<$count1+1$>">
+		<$endif$>
+			<$formattedDate = formatDateWithPattern(xEventDate, "MMM y ")$>
+				<div class="date">
+					<em class="day"><$formatDateWithPattern(xEventDate,"d")$></em>
+					<span class="monthyr"><$strUpper(formattedDate)$></span>
+				</div>
+				<div class="list-content">
+					<h4>
+						<a href="#preview<$count1+1$>"><$dDocTitle$></a>
+					</h4>
+					<ul class="mod-links">
+						<li>
+							<a href="<$ssUrl$>"><$lc('wwGCWatchVideo')$></a>
+						</li>
+					</ul>
+				</div>
+			</li>		
+	<$count1 = count1+1$>	
+	<$endloop$>	
+<@end@>
+
+<!--widget for displaying the press releases block in the lower region on the media centre page-->
+<@dynamichtml widget_press_releases_display@>
+	<$ strContentType = "PromotionalContent"$>
+	<$ strSubContentType = "Press releases"$>
+	<$include haysworldwide_specific_search_results$>		
+<@end@>
+
+<@dynamichtml haysworldwide_PromotionalContent_search_results@>
+	<ul class="mod-list">
+		<$count2 = 0$>
+		<$loop SearchResults$>
+			<$dID = SearchResults.dID$>
+			<$executeService('DOC_INFO_SIMPLE')$>
+			<$if count2 == 0 $>
+				<li class="first">
+			<$else$>
+				<li>
+			<$endif$>
+				<$formattedDate = formatDateWithPattern(xEventDate, "MMM y ")$>
+					<div class="date">
+						<em class="day"><$formatDateWithPattern(xEventDate,"d")$></em>
+						<span class="monthyr"><$strUpper(formattedDate)$></span>
+					</div>
+					<div class="list-content">
+						<h4>
+							<a href="<$ssUrl$>"><$dDocTitle$></a>
+						</h4>					 
+						<p><$DOC_INFO.xDescription$></p>
+						<ul class="mod-links">
+							<li>
+								<a href="<$ssUrl$>"><$lc('wwGCReadMore')$></a>
+							</li>
+						</ul>
+					</div>
+				</li>		
+			<$count2 = count2+1$>	
+		<$endloop$>	
+	</ul>
+<@end@>
+
+<!--widget for adding a placeholder for a contributable region , 'media contacts' in the lower region of the media centre page-->
+<@dynamichtml widget_media_contacts_display@>
+		<$wcmPlaceholder("Media Contacts")$>
+<@end@>
+
+<!--commented , as the above include has been reused to display the lower region static list in the media centre page-->
+<!--dynamichtml rgtmp_media_centre_lower_rgn_display>
+<div class="signpost-mod-wrap">
+	<wcmListStart("SelectedContent")>
+	<wcmListIndex = 0>
+	<wcmListNumRows = wcmListRowCount()>
+	
+	<loopwhile wcmListIndex < wcmListNumRows>
+		
+		<if strIndexOf(wcmListElement("Widget", wcmListIndex),"latest_video") > 0 >
+				<!--div class="module-x2 mod-2col-sep"--
+		<else>
+			<!--div class="module"--
+		<endif>
+		<!--h2 class="mod-head"--
+			<wcmListElement("Title", wcmListIndex)-->
+		<!--/h2--
+		<include rgtmp_haysworldwide_landing_module_display>
+		<wcmListIndex = wcmListIndex + 1>
+		<!--/div--
+	<endloop>	
+	<wcmListEnd("SelectedContent")>
+</div>
+<end-->
+
+<!--widget for share price chart display in the investment centre page page-->
+<@dynamichtml widget_detailed_share_price_display@>
+		<iframe width="460" scrolling="no" height="215" frameborder="0" marginwidth="0" marginheight="0" src="http://ir2.flife.de/data/hays/sharetable_new.php"></iframe>
+<@end@>
+
+<!--widget for share price chart display in the investment centre page page-->
+<@dynamichtml widget_share_price_chart_display@>
+	<iframe width="460" scrolling="no" height="620" frameborder="0" marginwidth="0" marginheight="0" src="http://qfx.quartalflife.com/Clients/uk/hays1/sm6/Default.aspx?culture=en-GB"></iframe>
+<@end@>
+
+<!--widget for TSR chart display in the investment centre page page-->
+<@dynamichtml widget_TSR_chart_display@>
+		<iframe width="460" scrolling="no" height="925" frameborder="0" marginwidth="0" marginheight="0" src="http://ir.quartalflife.com/ic/Controller?client=hays1&lang=en"></iframe>
+<@end@>
+
+<!--widget for share price download display in the investment centre page page-->
+<@dynamichtml widget_share_price_download_display@>
+		<iframe width="460" scrolling="no" height="520" frameborder="0" marginwidth="0" marginheight="0" src="http://ir2.flife.de/data/hays/hpl_plc_e.php"></iframe>
+<@end@>
+
+<!--widget for share price download display in the investment centre page page-->
+<@dynamichtml widget_share_price_calculator_display@>
+		<iframe width="460" scrolling="no" height="760" frameborder="0" marginwidth="0" marginheight="0" src="http://otp.investis.com/clients/uk/hays/spc1/default.aspx?culture=en-GB&cid=79&confid=41"></iframe>
+<@end@>
+
+<!--widget for intraday share price display in the investment centre page page-->
+<@dynamichtml widget_intraday_share_price_display@>
+		<iframe src="http://qfx.quartalflife.com/clients/uk/hays1/TradeTable/Default.aspx?culture=en-GB"
+		width="460" height="750" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+
+<@end@>
+<!--============================added by devendra end================================ -->
+
+
+<!-- Business Overview Widget -->
+<@dynamichtml widget_business_overview_display@>
+	 <$wcmPlaceholder("Business Overview")$> 		
+<@end@>
+
+
+  
+<!-- Highlights widget --> 
+<@dynamichtml widget_highlights_display@>
+	<$ strContentType = "Highlights"$>
+		<$include haysworldwide_specific_search_results$>	
+ 
+<@end@>
+
+
+
+<@dynamichtml haysworldwide_Highlights_search_results@>
+	<!-- display main content --> 
+		<$count = 0$>
+	<$numRows = rsNumRows("SearchResults")$>
+				<ul class="mod-list hilight-list">
+							<$loop SearchResults$>
+								<$dID = SearchResults.dID$>
+								<$executeService('DOC_INFO_SIMPLE')$>
+								<$if count == 0$>
+									<li class="first">
+								<$else$>
+									<li>
+								<$endif$>
+									<h3><strong><$dDocTitle$></strong></h3>
+									<p><$DOC_INFO.xDescription$></p>
+								</li>
+										<$count = count + 1$>
+						<$endloop$>	
+						</ul>
+	
+	
+<@end@>
+
+
+<!--end Highlights widget --> 
+
+
+
+	<!-- Recent Initiative widget --> 
+<@dynamichtml widget_recent_initiative_display@>
+
+		<$ strContentType = "Initiative"$>
+		<$include haysworldwide_specific_search_results$>	
+ 
+<@end@>
+
+<@dynamichtml haysworldwide_Initiative_search_results@>
+
+		<$count = 0$>
+	<$numRows = rsNumRows("SearchResults")$>
+					<ul class="mod-list">
+						<$loop SearchResults$>
+							<$dID = SearchResults.dID$>
+							<$executeService('DOC_INFO_SIMPLE')$>
+							<$if count == 0$>
+								<li class="first">
+							<$else$>
+								<li>
+							<$endif$>
+								<h4><a href="<$ssUrl$>"><$dDocTitle$></a></h4>
+								<p><$DOC_INFO.xDescription$></p>
+								<ul class="mod-links">
+									<li><a href="<$ssUrl$>"><$lc('wwGCReadMore')$></a></li>
+								</ul>
+							</li>
+							<$count = count + 1$>
+						<$endloop$>			
+					</ul>	
+<@end@>
+	<!-- end Recent Initiative widget --> 
+	
+
+
+</body></html>

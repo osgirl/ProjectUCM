@@ -1,0 +1,84 @@
+<$include std_doctype_html_decl$>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysTranslationComponent query
+</title>
+</head>
+<body>
+
+<@table HaysTranslationComponent_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>QisPrimaryWebsite</td>
+	<td>select isprimary from hayswebsites where siteid=?</td>
+	<td>websiteId varchar</td>
+</tr>
+
+<tr>
+	<td>QgetSecondarySites</td>
+	<td>select siteid,sitelocale,languagelabel
+		from  hayswebsites 
+		where primarysiteid=?</td>
+	<td>websiteId varchar</td>
+</tr>
+
+<tr>
+	<td>QIsTranslationExist</td>
+	<td>select dDocName 
+		from revisions r,documents dc 
+		where r.ddocname=upper(?) 
+        and r.dID = dc.dID  
+        and r.dStatus<>'DELETED' 
+        and dc.dIsPrimary<>0
+        and r.drevrank = 0</td>
+	<td>contentId varchar</td>
+</tr>
+
+
+
+<!-- loads information about Hays websites -->
+<tr>
+	<td>QwebsitesInfo</td>
+	<td>select * from hayswebsites</td>
+	<td></td>
+</tr>
+<!--------- uses Index table to get released translations -->
+<tr>
+	<td>QindexedTranslations</td>
+	<td>SELECT distinct dID, dDocName
+      FROM ? 
+      WHERE CONTAINS(dDocName, 'idccontenttrue AND ?% within dDocName' , 1) > 0</td>
+	<td>indexTable column
+		dDocName column</td>
+</tr>
+
+<tr>
+	<td>QindexedTranslationsForAPAC</td>
+	<td>SELECT distinct dID, dDocName
+      FROM ? 
+      WHERE CONTAINS(dDocName, 'idccontenttrue AND %? within dDocName' , 1) > 0</td>
+	<td>indexTable column
+		dDocName column</td>
+</tr>
+
+<tr>
+	<td>QgetWebsitesForDomain</td>
+	<td>select * from hayswebsites where domainId = ? and siteid != ?</td>
+	<td>domainId varchar
+		siteid varchar</td>
+</tr>
+<tr>
+	<td>QgetAllWebsitesForDomain</td>
+	<td>select * from hayswebsites where domainId = ?</td>
+	<td>domainId varchar</td>
+</tr>
+
+
+</table>
+
+<@end@>
+</body></html>

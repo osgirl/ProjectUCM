@@ -1,0 +1,6 @@
+<$setContentType("text/xml")$><?xml version="1.0" encoding="ISO-8859-1"?>
+<properties>
+<$loop OntPropertiesRS$>
+	<property uri="<$OntPropertiesRS.uri$>" label="<$OntPropertiesRS.label$>"></property>
+<$endloop$>
+</properties>

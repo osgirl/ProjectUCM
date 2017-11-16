@@ -1,0 +1,52 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysWorldwide_WidgetManger
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+blFieldTypes=
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_01_11(MR10 Build1)
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/haysworldwide_widgetmanger_includes_resource.htm
+null
+10
+environment
+haysworldwide_widgetmanger_environment.cfg
+null
+10
+resource
+resources/haysworldwide_widgetmanger_resource.htm
+null
+10
+resource
+resources/hayswordwide_widgets_display.htm
+null
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+@end

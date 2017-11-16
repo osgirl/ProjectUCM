@@ -1,0 +1,66 @@
+@media screen, projection {
+	#pg_home .acc_nav, .hero_box{background:#fff;filter:alpha(opacity=90)}; 
+	button {overflow:visible;}
+	.container_flex .promo_box {min-height:168px;}
+	/*Prevents relative positioned link from appearing through suckerfish hover*/
+	.hays_form label, .label, .hays_form .msg {position: static;}
+	.ln_inner {padding-top:0;}
+	.left_nav .h2 {padding-top:7px;}
+	.side_box h2,.side_box .h2  {padding-top:3px;}
+	.h_green .h2 {padding-top:10px;}
+	.cnr {height:5px;background:url('img/sprites/side_corners.png') no-repeat 0 0;}
+	.rc_blue .cnr {background-position:0 0;}
+	.left_nav .cnr {background-position:0 -200px;}
+	.rc_green .cnr {background-position:0 -300px;}
+	.h_green .cnr {background-position:0 -500px;}
+	.h_blue .cnr {background-position:0 0;}
+	#pl_main .h_green .cnr {background-position:0 -800px;}
+	form .multiselect label {padding-right:15px;margin-bottom:2px;}
+	.checkbox_row input, .select_row input {margin-top:-2px!important;}
+	.ui-dialog-content .select_row input {position:relative;bottom:4px;}
+	.ehc_box input[type=checkbox], .ehc_box input[type=radio] {margin-top:0px;/*position:relative;top:-3px;*/}
+	.js .multiselect .checkbox_row {padding-bottom:0;}
+	.ehc_box li {margin-bottom:2px;}
+	.ehc_box .select li {margin-bottom:5px;}
+	.js .multiselect li {padding-bottom:0;margin-bottom:0;}
+	.site_map.grid_33 ul li li {float:left;width:33%;clear:none;}
+	.grid_50 ul > li {width:49.5%;}
+	.ehc_box li, .hays_form ol li {clear:left;width:100%;float:left;}
+	#DatePicker .ui-datepicker-calendar {border-right:1px solid #ebebeb;}
+	.featured_boxes li li a{zoom:1;}
+	.user_nav{background:none;border:none;margin-bottom:0;padding-bottom:15px!important;}
+	.user_nav a{display:block;font-size:13px;line-height:normal;background:url('img/sprites/user_nav.png') repeat-x 0 -13px;padding:0 10px 0 0;}
+	.user_nav a span{display:block;padding:4px 0 6px 10px;}
+	.user_nav a:hover{background-position:0 -113px;}
+	.user_nav .first a,
+	.user_nav .last a,
+	.user_nav .one a,
+	.user_nav .one a span,
+	.user_nav .one .active,
+	.user_nav .one .active span {background:transparent url('img/sprites/user_nav.png') no-repeat 0 -13px;}
+	.ui-dialog .google li {width:100%;margin-bottom:5px;}
+	.ui-dialog .google li label {margin-top:-4px;}
+	.user_nav .one a span, .user_nav .first a {background-position:0 -213px;}
+	.user_nav .first a:hover {background-position:0 -313px!important;}
+	.user_nav .last a {background-position:right -213px;}
+	.user_nav .last a:hover {background-position:right -313px!important;}
+	.user_nav .one a {background-position:right -413px!important;}
+	.user_nav .one a:hover {background-position:right -513px!important;}
+	.user_nav .one .active{background-position:right -713px!important;}
+	.user_nav .one .active span,.user_nav .one .active:hover span {background-position:0 -613px!important;}
+	.user_nav .one a:hover span {background-position:left -313px!important;}
+	.user_nav .first .active {background:transparent url('img/sprites/user_nav.png') no-repeat 0 -613px!important;}
+	.user_nav .last .active {background:transparent url('img/sprites/user_nav.png') no-repeat right -613px!important;}
+	.user_nav .first .active:hover { background-position:0 -613px!important;}
+	.user_nav .last .active:hover { background-position:right -613px!important;}	
+	/* ADF Fixzes */
+	.adfmulti_row table tr td {width:70px!important;}
+	.af_train_stop-link {margin-left:-1px!important;position:relative;left:-1px;}
+	.wysiwyg ol, .wysiwyg ol li  {list-style-type:decimal!important;list-style-position:inside!important;width:auto;float:none!important;margin:0 0 5px;padding:0;clear:left;width:100%;vertical-align:top;}
+	/*.wysiwyg ul li {list-style:inside;display:list-item;}*/
+	.af_panelGroupLayout .msgbox .AFContentCell {width:100%!important;}
+	.af_panelGroupLayout .msgbox textarea.af_inputText_content {width:490px!important;}
+	.af_inputText_content {float:left;}
+	.p_AFReadOnly .af_inputText_content {width:225px;}
+	.af_selectManyChoice_item input {margin-top:-2px;}
+}

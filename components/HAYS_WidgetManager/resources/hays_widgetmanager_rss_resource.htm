@@ -1,0 +1,1052 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_rss_javascript@>
+
+		<script type="text/javascript">
+
+	//*****************************************************************************
+
+				function RSSWidgetObject(name, elements) {
+					this.name = name;
+					if( typeof elements == 'string') {
+							elements = elements.split(',');
+					}
+					this.elements = elements;
+				};
+
+				RSSWidgetObject.prototype = new WidgetObjectAPI();
+
+
+
+
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+
+					RSSWidgetObject.prototype.getResultDataStr = function()
+					{
+							var elementsList = "";
+
+							for( i = 0; i < this.elements.length;  i++) {
+								if( WCM.DHTML.GetAttribute( "rss_checkbox_" + this.elements[i], 'checked')  == true ) {
+									elementsList  += this.elements[i] + ',';
+								}
+							}
+							if( elementsList.length > 0)
+								elementsList = elementsList.substring(0, elementsList.length-1);
+
+
+							var label = document.getElementById("rss_label").value || '';
+							var rssLink = WCM.DHTML.GetAttribute("rss_url", 'value') || '';
+							var maxNumber = WCM.DHTML.GetAttribute("max_number", 'value') || '';
+							var externalUrl = WCM.DHTML.GetAttribute("external_url", 'value') || '';
+							if( rssLink.length > 0 )
+								externalUrl = '';
+
+					//		externalUrl = externalUrl.replace(">","&amp;#62;");
+						//	externalUrl = externalUrl.replace("<","&amp;#60;");
+
+							var quotationStr = "<Widget><Name>rss</Name>";
+							quotationStr += "<RSSURL>" + rssLink + "</RSSURL>";
+							quotationStr += "<RSSExternalURL>" + externalUrl + "</RSSExternalURL>";
+							quotationStr += "<MaxNumber>" + maxNumber + "</MaxNumber>";
+							quotationStr += "<Label>" + label + "</Label>";
+							quotationStr += "<Elements>" + elementsList + "</Elements></Widget>";
+
+							 return 	quotationStr;
+					};
+
+
+				//************************************************************************
+
+
+				RSSWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+
+						if( xmlObject.getElementsByTagName('Elements')[0].firstChild != null) {
+								var elementsList = xmlObject.getElementsByTagName('Elements')[0].firstChild.data || '';
+								elementsArray = elementsList.split(',');
+								for(i=0; i< elementsArray.length; i++) {
+										$ID("rss_checkbox_" + elementsArray[i]).checked = true;
+								}
+						}
+
+						if( xmlObject.getElementsByTagName('RSSURL')[0].firstChild != null) {
+								var rssLink = xmlObject.getElementsByTagName('RSSURL')[0].firstChild.data || '';
+								WCM.DHTML.SetAttribute("rss_url", 'value', rssLink);
+						}
+
+						if( xmlObject.getElementsByTagName('RSSExternalURL')[0].firstChild != null) {
+								var rssExtLink = xmlObject.getElementsByTagName('RSSExternalURL')[0].firstChild.data || '';
+								WCM.DHTML.SetAttribute("external_url", 'value', rssExtLink);
+						}
+
+						if(  xmlObject.getElementsByTagName('Label')[0].firstChild != null) {
+								var label = xmlObject.getElementsByTagName('Label')[0].firstChild.data || '';
+								WCM.DHTML.SetAttribute("rss_label", 'value', label);
+						}
+
+						var maxNumber = xmlObject.getElementsByTagName('MaxNumber')[0].firstChild.data || '';
+						WCM.DHTML.SetAttribute("max_number", 'value', maxNumber);
+
+					};
+
+
+			//*****************************************************************************
+
+
+				RSSWidgetObject.prototype.isValid = function(  )
+				{
+
+					var rssLink = WCM.DHTML.GetAttribute("rss_url", 'value') || '';
+					var rssExternalLink = WCM.DHTML.GetAttribute('external_url', 'value') || '';
+					var rssLabel = WCM.DHTML.GetAttribute('rss_label', 'value') || '';
+
+					if( rssLink.length == 0 && rssExternalLink.length == 0) {
+						this.errorMessage = "<$lc('wwWidgetRSSEmpty')$>";
+						return false;
+					}
+
+					if( rssLabel.length == 0) {
+						this.errorMessage = "<$lc('wwWidgetRSSLabelEmpty')$>";
+						return false;
+					}
+
+					var maxNumber = WCM.DHTML.GetAttribute("max_number", 'value') || '';
+
+					if( maxNumber.length == 0 || !IsNumeric( maxNumber )  ) {
+						this.errorMessage = "<$lc('wwWidgetRSSNumericOnly')$>";
+						return false;
+					}
+
+					var numberInt = parseInt( maxNumber ) ;
+					if( numberInt < 0 || numberInt > 10 ) {
+						this.errorMessage = "<$lc('wwWidgetRSSNumericCount')$>";
+						return false;
+					}
+
+					if( numberInt > 0 ) {
+							var atLeastOneSelected = false;
+							for( i = 0; i < this.elements.length;  i++) {
+								if( WCM.DHTML.GetAttribute( "rss_checkbox_" + this.elements[i], 'checked')  == true ) {
+									atLeastOneSelected = true;
+									break
+								}
+							}
+							if( !atLeastOneSelected ) {
+								this.errorMessage = "<$lc('wwWidgetRSSSElementSelection')$>";
+								return false;
+							}
+					}
+
+					return true;
+				};
+
+			//************************************************************************
+
+				RSSWidgetObject.prototype.registerEventHandlers = function(  )
+					{
+						WCM.DHTML.AddEvent( $ID('browse-button'), 'click', RSSTargetEventHandler);
+					};
+
+
+
+			// ****************************************************************************
+
+				RSSTargetEventHandler = function(e)
+				{
+					var options = {};
+					options.params = {};
+
+					options.callback = function(returnValue)
+					{
+						if (WCM.IsValid(returnValue) && WCM.IsValid(returnValue.CaptureQueryText))
+						{
+							value = returnValue.CaptureQueryText;
+							value = value.replace(/<(matches|contains|substring|starts|ends|not substring|not matches|and|or|not)>/gi, '[$1]');
+							$ID('rss_url').value = value;
+						}
+					};
+					ElementAPI.CaptureQuery(options);
+					return WCM.DHTML.CancelEvent(e);
+				};
+
+
+			//****************************************************************************
+
+			function IsNumeric(sText)  {
+				try {
+					parseInt( sText ) ;
+					return true;
+				} catch(ex) {
+						return false;
+				}
+
+			}
+
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new RSSWidgetObject("rss", "<$ #env.RSSElements $>") );
+
+		</script>
+
+<@end@>
+
+<@dynamichtml widget_rss_form@>
+		<h2><$lc('wwWidgetRSSTitle')$></h2>
+			<form class="rss" method="get" action="#">
+				<div class="text">
+					<label for="rss_url"><$lc('wwWidgetRSSQuery')$></label>
+					<input id="rss_url" name="rss_url" type="text" size="50"/>
+					<input id="browse-button" name="browse-button" type="button" value="<$lc('wwWidgetRSSQueryBtnLabel')$>" />
+				</div>
+				<div class="text">
+					<label for="external_url"><$lc('wwWidgetRSSExternalUrl')$></label>
+					<input id="external_url" name="external_url" type="text" size="50" />
+				</div>
+				<div class="text">
+					<label for="max_number"><$lc('wwWidgetRSSNoEntries')$></label>
+					<input id="max_number" name="max_number" size="3" maxlength="3" type="text" size="2" value="0"/>
+				</div>
+					<$rsCreateResultSet("RSSElementsRS", "element")$>
+					<$if #env.RSSElements $>
+							<$rsAppendRowValues("RSSElementsRS", #env.RSSElements) $>
+					<$endif$>
+
+				<div class="text">
+					<label for="rss_label"><$lc('wwWidgetRSSLabel')$></label>
+					<input id="rss_label" name="rss_label" value=""  type="text" />
+				</div>
+
+				<table>
+					<$loop RSSElementsRS $>
+						<tr>
+							<td class="checkbox">
+								<input id="rss_checkbox_<$RSSElementsRS.element$>" name="rss_checkbox_<$RSSElementsRS.element$>" type="checkbox" value="<$RSSElementsRS.element$>"/>
+								<label for="rss_checkbox_<$RSSElementsRS.element$>"><$RSSElementsRS.element$></label>
+							</td>
+						</tr>
+					<$endloop$>
+				</table>
+			</form>
+		<$include widget_rss_javascript $>
+<@end@>
+
+
+
+<!-- ********************************************
+	Executes search for internal and external RSS
+	output: RSS_ENTRIES search result
+************************************************** -->
+<@dynamichtml widget_rss_get_results_inc@>
+	<$ if strLength( widgetXML) GT 0 $>
+		<$ crXmlToResultSet(widgetXML, "widgetRS") $>
+		<$ Label = getValue("widgetRS","Label")  $>
+		<$ ResultCount = getValue("widgetRS","MaxNumber")$>
+		<$ ExternalUrl = getValue("widgetRS", "RSSExternalURL") $>
+		<$ QueryText = getValue("widgetRS","RSSURL")$>
+		<$ rssUrl = "", rssNode = siteId & "rss" ,  SortOrder = "Desc" $>
+		<$if strLength(SortField) GT 0$>
+			 <$SortField =SortField$>
+		<$else$>
+			<$SortField ="SCORE"$>
+		<$endif$>
+
+		<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+
+		 <$if strLength(QueryText) gt 0$>
+				<$ QueryText=strReplace(QueryText, "[", "<") $>
+				<$ QueryText=strReplace(QueryText, "]", ">") $>
+				<$queryString=QueryText$>
+				<$include set_query_locale_include$>
+				<$QueryText=queryString$>
+				<$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&QueryText=" & url(QueryText) $>
+				<$ executeService("SS_GET_SEARCH_RESULTS")$>
+				<$exec rsRemove("RSS_ENTRIES")$>
+				<$ exec rsRename( "SearchResults", "RSS_ENTRIES")$>
+				<$ isInternal = 1 $>
+		  <$elseif strLength( ExternalUrl) gt 0 $>
+				<$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&feedUrl=" & ExternalUrl $>
+				<$ feedUrl = ExternalUrl, parseXml="true"$>
+				<$ executeService("GET_REMOTE_FEED")$>
+				<$ isInternal = 0 $>
+		  <$endif$>
+		<$endif$>
+<@end@>
+
+
+
+
+
+
+<!-- ********************************************
+	Display RSS on website page
+************************************************** -->
+<@dynamichtml widget_rss_display@>
+	<$if strLength(#active.sideBoxColor) gt 0$>
+		<$include widget_rss_display_blocks$>
+	<$else$>
+		<$include widget_rss_display_mainregion$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml evolve_hays_rss_feed@>
+ 
+
+<rss version="2.0">
+<channel>
+ <title><$lc('wwWidgetRSSFeedTitle')$></title>
+ <description><$lc('wwWidgetRSSFeedDescription')$></description>
+ <link></link>
+ <image>
+		<url><$getDefaultHttpSiteAddress(siteId)$>haysassets/groups/hays_ta/documents/sitestudio/img_logo_hays.gif</url>
+		<title><$lc('wwWidgetRSSImageTitle')$></title>
+</image>
+<$ TotalRecords = #active.TotalRecords $>
+<$ date = #active.date $>
+
+<$executeService("HAYS_EVOLVE_CONTENT_SEARCH")$>
+
+<$loop EVOLVE_SEARCH_RESULTS $>
+
+<$web_sites= EVOLVE_SEARCH_RESULTS.xWebsites$>
+<$website_section=EVOLVE_SEARCH_RESULTS.xWebsiteSection$>
+<$locale=EVOLVE_SEARCH_RESULTS.xLocale$>
+<$siteid=""$>
+<$nodeid=""$>
+
+<$if strLength(website_section) GT 0$>
+	<$index=strIndexOf(website_section,":")$>
+	<$len=strLength(website_section)$>
+	<$siteid=strSubstring(website_section,0,index)$>
+	<$nodeid=strSubstring(website_section,index+1,len)$>
+<$endif$>
+
+<$if (strLength(siteid) EQ 0 or strEqualsIgnoreCase("HAYS",siteid)) and strLength(web_sites) GT 0 and strIndexOf(web_sites,",") LT 0$>
+	<$siteid =web_sites$>
+<$elseif (strLength(siteid) EQ 0 or strEqualsIgnoreCase("HAYS",siteid)) and strLength(locale) GT 0$>
+<$getWebsitePropertiesLocale(locale)$>
+	<$if rsExists("rsWebsitePropertiesLocale") and rsFirst("rsWebsitePropertiesLocale")$>
+		<$loop rsWebsitePropertiesLocale$>
+			  <$if strLength(rsWebsitePropertiesLocale.siteId) GT 0$>
+				<$siteid=rsWebsitePropertiesLocale.siteId$>
+			  <$endif$>
+		<$endloop$>
+	<$endif$>
+<$elseif (strLength(siteid) EQ 0 or strEqualsIgnoreCase("HAYS",siteid)) and strLength(web_sites) GT 0 and strIndexOf(web_sites,",") GT 0$>
+	<$index=strIndexOf(web_sites,",")$>
+	<$siteid=strSubstring(web_sites,0,index)$>
+<$endif$>
+<$if (strEqualsIgnoreCase("enCA",siteid) and strEqualsIgnoreCase("3525",nodeid) )$>
+<$nodeid = "3542"$>
+<$endif$>
+<$sslink=ssLink(EVOLVE_SEARCH_RESULTS.dDocName,nodeid,siteid)$>
+
+<$if strLength(sslink) GT 0$>
+<$c=0$>
+<$sslen=strLength(sslink)$>
+<$loopwhile c LT 3$>
+<$indexx=strIndexOf(sslink,"/")$>
+<$sslink=strSubstring(sslink,indexx+1,sslen)$>
+<$c=c+1$>
+<$endloop$>
+<$sslink="/" & sslink$>
+<$endif$>
+
+
+ <item>
+  <title><$xml(EVOLVE_SEARCH_RESULTS.dDocTitle)$></title>
+  <description><$xml(EVOLVE_SEARCH_RESULTS.xDescription)$></description>
+  <link><$sslink$></link>
+  <guid><$EVOLVE_SEARCH_RESULTS.dID$></guid>
+  <pubDate><$EVOLVE_SEARCH_RESULTS.INDATE$></pubDate>
+  <language><$EVOLVE_SEARCH_RESULTS.xLocale$></language>
+  <locale><$EVOLVE_SEARCH_RESULTS.xLocale$></locale>
+  <category><$xml(EVOLVE_SEARCH_RESULTS.xSolarCategory)$></category>
+  <tag><$EVOLVE_SEARCH_RESULTS.xSolarTags$></tag>
+  <author><$EVOLVE_SEARCH_RESULTS.dDocAuthor$></author>
+<source url="<$#env.evolveHost$>/rest/evolve-content/<$EVOLVE_SEARCH_RESULTS.dDocName$>?format=json">JSON URL</source>
+ </item>
+<$endloop$>
+</channel>
+
+<@end@>
+
+
+
+<@dynamichtml widget_rss_display_mainregion@>
+	<$ if strLength( widgetXML) GT 0 $>
+		<$ crXmlToResultSet(widgetXML, "widgetRS") $>
+		<$ Label = getValue("widgetRS","Label")	$>
+		<$ ResultCount = getValue("widgetRS","MaxNumber")$>
+		<$ ExternalUrl = getValue("widgetRS", "RSSExternalURL") $>
+		<$ QueryText = getValue("widgetRS","RSSURL")$>
+		<$ rssUrl = "", rssNode= siteId & "rss" $>
+			<$ rssUrl = "", rssNode= siteId & "rss" $>
+		<$if strLength(SortField) GT 0$>
+			 <$SortField =SortField$>
+		<$else$>
+			<$SortField ="SCORE"$>
+		<$endif$>
+		<$ SortOrder = "Desc" $>
+
+		<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+
+		 <$if strLength(QueryText) gt 0$>
+				<$ QueryText=strReplace(QueryText, "[", "<") $>
+				<$ QueryText=strReplace(QueryText, "]", ">") $>
+				<$queryString=QueryText$>
+				<$include set_query_locale_include$>
+				<$QueryText=queryString$>
+				<$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&QueryText=" & url(QueryText) $>
+				<$ executeService("SS_GET_SEARCH_RESULTS")$>
+				<$exec rsRemove("RSS_ENTRIES")$>
+				<$ exec rsRename( "SearchResults", "RSS_ENTRIES")$>
+				<$ isInternal = 1 $>
+		  <$elseif strLength( ExternalUrl) gt 0 $>
+				<$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&feedUrl=" & ExternalUrl $>
+				<$ feedUrl = ExternalUrl, parseXml="true"$>
+				<$ executeService("GET_REMOTE_FEED")$>
+				<$ isInternal = 0 $>
+		  <$endif$>
+
+		  <$if ResultCount gt 0$>
+			<h2><$Label$></h2>
+			<$Elements = getValue("widgetRS","Elements")$>
+			<$indexTitle = strIndexOf(Elements,"Title")$>
+			<$indexDescription = strIndexOf(Elements,"Description")$>
+			<$indexDate=strIndexOf(Elements,"Date")$>
+			<$exec rsFirst("RSS_ENTRIES")$>
+					<div class="rc_grey sb_inner pull block_list even">
+			<$if isTrue(isInternal)$>
+				<$if indexTitle gt -1$>
+						<p><a href="<$thisRssUrl$>"><$RSS_ENTRIES.dDocTitle$></a></p>
+				<$endif$>
+				<$if indexDescription gt -1$>
+						<p><$RSS_ENTRIES.xComments$></p>
+				<$endif$>
+			<$else$>
+				<$if indexTitle gt -1$>
+						<p><a href="<$RSS_ENTRIES.link$>" class="external" target="_blank"><$RSS_ENTRIES.title$></a></p>
+				<$endif$>
+				<$if indexDate GT -1  OR  indexDescription gt -1$>
+						<p class="color1" ><$if indexDate GT -1 $><strong><$ RSS_ENTRIES.pubDate$></strong><br/><$endif$>
+						<$if indexDescription gt -1$>
+								<$RSS_ENTRIES.description$>
+						<$endif$>
+						</p>
+				<$endif$>
+				</p>
+			<$endif$>
+					</div>
+			<$if isTrue(isInternal)$>
+					<div class="med_inner pb_links">
+						<ul>
+							<li><a href='<$strIndexOf(Elements,"RSSExternalURL")$>'>More </a></li>
+						</ul>
+					</div>
+			<$endif$>
+
+		<$endif$>
+		<$exec rsRemove("RSS_ENTRIES")$>
+	<$endif$>
+<@end@>
+
+
+<!-- ********************************************
+	Display RSS on website page
+************************************************** -->
+
+<@dynamichtml widget_rss_display_blocks@>
+	<$ if strLength( widgetXML) GT 0 $>
+		<$ crXmlToResultSet(widgetXML, "widgetRS") $>
+		<$ Label = getValue("widgetRS","Label")$>
+		<$ ResultCount = getValue("widgetRS","MaxNumber")$>
+		<$ ExternalUrl = getValue("widgetRS", "RSSExternalURL") $>
+		<$ QueryText = getValue("widgetRS","RSSURL")$>
+		<$ rssUrl = "", rssNode= siteId & "rss" $>
+		<$if strLength(SortField) GT 0$>
+			 <$SortField =SortField$>
+		<$else$>
+			<$SortField ="SCORE"$>
+		<$endif$>
+		<$ SortOrder = "Desc" $>
+
+		<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+
+		 <$if strLength(QueryText) gt 0$>
+				<$ QueryText=strReplace(QueryText, "[", "<") $>
+				<$ QueryText=strReplace(QueryText, "]", ">") $>
+				<$queryString=QueryText$>
+				<$include set_query_locale_include$>
+				<$QueryText=queryString$>
+				<$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&QueryText=" & url(QueryText) $>
+				<$ executeService("SS_GET_SEARCH_RESULTS")$>
+				<$exec rsRemove("RSS_ENTRIES")$>
+				<$ exec rsRename( "SearchResults", "RSS_ENTRIES")$>
+				<$ isInternal = 1 $>
+		  <$elseif strLength( ExternalUrl) gt 0 $>
+				<$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&feedUrl=" & ExternalUrl $>
+				<$ feedUrl = ExternalUrl, parseXml="true"$>
+				<$ executeService("GET_REMOTE_FEED")$>
+				<$ isInternal = 0 $>
+		  <$endif$>
+
+		<$if ResultCount gt 0$>
+			<$Elements = getValue("widgetRS","Elements")$>
+			<$indexTitle = strIndexOf(Elements,"Title")$>
+			<$indexDescription = strIndexOf(Elements,"Description")$>
+			<$indexDate=strIndexOf(Elements,"Date")$>
+				<div class="side_box">
+					<div class="rc_<$className$>">
+							<div class="cnr"></div>
+							<span class="h2"><$ Label $></span>
+					</div>
+
+					<div class="rc_grey sb_inner pull block_list even">
+						<ul>
+			<$loop RSS_ENTRIES$>
+				<$if isTrue(isInternal)$>
+					<li>
+					<$if indexTitle gt -1$>
+							<h3><a href="<$ssLink(RSS_ENTRIES.dDocName)$>"><$RSS_ENTRIES.dDocTitle$></a></h3>
+					<$endif$>
+					<$if indexDate GT -1  OR  indexDescription gt -1$>
+						<p class="color1" >
+						<$if indexDate GT -1 $>
+							<strong><$ RSS_ENTRIES.dInDate $></strong><br/>
+						<$endif$>
+						<$if indexDescription gt -1$>
+							<p><$RSS_ENTRIES.xComments$></p>
+						<$endif$>
+					<$endif$>
+					</li>
+				<$else$>
+					<li>
+					<$if indexTitle gt -1$>
+							<h3><a href="<$RSS_ENTRIES.link$>" class="external" target="_blank"><$RSS_ENTRIES.title$></a></h3>
+					<$endif$>
+
+					<$if indexDate GT -1  OR  indexDescription gt -1$>
+						<p class="color1" ><$if indexDate GT -1 $>
+							<strong><$RSS_ENTRIES.pubDate$></strong><br/>
+						<$endif$>
+						<$if indexDescription gt -1$>
+								<$RSS_ENTRIES.description$>
+						<$endif$>
+						</p>
+					<$endif$>
+					</li>
+				<$endif$>
+				<$if (CURRENT_ROW+1) eq ResultCount$>
+					<$break$>
+				<$endif$>
+			<$endloop$>
+						</ul>
+					</div>
+		[[%	<$if isTrue(isInternal)$>
+				<$ rssSectionId = siteId & 'rss' $>
+					<div class="med_inner pb_links">
+						<ul>
+							<li><a href="<$ssNodeLink(rssSectionId, siteId)$>">More</a></li>
+						</ul>
+					</div>
+			<$endif$>
+		%]]
+				</div>
+
+		<$endif$>
+		<$exec rsRemove("RSS_ENTRIES")$>
+	<$endif$>
+<@end@>
+
+
+
+
+
+
+<@dynamichtml hays_rss_feed@>
+		[[%<!--RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"-->%]]
+		<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+		<$executeService("CR_GET_SITE_HTTP")$>
+		<$if NOT strEquals(serverRelativeSiteRoot,'/')$>
+			<$siteURL=strReplace(HttpSiteAddress, serverRelativeSiteRoot,'')$>
+		<$else$>
+			<$siteURL=HttpSiteAddress$>
+		<$endif$>
+
+		<$if strEquals(strSubstring(siteURL,strLength(siteURL)-1,strLength(siteURL)),'/')$>
+			<$siteURL=strSubstring(siteURL,0,strLength(siteURL)-1)$>
+		<$endif$>
+
+		<$if #active.rsstype $>
+			<$ eval("<$QueryText = #env.RSS_" & strUpper(rsstype) & "_QUERY$>" ) $>
+		<$endif$>
+
+		<$if #active.QueryText like "*odcast*|*udio*|*ideo*|*lash*" $>
+			<$ isPodcasts = 1 $>
+		<$else$>
+			<$ isPodcasts = 0 $>
+		<$endif$>
+
+		<$if isTrue(isPodcasts) $>
+			<rss xmlns:media="http://search.yahoo.com/mrss" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+		<$else$>
+			<rss xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+		<$endif$>
+
+		<channel>
+			<link><$ HttpSiteAddress $>index.htm</link>
+			<$if isTrue(isPodcasts) $>
+				<title><$lc('wwWidgetRSSProdcastTitle')$></title>
+				<itunes:author><$lc('wwWidgetRSSProdCastAuthor')$></itunes:author>
+				<itunes:new-feed-url>http://www.hays.co.uk/rss/index.htm?rsstype=podcast</itunes:new-feed-url>
+				<description><$lc('wwWidgetRSSProdCastDescription')$></description>
+			<$else$>
+				<title><$lc('wwWidgetRSSFeedTitle')$></title>
+				<description><$lc('wwWidgetRSSFeedDescription')$></description>
+			<$endif$>
+
+			 <image>
+				<url><$getDefaultHttpSiteAddress(siteId)$>haysassets/groups/hays_ta/documents/sitestudio/img_logo_hays.gif</url>
+				<title><$lc('wwWidgetRSSImageTitle')$></title>
+			</image>
+
+			<$if #active.feedUrl $>
+				<$include hays_external_rss_feed_inc$>
+
+			<$else$>
+				<$include hays_internal_rss_feed_inc$>
+			<$endif$>
+
+		</channel>
+<@end@>
+
+<@dynamichtml hays_internal_rss_feed_inc@>	
+
+     <$SortField=SortField,SortOrder = "Desc",  ResultCount = 50 $>
+		
+		<!--Added for MR item 87-->
+			<$if #active.rssMaxResultsSize$>
+			<$ ResultCount = rssMaxResultsSize $>
+			<$endif$>	
+		<!--End MR item 87-->
+
+		<$if QueryText and strLength(QueryText) GT 0$>
+			<$queryString=QueryText$>
+			<$include set_query_locale_include$>
+			<$QueryText=queryString$>
+			<$if strLength(SortField) GT 0$>
+				 <$SortField =SortField$>
+			<$else$>
+				<$SortField ="SCORE"$>
+			<$endif$>
+			<$SortOrder="DESC"$>
+			<$ executeService("GET_SEARCH_RESULTS")$>
+		<$else$>
+			<$include rss_generateBinderForIphoneAndroidApps_inc$>
+			<$if strLength(SortField) GT 0$>
+				 <$SortField =SortField$>
+			<$else$>
+				<$SortField ="SCORE"$>
+			<$endif$>
+			<$SortOrder="DESC"$>
+			<$executeService("HAYS_GET_SEARCH_RESULTS_SIMPLE")$>
+		<$endif$>
+
+		<$loop SearchResults$>
+			<!--MR 87.2-->
+		   <$Description=ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='Summary'\]/text()")$>
+		    <!--MR 87.2-->
+			<$if strLength(SearchResults.xUrlPageName) GT 0 $>
+				<$ url = ssLink(SearchResults.xUrlPageName)$>
+			<$else$>
+				<$ url = ssLink(SearchResults.dDocName)$>
+			<$endif$>
+			
+			<$if strIndexOf(url,'http') LT 0$>
+				<$url=siteURL&url$>
+			<$endif$>
+			<item>
+				 <title><$ xml(SearchResults.dDocTitle) $></title>
+				 <link><$  url $></link>
+				 <guid><$  url $></guid>
+				 
+				 
+				 
+				 	<!--MR 87.2-->
+				<$sponsoredEmpImagePath=""$>
+				<$if domainId EQ 13$>
+				 <description><![CDATA[
+				    <$sponsoredEmployer=SearchResults.xSponsored$>
+			        <$if strLength(sponsoredEmployer) GT 0$>
+				    <$sponsoredEmpImagePath=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Image']/text()")$>
+			        <$endif$>	
+				    <$if strLength(sponsoredEmpImagePath) GT 0$>
+		  	        <$sponsoredEmpImagePath$>
+			        <$endif$> <br/>
+
+					Location: <$xml(SearchResults.xLocationDescription)$>
+					
+					<br/>
+					Job Reference: <$SearchResults.xRecordId$>
+					<br />
+					<$if strEquals(#active.showFullDescription,"true")$>
+						<$Description$>
+					<$else$>
+						<$xDescription$>
+					<$endif$>
+				]]></description>
+				<$elseif domainId EQ 26$>
+				 <description><![CDATA[
+				    <$sponsoredEmployer=SearchResults.xSponsored$>
+			        <$if strLength(sponsoredEmployer) GT 0$>
+				    <$sponsoredEmpImagePath=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Image']/text()")$>
+			        <$endif$>	
+				    <$if strLength(sponsoredEmpImagePath) GT 0$>
+		  	        <$sponsoredEmpImagePath$>
+			        <$endif$> <br/>
+					Location: <$xml(SearchResults.xLocationDescription)$>					
+					<br />
+					<$if strEquals(#active.showFullDescription,"true")$>
+						<$Description$>
+					<$else$>
+						<$xDescription$>
+					<$endif$>
+					<br/>
+					Job Reference: <$SearchResults.xRecordId$>
+				]]></description>
+				 <$else$>
+				 <description><![CDATA[
+				    <$sponsoredEmployer=SearchResults.xSponsored$>
+			        <$if strLength(sponsoredEmployer) GT 0$>
+				    <$sponsoredEmpImagePath=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Image']/text()")$>
+			        <$endif$>	
+				    <$if strLength(sponsoredEmpImagePath) GT 0$>
+		  	        <$sponsoredEmpImagePath$>
+			        <$endif$> <br/>
+					Location: <$xml(SearchResults.xLocationDescription)$>
+					
+					<br/>
+					Salary: <$SearchResults.xSalaryDescription$>
+					<br />
+					Job Reference: <$SearchResults.xRecordId$>
+					<br />
+					<$if strEquals(#active.showFullDescription,"true")$>
+						<$Description$>
+					<$else$>
+						<$xDescription$>
+					<$endif$>
+				]]></description>
+				<$endif$>
+				
+				<!--MR 87.2-->
+				<location><$xml(SearchResults.xLocationDescription)$></location>
+				 <salary><$xml(SearchResults.xSalaryDescription)$></salary>
+				 <jobType><$include extract_jobtypes_inc$></jobType>
+				 <jobCategory><$include extract_jobcategories_inc$></jobCategory>
+				 <reference><$SearchResults.xRecordId$></reference>
+				 <pubDate><$rssFormatTimeZone(formatDateWithPattern(SearchResults.dInDate, RssDateFormat),RssDateFormat)$></pubDate>
+				 <$if isTrue(isPodcasts) $>
+					<$ digitalFile = ssIncludeXml(SearchResults.dDocName,"MainRegion/DigitalFile/node()")$>
+					<$include cr_multimedia_extract_digital_file $>
+					<$if strLength(digitalFileName) GT 0 $>
+						<$ downloadUrl = ssIncludeXml(digitalFileName,'object/param[@name="download"]/@value/node()') $>
+						<$if strLength(downloadUrl) GT 0 $>
+							<enclosure url="<$downloadUrl$>" type="audio/mpeg"/>
+						<$endif$>
+					<$endif$>
+				 <$endif$>
+			 </item>
+		<$endloop$>
+<@end@>
+
+<@dynamichtml hays_external_rss_feed_inc@>
+		<$ parseXml="true"$>
+		<$ executeService("GET_REMOTE_FEED")$>
+
+		<$if channelTitle$><title><$xml(channelTitle)$></title><$endif$>
+		<$if channelLink$><link><$xml(channelLink)$></link><$endif$>
+		<$if channelDescription$><description><$xml(channelDescription)$></description><$endif$>
+		<$if channelLanguage$><language><$xml(channelLanguage)$></language><$endif$>
+		<$if channelPublishedDate$><publishedDate><$xml(channelPublishedDate)$></publishedDate><$endif$>
+		<$if channelImage$>
+			<image>
+				<$if channelImageTitle$><title><$channelImageTitle$></title><$endif$>
+				<$if channelImageDescription$><description><$channelImageDescription$></description><$endif$>
+				<$if channelImageLink$><link><$channelImageLink$></link><$endif$>
+
+			</image>
+		<$endif$>
+
+		<$loop RSS_ENTRIES$>
+			<item>
+				<$if title$><title><$xml(title)$></title><$endif$>
+				<$if link$><link><$xml(link)$></link><$endif$>
+				<$if pubDate$><pubDate><$xml(strTrimWs(strReplace(pubDate, "UTC", "")))$></pubDate><$endif$>
+				<$if author$><author><$xml(author)$></author><$endif$>
+				<$if description$><description><![CDATA[<$description$>]]></description><$endif$>
+			</item>
+		<$endloop$>
+<@end@>
+
+<@dynamichtml extract_jobtypes_inc@>
+	 <$jobType = SearchResults.xJobType$>
+	 <$jobTypeStr=""$>
+	 <$if strLength(jobType) GT 0$>
+		<$jobType = strSubstring(jobType,1,strLength(jobType)-1)$>
+		<$jobType = strReplace(jobType,";",",")$>
+
+
+		<$rsMakeFromString("rsJobTypes",jobType,"JobType")$>
+		<$loop rsJobTypes$>
+			<$if strEquals(jobTypeStr,"")$>
+				<$jobTypeStr=rsJobTypes.JobType$>
+				[[%<$jobTypeStr=jobTypeStr&ontGetTermLabel("xJobType",rsJobTypes.JobType)$>%]]
+			<$else$>
+				<$jobTypeStr=jobTypeStr&","&rsJobTypes.JobType$>
+				[[%<$jobTypeStr=jobTypeStr&","&ontGetTermLabel("xJobType",rsJobTypes.JobType)$>%]]
+			<$endif$>
+		<$endloop$>
+		
+		
+		<$if strEquals(jobTypeStr, 'P')$><$jobTypeStr = lc('wwPermanent')$><$endif$>
+		<$if strEquals(jobTypeStr, 'C')$><$jobTypeStr = lc('wwContract')$><$endif$>
+		<$if strEquals(jobTypeStr, 'T')$><$jobTypeStr = lc('wwTemporary')$><$endif$>	
+		
+	 <$endif$>
+	 <$jobTypeStr$>
+<@end@>
+
+<@dynamichtml extract_jobcategories_inc@>
+	 <$jobCategory = SearchResults.xCategory$>
+	 <$jobCategoryStr=""$>
+	
+	 <$index = strIndexOf(SiteLocale, '-') $>
+	   <$if index GT 0 $>
+			<$Language = strSubstring(SiteLocale, 0, index)$>
+		<$endif$>
+	 
+	 <$if strLength(jobCategory) GT 0$>
+		<$jobCategory = strSubstring(jobCategory,1,strLength(jobCategory)-1)$>
+		<$jobCategory = strReplace(jobCategory,";",",")$>
+		<$rsMakeFromString("rsjobCategories",jobCategory,"JobCategory")$>
+		<$loop rsjobCategories$>
+	
+			<$if strEquals(jobCategoryStr,"")$>
+				<$jobCategoryStr=jobCategoryStr&ontGetTermLabel("xCategory",rsjobCategories.JobCategory, Language)$>
+			<$else$>
+				<$jobCategoryStr=jobCategoryStr&","&ontGetTermLabel("xCategory",rsjobCategories.JobCategory, Language)$>
+			<$endif$>
+		<$endloop$>
+	 <$endif$>
+	 <$jobCategoryStr$>
+<@end@>
+
+
+
+<@dynamichtml rss_extract_salary_inc@>
+	<$ crXmlToResultSet(SearchResults.xSalaryType, 'SalaryRS') $>
+	<$loop SalaryRS$>
+		<$if SalaryRS.min AND strLength(SalaryRS.min) GT 0$>
+			<$ minSalary = formatCurrency(SalaryRS.min, #active.SiteLocale) $>
+		<$else$>
+			<$ minSalary = ""$>
+		<$endif$>
+		<$if SalaryRS.max AND strLength(SalaryRS.max) GT 0$>
+			<$ maxSalary = formatCurrency(SalaryRS.max, #active.SiteLocale) $>
+		<$else$>
+			<$ maxSalary =""$>
+		<$endif$>
+		<$ minSalary $>-<$ maxSalary $> <$include rss_format_pay_type_inc $>
+	<$endloop$>
+
+<@end@>
+
+
+
+
+<@dynamichtml rss_format_pay_type_inc@>
+	<$if SalaryRS.paytype AND strLength(SalaryRS.paytype) GT 0$>
+		<$if SalaryRS.paytype like 'H' $>
+			<$lc("wwPerHour")$>
+		<$elseif SalaryRS.paytype like 'D' $>
+			<$lc("wwPerDay")$>
+		<$elseif SalaryRS.paytype like 'W' $>
+			<$lc("wwPerWeek")$>
+		<$elseif SalaryRS.paytype like 'M' $>
+			<$lc("wwPerMonth")$>
+		<$endif$>
+	<$endif$>
+
+<@end@>
+
+<@dynamichtml rss_generateBinderForIphoneAndroidApps_inc@>
+		<$job_salary_annual_multiplier=5000$>
+		<$job_salary_daily_multiplier=20$>
+		<$job_salary_hourly_multiplier=2.5$>
+		 <!--MR 87.2-->
+		<$if not #active.contentType$>
+		<$contentType="Jobs"$>
+		<$endif$>
+		 <!--MR 87.2-->
+		<$if #active.Key and strLength(strTrimWs(#active.Key)) GT 0$>
+			<$job_keywords=strTrimWs(#active.Key)$>
+		<$endif$>
+
+		<$if #active.Location and strLength(strTrimWs(#active.Location)) GT 0$>
+			<$job_location=strTrimWs(#active.Location)$>
+			<$ne_longitude=""$>
+			<$ne_latitude=""$>
+			<$location = #active.Location$>  <!--This is required to execute the service SEARCH_LOCATIONS-->
+			<$domainId = ssGetSiteProperty(siteId, 'domainId')$>
+			<$executeService("SEARCH_LOCATIONS")$>
+			<$if rsExists("LOCATION_RESULT_LIST")$>
+				<$exec rsFirst("LOCATION_RESULT_LIST")$>
+				<$loop LOCATION_RESULT_LIST$>
+					<$ne_longitude=LOCATION_RESULT_LIST.NE_LONGITUDE$>
+					<$ne_latitude=LOCATION_RESULT_LIST.NE_LATITUDE$>
+					<$break$>
+				<$endloop$>
+			<$else$>
+				<$ne_latitude = "54.2652"$>
+				<$ne_longitude = "-1.4063"$>
+			<$endif$>
+
+		<$endif$>
+
+		<$if #active.Distance and strLength(strTrimWs(#active.Distance)) GT 0 and not strEquals(#active.Distance,"-1") and not strEquals(#active.Distance,"0")$>
+			<$if ne_latitude and strLength(ne_latitude) GT 0 and ne_longitude and strLength(ne_longitude) GT 0$>
+				<$radius=strTrimWs(#active.Distance)$>
+			<$endif$>
+		<$elseif ne_latitude and strLength(ne_latitude) GT 0 and ne_longitude and strLength(ne_longitude) GT 0$>
+			<$radius="10"$>
+		<$endif$>
+
+		<$jobType=""$>
+		<$if #active.SalaryType and strLength(#active.SalaryType) GT 0 and not strEquals(#active.SalaryType,"-1")$>
+			<$if strEquals(#active.SalaryType,"1")$>
+				<$jobType="P"$>
+			<$elseif strEquals(#active.SalaryType,"2")$>
+				<$jobType="C"$>
+			<$endif$>
+		<$endif$>
+		<$if #active.Type and strLength(#active.Type) GT 0 and not strEquals(#active.Type,"-1")$>
+			<$if strEquals(#active.Type,"1")$>
+				<$jobType="P"$>
+			<$elseif strEquals(#active.Type,"2")$>
+				<$jobType="C"$>
+			<$endif$>
+		<$endif$>
+		<$if strEquals(jobType,"P")$>
+			<$include rss_generateBinderForIphoneAndroidApps_Prem_Job_Variables_inc$>
+		<$elseif strEquals(jobType,"C")$>
+			<$include rss_generateBinderForIphoneAndroidApps_Temp_Contr_Job_Variables_inc$>
+		<$endif$>
+		<$SortField=SCORE$>
+		<$SortOrder=Desc$>
+
+<@end@>
+
+<@dynamichtml rss_generateBinderForIphoneAndroidApps_Prem_Job_Variables_inc@>
+	<$job_permanent="on"$>
+	<$job_select_permanent="A"$>
+	<$salaryId=""$>
+	<$if #active.SalaryFrom and strLength(#active.SalaryFrom) GT 0 and not strEquals(#active.SalaryFrom,"-1")$>
+		<$salaryId = #active.SalaryFrom$>
+		<!--include rss_generateBinderForIphoneAndroidApps_GetExactSalary_inc-->
+		<$if toInteger(salaryId) GT 0$>
+			<$job_min_permanent=job_salary_annual_multiplier*salaryId$>
+		<$endif$>
+		<$salaryId=""$>
+	<$else$>
+			<$job_min_permanent=job_salary_annual_multiplier*1$>
+	<$endif$>
+	<$if #active.SalaryTo and strLength(#active.SalaryTo) GT 0 and not strEquals(#active.SalaryTo,"-1")$>
+		<$salaryId = #active.SalaryTo$>
+		<!--include rss_generateBinderForIphoneAndroidApps_GetExactSalary_inc-->
+		<$if toInteger(salaryId) GT 0$>
+			<$job_max_permanent=job_salary_annual_multiplier*salaryId$>
+		<$endif$>
+		<$salaryId=""$>
+	<$else$>
+		<$job_max_permanent=job_salary_annual_multiplier*20$>
+	<$endif$>
+<@end@>
+<@dynamichtml rss_generateBinderForIphoneAndroidApps_Temp_Contr_Job_Variables_inc@>
+
+	<$job_contract="on"$>
+	<$job_select_contract="D"$>
+	<$job_temporary="on"$>
+	<$job_select_temporary="D"$>
+	<$if #active.SalaryFrom and strLength(#active.SalaryFrom) GT 0 and not strEquals(#active.SalaryFrom,"-1")$>
+		<$salaryId = #active.SalaryFrom$>
+		<!--include rss_generateBinderForIphoneAndroidApps_GetExactSalary_inc-->
+		<$if toInteger(salaryId) GT 0$>
+			<$job_min_contract=salaryId*job_salary_daily_multiplier$>
+			<$job_min_temporary=salaryId*job_salary_daily_multiplier$>
+		<$endif$>
+		<$salaryId=""$>
+	<$else$>
+			<$job_min_contract=1*job_salary_daily_multiplier$>
+			<$job_min_temporary=1*job_salary_daily_multiplier$>
+	<$endif$>
+	<$if #active.SalaryTo and strLength(#active.SalaryTo) GT 0 and not strEquals(#active.SalaryTo,"-1")$>
+		<$salaryId = #active.SalaryTo$>
+		<!--include rss_generateBinderForIphoneAndroidApps_GetExactSalary_inc-->
+		<$if toInteger(salaryId) GT 0$>
+			<$job_max_contract=salaryId*job_salary_daily_multiplier$>
+			<$job_max_temporary=salaryId*job_salary_daily_multiplier$>
+		<$endif$>
+		<$salaryId=""$>
+	<$else$>
+			<$job_max_contract=20*job_salary_daily_multiplier$>
+			<$job_max_temporary=20*job_salary_daily_multiplier$>
+	<$endif$>
+
+<@end@>
+
+<@dynamichtml rss_generateBinderForIphoneAndroidApps_GetExactSalary_inc@>
+	<$actuallSalary=""$>
+	<$if strEquals(salaryId,"1")$>
+		<$actuallSalary="0"$>
+	<$elseif strEquals(salaryId,"3")$>
+		<$actuallSalary="10000"$>
+	<$elseif strEquals(salaryId,"5")$>
+		<$actuallSalary="20000"$>
+	<$elseif strEquals(salaryId,"7")$>
+		<$actuallSalary="30000"$>
+	<$elseif strEquals(salaryId,"9")$>
+		<$actuallSalary="40000"$>
+	<$elseif strEquals(salaryId,"11")$>
+		<$actuallSalary="50000"$>
+	<$elseif strEquals(salaryId,"13")$>
+		<$actuallSalary="60000"$>
+	<$elseif strEquals(salaryId,"15")$>
+		<$actuallSalary="80000"$>
+	<$elseif strEquals(salaryId,"17")$>
+		<$actuallSalary="100000"$>
+	<$elseif strEquals(salaryId,"18")$>
+		<$actuallSalary="125000"$>
+	<$elseif strEquals(salaryId,"19")$>
+		<$actuallSalary="150000"$>
+	<$elseif strEquals(salaryId,"20")$>
+		<$actuallSalary="500000"$>
+	<$else$>
+		<$actuallSalary=""$>
+	<$endif$>
+<@end@>
+
+
+</body></html>

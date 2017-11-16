@@ -1,0 +1,311 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysWebApiComponent query
+</title>
+</head>
+<body>
+
+<@table HaysWebApiComponent_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>QGetApacOfficeState</td>
+	<td>SELECT State_id,state_description from OFFICESTATE where SITELOCALE = ? and state_description != 'N/A' order by state_description
+	</td>
+	<td>SITELOCALE varchar</td>
+	 
+</tr>
+<tr>
+	<td>QGetLocaleDetails</td>
+	<td>select  hws.contry_region,hws.domainid,hws.languageid ,hws.country, hws.ISOCOUNTRYCODE, hws.LOCATION_COLUMN,hws.siteid,hws.datafileprefix  from hayswebsites hws WHERE
+	sitelocale =?
+	</td>
+	<td>sitelocale varchar</td>
+	 
+</tr>
+<tr>
+	<td>QGetOfficeDetailswithSpec</td>
+	<td>SELECT a.xphone as "telephone" , a.xfax as  "fax", a.XEMAIL  as  "emaildddress",  a.xstate as "state", specialismid as "specialismid",
+ddoctitle as "officename", xaddressline1 as "addressLine1",  xaddressline2 as "addressLine2",  a.xpostcode  as "postcode", xcountry as "country",os.officeid as "officeid" ,xsuburb as "suburb", os.phone  as "speciaslismphoneno", os.fax as "speciaslismfaxno",  os.emailid as "speciaslismemailaddress",
+os.jobadderusername as "jobboardaggregatorlogin",os.jobadderpassword as "jobboardaggregatorpassword"
+FROM docmeta a INNER JOIN revisions r
+   ON a.did = r.did JOIN OfficeSpecialismsDetails os   
+   ON r.ddocname = os.officeid WHERE os.officeId = ? and  specialismId=? and 
+   SUBSPECIALISMID is null and r.drevrank = 0  and r.dstatus='RELEASED'
+	
+	</td>
+	<td>officeId varchar
+	specialismId varchar</td>
+	 
+	
+</tr>
+<tr>
+	<td>QGetOfficeDetailsApi</td>
+	<td>SELECT a.xphone as "telephone" , a.xfax as  "fax", a.XEMAIL  as  "emaildddress",  a.xstate as "state"
+,ddoctitle as "officename", xaddressline1 as "addressLine1",  xaddressline2 as "addressLine2",  a.xpostcode 
+as "postcode", xcountry as "country",xsuburb as "suburb"
+FROM docmeta a INNER JOIN revisions r
+ON a.did = r.did  WHERE r.ddocname=? and r.drevrank = 0  and r.dstatus='RELEASED'
+	
+	</td>
+	<td>ddocname varchar</td>
+	 
+	 
+	
+</tr>
+<tr>
+	<td>QJobCandDocRev</td>
+	<td>SELECT * from 
+		(SELECT  r.dDocName,r.dDocTitle,r.dInDate,r.dOutDate,r.dSecurityGroup,r.dDocAccount,
+		 r.dDocType,r.dWebExtension,dm.xJobType,dm.xSalaryDescription,dm.xRecordId,
+		 dm.xLocationDescription,dm.xJobOwner,dm.xRefDomainId,dm.xRefJobId,dm.xSponsored,dm.xLocation,dm.xHaysLocation1,dm.xHaysLocation2,
+		 dm.xHaysLocation3,dm.xHaysLocation4,dm.xHaysLocation5,dm.xHaysLocation6,dm.xIndustry, dm.xEmployerLogo
+		 FROM 
+		 Revisions r,DocMeta dm WHERE r.dstatus='RELEASED'
+		 AND r.drevrank = 0 AND (r.dDocName=?) AND (r.dStatus<>'DELETED' 
+		 AND r.dID = dm.dID))</td>
+	<td>dDocName varchar</td>
+</tr>
+<tr>
+	<td>QJobCandDocRevAll</td>
+	<td>SELECT * from 
+		(SELECT  r.dDocName,r.dDocTitle,r.dInDate,r.dOutDate,r.dSecurityGroup,r.dDocAccount,
+		 r.dDocType,r.dWebExtension,dm.xJobType,dm.xSalaryDescription,dm.xRecordId,
+		 dm.xLocationDescription,dm.xJobOwner,dm.xRefDomainId,dm.xRefJobId,dm.xSponsored,dm.xLocation,dm.xHaysLocation1,dm.xHaysLocation2,dm.xHaysLocation3,dm.xHaysLocation4,dm.xHaysLocation5,dm.xHaysLocation6,dm.xIndustry, dm.xEmailMeOnApplication, r.dStatus FROM 
+		 Revisions r,DocMeta dm WHERE (r.dstatus='RELEASED' OR r.dstatus='EXPIRED')
+		 AND r.drevrank = 0 AND (r.dDocName=?) AND (r.dStatus<>'DELETED' 
+		 AND r.dID = dm.dID))</td>
+	<td>dDocName varchar</td>
+</tr>
+<tr>
+	<td>QGetJobDetails</td>
+	<td>select r.dID,dm.xDescription,dm.xSalaryDescription, r.dStatus, dm.xEmailMeOnApplication, dm.xQuestions
+		FROM docmeta dm,revisions r
+		where dm.did = r.did 
+		and r.dID in (?)</td>
+	<td>docDIDList column</td>
+</tr>
+<tr>
+	<td>GetLocations_Custom</td>
+	<td>select DISTINCT * from ( select ? location_desc, l.location_id,l.parent_location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l where l.default_description LIKE ?  
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>loc_descr column
+	   locationPrefix varchar
+		ResultCount int</td>
+</tr>
+<tr>
+	<td>GetLocations_Custom_APAC</td>
+	<td>SELECT ? location_desc , l.location_id location_id ,l.parent_location_id parent_location_id, l.level_no level_no, 
+		l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE
+		FROM hays_locations l, hays_location_domains d where l.location_id = d.location_id and l.level_no >= 3 and d.domain_id=?
+		order by display_order
+	</td>
+	<td>loc_descr column
+	   domainId int</td>
+</tr>
+<tr>
+	<td>GetLocations_Custom_APAC_Location</td>
+	<td>SELECT ? location_desc , l.location_id location_id ,l.parent_location_id parent_location_id, l.level_no level_no, 
+		l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE
+		FROM hays_locations l, hays_location_domains d where l.location_id = d.location_id and d.domain_id=? and l.default_description = ?
+		order by display_order
+	</td>
+	<td>loc_descr column
+	   domainId int
+	   location varchar</td>
+</tr>
+<tr>
+	<td>GetMatchingLocations_PostCode_New</td>
+	<td>select /*+ USE_NL(s l) */ l.location_id,l.parent_location_id, upper(s.synonym_desc) location_desc, l.geo_location.SDO_POINT.x NE_LONGITUDE,
+		l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no,l.parent_location_id
+		from hays_locations l,hays_location_synonyms s
+		where REPLACE(s.synonym_desc,' ','') LIKE ?
+		and s.is_PostCode = 1 and l.location_id=s.location_id
+		order by lpad(s.synonym_desc,10) asc</td>
+	<td>locationPrefix varchar</td>
+</tr>
+<tr>
+	<td>GetMatchingLocations_Name_For_Domain_New</td>
+	<td>select DISTINCT * from ( select ? location_desc, l.location_id,l.parent_location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_domains dm where UPPER(l.default_description) LIKE UPPER(?) and dm.location_id = l.location_id and dm.domain_id=?
+    
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>loc_descr column
+	    locationPrefix varchar
+		domainId int
+	  	ResultCount int</td>
+</tr>
+<tr>
+	<td>GetMatchingLocations_PostCode_For_Domain_New</td>
+	<td>select /*+ USE_NL(s l) */ l.location_id,l.parent_location_id, upper(s.synonym_desc) location_desc, l.geo_location.SDO_POINT.x NE_LONGITUDE,
+		l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no,l.parent_location_id
+		from hays_locations l,hays_location_synonyms s
+		where REPLACE(s.synonym_desc,' ','') LIKE ?
+		and s.is_PostCode = 1 and l.location_id=s.location_id and s.domain_id=? and ROWNUM <= ?
+		order by lpad(s.synonym_desc,10) asc</td>
+	<td>locationPrefix varchar
+		domainId int
+		ResultCount int</td>
+</tr>
+<tr>
+	<td>QGetSponsoredEmployersDetails</td>
+	<td>select r.dDocName,r.dDocType,r.dDocAccount,r.dSecurityGroup,r.dWebExtension
+		FROM docmeta dm,revisions r
+		where dm.did = r.did 
+		and r.dstatus='RELEASED'
+		and r.drevrank=0
+		and r.dDocName in ('?')</td>
+	<td>SEmployerDocNameList boolean</td>
+</tr>
+<tr>
+	<td>QLocationQuery</td>
+	<td> select l.location_id, default_description, l.level_no "level", l.geo_location.SDO_POINT.x "longitude", l.geo_location.SDO_POINT.y "latitude"
+	from hays_locations l where l.location_id =?</td>
+	<td>  location_id column</td>
+</tr>
+<tr>
+<td>QGetNonLiveSitesDomainId</td>
+	<td>select pri.sitelocale, pri.domainid, pri.languageid from hayswebsites sec, hayswebsites pri where sec.primarysiteid = pri.siteid and sec.sitelocale = ?</td>
+	<td>sitelocale varchar</td>
+</tr>
+<tr>
+	<td>Get_Questions_By_Id</td>
+	<td>select question_id, question_text, is_active from killer_question where QUESTION_ID in (?)</td>
+	<td>questionIds column</td>	
+</tr>
+<tr>
+	<td>IsolarCategories</td>
+	<td>INSERT INTO SOLAR_CATEGORIES 
+	(solar_id, solar_parent_id, title, description, schmodifytimestamp, schcreatetimestamp, schsourceid)
+	values (?, ?, ?, ?, ?, ?, ?)</td>
+	<td>dSolar_id int
+		dSolar_parent_id int
+		dTitle varchar
+		dDescription varchar
+		dSchModifyTimestamp date
+		dSchCreateTimestamp date
+		dSchSourceId varchar</td>
+</tr>
+<tr>
+	<td>DsolarCategories</td>
+	<td>DELETE FROM SOLAR_CATEGORIES</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QsolarSearch</td>
+	<td>SELECT dDocTitle, revisions.ddocname,dInDate,xEventDate,dOutDate,xLocale,dDocType,dDocAuthor,xDescription,
+	case when xSolarCategory is null then 'Other' else xSolarCategory end as xSolarCategory,
+	case when xSolarSubCategory is null then 'Other' else xSolarSubCategory end as xSolarSubCategory,
+	xSolarTags,documents.ddocid, revisions.dstatus,xLocalerecordID
+		FROM Revisions, Documents, DocMeta, RevClasses
+		WHERE Revisions.dID=Documents.dID 
+		AND DocMeta.dID = Documents.dID
+		AND Revisions.dRevClassID = RevClasses.dRevClassID
+		AND Revisions.dRevRank=0 AND Documents.dIsPrimary<>0 
+		AND xSolrFeedRequired = 'Yes'
+		AND xLocalerecordID is not NULL
+		AND docmeta.xwebsiteobjecttype = 'Data File'
+		AND Revisions.dStatus<>'DELETED' 
+		AND ROWNUM <= ?</td>
+	<td>dCount int</td>
+</tr>
+<tr>
+	<td>QevolveSearchAPI</td>
+	<td>SELECT Revisions.dID,revisions.ddocname,xEventDate,(to_char(dOutDate,'DD-MON-YY HH:MI:SS:FF9 AM')) dOutDate,dDocType,xLocale,
+	to_char((case when revisions.dstatus = 'EXPIRED' then (select max(dactiondate) from documenthistory  where daction='Expiration' and did=DocMeta.dID)  else dReleaseDate  end),'DD-MON-YY HH:MI:SS:FF9 AM') as	modified_date,
+	case when xSolarSubCategory is null then 'Other' else xSolarSubCategory end as xSolarSubCategory,
+	documents.ddocid, revisions.dstatus,xLocalerecordID
+		FROM Revisions, Documents, DocMeta, RevClasses
+		WHERE Revisions.dID=Documents.dID 
+		AND DocMeta.dID = Documents.dID
+		AND Revisions.dRevClassID = RevClasses.dRevClassID
+		AND Revisions.dRevRank=0 AND Documents.dIsPrimary<>0 
+		AND xSolrFeedRequired = 'Yes'
+		AND docmeta.xwebsiteobjecttype = 'Data File'
+		AND Revisions.dStatus<>'DELETED'
+		AND revisions.ddocname = ?</td>
+	<td>docname varchar</td>
+</tr>
+<tr>
+	<td>QevolveSearch</td>
+	<td>SELECT * FROM 
+	(SELECT Revisions.dID,dDocTitle, revisions.ddocname,(to_char(dInDate,'Dy, DD Mon YYYY HH24:MI:SS "+0000"')) indate,xEventDate,dOutDate,xLocale,dDocType,dDocAuthor,xDescription,xSolarCategory,
+	case when xSolarSubCategory is null then 'Other' else xSolarSubCategory end as xSolarSubCategory,
+	xSolarTags,documents.ddocid, revisions.dstatus,xLocalerecordID, xWebsites, xWebsitesection,
+	(case when revisions.dstatus = 'EXPIRED' then (select max(dactiondate) from documenthistory  where daction='Expiration' and did=DocMeta.dID)  else dReleaseDate  end) as modified_date
+		FROM Revisions, Documents, DocMeta, RevClasses 
+		WHERE Revisions.dID=Documents.dID 
+		AND DocMeta.dID = Documents.dID
+		AND Revisions.dRevClassID = RevClasses.dRevClassID
+		AND Revisions.dRevRank=0 AND Documents.dIsPrimary<>0 
+		AND xSolrFeedRequired = 'Yes'
+		AND xSolarCategory is not NULL
+		AND docmeta.xwebsiteobjecttype = 'Data File'
+		AND Revisions.dStatus<>'DELETED'
+		AND Documents.dformat='application/xml'
+		AND (case when revisions.dstatus = 'EXPIRED' then (select max(dactiondate) from documenthistory  where daction='Expiration' and did=DocMeta.dID)  else dReleaseDate  end) > to_timestamp(?,'DD-MON-YY HH:MI:SS:FF9 AM') order by modified_date asc)
+	    WHERE ROWNUM <= ? </td>
+	<td>dDate varchar
+		dCount int</td>
+</tr>
+<tr>
+<td>QgetEshotContent</td>
+<td>SELECT r.dID,ddocname,ddoctype,ddoctitle,dstatus,xcountry,xdescription,xsubtype,xeshotheaderlogo,xeshotfooterlogo   
+FROM revisions r,docmeta d
+WHERE r.dID=d.dID
+AND r.ddoctype='E-shot-Images'
+AND r.dreleasestate='Y' 
+AND d.xcountry in (?)
+AND d.xsubtype in (?)</td>
+<td>xcountry varchar
+	xsubtype varchar</td>
+</tr>
+<tr>
+<td>QgetEshotContentForCountry</td>
+<td>SELECT r.dID,ddocname,ddoctype,ddoctitle,dstatus,xcountry,xdescription,xsubtype,xeshotheaderlogo,xeshotfooterlogo   
+FROM revisions r,docmeta d
+WHERE r.dID=d.dID
+AND r.ddoctype='E-shot-Images'
+AND r.dreleasestate='Y'
+AND d.xcountry in (?)</td>
+<td>xcountry varchar</td>
+</tr>
+<tr>
+<td>QgetDoctypeOfContents</td>
+<td>SELECT ddocname,ddoctype 
+	FROM revisions
+	WHERE dreleasestate='Y'
+	AND dDocName in ('?')</td>
+<td>docNameList boolean</td>
+</tr>
+<tr>
+	<td>QJobCandDocDetails</td>
+	<td>SELECT * from 
+		(SELECT  r.dDocName,r.dDocTitle,r.dInDate,r.dOutDate,r.dSecurityGroup,r.dDocAccount,
+		 r.dDocType,r.dWebExtension,dm.xJobType,dm.xSalaryDescription,dm.xRecordId,dm.xLocationDescription,dm.xJobOwner,dm.xRefDomainId,dm.xRefJobId,dm.xSponsored,dm.xLocation,dm.xHaysLocation1,dm.xHaysLocation2,dm.xHaysLocation3,dm.xHaysLocation4,dm.xHaysLocation5,dm.xHaysLocation6,dm.xIndustry, r.dStatus FROM 
+		 Revisions r,DocMeta dm WHERE (r.dstatus='RELEASED' OR r.dstatus='EXPIRED')
+		 AND r.drevrank = 0 AND dm.xRecordId=? and dm.xLocale=? AND r.dStatus<>'DELETED' and r.ddoctype='Jobs'
+		 AND r.dID = dm.dID)</td>
+	<td>xJobRef varchar
+	xSiteLocale varchar</td>
+</tr>
+<tr>
+	<td>QJobCandDocRevWC</td>
+	<td>SELECT * from 
+		(SELECT  r.dDocName,r.dDocTitle,dm.xlocale,r.dInDate,r.dOutDate,r.dSecurityGroup,r.dDocAccount,
+		 r.dDocType,r.dWebExtension,dm.xJobType,dm.xSalaryDescription,dm.xRecordId,
+		 dm.xLocationDescription,dm.xJobOwner,dm.xRefDomainId,dm.xRefJobId,dm.xSponsored,dm.xLocation,dm.xHaysLocation1,dm.xHaysLocation2,dm.xHaysLocation3,dm.xHaysLocation4,dm.xHaysLocation5,dm.xHaysLocation6,dm.xIndustry, r.dStatus FROM 
+		 Revisions r,DocMeta dm WHERE (r.dstatus='RELEASED' OR r.dstatus='EXPIRED')
+		 AND r.drevrank = 0 AND (r.dDocName=?) AND (r.dStatus<>'DELETED' 
+		 AND r.dID = dm.dID))</td>
+	<td>jobid varchar</td>
+</tr>
+
+</table>
+<@end@>
+</body></html>

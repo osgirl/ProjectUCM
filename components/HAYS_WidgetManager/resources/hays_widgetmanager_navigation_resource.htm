@@ -1,0 +1,257 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_navigation_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function NavigationWidgetObject(name) {
+					this.name = name;
+				};
+
+				NavigationWidgetObject.prototype = new WidgetObjectAPI();
+
+
+
+
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+
+					NavigationWidgetObject.prototype.getResultDataStr = function()
+					{
+							var type = 'drop';
+							if( $ID("nav_type_scroll").selected == true )
+									type = "scroll";
+							else
+									type = "drop";
+
+							var sectionID = WCM.DHTML.GetAttribute("nav_section", 'value') || '';
+							var label = WCM.DHTML.GetAttribute("nav_label", 'value') || '';
+							var defaultSize = WCM.DHTML.GetAttribute("size_label", 'value') || '';
+
+							if( $ID("navigation_position_none").checked ) {
+								position = "none";
+							} else if( $ID("navigation_position_left").checked ) {
+								position = "left";
+							} else {
+								position = 'right';
+							}
+
+
+							var quotationStr = "<Widget><Name>navigation</Name>";
+							quotationStr += "<Type>" + type + "</Type>";
+							quotationStr += "<Section>" + sectionID + "</Section>";
+							quotationStr += "<ButtonLabel>" + label + "</ButtonLabel>";
+							quotationStr += "<DefaultSize>" + defaultSize + "</DefaultSize>";
+							quotationStr += "<Position>" + position + "</Position></Widget>";
+
+							 return 	quotationStr;
+					};
+
+
+				//************************************************************************
+
+
+				NavigationWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+						var type = xmlObject.getElementsByTagName('Type')[0].firstChild.data || '';
+						if( type == 'scroll' )
+							$ID("nav_type_scroll").selected = true;
+						else $ID("nav_type_drop").selected = true;
+
+						var label = xmlObject.getElementsByTagName('ButtonLabel')[0].firstChild.data || '';
+						WCM.DHTML.SetAttribute("nav_label", 'value', label);
+
+						var sectionID = xmlObject.getElementsByTagName('Section')[0].firstChild.data || '';
+						WCM.DHTML.SetAttribute("nav_section", 'value', sectionID);
+
+						var size = xmlObject.getElementsByTagName('DefaultSize')[0].firstChild.data || '';
+						WCM.DHTML.SetAttribute("size_label", 'value', size);
+
+						if (xmlObject.getElementsByTagName('Position')[0] && xmlObject.getElementsByTagName('Position')[0].firstChild != null ) {
+							var position = xmlObject.getElementsByTagName('Position')[0].firstChild.data || '';
+							$ID("navigation_position_" + position).checked = true;
+						}
+					};
+
+
+			//************************************************************************
+
+				NavigationWidgetObject.prototype.registerEventHandlers = function(  )
+					{
+						WCM.DHTML.AddEvent( document.getElementById("nav_button"), 'click', NavigationTargetEventHandler);
+					};
+
+
+			//*****************************************************************************
+
+			NavigationTargetEventHandler =  function(e) {
+
+				var options = {};
+						options.params = {};
+						options.params.websiteSection = $ID('nav_section').value || '';
+						options.params.allowSiteSelection = '1';
+						options.callback = function(returnValue)	{
+							if (WCM.IsValid(returnValue)) 	{
+								$ID('nav_section').value = returnValue;
+							}
+						};
+
+						ElementAPI.GetSection(options);
+						return WCM.DHTML.CancelEvent(e);
+			}
+
+			//*****************************************************************************
+
+
+				NavigationWidgetObject.prototype.isValid = function(  )
+				{
+
+					if( WCM.DHTML.GetAttribute("nav_label", 'value') .length == 0 ) {
+						this.errorMessage = "Label must be set";
+						return false;
+					}
+
+					if( WCM.DHTML.GetAttribute("nav_section", 'value') .length == 0 ) {
+						this.errorMessage = "Section must be set";
+						return false;
+					}
+
+					sizeValueInt = parseInt(WCM.DHTML.GetAttribute("size_label", 'value'));
+					if (sizeValueInt < 1 || sizeValueInt > 50 ){
+						this.errorMessage = "Default size must be set between 1-50";
+						return false;
+					}else if(isNaN(sizeValueInt)) {
+						this.errorMessage = "Default size must be a valid number between 1-50";
+						return false;
+					}
+
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new NavigationWidgetObject("navigation"));
+
+		</script>
+<@end@>
+
+
+
+<@dynamichtml widget_navigation_form@>
+		<h2>Navigation</h2>
+		<form class="navigation" method="get" action="#">
+				<div class="select">
+					<label for="nav_type_select">Type</label>
+					<select id="nav_type_select" name="nav_type_select">
+						<option  id="nav_type_scroll" name="nav_type_scroll" value="scroll">Scroll</option>
+						<option id="nav_type_drop" name="nav_type_drop" value="other">Other</option>
+					</select>
+				</div>
+				<div class="text">
+					<label for="nav_section">Section</label>
+					<input id="nav_section" name="nav_section" type="text" />
+					<input id="nav_button" name="nav_button" type="button" value="Choose section&hellip;" />
+				</div>
+				<div class="text">
+					<label for="nav_label">Button label</label>
+					<input id="nav_label" name="nav_label" type="text" />
+				</div>
+				<div class="text">
+					<label for="size_label">Default size</label>
+					<input id="size_label" name="size_label" type="text" value="12"/>
+				</div>
+				<div class="text">
+					<label for="navigation_position">Position</label>
+					<input id="navigation_position_none" type="radio" name="navigation_radio_position" value="none" checked/>No alignment
+					<input id="navigation_position_left" type="radio" name="navigation_radio_position" value="left"/>Left
+					<input id="navigation_position_right" type="radio" name="navigation_radio_position" value="right"/>Right
+				</div>
+		</form>
+
+		<$include widget_navigation_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_navigation_display@>
+	<$ siteUrl = SS_SERVER_NAME & ssServerRelativeSiteRoot $>
+	<$ crGetChildrenNodes( getValue("widgetRS","Section"), 1) $>
+	<$ index = strIndexOf(getValue("widgetRS","Section"),":") $>
+	<$ startingSection = strSubstring(getValue("widgetRS","Section"),index+1)$>
+	<$ position = getValue("widgetRS","Position") $>
+	<$if strEquals( getValue("widgetRS","Type"), "drop" ) $>
+			<$if rsFirst("CRCildNodes")$>
+				<form class="select-list <$#active.position$>" method="get" action="#" id="navigation-list">
+					<fieldset>
+						<select id="navigationDropdown" name="navigationDropdown">
+						<option value="<$ssGetServerRelativeUrl(siteId, startingSection)$>">Please select&hellip;</option>
+
+						<$loopwhile getValue("CRCildNodes", "#isRowPresent")$>
+								<option value="<$siteUrl$><$getValue("CRCildNodes", "href")$>"><$getValue("CRCildNodes", "label")$></option>
+								<$exec rsNext("CRCildNodes")$>
+						<$endloop$>
+						</select>
+						<$if strEquals(siteId, "ch") $>
+						<input type="image" src="/cr_weblayout/groups/cr_ta/@inm/@gen/documents/image/cr_ch_but_go_bk_img.jpg" id="select" name="select" />
+						<$elseif strEquals(siteId, "lgc") $>
+						<input type="image" src="/cr_weblayout/images/CRUK_Fragments/cr_lgc_but_go.png" id="select" name="select" />
+						<$elseif strEquals(siteId, "news") $>
+						<span><input type="image" src="/cr_weblayout/groups/cr_ta/@inm/@gen/documents/image/nre_btn_search.jpg" id="select" name="select" /></span>
+						<$else$>
+						<input type="image" src="/cr_weblayout/groups/cr_ta/@inm/@gen/documents/image/nre_btn_search.jpg" id="select" name="select" />
+						<$endif$>
+					</fieldset>
+				</form>
+			<$endif$>
+	<$elseif strEquals( getValue("widgetRS","Type"), "scroll" ) $>
+			<$ numRows = rsNumRows("CRCildNodes")$>
+			<$ numRowsToDisplay = getValue("widgetRS","DefaultSize"), isFull = 0 $>
+
+			<$if (#active.openFull EQ 1) OR (numRows LE numRowsToDisplay) $>
+				<$ isFull = 1 $>
+			<$endif$>
+
+			<$if rsFirst("CRCildNodes")$>
+				<a name="list"></a>
+				<form method="get" action="#" class="partial-list <$#active.position$>" id="navigation-list">
+					<div class="select">
+						<select id="navigationURL" name="navigationURL" size="<$if isTrue(isFull)$><$ numRows $><$else$><$ numRowsToDisplay $><$endif$>">
+							<$loop CRCildNodes $>
+								<option value="<$siteUrl$><$ CRCildNodes.href $>"><$ CRCildNodes.label $></option>
+							<$endloop$>
+						</select>
+					</div>
+					<$if isFalse(isFull) $>
+					<div class="left"><a href="<$ssNodeLink(nodeId,siteId)$>?openFull=1#list">Open the full list</a></div>
+					<$endif$>
+					<$if strEquals(siteId, "ch") $>
+					<div class="right"><input type="image" src="/cr_weblayout/groups/cr_ta/@inm/@gen/documents/image/cr_ch_but_go_bk_img.jpg" id="select" name="select" /></div>
+					<$elseif strEquals(siteId, "lgc") $>
+					<div class="right"><input type="image" src="/cr_weblayout/images/CRUK_Fragments/cr_lgc_but_go.png" id="select" name="select" /></div>
+					<$elseif strEquals(siteId, "news") $>
+					<div class="right"><input type="image" src="/cr_weblayout/images/CRUK_Fragments/cr_nr_but_go.png" id="select" name="select" /></div>
+					<$elseif strEquals(siteId, "ecmc") $>
+					<div class="align-right"><input id="search-submit" name="search-submit" alt="Go" type="submit" value="Go"></div>
+					<$else$>
+					<div class="right"><input type="image" src="/cr_weblayout/groups/cr_ta/@inm/@gen/documents/image/cr_but_go_bk_img.jpg" id="select" name="select" /></div>
+					<$endif$>
+				</form>
+			<$endif$>
+	<$endif$>
+<@end@>
+
+
+</body></html>

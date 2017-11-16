@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Strings</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+
+<h3>Additional Strings for Components</h3>
+
+<h5>Web Server Filter</h5>
+<pre>
+<@string sv-SE.csWebFilterStandardMsg@>\&eatws;
+%s\&cr;
+Content-type: text/html\&cr;
+\&cr;
+\&lt;html\&gt;
+\&lt;head\&gt;
+\&lt;META HTTP-EQUIV="Content-Type" content="text/html<$if charset$>; charset=<$charset$><$endif$>"\&gt;
+\&lt;title\&gt;Server unavailable - Hays plc\&lt;/title\&gt;
+\&lt;link rel="shortcut icon" href="/haysassets/HaysGeneralComponent/assets/img/favicon.ico" /\&gt;
+\&lt;/head\&gt;
+\&lt;body style="font-family: Arial, sans-serif; padding:60px; font-size: 0.6em;"\&gt;
+<img width="235" height="30" alt="Hays - Recruiting experts worldwide" src="/haysassets/HaysGeneralComponent/assets/img/logos/hays.gif" />
+<h1 style="font-size: 3em; margin-bottom: 20px; color: #002776;">HAYS Website %s</h1>
+<!--
+StatusCode=-1
+StatusMessage=%s
+-->
+%s
+\&lt;/body\&gt;
+\&lt;/html\&gt;
+<@end@> The phrases "Status Code" and "Status Message" are the only words that need to be translated in this text.
+
+<@sv-SE.csWebFilterServerUnavailableStatusMsg=Hays hemsida är inte tillgänglig just nu. %s@> Server is used generically here. It's not the Stellent product.
+
+<@string sv-SE.csWebFilterServerUnavailableUserMsg@> 
+<p style="line-height: 1.4; font-size: 1.2em; margin-bottom:1em; color: #000000;">Hays hemsida är inte tillgänglig just nu. Var snäll och försök lite senare.</p>
+<!--%s-->
+<@end@>
+
+
+</pre>
+
+</body></html>

@@ -1,0 +1,277 @@
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<$SiteLocale = siteLocale$>  
+<$ exec setLocale(SiteLocale) $> 
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  	<meta name="title" content="<$lc('wwGCApplyJobText14')$> "/>  
+ 
+  	<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" /> 
+<title> <$lc('wwGCCVJobText14')$> </title>
+
+   	<!--css -->
+	<link rel="shortcut icon" href="<$HttpRelativeWebRoot$>HaysGeneralComponent/assets/img/favicon.ico" />
+	<link rel="stylesheet" type="text/css"  href="/haysassets/HaysGeneralComponent/assets/css/ucm_regions_r6.css" />
+	<link rel="canonical" href="http://www.hays.co.uk" /> 
+</head>
+<body id="pg_3col">
+ 
+ 
+ <$if #active.submitted$>
+
+ 
+		<$executeService("SEND_GlobalCARRER_DEXTRAEMAIL")$>	
+			<$if strEqualsIgnoreCase(mailResponse,"true")$>		 
+				<div class="container_24" style="padding-left: 35px;">
+				<div class="grid_14">
+				<div id="pl_main"> 
+				 <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+					  <TBODY>
+						  <TR>
+							<TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />
+							</TD>
+						  </TR>
+					  <TR>                
+					  </TR>
+					  </TBODY>
+				  </TABLE>
+				 <form  class="hays_form"> 				 
+					<fieldset class="rc_grey">					
+						<div id="ConfirmationMessage">
+							<h2><$lc('wwCVGCApplicationConfirmation1')$></h2>
+						<br/>
+							<p><$lc('wwCVGCApplicationConfirmation2')$><p>
+						</div> 
+						<div>       
+						</p> 
+					  </div> 
+					</fieldset>
+				<div class="s_mrg">
+				 
+				 <input style="text-align: center;" onclick="self.close();" id="submitbutton" value="<$lc('wwCVGCApplicationConfirmation3')$>" class="button">					 
+				 </div></form>
+			<div>  <div><div> 
+		  <$endif$>
+<$endif$>	 
+ 
+ 
+<$if isFalse(strEqualsIgnoreCase(#active.submitted,"false")) AND isFalse(strEqualsIgnoreCase(mailResponse,"true"))$>
+ 
+
+<div class="container_24" style="padding-left: 35px;">
+<div class="grid_14">
+<div id="pl_main"> 
+
+					
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+   if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+	 
+	 
+		$.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+		
+		 
+		jQuery.validator.addMethod("fileext", function (val, element) {
+        var ext = $('#AttachedDocument').val().split('.').pop().toLowerCase();
+        var allow = new Array('doc', 'docx', '');
+        if (jQuery.inArray(ext, allow) == -1) {
+		  return false;
+        } else {
+            return true;
+        }
+    }, "<$lc('wwJsmandatory_fileformat')$>");
+		
+		$("#gc_application_form").validate({
+			focusInvalid: true,
+			onkeyup: false,			 
+			rules:{			
+			    AttachedDocument :{
+			   fileext :true
+			   },  
+				email:{
+					email:true
+				} 
+		},
+
+			 
+			messages:{			 
+				full_name:{
+					required:"<$lc('wwCVJsmandatory_forename')$>"
+				},
+				sur_name:{
+					required:"<$lc('wwCVJsmandatory_surname')$>"
+				},				 
+				where_hear:{
+					required:"<$lc('wwCVJsmandatory_contact')$>"
+				},
+				Policy_Text:{
+					required:"<$lc('wwJsmandatory_policytxt')$>"
+				},
+				/*eligible:{
+					required:"<$lc('wwCVJsmandatory_eligible')$>"
+				},*/
+				AttachedDocument:{
+					required:"<$lc('wwCVJsmandatory_file_type')$>"
+				}
+			},
+			
+			errorPlacement: function(error, element) {				 
+				if (element.attr('id') == "Policy_Text"){
+				var element = document.getElementById("Policy_Text_Main");}			
+				error.insertAfter(element);
+				 
+			}
+			 
+		}); 
+	}
+	
+	
+	
+	else {
+			window.setTimeout(HAYSform, 100);
+	}
+	
+ 
+	
+	
+}
+	HAYSform()
+//--><!]]>
+</script>
+
+<$strcode =   strReplace(SiteLocale,"-","")$> 
+<$HaysGCSourceLink = "#env.HaysGC"&strcode&"SourceLink"$>  
+<$CareerSourceLinkScript = "<$" & HaysGCSourceLink & "$>"$>  
+<$CareerSourceLinkList= eval(CareerSourceLinkScript)$> 
+ 
+<$rsMakeFromString("RSCareerSourceLink", CareerSourceLinkList, "careerSourceLink")$>
+<$speculativeEmail=""$>
+<$speculativestr = "<$" & strcode&"EmailID" & "$>"$>
+ 
+<$speculativeEmail = eval(speculativestr)$>
+ 
+ 
+<$getWebsiteProperties(strcode)$>
+<$if rsExists("rsWebsiteProperties") and rsFirst("rsWebsiteProperties")$>
+	<$loop rsWebsiteProperties$>	 
+		<$if strLength(rsWebsiteProperties.countryName) GT 0$>
+			<$countryName=rsWebsiteProperties.countryName$>		 
+		<$endif$>
+	<$endloop$>
+<$endif$>
+ 
+ <img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />
+              
+<div class="content_main">
+	<h1 style="font-weight: normal;"><$lc('wwGCApplyJobText1')$></h1>
+	<p><em class="red">* </em> <$lc('wwCVRequiredField')$></p>
+</div>
+<form id="gc_application_form" class="hays_form"  method="post" enctype="multipart/form-data"> 
+ <input type="hidden" id="DataFormName" value="CustomForm2" name="DataFormName"/>     
+  <input type="hidden" id="SpeculativeEmail" value="<$eval(speculativeEmail)$>" name="SpeculativeEmail"/>    
+  <input type="hidden" id="SiteLocale" value="<$siteLocale$>" name="SiteLocale"/>  
+  <input type="hidden" name="submitted" value="1" /> 
+	<input type="hidden" id="country" value="<$countryName$>" name="country"/>
+	<fieldset class="rc_grey">
+	<legend><$lc('wwGCCVJobText1')$></legend>
+	<ol class="abc">
+ 
+		<li>
+			<div class="grid_4 alpha">
+				<label for="full_name"><em>* </em><$lc('wwGCCVJobText2')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="full_name" name="full_name" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="sur_name"><em>* </em><$lc('wwGCCVJobText3')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="sur_name" name="sur_name" />
+			</div>
+		</li>
+	 
+	  
+		<li style="display: block;" class="" id="li5">
+		   <div class="grid_4 alpha">
+				<label for="where_hear" id="lbl_where_here"> <em>* </em><$lc('wwGCCVJobText6')$> </label>
+		   </div>
+			 
+			 <div class="grid_9">
+				<select name="where_hear" id="where_hear" class="mandatory">
+					 
+						<option value=""> <$lc('wwGCCVJobText9')$></option>	
+						<$loop RSCareerSourceLink$>							 
+								<option value="<$careerSourceLink$>">	<$careerSourceLink$></option>		
+						<$endloop$>	
+				</select>
+			</div>
+		 </li>
+		 <li style="display: block;" class="" id="li6">
+		   <div class="grid_4 alpha">
+				<label for="AttachedDocument" id="lbl_add_cv"><em>* </em><$lc('wwGCCVJobText7')$> </label>
+		   </div>
+		   <div class="grid_8 suffix_2 omega">
+			<input type="file" name="AttachedDocument" id="AttachedDocument" class="mandatory" />
+			<div><span class="input_info"><$lc('wwCVfile_type')$></span></div>
+		</div>
+		 </li>
+		  <li style="display: block;" class="" id="li7">
+		   <div class="grid_4 alpha">
+				<label for="exp" id="lbl_exp"> <$lc('wwGCCVJobText11')$> </label>
+		   </div>
+		   <div class="grid_9 omega suffix_1">
+				<select name="exp" id="exp" >
+					<option value=""> <$lc('wwGCCVJobText9')$></option>	
+					<option value="Y"><$lc('wwGCCVJobText15')$></option>	
+					<option value="N"><$lc('wwGCCVJobText16')$></option>	
+				</select>
+		   </div>
+		 </li>
+	 
+	</ol> 
+	<!--Changes for 9576 MR8 Starts-->
+<$regionDef=ssGetNodeProperty(siteId,'privacy-text','primaryUrl')$>
+<$if not strEquals(regionDef,"") and strIndexOf(regionDef,"Policy Text=") ge 0$>
+<$regDataFile = strSubstring(regionDef,strIndexOf(regionDef,"Policy Text=")+12)$>
+<$PolicyText=ssIncludeXml(regDataFile,"wcm:root/wcm:element[@name='PolicyText']/text()")$>
+<$CheckboxText=ssIncludeXml(regDataFile,"wcm:root/wcm:element[@name='CheckboxText']/text()")$>
+
+<div class="content_main"  style="font-size:11px !important; color: #9E9E9E; margin-left:14px; margin-right:14px;">
+        <div>
+<$PolicyText$>
+</div>
+   </br> 
+ <div id="Policy_Text_Main" style="font-weight: bold; color: #000000; font-size:12px;">
+<input type="checkbox" name="Policy_Text" id="Policy_Text" class="mandatory label" ><em style="color: red; "> * </em><$CheckboxText$>
+</div>	
+</div>
+
+<$endif$>
+<!--Changes for 9576 MR8 Ends-->
+</fieldset>
+ <div class="s_mrg">
+	<input type="submit" class="button" value="<$lc('wwGCCVJobButton1')$>" id="submitbutton">
+ </div>
+<div class="clear"></div>
+</form></div></div></div>
+ 	 <$endif$>
+ 
+  <p><!--/end footer -->
+  <!--BAU REL-4 21118-->
+<$include include_jquery_js$>
+<!--BAU REL-4 21118-->
+  </script> <script src="/haysassets/HaysGeneralComponent/assets/js/document_r6.js" type="text/javascript">
+  </script>
+  </p>
+</body>
+</html>

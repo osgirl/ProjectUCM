@@ -1,0 +1,3878 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml rgtmp_main_region_policy_inc@>
+<div class="half_intro"> 
+	
+	<div class="hi_inner">
+<$aCheckboxText = wcmElement("CheckboxText")$>		
+<$aPolicyText = wcmElement("PolicyText")$>
+		
+	
+<$variableToTrim = aPolicyText$>	
+		<$include removeLeadingAndTrailingSpaces_inc$>
+		<$aPolicyText=variableToTrim$>	
+		<$variableToTrim = aCheckboxText$>	
+		<$include removeLeadingAndTrailingSpaces_inc$>
+		<$aCheckboxText=variableToTrim$>	
+	
+	</div>			
+</div> 
+<div class="clear"></div>
+<div class="content_main">
+   <p><$aPolicyText$></p>
+</br>
+   <p><$aCheckboxText$></p>
+</div>
+<div class="clear"></div>
+<@end@>
+
+<@dynamichtml rgtmp_background_home_image_inc@>
+<$image=""$>
+<$wcmListStart("BackgroundImages")$>
+	<$wcmListNumRows = wcmListRowCount()$>
+   
+	<$if wcmListNumRows ge 0 $>
+		<$randomNo = randomNumber(wcmListNumRows) $>
+		
+		<$if randomNo lt 0$>
+			<$randomNo = 0$>
+		<$endif$>
+		<$image=wcmListElement("Image", randomNo)$>
+	<$endif$>	
+<$wcmListEnd("BackgroundImages")$>
+ 
+<$if not strEquals(image,'')$>
+	<$index=strIndexOf(image,"src=")$>
+	  
+	<$if index gt -1$> 
+	<$src1=strIndexOf(image,"src=")$>
+ 	<$imageUrl=strSubstring(image,src1+5)$>
+ 	<$src2=strIndexOf(imageUrl,'"')$>
+ 	<$imageUrl=strSubstring(imageUrl,0,src2)$>
+	<$include imageurl_haysresponse_inc$>
+	<$endif$>
+  	<style type="text/css">
+		.bg1 {background-image:url('<$imageUrl$>');}
+  	</style>
+<$endif$>
+<$include haysresponse_background_image_script$>	
+<!--<body id="pg-home" class="bg1">-->
+<@end@>
+
+
+
+<@dynamichtml rgtmp_background_image_inc@>
+<$image=''$>
+<$wcmListStart("BackgroundImages")$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$if wcmListNumRows ge 0 $>
+		<$randomNo = randomNumber(wcmListNumRows) $>
+		<$if randomNo lt 0$>
+			<$randomNo = 0$>
+		<$endif$>
+		<$image=wcmListElement("Image", randomNo)$>
+	<$endif$>		
+<$wcmListEnd("BackgroundImages")$>
+<@end@>
+
+<@dynamichtml rgtmp_breadcrumbs_inc@>
+<$include is_international_website$>
+<div class="grid_17">
+	
+	<$if NOT rsExists('SiteStudioNavNodes') $>
+		<$ssLoadSiteNavResultSet(siteId)$> 
+	<$endif$>
+
+	<$rsAddFields('ssNavNodeList', 'label,href')$>
+	<$rsMergeReplaceOnly('ssNavNodeList', 'SiteStudioNavNodes', 'nodeId') $>
+	<$ length = ssNavNodeList.#numRows -1 $>
+	<ul class="breadcrumb">
+	<$loop ssNavNodeList$>
+		<$if ssNavNodeList.#row == length $>									
+			<$if #active.ssDocName $>
+				<$dDocName = ssDocName $>
+				<$ executeService( 'DOC_INFO_BY_NAME_SIMPLE' ) $>
+				<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1) $>
+				<li><a href="<$ ssNavNodeList.href $>?redirect=y"><$ ssNavNodeList.label $></a> &gt;</li>
+				<li><$ DOC_INFO.dDocTitle $></li>
+				<$else$>
+				<li><a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;</li>
+				<li><$ DOC_INFO.dDocTitle $></li>
+				<$endif$>			
+			<$elseif strEquals(isInternationalWebsite,"1") and nodeId like 'jobs-search'$>
+				[[%<li><a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;</li>%]]
+				<li><$OilAndGas_DOC_INFO.dDocTitle $></li>
+			<$else$>
+				<!-- check for parameter passed from webserver for jobs.hays.co.uk -->
+				<$if wbsrvrkey$>
+					<!-- create a hyperlink to section for jobs.hays.co.uk -->
+					<li><a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;</li>
+					<!-- add extra links/ label jobs.hays.co.uk -->
+					<$separatorIndex = strIndexOf(wbsrvrkey,'/')$>
+					<$if separatorIndex > -1 $>
+						<!-- inner title-town page -->
+						<!-- get title and location from wbsrvrkey obtained from webserver-->
+						<$jobTitle=strSubstring(wbsrvrkey,0,separatorIndex)$>
+						<$regionLocation=strSubstring(wbsrvrkey,separatorIndex+1)$>
+						<li><a href="../<$jobTitle$>"><$strReplace(jobTitle,"-"," ")$></a> &gt;</li>
+						<li><$strReplace(regionLocation,"-"," ")$></li>
+					<$else$>
+						<!-- inner region location OR title-region page -->
+						<li><$strReplace(wbsrvrkey,"-"," ")$></li>
+					<$endif$>
+				<$else$>
+					<!-- normal text as earlier -->
+					<li><$ ssGetNodeProperty('label')$></li>
+				<$endif$>	
+			<$endif$>
+		<$else$>
+			<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1) $>
+			<li><a href="<$ ssNavNodeList.href $>?redirect=y"><$ ssNavNodeList.label $></a> &gt;</li>
+			<$else$>
+			<li><a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;</li>
+			<$endif$>
+		<$endif$>
+	<$endloop$>
+	</ul>
+</div>
+<@end@>
+
+<@dynamichtml rgtmp_dataforms_inc@>
+<$widgetXML=wcmElement("Widget"), className = 'green'$>
+<$if widgetXML and strLength(widgetXML) GT 0 $> 
+		<$crXmlToResultSet(widgetXML, "widgetRS") $>   
+		<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>          
+       	 	<$include widget_display_LHB$>
+       	 <$elseif   strEquals("rss", getValue("widgetRS", "Name"))$>       	 	
+       	 	<$include  widget_rss_display_blocks$>       	
+       	 <$else$>
+       		<$include widget_display$>
+       	<$endif$>
+<$else$>
+<!--empty-->
+<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_dyn_bkl_no_img_inc@>
+<$c=wcmElement("RSSLink")$>
+ <$widgetXML=wcmElement("Widget"), widjetTtle = wcmElement("Title")$>
+ <$if strLength(widgetXML) GT 0 $>                    
+                    		<$include widget_display$>
+<$else $>
+
+<$queryString="dDocType <matches> `Jobs` <AND> xLocation <matches> `" join yLocation join "` <AND> dDocTitle <matches> `" join yDocTitle join "` <AND> <NOT> (dDocName <matches> `" join yDocName join "`)"$>
+<$include set_query_string$>
+<$TotalResults=0$>
+<$QueryText=queryString$>
+<$executeService("SS_GET_SEARCH_RESULTS")$>
+<$loop SearchResults$>
+	<$TotalResults = TotalResults+1$>
+<$endloop$>
+
+<$if NOT strEquals(TotalResults,'0')$>
+<div class="side_box shadow rc_white news_list sb_inner">
+	<div class="h_blue">
+		<h2><$wcmElement("Title")$></h2>
+	</div>
+	
+
+
+
+	<div class="rc_white pull"></div>
+<$resultCount=wcmElement("Count")$>
+
+            <$if not strEquals(queryString,'')$>
+                    <!--c = queryString & " <AND> xWebsiteObjectType <in> `Data File`"-->
+            <$endif$>   		
+            <$QueryText=queryString$>
+            
+            <$if not strEquals(QueryText,'')$>
+             	<$LimitScope=true$>
+             	<$SortField='dInDate'$>
+             	<$SortOrder='Desc'$>
+             	<$ResultCount=resultCount$>
+             	<$executeService("SS_GET_SEARCH_RESULTS")$>
+             	<ul>
+				<$loop SearchResults$>
+                
+		<li>
+			<h3><a href="<$dDocName$>"><$dDocTitle$></a></a></h3>
+			<p><span class="strong"><$xIndustry$></span><br> <$xLocation$></p>
+			<$if isTrue(#active.display_salary_rate)$>
+				<p><span class="strong"><$xSalaryDescription$></span></p>
+			<$endif$>
+		
+		
+		
+		</li>
+				<$endloop$></ul>
+			<$else$>
+			<script language="javascript" src="<$ssWeblayoutUrl('rssajax')$>"></script>
+			<div class="rss" id="chan">
+				<div id="chan_title"></div>
+				<div id="chan_link"></div>
+				<div id="chan_description"></div>
+				<a id="chan_image_link" href=""></a>
+				<div id="chan_items"></div>
+				<div id="chan_pubDate"></div>
+				<div id="chan_copyright"></div>
+			</div>	
+			<script language="javascript">
+			getRSS('<$wcmElement("RSSLink")$>',<$resultCount$>);
+			</script>
+			<$endif$>	
+
+</div>
+
+<$endif$>		
+<$endif$>		
+<@end@>
+
+<@dynamichtml rgtmp_dyn_job_list_inc@>
+<$ResultCount=wcmElement("ResultCount")$>
+
+<$if not strEquals(ResultCount,'')$>
+ 
+	<$executeService("GET_SPONSORED_JOBS")$>
+
+	<$if rsExists("HAYS_RESULT_SET")$>
+		<!-- featured employers -->
+			<div class="side_box">
+					<div class="rc_blue sml_inner">
+                		<h2><$wcmElement("Title")$></h2>
+                    </div>
+                
+                <div class="rc_grey sml_inner pull block_list even sb_inner">
+                    <ul>
+		<$loop HAYS_RESULT_SET$>
+                       
+                        <li>
+                            <h3><a href="<$ssLink(dDocName,"jobs-search", siteId)$>"><$dDocTitle$></a></h3>
+                               
+             <$if strLength(strTrimWs(xLocation)) gt 0$>
+                               <p class="strong"><$xLocation$></p>
+             <$endif$> 
+               <$JobSummary=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             	
+             	<$if (not strEquals(JobSummary,''))$>	
+	             	<$if (strLength(JobSummary) gt 100)$>
+    		         	<$strSubstring(JobSummary, 0,100)&'..'$></p>
+            	 	<$else$>
+             			<$JobSummary$>	
+             		<$endif$>
+             	<$endif$>
+             			       
+                <$ssIncludeXml(xSponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+                               
+                             <p> <span class="strong"><$xSalaryCurrency$><$xMinSalary$>-<$xMaxSalary$>k  </span> </p>  
+   
+                         </li>
+                        
+
+		<$endloop$>
+                 </ul>
+                </div>
+</div>
+	<$endif$>
+<$endif$>
+<!-- /featured employers --> 
+
+<@end@>
+
+<@dynamichtml rgtmp_dyn_partnered_companies_inc@>
+<$c=wcmElement("RSSLink")$>
+ <$widgetXML=wcmElement("Widget"), widjetTtle = wcmElement("Title")$>
+ <$if strLength(widgetXML) GT 0 $>                    
+                    		<$include widget_display$>
+<$else $>
+<!-- partnered companies --><$c=nodeId$><$c=ssGetNodeProperty("label") $>
+
+<$dDocTypeSponsoredEmployer="SponsoredEmployer"$> 
+<$include get_relevant_category_from_csp$>
+<$if strLength(xCategory) GT 0$>
+	<$specialism = xCategory$>
+<$endif$>
+<$if not (#active.numRows)$>
+	<$numRows=100$>    
+<$endif$>		
+<$dDocTypeJobs="Jobs"$> 
+<$executeService("GET_SPONSORED_EMPLOYERS")$>
+
+<$if rsExists("HAYS_RESULT_SET")$>
+       
+<div class="clear"></div>
+<div class="main_box promo_box partners_box">
+	<div class="pb_inner">
+		<h2><$lc("wwPartneredCompaniesLabel")$></h2>
+		<ul>
+			<$itemCount = 1$>
+			<$loop HAYS_RESULT_SET$>
+			    <$if itemCount gt 8$>
+			  	<$endif$>
+				<$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+				<$if not strEquals(link,'')$>
+						<li><a href="<$link$>"><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>
+						<$itemCount = itemCount+1$>
+				<$endif$>
+
+			<$endloop$> 
+		</ul>
+		<$queryString="dDocType <matches> `SponsoredEmployer`"$>
+		<$include set_query_string$>
+		<!-- added for Ticket 6809822 on 06/04/2012 -->
+			<$SortField='dInDate'$>
+			<$SortOrder='DESC'$>
+		<!--end -->	
+		<$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>
+		<div class="msg"> <a href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>&SortField=<$SortField$>&SortOrder=<$SortOrder$>"><$lc('wwViewMore')$> <span class="access">Sponsored Employers</span></a> ></div>
+	</div>
+</div>
+<div class="clear"></div>
+<$endif$>
+
+<$endif$>
+
+<@end@>
+
+
+<@dynamichtml rgtmp_dyn_sponsored_jobs_list_inc@>
+<$numResults=wcmElement("ResultCount")$>
+<$minimumSalary=wcmElement("MinSalary")$>
+
+<$if strLength(minimumSalary) gt 0$>
+	<$ queryString = 'dDocType <MATCHES> `Jobs` <AND> xMinSalary >= `'&minimumSalary&'` <AND> <NOT> (xSponsored <CONTAINS> `idcnull`)' $>
+<$else$>
+	<$ queryString = 'dDocType <MATCHES> `Jobs` <AND> <NOT> (xSponsored <CONTAINS> `idcnull`)' $>
+<$endif$>
+
+<$ include set_query_string $>
+<$ QueryText = queryString, SortField='SCORE', SortOrder="Desc", ResultCount=numResults $>
+
+<$ executeService("GET_SEARCH_RESULTS") $>
+
+<$if rsFirst('SearchResults') $>
+	<$if  rsFindRowPrimary('SearchResults', DOC_INFO.dDocName) AND SearchResults.#numRows EQ 1   $>
+	<$else$>
+		<div class="side_box">
+			<div class="rc_blue">
+				<div class="cnr"></div>
+				<h2><$lc('wwSponsoredJobsTitle')$></h2>
+			</div>
+			<div class="rc_grey sb_inner pull block_list even">
+			<ul>
+			<$loop SearchResults$>
+				<li>
+					<$Sponsored = SearchResults.xSponsored$>
+
+					<h3>
+					<$if isProjectSEnabled eq 1$>
+						<$jobUrl = portalUrl & #env.ProjectS_Job_Details & dDocName$>
+						<a href="<$jobUrl$>"><$SearchResults.dDocTitle$></a>
+					<$else$>
+						<a href="<$ssLink(SearchResults.dDocName)$>"><$SearchResults.dDocTitle$></a>
+					<$endif$>	
+					</h3>
+					<p>
+					<$SearchResults.xLocationDescription$></p>
+					<$if isTrue(#active.display_salary_rate)$>
+						<p><span class="strong"><$SearchResults.xSalaryDescription $></span></p>
+					<$endif$>
+					<$ imagePath = ssIncludeXml(Sponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+					<$if strLength(imagePath) GT 0 $><$ imagePath $><$endif$>
+				</li>
+			 <$endloop$>
+			</ul>
+			 </div>
+		</div>
+	<$endif$>
+<$endif$>
+
+<@end@>
+
+ 
+<@dynamichtml rgtmp_footer_inc@>
+<$separator = "|"$>
+<$if not (strEquals(wcmElement("LinkSeparator"), ""))$>
+	<$separator = wcmElement("LinkSeparator")$>
+<$endif$>
+<$wcmListStart("Links")$>
+	<div id="pl_footer" class="container_24" style="width:1100px;">
+       <div class="grid_24" style="width:1100px;">
+	<$if wcmListRowCount() gt 0$>
+ 
+	
+    	<ul id="footer_links">
+		<$nNumRecords=wcmListRowCount()$>
+		<$nPos=0$>
+		<$loopwhile nPos lt nNumRecords$>			
+			<li><$linkItem = wcmListElement('Link', nPos)$>
+				<$linkItem=strReplace(linkItem, "<p>", "")$>
+				<$linkItem=strReplace(linkItem, "</p>", "")$>
+				<$linkItem$>
+			</li>
+    		<$nPos=nPos+1$>
+		<$endloop$>
+		</ul>
+		<$endif$>	
+	<$wcmListEnd("Links")$>
+	
+	
+		
+		<$include is_output_social_analytics$>
+		<!--added for Add This Toolbar on 11 Sept 2012 -->	
+		<$SocialNetworking=wcmElement("SocialNetworking")$> 
+		<$if strLength(SocialNetworking) GT 0 and isTrue(doOutput)$>
+			<div class="addthis_toolbox1 addthis_10x10_style addthis_default_style" style="margin: 0px;  height: 29px; padding: 10px 0px 0px;float:left;">
+			<script type="text/javascript">
+				if(!addthis_config){
+					var addthis_config = {};
+				}
+				addthis_config['ui_language']= "<$LanguageCode$>"; 			
+				<$if domainId ==27$>
+					addthis_config['services_exclude']= "facebook,twitter"; 
+				<$endif$>				
+			</script>
+			<a href="http://addthis.com/bookmark.php?v=250&amp;username=xa-4c24d509544421b9" class="addthis_button_compact"></a>
+			<span class="addthis_separator">|</span>
+			<$if domainId !=27$>
+			<a class="addthis_button_facebook"></a>
+			<a class="addthis_button_twitter"></a>
+			<a class="addthis_button_linkedin"></a>
+			<a class="addthis_button_favorites"></a>
+			
+			<$else$>
+			<a class="addthis_button_linkedin"></a>
+			<a class="addthis_button_sinaweibo"></a>
+			<a class="addthis_button_kaixin"></a>
+			<a class="addthis_button_baidu"></a>
+			<$endif$>
+			<a class="addthis_button_print"></a>
+			</div>
+		<script type="text/javascript" src="/cs/HaysGeneralComponent/assets/js/addthis_widget.js"></script>
+			
+		<$endif$>
+
+<!-- end -->	
+		
+<!--Added for PCR Editable Footer -->
+<$showsitemap=ssGetNodeProperty(nodeId ,"ShowFooterSiteMap")$>
+<$if strEqualsIgnoreCase(showsitemap,"true")$>
+<$wcmListStart("FooterSiteMap")$>
+	<$if wcmListRowCount() gt 0$>
+	<$TotalRows=wcmListRowCount()$>
+	<$if (TotalRows%5)==0$>
+		<$maxcount=TotalRows/5$>
+	<$else$>
+		<$maxcount=(TotalRows/5)+1$>
+	<$endif$>
+    <$rowcount=0$>
+	<$nPos=0$>
+	<ul class="footer_sitemap">
+	<$loopwhile nPos lt TotalRows$>
+		<$if maxcount==rowcount$>
+			<$rowcount=0$>
+			</ul>
+			<ul class="footer_sitemap">
+		<$endif$>
+		<li><$linkItem = wcmListElement('Link', nPos)$>
+		    	<$linkItem=strReplace(linkItem, "<p>", "")$>
+				<$linkItem=strReplace(linkItem, "</p>", "")$>
+				<$linkItem$>
+		</li>
+		<$rowcount=rowcount+1$>
+		<$nPos=nPos+1$>			
+	<$endloop$>
+	</ul>
+	<$else$>
+    <$include ShowFooterSiteMap$>
+	<$endif$>
+	<$wcmListEnd("FooterSiteMap")$>	
+  <$endif$>
+<!--/End PCR Editable Footer -->
+
+<div class="copyright"><$wcmElement("LegalText")$></div>
+</div>
+	<div class="clear"></div>
+	 </div>	
+ 
+
+<$include javascript_string_files_inc$>
+
+
+<@end@>
+
+
+<!--BAU REL-4 21118-->
+<@dynamichtml include_ga_code_js@>
+	<$countrylistGACode=","&#env.GACodeDisabledCountries&","$>
+	<$CountryCodeGACode = ","&#active.domainId&","$>
+	<$if strIndexOf(countrylistGACode,CountryCodeGACode) >=0$> 
+		<$isGACodeDisabled=1$>	
+	<$else$>
+		<$isGACodeDisabled=0$>
+	<$endif$>
+<@end@>
+
+<!-- R32419 - Schema Implementation for UK and AU (Business Priority) -->
+<@dynamichtml ga_schema_js@>
+<$if domainId ==1$>
+<!--Script for Logo-->
+
+<script type="application/ld+json">
+{
+	"@context": "http://schema.org",
+	"@type": "Organization",
+	"url": "http://www.hays.co.uk",
+	"logo": "http://www.hays.co.uk/cs/groups/hays_ta/documents/sitestudio/img_logo_hays.gif"
+}
+</script>
+
+<!--Script for Social Icons-->
+
+<script type="application/ld+json">
+{
+	"@context" : "http://schema.org",
+	"@type" : "Organization",
+	"name" : "Hays",
+	"url" : "http://www.hays.co.uk",
+	"sameAs" : [ "https://www.facebook.com/HaysUK",
+	"https://twitter.com/HaysNews",
+	"https://www.youtube.com/user/HaysTV",
+	"https://plus.google.com/+haysrecruitmentuk",
+	"https://www.linkedin.com/company/hays"] 
+}
+</script>
+<$endif$>
+
+<$if domainId ==22$>
+<!--Script for Logo-->
+
+<script type="application/ld+json">
+{
+	"@context": "http://schema.org",
+	"@type": "Organization",
+	"url": "http://www.hays.com.au",
+	"logo": "http://www.hays.com.au/cs/groups/hays_ta/documents/sitestudio/img_logo_hays.gif"
+}
+</script>
+
+<!--Script for Social Icons-->
+
+<script type="application/ld+json">
+{ 
+	"@context" : "http://schema.org",
+	"@type" : "Organization",
+	"name" : "Hays",
+	"url" : "http://www.hays.com.au",
+	"sameAs" : [ "https://www.facebook.com/HaysAustralia",
+	"https://twitter.com/HaysAustralia",
+	"https://plus.google.com/u/0/104800708062686275948/posts",
+	"http://www.youtube.com/HaysAustralia",
+	"https://www.linkedin.com/company/hays"] 
+}
+</script>
+<$endif$>
+
+<@end@>
+
+<!--BAU REL-4 21118-->
+
+<@dynamichtml googleanalytics_for_UK@>
+	 <!--BAU REL-4 21118-->
+     <$include include_ga_code_js$>
+<$include is_output_social_analytics$>
+     <$if isTrue(#env.SwitchOnGoogleAnalytics) AND (isGACodeDisabled EQ 0) AND (isTrue(doOutput))$>
+  <!--BAU REL-4 21118-->
+				
+<script type="text/javascript">
+					
+					function getCookie(c_name)
+					{
+						var i,x,y,ARRcookies=document.cookie.split(";");
+						for (i=0;i<ARRcookies.length;i++)
+						{
+						  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+						  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+						  x=x.replace(/^\s+|\s+$/g,"");
+						  if (x==c_name)
+							{
+							return unescape(y);
+							}
+						}
+					}
+					
+					var performz=getCookie("performz");
+				
+					var _gaq = _gaq || [];
+					var HAYS_ww_gacode1="<$lc('wwgacode1')$>";
+					_gaq.push(['_setAccount', HAYS_ww_gacode1]);
+					
+					<$hostname=HTTP_HOST$>
+					<$hostname=strReplace(hostname, "www.", "")$>
+					<$hostname=strReplace(hostname, "testsg.", "")$>
+					<$if parentSiteId$>
+						<$subDomainIndex = strIndexOf(hostname,'.')$>
+						<$hostname = strSubstring(hostname,subDomainIndex+1)$>
+					<$endif$>
+					_gaq.push(['_setDomainName','<$hostname$>']);
+					
+
+					_gaq.push(['_setAllowLinker',true]);
+					var val = '<$getCookie("ga_inf")$>';
+					if(val.length == 0) {
+						val = 'anonymous';
+					}
+					_gaq.push(['_setCustomVar',1, 'webuser', val, 1]);
+					_gaq.push(['_trackPageview']);
+					if(performz!='N')
+						{
+							(function() {
+
+								var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+								<$if domainId eq 5$>
+									ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js'
+								<$else$>
+									ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';		
+								<$endif$>
+								var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+
+							})();
+						}
+						
+					</script>
+				
+		<$endif$>
+
+<@end@>
+
+<@dynamichtml googleanalytics_for_Chile@>
+	 <!--BAU REL-4 21118-->
+     <$include include_ga_code_js$>
+<$include is_output_social_analytics$>
+     <$if isTrue(#env.SwitchOnGoogleAnalytics) AND (isGACodeDisabled EQ 0) AND (isTrue(doOutput))$>
+  <!--BAU REL-4 21118-->
+				
+		<script type="text/javascript">
+
+		function getCookie(c_name){
+			var i,x,y,ARRcookies=document.cookie.split(";");
+			for (i=0;i<ARRcookies.length;i++){
+				x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+				y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+				x=x.replace(/^\s+|\s+$/g,"");
+				if (x==c_name){
+					return unescape(y);
+				}
+			}
+		}
+		var performz=getCookie("performz");
+		var _gaq = _gaq || [];
+		var HAYS_ww_gacode1="UA-36584209-1";
+		_gaq.push(['_setAccount', HAYS_ww_gacode1]);
+		
+		<$hostname=HTTP_HOST$>
+		<$hostname=strReplace(hostname, "www.", "")$>
+		<$hostname=strReplace(hostname, "testsg.", "")$>
+		<$if parentSiteId$>
+			<$subDomainIndex = strIndexOf(hostname,'.')$>
+			<$hostname = strSubstring(hostname,subDomainIndex+1)$>
+		<$endif$>
+		_gaq.push(['_setDomainName','<$hostname$>']);
+		
+
+		_gaq.push(['_setAllowLinker',true]);
+		_gaq.push(['_trackPageview']);
+		if(performz!='N'){
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		}
+		</script>
+	<$endif$>
+<@end@>
+
+<@dynamichtml googleanalytics_for_Colombia@>
+	 <!--BAU REL-4 21118-->
+     <$include include_ga_code_js$>
+<$include is_output_social_analytics$>
+     <$if isTrue(#env.SwitchOnGoogleAnalytics) AND (isGACodeDisabled EQ 0) AND (isTrue(doOutput))$>
+  <!--BAU REL-4 21118-->
+		<script type="text/javascript">
+		function getCookie(c_name){
+			var i,x,y,ARRcookies=document.cookie.split(";");
+			for (i=0;i<ARRcookies.length;i++){
+				x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+				y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+				x=x.replace(/^\s+|\s+$/g,"");
+				if (x==c_name){
+					return unescape(y);
+				}
+			}
+		}
+		var performz=getCookie("performz");
+		var _gaq = _gaq || [];
+		var HAYS_ww_gacode1="UA-36581836-1";
+		_gaq.push(['_setAccount', HAYS_ww_gacode1]);
+	
+		<$hostname=HTTP_HOST$>
+		<$hostname=strReplace(hostname, "www.", "")$>
+		<$hostname=strReplace(hostname, "testsg.", "")$>
+		<$if parentSiteId$>
+			<$subDomainIndex = strIndexOf(hostname,'.')$>
+			<$hostname = strSubstring(hostname,subDomainIndex+1)$>
+		<$endif$>
+		_gaq.push(['_setDomainName','<$hostname$>']); 
+		
+
+		_gaq.push(['_setAllowLinker',true]);
+		_gaq.push(['_trackPageview']);
+		if(performz!='N'){
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		}
+		</script>
+	<$endif$>
+<@end@>
+
+<@dynamichtml banner_ticker_tape_javascript_check@>
+<$bannerCheck = 0$>
+<$regionDefBanner=ssGetNodeProperty(siteId,'banner-text','primaryUrl')$>
+<$if strIndexOf(regionDefBanner,"Banner Text=") ge 0$>
+<$regDataFileBanner = strSubstring(regionDefBanner,strIndexOf(regionDefBanner,"Banner Text=")+12)$>
+	<$if not strEquals(regDataFileBanner,"")$>
+		<$bannerCheck = 1$>
+	<$endif$>
+<$endif$>
+<@end@>
+<@dynamichtml banner_ticker_tape_javascript@>
+<$BackgroundColour=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='BackgroundColour']/text()")$>
+<$TextColour=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='TextColour']/text()")$>
+<$countElement=ssGetXmlNodeCount(regDataFileBanner,"wcm:root/wcm:list[@name='BannerBody']/wcm:row")$>
+<$DontShowEver=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='DontShowEver']/text()")$>
+<$DontShowMsg=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='DontShowMsg']/text()")$>
+						<style>
+.band:after {
+    clear: both;
+}
+.band:before, .band:after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+
+#hellobar {
+    
+    color: white;
+    font-size: 12px;
+    line-height: 160%;
+}
+.band {
+    background-position: center top;
+    background-repeat: no-repeat;
+    clear: both;
+}
+
+#hellobar {
+    color: white;
+    font-size: 12px;
+    line-height: 160%;
+    text-align: center;
+} 
+#show_message_count{
+text-align: right;
+margin-right:5px;
+}
+
+#hellobar_message_show{
+text-align: left;
+margin-left:12px;
+}
+
+#hellobar .close-msg{background: url(../haysassets/groups/hays_common/@uk/@content/documents/webassets/close_banner.png) 100% 0 no-repeat; padding-right: 18px; line-height: 18px; background-position:right center;}
+
+.Black_Text{
+color: black;
+}
+.White_Text{
+color: white;
+}
+
+.LightBlue_bg{
+background-color: #29BDCA;
+}
+.DarkBlue_bg{
+background-color: #002776;
+}
+#hellobar a, #hellobar a:hover, #hellobar a:active, #hellobar a:focus {
+    color: <$TextColour$>;
+}
+</style>
+
+
+<div class="band outset <$BackgroundColour$>_bg" id="hellobar" style="display:none; margin:0px 5px 0px;" >
+					<div class="inner">
+						<div class="status">
+							
+							<div id="show_message_count" ><a class="<$TextColour$>_Text close-msg" href="javascript:void(0);" onclick="javascript:updateCounter();"></a>
+							</div>
+							<div id="hellobar_message_show" class="<$TextColour$>_Text"></div>
+							
+							<div class="<$TextColour$>_Text" style="text-align: right;  margin-right: 5px;"><a class="<$TextColour$>_Text close-msg" href="javascript:void(0);" onclick="javascript:removeCounter();"><$DontShowEver$></a></div>
+							
+							</div>
+						
+						<div id="msgAll" style="display:none">
+						
+						
+						<$count=1$>
+						<$loopwhile count le countElement$>
+						<$bannerText=eval(ssIncludeXml(regDataFileBanner,"wcm:root/wcm:list[@name='BannerBody']/wcm:row[" & count & "]/wcm:element[@name='BannerText']/text()"))$>
+						<div id="hellobar-message<$count$>"><$strReplace(bannerText,'\"',"'")$></div>
+						<$count=count+1$>
+						<$endloop$>
+						
+
+						</div>
+					</div>
+				</div>
+				
+				<script type = "text/javascript">
+				//var DontShowEver = "<$DontShowEver$>";
+				var DontShowMsg = "<$DontShowMsg$>";
+				var totalmsg = <$countElement$>;
+				var currentCount=100;
+				function setCookie(name,value,days) {
+					if (days) {
+						var date = new Date();
+						date.setTime(date.getTime()+(days*24*60*60*1000));
+						var expires = "; expires="+date.toGMTString();
+						document.cookie = "banner_expiry="+date.toGMTString()+";expires="+date.toGMTString()+";path=/";
+
+					}
+					else var expires = "";
+					document.cookie = name+"="+value+";expires="+getCookie("banner_expiry")+";path=/";
+				}
+				function removeCounter()
+				{
+					setCookie("countBanner",100,365);
+					$("#hellobar").slideUp(300);
+				}
+				
+				function checkCounter()
+				{
+					
+					if	(window.jQuery && jQuery.ui && jQuery.isReady && ($("#banner").hasClass( "banner-hidden" ) || $('#banner').css('display') == 'none' || $("#banner").length == 0 )) 
+					{
+						if (parseInt(getCookie("countBanner"))!=1 && getCookie("countBanner"))
+						{
+							currentCount = getCookie("countBanner");
+							if(currentCount <= totalmsg)
+							{	
+								$("#hellobar").css("display", "block");
+								$("#show_message_count a").html(DontShowMsg + " ("+currentCount+"/" +totalmsg+ ")");
+								$("#hellobar_message_show").html($("#hellobar-message"+currentCount).html());
+							}
+							else
+							{
+								setCookie("countBanner",100);
+								$("#hellobar").slideUp(300);
+							}
+						}
+						else
+						{
+							setCookie("countBanner",1,7);
+							$("#hellobar").slideDown(400);
+							$("#hellobar").css("display", "block");
+							$("#hellobar_message_show").html($("#hellobar-message1").html());
+							$("#show_message_count a").html(DontShowMsg + " (1/" +totalmsg+ ")");
+						}
+					}
+					else 
+					{
+						window.setTimeout(checkCounter, 100);
+					}
+				}
+				
+				function updateCounter()
+				{
+					
+					
+					currentCount = parseInt(getCookie("countBanner"));
+					setCookie("countBanner",currentCount+1);
+					checkCounter();
+					
+				}
+				</script>
+
+<@end@>
+<@dynamichtml rgtmp_banner_text_inc@>
+<$regionDefBanner=ssGetNodeProperty(siteId,'banner-text','primaryUrl')$>
+						
+						<$regDataFileBanner = strSubstring(regionDefBanner,strIndexOf(regionDefBanner,"Banner Text=")+12)$>
+<div class="half_intro"> 
+	
+	<div class="hi_inner">
+<$BackgroundColour=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='BackgroundColour']/text()")$>
+						<$TextColour=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='TextColour']/text()")$>
+						<$DontShowEver=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='DontShowEver']/text()")$>
+						<$DontShowMsg=ssIncludeXml(regDataFileBanner,"wcm:root/wcm:element[@name='DontShowMsg']/text()")$>
+						<$countElement=ssGetXmlNodeCount(regDataFileBanner,"wcm:root/wcm:list[@name='BannerBody']/wcm:row")$>
+						
+						
+	
+	
+	</div>			
+</div> 
+<div class="clear"></div>
+<div class="content_main">
+   <$count=1$>
+   <$loopwhile count le countElement$>
+						<$bannerText=eval(ssIncludeXml(regDataFileBanner,"wcm:root/wcm:list[@name='BannerBody']/wcm:row[" & count & "]/wcm:element[@name='BannerText']/text()"))$>
+						Message <$count$> : <$strReplace(bannerText,'\"',"'")$>
+						</br>
+						<$count=count+1$>
+						<$endloop$>	
+						"Don't show ever again" Text : <p><$DontShowEver$></p>
+						"Don't show message" Text : <p><$DontShowMsg$></p>
+						BackgroundColour : <p><$BackgroundColour$></p>
+						
+						</br>
+						TextColour : <p><$TextColour$></p>
+</div>
+<div class="clear"></div>
+<@end@>
+
+
+<@dynamichtml rgtmp_header_inc@>
+<$include apac_country_check_inc$> 
+<$bannerProperty=ssGetNodeProperty("banner-text","BannerEnabled")$>
+<$if strEqualsIgnoreCase(bannerProperty,"true")$>
+<$include banner_ticker_tape_javascript_check$> 
+<$endif$>
+<$bannerEnabled = 0$>
+<$if (isAPACCountry NE 1) AND (domainId ne 1) AND (bannerCheck eq 1)$>
+	<$if not strEqualsIgnoreCase(#active.IdcService,'WCM_PLACEHOLDER')$>
+		<$bannerEnabled = 1$>
+		
+	<$endif$>
+<$endif$>
+
+<$include inc_cookie_law_banner_javascript$>
+<$if bannerEnabled == 1$>
+<$include banner_ticker_tape_javascript$>
+<$endif$>
+
+<!--13481 changes start--->
+<$if siteId like 'ptBR'$>
+
+<!-- Google Code for Inscri&ccedil;&atilde;o Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 976139537;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "mBnWCN_rqgcQkeq60QM";
+var google_conversion_value = 0;
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/976139537/?value=0&amp;label=mBnWCN_rqgcQkeq60QM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+<!-- Google Code for Inscri&ccedil;&atilde;o Conversion Page -->
+<$endif$>
+<!--13481 changes end--->
+
+<$include increase_image_margin$>
+<$include isCookieSettingsDisabled$>	
+
+	<div class="grid_7" >
+	<!-- Release 7 [Home page logo]-->
+	<$inThisConfig=#env.HAYS_RESPONSE_LOGO_HOME$>
+	<$checkThisValue=siteId$>
+	<$include checkFlagValue$>
+	<$if checkFlag==1$>
+	<!-- end -->		
+		<a href="<$wcmUrl('nodelink','home')$>"><img width="183" height="50" alt="<$lc('wwHaysGeneral')$>" src="/cs/groups/hays_ta/documents/sitestudio/img_logo_haysresponse.jpeg" /></a>
+	<$elseif siteId like 'enOG'$>
+			 <style>
+		     .home_panel2{
+			  background: none repeat scroll 0 0 #E1E1E1;
+			  border-radius: 6px 6px 6px 6px;
+		/*	  margin-left: 5px;
+			  margin-right: 35px; */
+			  padding: 3px;
+			  border-top-left-radius:6px;
+              border-top-right-radius:6px;
+              border-bottom-right-radius:6px;
+              border-bottom-left-radius:6px;
+			 }           
+
+            		
+			#pl_main table th, #pl_main table td{border-radius: 6px; }
+			
+    		/* .container_24 .grid_14	{width:567px;} 
+			
+			.half_intro{overflow:none; width:570px;} */
+			
+			#content1 {padding-left:7px; width:517px;}
+			
+			.checkbox {border: 0px solid #E1E1E1; padding: 0px;}
+			
+			.copyright{	padding-top:12px !important;	}
+			
+			#pl_main table th, #pl_main table td {border-radius:6px 6px 6px 6px;}
+			
+			.home_panel2_inner UL LI{ border-bottom-style:solid; border-color:#C2C8D5; border-width:1px 1px 1px thin;  }
+
+            </style>
+		
+		<a href="<$wcmUrl('nodelink','home')$>"><img alt="<$lc('wwHaysGeneral')$>"  src="http://www.hays.com/prd_consump/groups/hays_common/@og/@content/documents/digitalasset/hays_725016.gif" /></a>
+		<$elseif siteId like 'ukjobs'$>
+			<a href="<$wcmUrl('nodelink','home')$>"><img  alt="<$lc('wwHaysGeneral')$>" src="/cs/groups/hays_ta/documents/sitestudio/img_logo_hays_ukjobs.png" /></a>
+		<$elseif siteId like 'enVUS'$>
+			<a href="http://www.vereduscorp.com/"><img width="152" height="53"  style="padding-top:13px" alt="<$lc('wwHaysGeneral')$>" src="/cs/groups/hays_ta/documents/sitestudio/veredus_logo.jpg" /></a>		
+        <$elseif siteId like 'enUS' AND #env.veredusCutOver eq 1$>
+		    <a href="<$wcmUrl('nodelink','home')$>"><img width="235" height="50" alt="<$lc('wwHaysGeneral')$>" src="/cs/groups/hays_ta/documents/sitestudio/img_logo_hays_vus.gif" /></a>			
+		<$else$>		
+		<a href="<$wcmUrl('nodelink','home')$>"><img width="235" height="30" alt="<$lc('wwHaysGeneral')$>" src="/cs/groups/hays_ta/documents/sitestudio/img_logo_hays.gif" /></a>
+		<$endif$>
+	</div>
+	<div class="grid_17">
+		<$homePageNodeId=ssGetFirstNodeId(siteId)$>
+		<$if #active.nodeId and strEquals(#active.nodeId,homePageNodeId)$>
+
+			[[%<$if domainId !=33 and domainId !=98$> commetned for malaysia domain id change%]]
+			<$if domainId !=00 and domainId !=97 and domainIdParent !=222$> [[%Added for malaysia domain id change%]]
+
+				<$loginDisplay=#env.LoginEnabled$>
+				<$if strEqualsIgnoreCase(loginDisplay, "false") ne 1$>
+					<$include include_header_sub_home$>
+				<$endif$>
+				<$if domainId ==80 OR domainId ==81$>
+			
+		<$endif$>
+			<$endif$>
+		<$else$>
+				[[%<$if domainId !=00 and domainId !=00$> commetned for malaysia domain id change%]]
+			<$if domainId !=00 and domainId !=97 and domainIdParent !=222$> [[%Added for malaysia domain id change%]]
+				<$loginDisplay=#env.LoginEnabled$>
+				<$if strEqualsIgnoreCase(loginDisplay, "false") ne 1$>
+					<$include include_header_sub$>
+				<$endif$>
+			<$endif$>
+		<$endif$>
+		    
+		<$include translation_flags_inc$>
+		[[%<$if domainId !=33 and domainId !=98$> commetned for malaysia domain id change%]]
+			<$if domainId !=00  and domainId !=97 and domainIdParent !=222$> [[%Added for malaysia domain id change%]]
+			<div class="clear"></div>
+			
+		<$else$>
+			<div class="faux-height clear"></div>
+		<$endif$>
+		
+	<ul id="global_nav" class="suckerfishworld">
+	<$WorldWideTitle = wcmElement("WorldWideTitle")$>
+	<$wcmListStart("GlobalNavigation")$>
+	<$if wcmListRowCount() gt 0$>    	
+		<$nNumRecords=wcmListRowCount()$>
+		<$nPos=0$>
+		<$loopwhile nPos lt nNumRecords$>
+			<$linkHeader = wcmListElement('Link', nPos)$>
+		<$if strIndexOf(linkHeader, 'toggle-employer-subNav') gt -1 $>
+			<$employerColNum=1$>
+		<li class="popout employerbutton"><$linkHeader$>
+			<div class="suckerbox">
+				<$wcmListStart("TabNavigation_Employer")$>
+					<$if wcmListRowCount() gt 0$>
+						<$nNumRecordsEmp=wcmListRowCount()$>
+						<$nPosEmp=0$>
+						<$if (nNumRecordsEmp%4)==0$>
+						<$numLinksInColoumn=nNumRecordsEmp/4$>
+						<$else$>
+						<$numLinksInColoumn=(nNumRecordsEmp/4)+1$>
+						<$endif$>
+						<$loopwhile nPosEmp lt nNumRecordsEmp$>
+							<$if nPosEmp==0$>
+							<div class="employercol">
+								<ul>
+							<$endif$>
+								<li><$wcmListElement('Link', nPosEmp)$></li>
+							<$if employerColNum%numLinksInColoumn == 0$>
+								</ul>
+								</div>
+								<div class="employercol">
+								<ul>
+							<$endif$>
+									
+							<$nPosEmp=nPosEmp+1$>
+							<$employerColNum=employerColNum+1$>
+						<$endloop$>
+					<$endif$>
+				<$wcmListEnd("TabNavigation_Employer")$>
+								</ul>
+							</div>
+			</div>
+			
+		</li>
+			<$else$>
+			<li><$linkHeader$></li>
+			<$endif$>	
+    		<$nPos=nPos+1$>
+		<$endloop$>
+	<$endif$>		
+	<$wcmListEnd("GlobalNavigation")$>
+	<$if WorldWideTitle and strLength(WorldWideTitle) gt 0$>
+		[[%<$numLinksInColoumn=8$>%]]
+		<$worldColNum=1$>
+		<li class="popout worldbutton"><a href="#"><$WorldWideTitle$><span style="background-position:-5px -1377px;">&nbsp;</span></a>
+			<div class="suckerbox">
+				<$wcmListStart("WorldWideLinks")$>
+					<$if wcmListRowCount() gt 0$>
+						<$nNumRecords=wcmListRowCount()$>
+						<$nPos=0$>
+						<$if (nNumRecords%4)==0$>
+						<$numLinksInColoumn=nNumRecords/4$>
+						<$else$>
+						<$numLinksInColoumn=(nNumRecords/4)+1$>
+						<$endif$>
+						<$loopwhile nPos lt nNumRecords$>
+							<$if nPos==0$>
+							<div class="worldcol">
+								<ul>
+							<$endif$>
+								<li><$wcmListElement('Link', nPos)$></li>
+							<$if worldColNum%numLinksInColoumn == 0$>
+								</ul>
+								</div>
+								<div class="worldcol">
+								<ul>
+							<$endif$>
+									
+							<$nPos=nPos+1$>
+							<$worldColNum=worldColNum+1$>
+						<$endloop$>
+					<$endif$>
+				<$wcmListEnd("WorldWideLinks")$>
+								</ul>
+							</div>
+			</div>
+			
+		</li>
+	<$endif$>
+	</ul>
+	</div>
+	<div class="clear"></div>
+<@end@>
+
+<@dynamichtml increase_image_margin@>
+<script type = "text/javascript">
+		function HAYSCookieBannerImageonLoad(){ 
+		
+			if	(window.jQuery && jQuery.ui && jQuery.isReady) 
+					{
+				
+				var img_div = document.getElementById("pl_header");				
+				
+				if (document.getElementById("banner") != null){			
+					
+					var translationOffset=$(".lang_nav").offset();
+					var createAccountOffset=$(".acc_nav_display").offset(); 
+					
+					if(translationOffset!=null)
+					{						
+						var bannerOffset=$("#banner").offset();
+						var bannerWidthFromLeft=$("#banner").width()+bannerOffset.left;
+						var widthDifference=translationOffset.left-bannerWidthFromLeft;				
+						if(translationOffset.left<bannerWidthFromLeft)
+						{
+							var bannerFinalWidth=bannerWidthFromLeft-translationOffset.left;					
+							bannerFinalWidth=$("#banner").width()-(bannerFinalWidth+14);					
+							$('#banner').attr('style','width:'+bannerFinalWidth+'px;');
+							
+						}
+					}
+					else if(createAccountOffset!=null)
+					{						
+						var bannerOffset=$("#banner").offset();
+						var bannerWidthFromLeft=$("#banner").width()+bannerOffset.left;
+						var widthDifference=createAccountOffset.left-bannerWidthFromLeft;				
+						if(createAccountOffset.left<bannerWidthFromLeft)
+						{
+							var bannerFinalWidth=bannerWidthFromLeft-createAccountOffset.left;					
+							bannerFinalWidth=$("#banner").width()-(bannerFinalWidth+14);					
+							$('#banner').attr('style','width:'+bannerFinalWidth+'px;');							
+						}					
+					}
+					
+					var bannerHeight=$('#banner').height();					
+					var bannercode = document.getElementById("banner");
+						if(bannercode.className=='banner-hidden'){
+								img_div.className='container_24 NormalTopPadding';
+						}						
+						else{
+						
+								if (bannerHeight>18){
+									img_div.className='container_24 increseTopPadding';
+								}						
+								else {
+									img_div.className='container_24 NormalTopPadding';
+								}
+						}
+					}
+				else {
+					img_div.className='container_24 NormalTopPadding';
+				}
+			}
+				else 
+					{
+						window.setTimeout(HAYSCookieBannerImageonLoad, 100);
+					}
+				}
+		HAYSCookieBannerImageonLoad();
+		</script>
+<@end@>
+
+<@dynamichtml rgtmp_header_home_inc@>
+	<div class="grid_7">
+		<!-- Release 7 [Home page logo]-->
+		<$inThisConfig=#env.HAYS_RESPONSE_LOGO_HOME$>
+		<$checkThisValue=siteId$>
+		<$include checkFlagValue$>
+		<$if checkFlag==1$>
+		<!-- end -->
+			<a title="Go to homepage" href="/Hays"><img width="183" height="50" alt="Hays - Recruiting experts worldwide" src="<$HttpRelativeWebRoot$>groups/public/documents/sitestudio/img_logo_haysresponse.jpeg " /></a>		
+		<$elseif siteId like 'enVUS'$>
+			<a title="Go to homepage" href="http://www.vereduscorp.com/"><img width="152" height="53"  style="padding-top:13px" alt="Hays - Recruiting experts worldwide" src="<$HttpRelativeWebRoot$>groups/hays_ta/documents/sitestudio/veredus_logo.jpg" /></a>
+		<$else$>
+			<a title="Go to homepage" href="/Hays"><img width="235" height="30" alt="Hays - Recruiting experts worldwide" src="<$HttpRelativeWebRoot$>groups/public/documents/sitestudio/img_logo_hays.gif" /></a> 
+		<$endif$>
+ 
+	</div>
+	
+	
+	<div class="grid_17">
+		<$loginDisplay=#env.LoginEnabled$>
+				<$if strEqualsIgnoreCase(loginDisplay, "false") ne 1$>
+					<$include include_header_sub_home$>
+				<$endif$>
+		<$include translation_flags_inc$>
+	
+		<ul id="global_nav">
+			<li id="gn_home"><a href="#"><img width="23" height="18" alt="Home" src="/idc_dev/HaysGeneralComponent/assets/css/img/icons/home.gif" /></a></li>
+		              
+        <$wcmListStart("GlobalNavigation")$>
+		<$if wcmListRowCount() gt 0$>
+    	
+			<$nNumRecords=wcmListRowCount()$>
+			<$nPos=0$>
+			<$loopwhile nPos lt nNumRecords$>
+				<li><$wcmListElement('Link', nPos)$></li>			
+    			<$nPos=nPos+1$>
+			<$endloop$> 
+		<$endif$>	
+	
+		<$wcmListEnd("GlobalNavigation")$>
+  		</ul>        
+ 	</div>
+ <div class="clear"></div>
+
+<@end@>
+
+<@dynamichtml rgtmp_header_sub_inc@>
+	<$ navType = '0', headerType = '0' $>
+
+	<$if #active.contentType $>
+	
+		<$if contentType like 'Candidates'$>
+			<$ navType = 2 $>
+		<$else$>
+			<$ navType = 1 $>
+		<$endif$>
+	<$elseif #active.nodeId$>
+		<$ headerType = ssGetNodeProperty("HeaderType") $>
+		<$if headerType like '1|2' $>
+			<$ navType = headerType $>
+  		<$endif$>
+  	<$endif$>
+  	
+  	<$if navType like '0' $>
+
+  		<$userRole=getCookie("tgtaud")$>
+  		<$if strLength(userRole) gt 0$> 
+  			<$if strEquals(userRole,'2')$>  
+  					<$ navType = 2 $>
+  			<$else$>
+  					<$ navType = 1 $>
+  			<$endif$>
+  		<$endif$>
+  	<$endif$>
+   <$if navType like '0' $>
+ 
+   		<$employerUrlPageName=ssGetNodeProperty("employer","urlDirName")$>
+ 		<$candidateSearchUrlPageName=ssGetNodeProperty("candidates-search","urlDirName")$>
+ 		<$if HTTP_REFERER  and ((strIndexOf(HTTP_REFERER,employerUrlPageName) gt 0 )or (strIndexOf(HTTP_REFERER,candidateSearchUrlPageName) gt 0))$>
+ 		
+			<$ navType = 2 $>
+		<$endif$>
+   <$endif$>
+   
+    <$if navType like '0' $>
+   		
+ 		<$if currentNavType  and strLength(currentNavType) gt 0$>
+			<$ navType = currentNavType $>
+		<$endif$>
+   <$endif$>
+
+  	<$if navType like '2' $>  
+  			<$ tabListName = 'TabNavigation_Employer' $>	
+	<$else$>
+				<$ tabListName = 'TabNavigation_JobSeeker' $>
+	<$endif$>
+	<$include top_tab_navigation$>
+
+<@end@>
+
+<@dynamichtml rgtmp_image_inc@>
+<div class="s_mrg"><$wcmElement("Image")$></div>
+<@end@>
+
+<@dynamichtml rgtmp_image_blocks_inc@>
+<$c=wcmElement("RSSLink")$>
+
+<div class="main_box promo_box partners_box">
+	<div class="pb_inner">
+	
+<$wcmListStart("SelectedContent")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+	
+	
+	
+<$queryString = wcmListElement("Query", wcmListIndex)$>
+<$resultCount=wcmElement("Results")$>
+
+            <$if not strEquals(queryString,'')$>
+                    <$c = queryString & " <AND> xWebsiteObjectType <in> `Data File`"$>
+            <$endif$> 
+	     <$include set_query_locale_include$>  		
+            <$QueryText=queryString$>
+            <$if not strEquals(QueryText,'')$>
+             	<$LimitScope=true$> 
+             	<$SortField='dInDate'$>
+             	<$SortOrder='Desc'$>
+             	<$ResultCount=resultCount$>
+             	<$executeService("SS_GET_SEARCH_RESULTS")$>
+             	
+             	<h2><$wcmElement("Title")$></h2>
+		<ul>   	
+				<$loop SearchResults$>
+                <li><a href="/<$siteId$>/FeaturedEmployer/<$dDocName$>"><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>
+                   	<$wcmListIndex = wcmListIndex + 1$><$endloop$></ul>
+			<$endif$>	
+ 
+
+<$wcmListEnd("SelectedContent")$>
+		</div>
+		</div> 
+<@end@>
+
+
+
+
+
+<@dynamichtml rgtmp_main_region_general_inc@>
+<$if not strEqualsIgnoreCase(#active.IdcService,'WCM_PLACEHOLDER')$>
+	<$if strEquals(ssGetNodeProperty('nodeId'), 'linkedin_consent_response')$> 
+		<$include linkedin_consent_token_generation$>
+	<$endif$>
+<$endif$>
+<div class="half_intro"> 
+	<$if #active.image and not strEquals(strTrimWs(#active.image),'')$>
+		<$ strReplace(image, '<img', '<img height="261" width="180" ') $>	
+	<$endif$>	
+			
+	<div class="hi_inner">
+		<$aTitle = wcmElement("Title")$>
+		<$aSecondaryTitle = wcmElement("Secondary_Title")$>
+		<$variableToTrim = aTitle$>	
+		<$include removeLeadingAndTrailingSpaces_inc$>
+		<$aTitle=variableToTrim$>	
+		<$variableToTrim = aSecondaryTitle$>	
+		<$include removeLeadingAndTrailingSpaces_inc$>
+		<$aSecondaryTitle=variableToTrim$>	
+		<$variableToTrim=""$>
+		<$if strLength(aTitle) gt 0$>
+			<h1 style="text-transform: uppercase;"><$aTitle$></h1>
+		<$endif$>
+		<$if strLength(aSecondaryTitle) gt 0$>
+			<span class="sub_text" style="text-transform: uppercase;"><$aSecondaryTitle$></span>
+		<$endif$>	
+		<div class="wysiwyg" id="wysToggle">	
+			<$wcmElement("Summary")$>
+			<script type="text/javascript">
+					<!--//--><![CDATA[//><!-- 
+					function wysToggle() {
+						if (window.jQuery) {
+							var i = 0;
+							var expand = '<a href="#" id="wysEvent" class="more">Read <span class="switch">more</span><span class="access"> on '+$('h1').text()+'</span></a>';
+							$('#wysToggle p').each(function(){
+								i != 0 ? $(this).addClass('wysHide') : 0;
+								i++;
+							});
+							i > 1 ? $('#wysToggle p:last').after(expand) : 0;
+							$('#wysEvent').toggle(function(){
+								$(this).removeClass('more').addClass('less').children('.switch').text('less');
+								$('#wysToggle .wysHide').removeAttr('class').addClass('wysShow');
+								return false;
+								
+							}, function(){
+								$(this).removeClass('less').addClass('more').children('.switch').text('more');;
+								$('#wysToggle .wysShow').removeAttr('class').addClass('wysHide');
+								return false;
+							});
+						}
+						else {
+							window.setTimeout(wysToggle, 100);
+						}
+						}
+							wysToggle();
+						//--><!]]> 
+				</script>
+			<$sectionCategory=ssGetNodeProperty(nodeId,"xCategory")$>
+			<$contentType=ssGetNodeProperty(nodeId,"SpecialismJobsCandidatesCounter")$>
+			<$showViewAllJobsCand="False"$>
+			<$if (strLength(sectionCategory) gt 2) and (strLength(strTrimWs(contentType)) gt 0)$>
+				<$sectionCategory=strReplace(sectionCategory,";", ",")$>
+				<$sectionCategory=strSubstring(sectionCategory, 1, strLength(sectionCategory)-1)$>
+				
+				<$ subTerms = ontGetRelatedTerms(sectionCategory, 'xCategory@hays:ParentTerm') $>
+				<$if subTerms like '[]'$>
+					<$ subTerms = sectionCategory  $>
+				<$elseif strLength(subTerms) GT 0 $>
+					<$ subTerms = sectionCategory & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+				<$endif$>
+				<$ subTerms = strReplace(subTerms, " ", ""), subTerms1 = subTerms $>
+				<$ subTerms = strReplace(subTerms, ",", "','") $>
+				
+				<$tblName="COMPLEXMETA_XCATEGORY", METATERM= subTerms $>
+				
+				<$if contentType like "2" OR contentType like 'andidate'$>
+					<$dDocType="Candidates", link = ssGetServerRelativeUrl(siteId, "candidatessearchresults")$>
+				<$else$>
+					<$dDocType="Jobs", link = ssGetServerRelativeUrl(siteId, "jobssearchresults")$>
+				<$endif$>
+				<$IsJobCountVisible=ssGetSiteProperty(siteId,"isJobCountVisible")$>
+				<$executeService("GET_COMPLEXMETA_COUNTER")$>
+				<$if #active.COUNTER GT 0$>
+					<$showViewAllJobsCand="True"$>
+				<$endif$>
+				<$if strEquals(IsJobCountVisible,"false") $>
+						 <$if contentType like "2"$>
+							<$ aTitle = lc('wwViewAllCandidates', '') $>
+						<$else$>
+							<$ aTitle = lc('wwViewAllJobs', '') $>
+						<$endif$>				
+				<$else$>
+					  <$if #active.COUNTER GT 0$>
+						<$if contentType like "2"$>
+							<$ aTitle = lc('wwViewAllCandidates', COUNTER) $>
+						<$else$>
+							<$ aTitle = lc('wwViewAllJobs', COUNTER) $>
+						<$endif$>
+					  <$endif$>	
+				<$endif$>
+				 <$if isTrue(showViewAllJobsCand)$>
+						<div class="msg"> <a class="button" href='<$link$>?job_category=<$subTerms1$>&contentType=<$dDocType$>&SiteLocale=<$SiteLocale$>'><$ aTitle $></a> </div>
+				<$endif$>
+			   
+			<$endif$>
+		</div>
+		[[%<$if #active.nodeId and not isTrue(ssGetNodeProperty("SwitchOffDate"))$>
+			<$if #active.ssDocName and strLength(#active.ssDocName)gt 0$>
+				<$dDocName = ssDocName$>
+			<$endif$>
+			<$executeService('DOC_INFO_BY_NAME')$>
+			<div class="date"><$lc('wwContentLatUpdatedLabel')$> <$formatDateWithPattern(DOC_INFO.dReleaseDate,#active.websiteDateFormat)$></div>
+		<$endif$>%]]
+	    
+	</div>
+	           		
+</div> 
+
+        <$if strLength(wcmElement("UpperButtonLink")) gt 0 $>
+         <div class="intro-btn">
+              <div class="btn">
+            <$wcmElement("UpperButtonLink")$>
+             </div></div>
+	     <$endif$>
+
+<div class="clear"></div>
+<div class="content_main">
+    
+    <$wcmListStart("Content")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$loopwhile wcmListIndex < wcmListNumRows$>
+		<$strTitle=wcmListElement("Title", wcmListIndex)$>
+		<$strSummary=wcmListElement("Summary", wcmListIndex)$>
+		<$strBody=wcmListElement("Body", wcmListIndex)$>
+		<$if strLength(strTitle) gt 0$>
+	        <h2><$wcmListElement("Title", wcmListIndex)$></h2>
+	    <$endif$>
+		<$if strLength(strSummary) gt 0$>
+        	<h3><$wcmListElement("Summary", wcmListIndex)$></h3>
+	    <$endif$>
+        <$wcmListElement("Body", wcmListIndex)$>
+		<$wcmListIndex = wcmListIndex + 1$>
+	<$endloop$>
+	<$wcmListEnd("Content")$>
+	        
+</div>
+
+     <$if strLength(wcmElement("LowerButtonLink")) gt 0 $>
+     <div class="intro-btn">
+         <div class="btn">
+            <$wcmElement("LowerButtonLink")$>
+         </div></div>
+	 <$endif$>
+
+<div class="clear"></div>
+<@end@>
+
+<@dynamichtml apply_new_popup@>
+<script type="text/javascript"> 
+		function newPopup(url) {	 	
+		 popupWindow = window.open(
+		  url,'popUpWindow','height=900,width=700,left=10,top=10,resizable=yes,,titlebar=no,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=no')
+		}
+	</script>
+<@end@>
+
+
+<@dynamichtml rgtmp_main_region_job_desc_inc@>
+ <$if strEquals(nodeId,'jobs-search')$>
+	<$event = "browse"$>
+	<$include fire_events$>
+ <$endif$>   
+	<$styleClass="job_apply"$> 
+	<$dDocName = ssDocName$>
+	<$executeService('DOC_INFO_BY_NAME')$>
+	<$xPostingType = DOC_INFO.xPostingType$>
+
+
+	<$if strEquals(DOC_INFO.dDocType,"Candidates")$>
+		<$applied="," & getCookie("candRqsd")& ","$>
+	<$else $>
+		<$applied="," & getCookie("jobapd")& ","$>
+	<$endif$>
+
+
+	<$disabledText=""$>
+	<$if strIndexOf(#active.applied,  "," & dDocName & ",") ge 0$>
+		<$disabledText="disabled"$>
+	<$endif$>
+	<h1 class="jobtitle"><$DOC_INFO.dDocTitle$></h1>
+	<h2 class="location"><$DOC_INFO.xLocationDescription$></h2>
+
+	<$candidateInfoRequestUrl=#env.WC_SAVE_SEARCH&"?jobIdList="&DOC_INFO.dDocName&"&amp;refID="&DOC_INFO.xRecordId&"&amp;jobTitle="&DOC_INFO.dDocTitle&"&amp;location="&DOC_INFO.xLocation&"&amp;haysConsultant="&DOC_INFO.xContactId&"&amp;action=redirect&amp;redirect="&#env.WC_CANTIDATE_INFO_REQUEST$>
+	<$if DOC_INFO.xPostingType AND strEquals(DOC_INFO.xPostingType,"dashmgdmp")$> 
+		<$c = "Build URL external applicaton functionality"$>
+		<$if DOC_INFO.xApplicationURL AND strLength(DOC_INFO.xApplicationURL) GT 0$>
+			<$jobApplyUrl=DOC_INFO.xApplicationURL$>
+			<$styleClass="job_applyExternal"$>
+		<$else$>
+			<$jobApplyUrl="#"$>	
+		<$endif$>
+		<$else$>
+	<!-- Change for Sprint 24 on 19 April 2012-->
+		<$if not #active.jobSource$>
+			<$if strLength(getCookie("utm_campaign")) GT 0 $>
+				<$jobSource=getCookie("utm_campaign")$>
+			<$elseif strLength(#active.utm_campaign) GT 0$>		
+				<$jobSource=#active.utm_campaign $>					
+			<$else$>
+		<!--Change for MR Sprint 23 on 16 March 2012 -->
+				<$include apac_country_check_inc$>
+				<$if ((isAPACCountry EQ 1)  OR (strEquals(siteId,'uk')))$>
+					<$jobSource=#env.WC_JOBSOURCE_CONSTANT$>
+				<$else$>	
+		<!-- end -->		
+					<$jobSource=GetDomainName(HTTP_REFERER)$>
+						<$if (strLength(jobSource) EQ 0) OR (strIndexOf(jobSource,'hays') ge 0 ) OR (strIndexOf(jobSource,'veredus') ge 0 )$>
+							<$jobSource=#env.WC_JOBSOURCE_CONSTANT$>
+						<$endif$>
+				<$endif$>
+			<$endif$>	
+		<$endif$>
+		<$if siteId like 'uk'$>
+			[[%<$if strIndexOf(HTTP_USER_AGENT,'MSIE 7') gt 0 or strIndexOf(HTTP_USER_AGENT,'MSIE 8') gt 0 $>%]]
+			<$if strIndexOf(HTTP_USER_AGENT,'MSIE') gt 0 $>
+				<$jobApplyUrl=#env.WC_JOB_APPLY_S_IE&"?jobIdList="&DOC_INFO.dDocName&"&amp;jobsource="&jobSource&"&amp;action=redirect&amp;redirect="&#env.WC_JOB_APPLY&"&amp;subDomain="&DOC_INFO.xSubDomain$>	
+			<$else$>
+				<$checkNewApply=#env.NewDesktopProcess$>
+				<$if strEqualsIgnoreCase(checkNewApply, "true")$>			<$jobApplyUrl=#env.WC_JOB_APPLY_S&"?jobIdList="&DOC_INFO.dDocName&"&amp;jobsource="&jobSource&"&amp;subDomain="&DOC_INFO.xSubDomain$>
+				<$else$>
+				<$jobApplyUrl=#env.WC_SAVE_SEARCH&"?jobIdList="&DOC_INFO.dDocName&"&amp;jobsource="&jobSource&"&amp;action=redirect&amp;redirect="&#env.WC_JOB_APPLY&"&amp;subDomain="&DOC_INFO.xSubDomain$>	
+				<$endif$>
+			<$endif$>
+		<$else$>
+			<$jobApplyUrl=#env.WC_SAVE_SEARCH&"?jobIdList="&DOC_INFO.dDocName&"&amp;jobsource="&jobSource&"&amp;action=redirect&amp;redirect="&#env.WC_JOB_APPLY&"&amp;subDomain="&DOC_INFO.xSubDomain$>	
+		<$endif$>
+		<$if DOC_INFO.xRefJobId AND strLength(DOC_INFO.xRefJobId) GT 0$>			
+				<$jobApplyUrl = jobApplyUrl&"&amp;referingJobId=JOB_"&DOC_INFO.xRefJobId&"&amp;referingJobDomainId="&DOC_INFO.xRefDomainId$>
+		<$endif$>
+	<$endif$>
+
+	<$if strEquals(DOC_INFO.dDocType,"Candidates")$>
+		<$applyButtonLabel=lc("wwCandidateDescRequestInfoButtonLabel")$>
+	<$else $>
+		<$applyButtonLabel=lc("wwJobDescApplyButtonLabel")$>
+	<$endif$>
+
+	<$include job_search_navigation_elements$>
+
+	<div class="short_descr">
+		<div class="grid_10 alpha">
+			
+			<dl>
+				<$if not strEquals(DOC_INFO.xJobType,'')$>
+					<dt><$lc("wwJobT")$></dt>
+					<dd>
+					<$addComma="false"$>
+					<$if strIndexOf(DOC_INFO.xJobType, 'P') GE 0 $><$addComma="true"$><$lc('wwPermanent')$><$endif$>
+					<$if strIndexOf(DOC_INFO.xJobType, 'C') GE 0 $><$if isTrue(addComma)$>, <$endif$><$addComma="true"$><$lc('wwContract')$><$endif$>
+					<$if strIndexOf(DOC_INFO.xJobType, 'T') GE 0 $><$if isTrue(addComma)$>, <$endif$><$lc('wwTemporary')$><$endif$>
+					</dd>
+				<$endif$>
+				<$if siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE' OR siteId like 'mxMXHR'$>
+					<$if strEquals(DOC_INFO.dDocType,"Jobs") and not strEquals(DOC_INFO.dInDate,'')$>
+						<dt><$lc("wwPostingDate")$></dt>				
+						<dd><$formatDateWithPattern(DOC_INFO.dInDate,#active.websiteDateFormat)$></dd>
+					<$endif$>
+				<$endif$>
+				
+			[[%	<$if strEquals(DOC_INFO.dDocType,"Candidates") and not strEquals(DOC_INFO.xAvailableFrom,'')$>
+					<dt><$lc("wwAvailableFrom")$></dt>				
+					<dd><$formatDateWithPattern(DOC_INFO.xAvailableFrom,#active.websiteDateFormat)$></dd>
+				<$endif$>%]]
+				
+				<$if isTrue(#active.display_salary_rate)$>
+						<$if strLength(DOC_INFO.xSalaryDescription) GT 0 $>
+						<dt><$lc("wwPay")$></dt>
+						
+						<dd>
+					<!-- <$ crXmlToResultSet(DOC_INFO.xSalaryType, 'SalaryRS') $>		
+						<$loop SalaryRS$>
+							<$ minSalary = formatCurrency(SalaryRS.min, #active.SiteLocale) $>
+							<$ maxSalary = formatCurrency(SalaryRS.max, #active.SiteLocale) $>
+							<$ minSalary $> - <$ maxSalary $> <$include format_pay_type_inc $><br/>
+						<$endloop$> -->				
+						<$DOC_INFO.xSalaryDescription$>				
+						</dd>
+						<$else$>
+						<dd>&nbsp;&nbsp;</dd>
+					<$endif$> 
+				<$endif$>
+			
+				<$if not strEquals(DOC_INFO.xRecordId,'')$>
+					<dt><$lc("wwReference")$></dt>
+					<dd><$DOC_INFO.xRecordId$></dd>
+				<$endif$>
+				<$if strEquals(DOC_INFO.dDocType,"Jobs") and  strEquals(DOC_INFO.xDisplayClosingDate,'Y')$>
+				 <dt><$lc("wwClosingDate")$></dt>
+				   
+				 
+				 
+					<dd><$formatDateWithPattern(DOC_INFO.dOutDate,#active.websiteDateFormat)$></dd>
+				
+				<$endif$>			
+			</dl>
+		</div>
+		<div class="grid_4 omega">
+			<ul class="jaccess">
+				<!--Added for Release 1.2-->
+				<$sponsoredEmployer=DOC_INFO.xSponsored$>
+				<$sponsoredEmpImagePath=''$>
+				<$sponsoredEmpLink=''$>
+				<$sponsoredEmpTitle=''$>
+				<$if strLength(sponsoredEmployer) GT 0$>
+					<$sponsoredEmpImagePath=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Image']/text()")$>
+					<$sponsoredEmpLink=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+					<$sponsoredEmpTitle = haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Title']/text()")$>
+				<$endif$>
+				
+				<$if strLength(sponsoredEmpImagePath) GT 0$>
+					<$if (#active.domainId == 2) OR (#active.domainId==12)$>
+						<li><a target='_blank' href= '<$sponsoredEmpLink$>'</a><$sponsoredEmpImagePath$></li>
+					<$else$>
+						<li><$sponsoredEmpImagePath$></li>
+					<$endif$>
+				<$endif$>			
+				
+
+				<$if strEqualsIgnoreCase(siteId,'uk')$>
+						<$makeTheButtonOrange='style="background:darkorange;border:1px solid #9D5800;text-shadow: -1px -1px 1px darkorange;"'$>
+				<$endif$>
+				
+				<!--end Release 1.2-->
+			[[% Added for release 8.0 start%]]
+			<!-----------------------------------10139 implementations start ----------------------------------------------------------------->
+				<$dDocName = ssDocName$>
+				<$executeService('DOC_INFO_BY_NAME')$>
+				<$buttonLabel10139='false'$>
+	<$if strEquals(DOC_INFO.xShowJobOwner, 'No') and strTrimWs(DOC_INFO.dDocType) like 'Jobs' and (strEqualsIgnoreCase(siteId,'esMX') or strEqualsIgnoreCase(siteId,'ptPT'))$>	
+
+					<$buttonLabel10139='true'$>
+
+					<li><a class="button <$styleClass$> <$disabledText$>" <$makeTheButtonOrange$> 
+					onClick="return Hays_gaq_push_jobseeker_app()" href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$lc("wwApplyButtonLabel10139")$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+				
+				<$else$>
+					<$include apply_new_popup$>
+					<$checkShortApply=#env.ShortApply$>
+						<$if strEqualsIgnoreCase(checkShortApply, "false") ne 1$>
+							<li><a class="button <$styleClass$> <$disabledText$>"  <$makeTheButtonOrange$>
+					onClick="return Hays_gaq_push_jobseeker_app()" href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>	
+						<$else$>
+							<li><a class="button" <$makeTheButtonOrange$> onclick="_JavaScript:newPopup('<$HttpBrowserFullCgiPath$>?IdcService=GET_APAC_APPLYFORM&job_id=<$DOC_INFO.dDocName$>&siteLocale=<$SiteLocale$>&siteId=<$siteId$>&idcToken=<$idcToken$>');" href="javascript:void(0)"><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+						<$endif$>
+				<$endif$>
+				
+					<!-----------------------------------10139 implementations end ----------------------------------------------------------------->
+				 
+				
+			[[% Added for release 8.0 end%]]
+				
+				
+				<$extraCssClass=" msg"$>
+				<$if strEqualsIgnoreCase(checkShortApply, "false") ne 1 and isFalse(isProjectSEnabled)$>
+					<$include AddRemoveFromJobBasket$>
+				<$endif$>
+			</ul>
+		</div>
+
+	</div>	
+
+
+
+	<div class="content_main">
+		<div class="cm_inner">
+			<$if (strEqualsIgnoreCase(siteId,'uk') or strEqualsIgnoreCase(siteId,'enVUS')) and not strEquals(DOC_INFO.xDescription,'') and not strEquals(DOC_INFO.dDocType,"Candidates")$>
+				<p style="white-space:pre-line;"><$DOC_INFO.xDescription$></p>
+			<$endif$>
+			<$summary = wcmElement("Summary")$>
+				<$summary$> 
+			<div class="toggle">
+				
+				<$wcmListStart("Content")$>
+				<$wcmListIndex = 0$>
+				<$wcmListNumRows = wcmListRowCount()$>
+					<$loopwhile wcmListIndex < wcmListNumRows$>
+				<div class="thead">
+					<h2><$wcmListElement("Title", wcmListIndex)$></h2>
+				</div>
+				<div class="tpane">
+								
+				<$wcmListElement("Body", wcmListIndex)$>
+								
+								
+				</div><$wcmListIndex = wcmListIndex + 1$>
+					<$endloop$>
+				<$wcmListEnd("Content")$>
+				
+			</div>
+		</div>
+	</div>
+	<div class="short_descr">
+		   <!--Added for Release 1.2-->
+			<$if strLength(sponsoredEmpLink) GT 0$>
+			
+			 <!--Added for Release 4.1 MR item 37.5-->
+			<$firstCharOfSponsoredEmpLink = strSubstring(sponsoredEmpLink,0,1)$>
+				
+			<$if firstCharOfSponsoredEmpLink like '/'$>
+			
+				<p><$lc('wwMicroSiteWebsiteText')$>&nbsp;&nbsp;<a target="_blank" href="<$sponsoredEmpLink$>"><$SS_SERVER_NAME$><$sponsoredEmpLink$></a></p>
+			<$else$>
+				<p><$lc('wwMicroSiteWebsiteText')$>&nbsp;&nbsp;<a target="_blank" href="<$sponsoredEmpLink$>"><$sponsoredEmpLink$></a></p>
+			<$endif$>
+			
+			 <!--Added for Release 4.1 MR item 37.5-->
+			<$endif$>
+		   <!--end Release 1.2-->
+		   
+			<!--Added for MR item 72.1-->
+			 <$if domainId EQ 1$>
+				
+				<$if xPromoteLocation EQ 2$>
+				<p>For further information to assist you in your job search visit&nbsp;&nbsp;<a target="_blank" href="http://www.hays.co.uk/scotland/index.htm">www.hays.co.uk/Scotland</a></p>
+				<$endif$>
+				
+				<$if xPromoteLocation EQ 3$>
+				<p>For further information to assist you in your job search visit&nbsp;&nbsp;<a target="_blank" href="http://www.hays.co.uk/northern-ireland/index.htm">www.hays.co.uk/Northern-Ireland</a></p>
+				<$endif$>
+			 
+			 <$endif$>
+			 <!--end MR item 72.1-->
+		   
+
+		<!-- added for Release 3.0-->
+		<$if DOC_INFO.dDocType like 'Jobs'$>	
+		<div class="grid_10 alpha">
+		<script type="text/javascript">
+		var addthis_config = {
+				 
+				  
+				  ui_language: "<$LanguageCode$>"
+
+				  
+				}
+
+		var addthis_share = {
+		url_transforms : {
+		add: {
+		jobSource : 'HAYS',
+		redirect : 'y'
+			 }
+		}
+		}
+		function emailFrnd()
+		{	  
+		  var jobcand_url=window.location.href;
+		  if(jobcand_url.indexOf("?")>-1)
+		  {	   
+		   jobcand_url=jobcand_url.substring(0,jobcand_url.indexOf("?"));
+	           jobcand_url=encodeURIComponent(jobcand_url);  
+		  }
+		  var link = "mailto:"
+				 + "?subject= "
+				 + "&body=" + jobcand_url;			
+			  location.href=link;
+		}
+		</script>
+		
+		<$if domainId eq 27 or  domainId eq 24$>
+		<a class="" href="javascript:emailFrnd();">	<font color="#009FDA" face="Arial">
+		<$lc('wwEmailThisToFriend')$></font>
+		</a>
+		<$else$>
+		<a class="addthis_button_email">	<font color="#009FDA" face="Arial" >
+		<$lc('wwEmailThisToFriend')$>	  
+		</font>
+		</a>
+		<$endif$>	
+
+			
+			
+		</div>	
+		<$endif$>
+		<!--end Release 3.0-->
+		
+		<div class="grid_4 prefix_10 alpha">
+			<ul class="jaccess">	
+			[[% Added for release 8.0 start%]]
+					
+		<!-----------------------------------10139 implementations start ----------------------------------------------------------------->
+		
+	<$if strEquals(buttonLabel10139, 'true') $>
+					
+						
+					<li><a class="button <$styleClass$> <$disabledText$>"  <$makeTheButtonOrange$> 
+					onClick="return Hays_gaq_push_jobseeker_app()" href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$lc("wwApplyButtonLabel10139")$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+				
+				<$else$>
+					<$include apply_new_popup$>
+					<$checkShortApply=#env.ShortApply$>
+						<$if strEqualsIgnoreCase(checkShortApply, "false") ne 1$>
+							<li><a class="button <$styleClass$> <$disabledText$>" <$makeTheButtonOrange$> 
+					onClick="return Hays_gaq_push_jobseeker_app()" href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>	
+						<$else$>
+							<li><a class="button" <$makeTheButtonOrange$> onclick="_JavaScript:newPopup('<$HttpBrowserFullCgiPath$>?IdcService=GET_APAC_APPLYFORM&job_id=<$DOC_INFO.dDocName$>&siteLocale=<$SiteLocale$>&siteId=<$siteId$>&idcToken=<$idcToken$>');" href="javascript:void(0)"><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+						<$endif$>
+				<$endif$>
+				 
+				<!-----------------------------------10139 implementations end ----------------------------------------------------------------->
+		[[% Added for release 8.0 end%]]
+				
+				<!--li><a class="button_1" href="#">Add<span class="access"> Commercial manager</span> to job basket</a></li-->
+				<$if strEqualsIgnoreCase(checkShortApply, "false") ne 1 and isFalse(isProjectSEnabled)$>
+				<$include AddRemoveFromJobBasket$>
+				<$endif$>
+			</ul>
+		</div>
+	</div>
+
+	<$if DOC_INFO.dDocType like 'Jobs' and domainId == 2$>
+	 <div class="job_logo clearfix">
+	 <img alt="MissionHandicap logo" src="/haysassets/HaysGeneralComponent/assets/img/logos/MissionHandicap-C.png"/>
+	 <p><$lc("wwDisabilityLogoDescription")$></p>
+	 </div>
+	<$endif$>
+	<$if strLength(#active.contentType) EQ 0 $>
+		<$contentType = DOC_INFO.dDocType$>	
+	<$endif$>
+	 
+	<$include job_search_navigation_elements$>
+
+
+	<!-- variables for related job search RHS modules-->
+	<$yLocation = DOC_INFO.xLocation$>
+	<$yMinSalary = DOC_INFO.xMinSalary$>
+	<$yDocTitle = DOC_INFO.dDocTitle$>
+	<$yDocName = DOC_INFO.dDocName$>
+
+	<$if isTrue(#env.DisableSiteStudioContribution)$>
+	<form id="job_candidate_hits" class="access" action="http://<$HttpServerAddress$><$HttpRelativeWebRoot$><$CgiFileName$>">
+		<$PortalProfileId = #env.OAM_REMOTE_UID$>
+		<$if not PortalProfileId OR srtLength(PortalProfileId) LT 0$>
+			<$PortalProfileId = "-1"$>
+		<$endif$>
+		<div>
+		<input type="hidden" name="IdcService" value="HAYS_CANDIDATE_VIEW_STATS" />
+		<input type="hidden" name="PortalProfileId" value="<$PortalProfileId$>" />
+		<input type="hidden" name="domainId" value="<$#active.domainId$>" />
+		<input type="hidden" name="languageId" value="<$#active.languageId$>" />
+		<input type="hidden" name="ContentId" value="<$DOC_INFO.dDocName$>" />
+		<input type="hidden" name="contentType" value="<$contentType$>" />
+		<input type="hidden" name="IsJava" value="1" />
+		</div>
+	</form>
+	<$include candidate_job_view_stats_javascript_inc$>
+	<$if strEquals(DOC_INFO.dDocType,"Jobs") and  domainId eq 5$>
+			<iframe id="conversion-iframe" height="1" frameborder="0" scrolling="no" width="1" style="VISIBILITY:hidden"></iframe>
+	<$endif$>
+
+	<$endif$>
+
+	<$include handle_wcm_call_inc$>
+
+<@end@>
+
+<!--HAYS CAREERS JOB DESC-->
+
+<@dynamichtml rgtmp_hc_main_job_desc_inc@>
+
+	 
+	<$styleClass="job_apply"$> 
+	<$dDocName = ssDocName$>
+	<$executeService('DOC_INFO_BY_NAME')$>
+	<$xPostingType = DOC_INFO.xPostingType$>
+
+
+	<$if strEquals(DOC_INFO.dDocType,"Candidates")$>
+		<$applied="," & getCookie("candRqsd")& ","$>
+	<$else $>
+		<$applied="," & getCookie("jobapd")& ","$>
+	<$endif$>
+
+
+	<$disabledText=""$>
+	<$if strIndexOf(#active.applied,  "," & dDocName & ",") ge 0$>
+		<$disabledText="disabled"$>
+	<$endif$>
+<form action="" target="" method="" class="form_buttons" id="haysjobsdetails">	
+	<h1 style ="color:#009FDA">
+	<$lc('wwJobDetails')$></h1>
+	 
+	<p class="title"><strong><$DOC_INFO.dDocTitle$></strong></p>
+	
+	<p><strong><$lc('wwLocationLabel')$>: </strong><$DOC_INFO.xLocationDescription$></p>
+	<$if isTrue(#active.display_salary_rate)$>
+	    <$if strLength(DOC_INFO.xSalaryDescription) GT 0 $>
+	<p><strong><$lc('wwSalaryRate')$>: </strong><$DOC_INFO.xSalaryDescription$></p>
+	     <$endif$> 
+    <$endif$>
+    <$if not strEquals(DOC_INFO.xJobType,'')$>	
+	<p><strong><$lc("wwJobT")$>: </strong>
+		<$if strIndexOf(DOC_INFO.xJobType, 'P') GE 0 $><$addComma="true"$><$lc('wwPermanent')$><$endif$>
+		<$if strIndexOf(DOC_INFO.xJobType, 'C') GE 0 $><$if isTrue(addComma)$>, <$endif$><$addComma="true"$><$lc('wwContract')$><$endif$>
+		<$if strIndexOf(DOC_INFO.xJobType, 'T') GE 0 $><$if isTrue(addComma)$>, <$endif$><$lc('wwTemporary')$><$endif$>
+		<$endif$>
+	</p>
+	<$if not strEquals(DOC_INFO.xRecordId,'')$>
+	<p><strong><$lc("wwReference")$>: </strong><$DOC_INFO.xRecordId$></p>
+	<$endif$>
+	
+
+			
+		
+			
+
+
+
+	<div class="recordInfo1">
+		
+			<$summary = wcmElement("Summary")$>
+				<$summary$>
+			
+				
+				<$wcmListStart("Content")$>
+				<$wcmListIndex = 0$>
+				<$wcmListNumRows = wcmListRowCount()$>
+					<$loopwhile wcmListIndex < wcmListNumRows$>
+				
+				
+								
+				<$wcmListElement("Body", wcmListIndex)$>
+								
+								
+				<$wcmListIndex = wcmListIndex + 1$>
+					<$endloop$>
+				<$wcmListEnd("Content")$>
+				
+	</div>
+	<p></p>
+    <p></p>	
+	<hr class="rule">
+		
+	<$if not strEquals(DOC_INFO.xShowJobOwner, 'No') and not strEquals(DOC_INFO.xJobOwner,'')$>
+		
+	 	<$crXmlToResultSet(DOC_INFO.xJobOwner, "rstJobOwner")$>
+		<$if rsFirst("rstJobOwner") $>
+		<p><strong><$lc('wwOfficeContact')$>: </strong><$rstJobOwner.name$></p>
+	     
+	    <p><strong><$lc('wwOfficeLocation')$>: </strong><$rstJobOwner.location$><br>	
+		
+		<strong><$lc('wwOfficePhone')$>: </strong><$rstJobOwner.tel$><br>
+			
+		<strong><$lc('wwOfficeEmail')$>: </strong><$rstJobOwner.email$></p>	 
+		 
+		<$endif$>
+	<$endif$> 
+	<p>
+	<!---Changes of FT 13845--->
+<$if DOC_INFO.dDocType like 'Jobs' and (domainId == 2 or strEquals(siteId,"fcHC"))$>
+	 <div class="job_logoGC clearfix">
+	 <img alt="MissionHandicap logo" src="/haysassets/HaysGeneralComponent/assets/img/logos/MissionHandicap-C.png"/>
+	 <p><$lc("wwDisabilityLogoDescription")$>test</p>
+	 </div>
+	<$endif$>
+	<!---Changes of FT 13845--->
+<a class="applylinks" href="<$ssGetServerRelativeUrl(siteId, 'apply-now')$>"><$lc('wwBackToSearch')$></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<$include extract_google_analytics_inc$>
+
+[[%BAU Rel6%]]
+<$if strEquals(siteId,"ukHC")$>
+	<$if DOC_INFO.xContentSource==10$>
+		<a class="applylinks" onclick="_JavaScript:newPopup('<$DOC_INFO.xApplicationURL$>');" href="javascript:void(0)"><$lc('wwGCCVJobButton1')$></a>
+	<$else$>
+		<a class="applylinks" onclick="_JavaScript:newPopup('<$HttpBrowserFullCgiPath$>?IdcService=GET_GlobalCARRER_APPLYFORM&job_id=<$DOC_INFO.dDocName$>&siteLocale=<$SiteLocale$>&siteId=<$siteId$>&gaContent=<$gadatafile$>&idcToken=<$idcToken$>');" href="javascript:void(0)"><$lc('wwGCCVJobButton1')$></a>
+	<$endif$>
+<$else$>
+	<a class="applylinks" onclick="_JavaScript:newPopup('<$HttpBrowserFullCgiPath$>?IdcService=GET_GlobalCARRER_APPLYFORM&job_id=<$DOC_INFO.dDocName$>&siteLocale=<$SiteLocale$>&siteId=<$siteId$>&gaContent=<$gadatafile$>&idcToken=<$idcToken$>');" href="javascript:void(0)"><$lc('wwGCCVJobButton1')$></a>
+<$endif$>
+
+[[%BAU Rel6%]]
+</p>
+<p></p>
+</form>
+<$if ((#active.domainId ==106) OR (#active.domainId ==108) OR (#active.domainId ==114) OR (#active.domainId ==116))$>
+  <!-- AddThis Button BEGIN -->
+<$if isTrue(#env.DisableSiteStudioContribution)$>
+	<div class="addthis_toolbox addthis_32x32_style addthis_default_style">
+	<script type="text/javascript">
+	if(!addthis_config){
+	var addthis_config = {};
+	}
+	addthis_config['ui_language']= "<$LanguageCode$>"; 
+	
+
+	</script>
+	<a href="http://addthis.com/bookmark.php?v=250&amp;username=xa-4c24d509544421b9" class="addthis_button_compact"></a>
+	<span class="addthis_separator">|</span>
+
+	
+		<a class="addthis_button_email"></a>
+	
+	
+	<a class="addthis_button_facebook"></a>
+	
+	<$if (strEqualsIgnoreCase(nodeId,'jobs-search') OR strEqualsIgnoreCase(nodeId,'candidates-search')) AND strLength(ssDocName)>0$>
+		<$shortenLink=ssLink(ssDocName)$>
+		<$shortenLink=strSubstring(shortenLink,strIndexOf(shortenLink,SiteLocale),strLength(shortenLink))$>
+		<a class="addthis_button_twitter" addthis:url="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$><$ssGetNodeProperty("urlDirName")$>/<$shortenLink$>" addthis:title="<$DOC_INFO.dDocTitle$> | "></a>
+	<$else$>
+		<a class="addthis_button_twitter"></a>
+	<$endif$>
+	
+<!--MR8 9134 changes-->
+	<$if (strEqualsIgnoreCase(nodeId,'jobs-search') OR strEqualsIgnoreCase(nodeId,'candidates-search')) AND (strLength(ssDocName) gt 0)$>
+		<$shortenLink=ssLink(ssDocName)$>
+		<$shortenLink=strSubstring(shortenLink,strIndexOf(shortenLink,SiteLocale),strLength(shortenLink))$>
+		<$TitleDescription=strSubstring(dDocTitle,0,80)$>
+		<a class="addthis_button_linkedin" addthis:url="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$><$ssGetNodeProperty("urlDirName")$>/<$DOC_INFO.dDocName$>" addthis:title="<$TitleDescription$> | " addthis:description="<$DOC_INFO.xDescription$>"></a>
+	<$else$>
+		<a class="addthis_button_linkedin"></a>
+	<$endif$>
+<!--MR8 9134 changes-->
+	<a class="addthis_button_favorites"></a>
+	
+	<a class="addthis_button_print"></a>
+	</div>
+	<script type="text/javascript" src="/cs/HaysGeneralComponent/assets/js/addthis_widget.js"></script>
+<$endif$>
+<!-- AddThis Button END -->
+<$endif$>
+	
+		<$include handle_wcm_call_inc$>
+	
+
+<@end@>
+
+<@dynamichtml rgtmp_main_region_job_desc_inc_columbia@>
+<$styleClass="job_apply"$> 
+<$dDocName = ssDocName$>
+<$executeService('DOC_INFO_BY_NAME')$>
+<$xPostingType = DOC_INFO.xPostingType$>
+
+<h1><$DOC_INFO.dDocTitle$> <span class="locate"><$DOC_INFO.xLocationDescription$></span></h1>
+
+
+
+<$include job_search_navigation_elements$>
+
+<div class="short_descr">
+	<div class="grid_10 alpha">
+		
+		<dl>
+			
+			  <$if not strEquals(DOC_INFO.xRecordId,'')$>
+				<dt><$lc("wwReference")$></dt>				
+				<dd> <$DOC_INFO.xRecordId$></dd>
+			<$endif$>
+			
+			
+
+		</dl>
+	</div>
+	<div class="grid_4 omega">
+		<ul class="jaccess">
+		
+			</ul>
+	</div>
+
+</div>	
+
+
+
+<div class="content_main">
+	<div class="cm_inner">
+		<$if not strEquals(DOC_INFO.xDescription,'')$>
+		 <$DOC_INFO.xDescription$>
+		<$endif$>
+		
+	</div>
+</div>
+<div class="short_descr">
+	   
+	 
+
+	<!-- added for Release 3.0-->
+	
+	<div class="grid_10 alpha">
+	<style>
+#at16pt h4 {
+    color: #4C4C4C;
+    cursor: default;
+    font-size: 0px;
+	text-indent:-9999px;
+}
+</style>
+
+<$include is_output_social_analytics$>
+<$if isTrue(doOutput)$>
+<script type="text/javascript" src="/cs/HaysGeneralComponent/assets/js/addthis_widget.js"></script>
+<script type="text/javascript">
+var addthis_config = {
+          ui_cobrand: '<$lc('wwJobDescApplyEmailLabel')$>',
+          
+          ui_email_to: '<$#env.ConsultantEmailAddress$>',
+		  
+		  ui_language: "<$LanguageCode$>",
+		  
+		  ui_email_note: '<$lc('wwJobDescApplyEmailNote')$>'
+
+
+          
+        }
+</script>
+<$endif$>	
+
+	
+		<a class="addthis_button_email" addthis:title="<$DOC_INFO.dDocName$> | <$document_title$>"><font color="#009FDA" face="Arial" ><$lc('wwJobDescApplyButtonLabel')$></font></a>
+	</div>	
+	
+
+	
+	
+	<!--end Release 3.0-->
+	
+	<div class="grid_4 prefix_10 alpha">
+	    <ul class="jaccess">	
+			
+			
+		</ul>
+	</div>
+</div>
+
+
+ 
+<$include job_search_navigation_elements$>
+
+
+
+<$include candidate_job_view_stats_javascript_inc$>
+
+
+<$include handle_wcm_call_inc$>
+
+<@end@>
+
+
+<@dynamichtml rgtmp_main_region_whitepaper_inc@>
+            <h1><$executeService("SS_GET_SEARCH_RESULTS")$></h1> 
+            
+                     <$wcmElement("Summary")$>
+            
+            <$wcmListStart("Content")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+				<$loopwhile wcmListIndex < wcmListNumRows$>
+
+                	<h2><$wcmListElement("Title", wcmListIndex)$></h2>
+        
+                <$if not strEquals(dataFileName,'')$>
+   
+                	<$wcmListElement("Subtitle", wcmListIndex)$>
+
+                <$endif$>
+                	<$wcmListElement("Content", wcmListIndex)$>
+                
+
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		<$wcmListEnd("Content")$>
+<@end@>
+
+
+
+
+
+<@dynamichtml rgtmp_main_sec_inc@>
+<div class="half_intro"> 
+	<$if #active.image and not strEquals(#active.image,'')$>
+		<$ strReplace(image, 'img', 'img height="261" width="180" ') $>	
+	<$endif$>	
+	<div class="hi_inner">	
+		<$aTitle = wcmElement("Title")$>
+		<$aSecondaryTitle = wcmElement("Secondary_Title")$>
+		<$variableToTrim = aTitle$>	
+		<$include removeLeadingAndTrailingSpaces_inc$>
+		<$aTitle=variableToTrim$>	
+		<$variableToTrim = aSecondaryTitle$>	
+		<$include removeLeadingAndTrailingSpaces_inc$>
+		<$aSecondaryTitle=variableToTrim$>
+		<$variableToTrim=""$>	
+		<h1><font style="text-transform: uppercase;"><$aTitle$></font></h1>
+		<span class="sub_text"><font style="text-transform: uppercase;"><$aSecondaryTitle$></font></span>			
+		<div class="wysiwyg">
+			<$wcmElement("Summary")$>			
+		</div>
+		<$if #active.nodeId and not strEqualsIgnoreCase(ssGetNodeProperty("SwitchOffDate"),"true")$>
+			<$if #active.ssDocName and strLength(#active.ssDocName)gt 0$>
+					<$dDocName = ssDocName$>
+			<$endif$>
+			<$executeService('DOC_INFO_BY_NAME')$>
+			<div class="date"><$lc('wwContentLatUpdatedLabel')$> <$formatDateWithPattern(DOC_INFO.dReleaseDate,#active.websiteDateFormat)$></div>
+		<$endif$>
+	</div>
+
+</div> 
+<$if strLength(wcmElement("UpperButtonLink")) gt 0 $>
+<div class="intro-btn">
+              <div class="btn">
+            <$wcmElement("UpperButtonLink")$>
+             </div>
+     </div>
+	<$endif$>
+
+ 
+<div class="clear"></div>
+<div class="content_main">
+    <$wcmListStart("Content")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$loopwhile wcmListIndex < wcmListNumRows$>
+		<$strTitle=wcmListElement("Title", wcmListIndex)$>
+		<$strSummary=wcmListElement("Summary", wcmListIndex)$>
+		<$strBody=wcmListElement("Body", wcmListIndex)$>
+		<$if strLength(strTrimWs(strTitle)) gt 0$>
+	        <h2><$wcmListElement("Title", wcmListIndex)$></h2>
+	    <$endif$>
+		<$if strLength(strTrimWs(strSummary)) gt 0$>
+        	<h3><$wcmListElement("Summary", wcmListIndex)$></h3>
+	    <$endif$>
+        <$wcmListElement("Body", wcmListIndex)$>
+		<$wcmListIndex = wcmListIndex + 1$>
+	<$endloop$>
+	<$wcmListEnd("Content")$>
+
+</div>
+<$if strLength(wcmElement("LowerButtonLink")) gt 0 $>
+         <div class="intro-btn">
+         <div class="btn">
+            <$wcmElement("LowerButtonLink")$>
+         </div></div>
+	<$endif$>
+
+
+<div class="clear"></div>
+
+
+<$ blockName = "Block1" $>
+<$include multi_bloc_template_inc$>
+
+<$ blockName = "Block2", blockTitle = "Block2_Title" $>
+<$include full_bloc_template$>
+
+<@end@>
+
+<@dynamichtml rgtmp_portal1_inc@>
+<$wcmListStart("SelectedContent")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$primarywidget = 0$>
+<$loopwhile wcmListIndex < wcmListNumRows$>
+<$widgetstatus= wcmListElement("Widget", wcmListIndex)$>
+<$if NOT strEquals(widgetstatus,'')$>
+<div class="side_box"> 
+
+	<$widgetXML=wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+	<$include widget_display$>
+</div>
+
+	<$wcmListIndex = wcmListIndex + 1$>
+
+<$else$>
+
+
+
+<div class="side_box">
+	<div class="rc_blue sb_inner">
+		<span class="h2"><$wcmElement("Title")$></span>
+	</div>
+	<div class="rc_grey sb_inner pull block_list even">
+		<ul><$loopwhile wcmListIndex < wcmListNumRows$>
+		<$queryString=wcmListElement("Query", wcmListIndex)$>
+    	<$if not strEquals(queryString,'')$>
+        	   <$queryString = queryString & "<AND> xWebsiteObjectType <in> `Data File`"$>
+        	   <$endif$>   		
+    	<$include set_query_string$> 
+    	<$dataFileName=wcmListElement("CustomSearch",wcmListIndex)$>
+    	<$QueryText=queryString$>
+    	<$LimitScope=true$>
+    	<$SortField='dInDate'$>
+    	<$SortOrder='Desc'$>
+    	<$ResultCount=1$>
+    	<$executeService("SS_GET_SEARCH_RESULTS")$>
+		<$loop SearchResults$>
+			<$dDocNameQuery=dDocName$>
+			<$break$>
+		<$endloop$>
+			<li>
+				<h3><$contextString=wcmListElement("Title", wcmListIndex)$>
+            <$if not strEquals(contextString,'')$>	
+             	<$contextString$>
+            <$elseif not strEquals(dataFileName,'')$>
+             	<$ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+            <$else$>
+             	<$ssIncludeXml(dDocNameQuery,"wcm:root/wcm:element[@name='Title']/text()")$>
+            <$endif$></h3>
+				<$contextString=wcmListElement("Content", wcmListIndex)$>
+
+             		<$if (not strEquals(contextString,''))$>	
+             			<$if (strLength(contextString) gt 100)$>
+             				<$strSubstring(contextString, 0,100)&'..'$>
+             			<$else$>
+             				<$contextString$>	
+             			<$endif$>	
+             		<$elseif not strEquals(dataFileName,'')$>
+             			<$xmlStr=ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             		<$if (strLength(xmlStr) gt 100)$>
+             				<$strSubstring(xmlStr, 0,100)&'..'$>
+             			<$else$>
+             				<$xmlStr$>	
+             			<$endif$>	
+             		<$else$>
+             			<$xmlStr=ssIncludeXml(dDocNameQuery,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             			<$if (strLength(xmlStr) gt 100)$>
+             				<$strSubstring(xmlStr, 0,100)&'..'$>
+             			<$else$>
+             				<$xmlStr$>	
+             			<$endif$>
+	           		<$endif$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$><$endloop$><$wcmListEnd("SelectedContent")$>	
+		</ul>	
+	</div>
+</div>
+<$endif$>
+<$endloop$>
+
+<@end@>
+
+<@dynamichtml rgtmp_prtl_rlhb_inc@>
+<$wcmListStart("SelectedContent")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$primarywidget = 0$>
+<$loopwhile wcmListIndex < wcmListNumRows$>
+<$widgetstatus= wcmListElement("Widget", wcmListIndex)$>
+<$if NOT strEquals(widgetstatus,'')$>
+<div class="side_box">
+
+	<$widgetXML=wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+	<$include widget_display$>
+</div>
+
+	<$wcmListIndex = wcmListIndex + 1$>
+
+<$else$>
+
+
+
+<div class="side_box">
+	<div class="rc_blue sb_inner">
+		<span class="h2"><$wcmElement("Title")$></span>
+	</div>
+	<div class="rc_grey sb_inner pull block_list even">
+		<ul><$loopwhile wcmListIndex < wcmListNumRows$>
+		<$queryString=wcmListElement("Query", wcmListIndex)$>
+    	<$if not strEquals(queryString,'')$>
+        	   <$queryString = queryString & "<AND> xWebsiteObjectType <in> `Data File`"$>
+        	   <$endif$>   		
+    	<$include set_query_string$> 
+    	<$dataFileName=wcmListElement("CustomSearch",wcmListIndex)$>
+    	<$QueryText=queryString$>
+    	<$LimitScope=true$>
+    	<$SortField='dInDate'$>
+    	<$SortOrder='Desc'$>
+    	<$ResultCount=1$>
+    	<$executeService("SS_GET_SEARCH_RESULTS")$>
+		<$loop SearchResults$>
+			<$dDocNameQuery=dDocName$>
+			<$break$>
+		<$endloop$>
+			<li>
+				<h3><$contextString=wcmListElement("Title", wcmListIndex)$>
+            <$if not strEquals(contextString,'')$>	
+             	<$contextString$>
+            <$elseif not strEquals(dataFileName,'')$>
+             	<$ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+            <$else$>
+             	<$ssIncludeXml(dDocNameQuery,"wcm:root/wcm:element[@name='Title']/text()")$>
+            <$endif$></h3>
+				<$contextString=wcmListElement("Content", wcmListIndex)$>
+
+             		<$if (not strEquals(contextString,''))$>	
+             			<$if (strLength(contextString) gt 100)$>
+             				<$strSubstring(contextString, 0,100)&'..'$>
+             			<$else$>
+             				<$contextString$>	
+             			<$endif$>	
+             		<$elseif not strEquals(dataFileName,'')$>
+             			<$xmlStr=ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             		<$if (strLength(xmlStr) gt 100)$>
+             				<$strSubstring(xmlStr, 0,100)&'..'$>
+             			<$else$>
+             				<$xmlStr$>	
+             			<$endif$>	
+             		<$else$>
+             			<$xmlStr=ssIncludeXml(dDocNameQuery,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             			<$if (strLength(xmlStr) gt 100)$>
+             				<$strSubstring(xmlStr, 0,100)&'..'$>
+             			<$else$>
+             				<$xmlStr$>	
+             			<$endif$>
+	           		<$endif$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$><$endloop$><$wcmListEnd("SelectedContent")$>	
+		</ul>	
+	</div>
+</div>
+<$endif$>
+<$endloop$>
+
+<@end@>
+
+<@dynamichtml rgtmp_related_consultant_inc@>
+<$dDocName = ssDocName$>
+<$executeService('DOC_INFO_BY_NAME')$>
+
+<$crXmlToResultSet(xJobOwner, "JobOwner")$>
+<$if not strEquals(DOC_INFO.xShowJobOwner, 'No') and not strEquals(DOC_INFO.xJobOwner,'')$>
+<$rsFirst(JobOwner)$>
+				<div class="info_box" datasrc="#jobowner">
+	<p class="head"><span><$lc('wwTalkToConsultantTitle')$></span></p>
+	<$wcmElement("Image")$>
+	<$lc('wwTalkToConsultantHeading',JobOwner.name,JobOwner.location)$>
+	<dl>
+		<dt class="access"><$lc('wwTalkToConsultantContactTitle')$></dt>
+		<$if Jobowner.tel and strLength(Jobowner.tel) gt 0$><dd><$lc('wwTalkToConsultantTelephone')$> <$JobOwner.tel$></dd><$endif$>
+		<$if Jobowner.fax and strLength(Jobowner.fax) gt 0$><dd><$lc('wwTalkToConsultantFax')$> <$JobOwner.fax$></dd><$endif$>
+		<$if JobOwner.email and strLength(JobOwner.email) gt 0$><dd><$lc('wwTalkToConsultantEmail')$> <a href="mailto:<$JobOwner.email$>?Subject=Job Enquiry: <$xRecordId$> | <$dDocTitle$>"><$JobOwner.email$></a></dd><$endif$>
+		<$if JobOwner.address and strLength(JobOwner.address) gt 0$><dd><$JobOwner.address$></dd><$endif$>
+	</dl>
+</div>
+<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_related_content_inc@>
+
+<$executeService('DOC_INFO_BY_NAME')$>
+
+
+<$wcmListStart("Content")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$loopwhile wcmListIndex < wcmListNumRows$>
+<div class="side_box">
+	<div class="rc_blue sb_inner">
+		<span class="h2"><$wcmListElement("Title", wcmListIndex)$></span>
+	</div>
+	<div class="rc_grey sb_inner pull block_list even">
+		<ul>
+		<$queryString=wcmListElement("Query", wcmListIndex)$>
+    	<$if not strEquals(queryString,'')$>
+        	   <$queryString = queryString & "<AND> xWebsiteObjectType <in> `Data File`"$>
+    	<$endif$>
+	<$include set_query_locale_include$>   		
+    	<$dataFileName=wcmListElement("CustomSearch",wcmListIndex)$>
+    	<$QueryText=queryString$>
+    	<$LimitScope=true$>
+    	<$SortField='dInDate'$>
+    	<$SortOrder='Desc'$>
+    	<$ResultCount=1$>
+    	<$executeService("SS_GET_SEARCH_RESULTS")$>
+		<$loop SearchResults$>
+			<$dDocNameQuery=dDocName$>
+			<$break$>
+		<$endloop$>
+			<li>
+				<p class="strong"><$wcmListElement("Summary", wcmListIndex)$></p>
+				 <$JobSummary=wcmListElement("Body", wcmListIndex)$>
+             		          
+				<$if (strLength(JobSummary) gt 100)$>
+             				   <$strSubstring(JobSummary, 0,100)&'..'$>
+             			       <$else$>
+             				   <$JobSummary$>	
+ 		       <$endif$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$>
+		</ul>	
+	</div>
+</div>
+<$endloop$>
+<$wcmListEnd("Content")$>	
+<@end@>
+
+<@dynamichtml rgtmp_results_no_img_inc@>
+<$queryString=wcmElement("Query")$>
+<$include set_query_string$>
+<$QueryText=queryString$>
+<$if not strEquals(QueryText,'')$>
+<$executeService("GET_SEARCH_RESULTS")$>
+		    
+            
+            
+<div class="side_box shadow rc_white news_list sb_inner">
+	<div class="h_blue">
+		<h2><$wcmElement("Title")$></h2>
+	</div>
+	<div class="rc_white pull"> </div>
+	<ul><$loop SearchResults$>
+		<li>
+			
+			<h3><a href="<$SearchResults.dDocName$>"><$SearchResults.dDocTitle$></a></h3>
+			<p><span class="strong"><$SearchResults.xLocation$></p>
+			<p><span class="strong"><$SearchResults.xSalary$></span></p>
+		</li><$endloop$>
+		
+	</ul>
+</div>
+<$endif$>
+
+<@end@>
+
+<@dynamichtml rgtmp_rl_hand_blocks_inc@>
+<$wcmListStart("SelectedContent")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$primarywidget = 0$>
+
+<$loopwhile wcmListIndex < wcmListNumRows$>
+<$widgetstatus= wcmListElement("Widget", wcmListIndex)$>
+
+<$if NOT strEquals(widgetstatus,'')$>
+	<div class="side_box">
+
+		<$widgetXML=wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+		<$include widget_display$>
+		</div>
+
+		<$wcmListIndex = wcmListIndex + 1$>
+
+<$else$>
+
+
+
+<div class="side_box">
+	<div class="rc_blue sb_inner">
+		<span class="h2"><$wcmElement("Title")$></span>
+	</div>
+	<div class="rc_grey sb_inner pull block_list even">
+		<ul>
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$queryString=wcmListElement("Query", wcmListIndex)$>
+    		<$if not strEquals(queryString,'')$>
+        	   <$queryString = queryString & "<AND> xWebsiteObjectType <in> `Data File`"$>
+        	<$endif$>   		
+    		<$include set_query_string$> 
+    		<$dataFileName=wcmListElement("CustomSearch",wcmListIndex)$>
+    		<$QueryText=queryString$>
+    		<$LimitScope=true$>
+	    	<$SortField='dInDate'$>
+    		<$SortOrder='Desc'$>
+	    	<$ResultCount=1$>
+	    	<$executeService("SS_GET_SEARCH_RESULTS")$> 
+			<$loop SearchResults$>
+				<$dDocNameQuery=dDocName$>
+				<$break$>
+			<$endloop$>
+			<li>
+				<h3><$contextString=wcmListElement("Title", wcmListIndex)$>
+           		<$if not strEquals(contextString,'')$>	
+             		<$contextString$>
+            	<$elseif not strEquals(dataFileName,'')$>
+             		<$ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+            	<$else$>
+             		<$ssIncludeXml(dDocNameQuery,"wcm:root/wcm:element[@name='Title']/text()")$>
+            	<$endif$></h3>
+					<$contextString=wcmListElement("Content", wcmListIndex)$>
+
+             		<$if (not strEquals(contextString,''))$>	
+             			<$if (strLength(contextString) gt 100)$>
+             				<$strSubstring(contextString, 0,100)&'..'$>
+             			<$else$>
+             				<$contextString$>	
+             			<$endif$>	
+             		<$elseif not strEquals(dataFileName,'')$>
+             			<$xmlStr=ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             			<$if (strLength(xmlStr) gt 100)$>
+             				<$strSubstring(xmlStr, 0,100)&'..'$>
+             			<$else$>
+             				<$xmlStr$>	
+             			<$endif$>	
+             		<$else$>
+             			<$xmlStr=ssIncludeXml(dDocNameQuery,"wcm:root/wcm:element[@name='Summary']/text()")$>
+             			<$if (strLength(xmlStr) gt 100)$>
+             				<$strSubstring(xmlStr, 0,100)&'..'$>
+             			<$else$>
+             				<$xmlStr$>	
+             			<$endif$>
+	           		<$endif$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$><$wcmListEnd("SelectedContent")$>	
+		</ul>	
+	</div>
+</div>
+<$endif$>
+<$endloop$>
+
+<@end@>
+
+<@dynamichtml rgtmp_sponsored_employer_inc@>
+<div class="content_main">
+	<h1><$wcmElement("Title")$></h1>
+	<$wcmElement("Summary")$>
+	
+	<!--wcmElement("Image")-->
+	<$imageLink = wcmElement("Microsite_URL")$>
+	<$if strLength(strTrimWs(imageLink)) gt 0$>
+		<a href="<$wcmElement("Microsite_URL")$>" target="_blank"><$wcmElement("Image")$></a>
+	<$else$>
+		<$wcmElement("Image")$>
+	<$endif$>
+</div>
+
+<@end@>
+
+<@dynamichtml rgtmp_widget_blue_inc@>
+<$widgetXML=wcmElement("Widget"), className = 'blue'$>
+<$if strLength(widgetXML) GT 0 $>   
+		<$crXmlToResultSet(widgetXML, "widgetRS") $>   
+		<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>          
+       	 	<$include widget_display_LHB$>
+       	 <$elseif   strEquals("rss", getValue("widgetRS", "Name"))$>       	 	
+       	 	<$include  widget_rss_display_blocks$>       	
+       	 <$else$>
+       		<$include widget_display$>
+	
+       	<$endif$>
+<$endif$>
+
+<@end@>
+
+[[% added for the survey start%]]
+<@dynamichtml rgtmp_srvymnky_inc@>
+
+<$ surveyID = wcmElement("surveyID")$>
+<$if strLength(surveyID) gt 0$>
+	<div id="surveyMonkeyInfo">
+		<div>
+			<script src="http://www.surveymonkey.com/jsEmbed.aspx?sm=<$surveyID$>"></script>
+		</div>
+		Create your <a href="http://www.surveymonkey.com/">free online surveys</a> with SurveyMonkey, the world's leading questionnaire tool.
+	</div>
+<$endif$>
+<@end@>
+[[% added for the survey end%]]
+
+
+<@dynamichtml rgtmp_salary_guide_inc@>
+<div class="content_main">
+  <h1><$wcmElement("Heading")$></h1>
+  <h2><$wcmElement("Sub_Heading")$></h2>
+ <$wcmElement("Content")$>
+ </div>
+
+<@end@>
+
+<@dynamichtml rgtmp_salary_guide_list_inc@>
+ <div class="content_main">
+  <h1><$wcmElement("Heading")$></h1>
+  <$wcmElement("Content")$>
+	<$wcmListStart("Contributors")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$wcmListStart("Contributors")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+
+  <$rsCreateResultSet("ResultSet", "inc") $>
+    <$loopwhile wcmListIndex < wcmListNumRows$>
+	<$variable=wcmListElement("Contributors_list", wcmListIndex) $>
+	<$rsAppendRowValues("ResultSet",variable)$>
+
+            <$wcmListIndex = wcmListIndex + 1$><$endloop$>
+   
+<$wcmListEnd("Contributors")$>
+
+<!--For displaying Sorted static List-->
+<$rsSort("ResultSet","inc","string","asc")$>
+<$counter = 0$>
+<$rowcounter=0$>
+<$rowcounter2=0$>
+<$counter = rsNumRows('ResultSet')$>
+
+<$dummy =(counter+1)/2$>
+
+		<div style="width: 270px; display: block;" class="grid_7 alpha">
+				<ul>
+					
+					<$loop ResultSet$>
+						<$if rowcounter<dummy$>
+							<li><$ResultSet.inc$> </li>
+						<$endif$>
+					<$rowcounter=rowcounter+1$>
+					<$endloop$>
+				</ul>
+			</div>
+
+		<div style="width: 270px; display: block;" class="grid_7 omega">
+				<ul>
+					
+					<$loop ResultSet$>
+						<$if (rowcounter2>=dummy) AND (rowcounter2<=counter)$>
+							<li><$ResultSet.inc$></li>
+						<$endif$>
+					<$rowcounter2=rowcounter2+1$>
+					<$endloop$>
+				</ul>
+			</div>
+
+
+
+<!--end of the code for sorted static list-->
+
+</div>
+
+
+
+
+
+<@end@>
+
+
+
+[[%   this include is used to display the survery data on survey page%]]
+
+<@dynamichtml rgtmp_survey_details_inc@>
+<$include apac_country_check_inc$>
+<$if ((isAPACCountry EQ 1)  OR (strEquals(siteId,'uk')))$>
+<$contentDdocNameCurrent =''$> 
+<$ ResultCount = 1$>
+	<$include widget_search_survey_queryresults$>
+	<$loop SearchResults$>	 
+		<$contentDdocNameCurrent =''$>
+		<$contentDdocNameCurrent = SearchResults.dDocName$>		 
+	<$endloop$>
+ 
+<$contentDdocName =''$> 
+<$if  not strEquals(#active.ssDocName,'')$> 
+	<$contentDdocName =''$>
+	<$contentDdocName = #active.ssDocName$>	
+<$else$> 
+	<$contentDdocName =contentDdocNameCurrent$>
+	
+<$endif$>
+<$status =''$>
+<$if strEquals(contentDdocName,contentDdocNameCurrent)$> 
+	<$status= "CURRENT"$>
+<$else$> 
+	<$status= "COMPLETED"$>
+<$endif$>
+<$resCounA = ''$>
+<$resCounB = ''$>
+<$resCounC = ''$>
+<$resCounTotal=''$> 
+<$SER_DDOCNAME =contentDdocName$>
+<$ executeService('GET_SURVEY_RESULTS')$> 
+<$include survey_response_count$>
+<div class="content_main">
+	<h1><$lc('wwWidgetCurrentSurvey')$> </h1>
+	<$if  NOT isTrue(strEqualsIgnoreCase(#active.nodeId,"SurveyAdmin")) $>
+	<div class="survey_results_wrapper">
+		 <p><$lc('wwWidgetSubmitMsg')$></p>
+		<p><strong><$ssIncludeXml(contentDdocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></p>
+		<ul class="survey_results">
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+					
+					"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></p>
+				<$if not strEquals(resCounPerA,'')$>
+					<span class="s_option s_blue" style="width: <$resCounPerA$>%; display: block;">
+					<strong><$resCounPerA$>%</strong></span>
+				<$endif$>
+			</li>
+			<li class="survey_option">
+			<p><$ssIncludeXml(contentDdocName,
+				
+				"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></p>
+				<$if not strEquals(resCounPerB,'')$>
+					<span class="s_option s_green" style="width: <$resCounPerB$>%; display: block;"><strong>
+					<$resCounPerB$>%</strong></span>
+				<$endif$>
+			</li>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></p>
+				<$if not strEquals(resCounPerC,'')$>
+					<span class="s_option s_brown" style="width: <$resCounPerC$>%; display: block;"><strong><$resCounPerC$>%</strong></span>				
+				<$endif$>
+			</li>
+		</ul>
+	</div>
+	
+	 
+	<$else$>
+	<div class="survey_results_wrapper">
+		<p><$lc('wwWidgetSubmitMsg')$></p>
+		 <p> <$lc('wwWidgetNoOfReplyMsg')$> :  
+		 <strong><$resCounTotal$></strong></p>
+		<p><strong><$ssIncludeXml(contentDdocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$> &nbsp;(<$status$>)</strong> </p>
+		<ul class="survey_results">
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+					
+					"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></p>
+				<$if not strEquals(resCounPerA,'')$>
+					<span class="s_option s_blue" style="width: <$resCounPerA$>%; display: block;">
+					<strong><$resCounA$>&nbsp;&nbsp;<$resCounPerA$>%</strong></span>
+				<$endif$>
+			</li>
+			<li class="survey_option">
+			<p><$ssIncludeXml(contentDdocName,
+				
+				"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></p>
+				<$if not strEquals(resCounPerB,'')$>
+					<span class="s_option s_green" style="width: <$resCounPerB$>%; display: block;"><strong>
+					<$resCounB$>&nbsp;&nbsp;&nbsp;<$resCounPerB$>%</strong></span>
+				<$endif$>
+			</li>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></p>
+				<$if not strEquals(resCounPerC,'')$>
+					<span class="s_option s_brown" style="width: <$resCounPerC$>%; display: block;">
+					<strong> <$resCounC$>&nbsp;&nbsp;&nbsp;<$resCounPerC$>%</strong></span>				
+				<$endif$>
+			</li>
+		</ul>
+	</div>
+		<$endif$>
+	</div>
+<$else$>
+
+	<$include rgtmp_survey_cerow_details_inc$>
+	
+<$endif$>
+<@end@>
+
+
+<@dynamichtml rgtmp_survey_cerow_details_inc@>
+<$contentDdocNameCurrent =''$> 
+<$ ResultCount = 1$>
+	<$include widget_search_survey_queryresults$>
+	<$loop SearchResults$>	 
+		<$contentDdocNameCurrent =''$>
+		<$contentDdocNameCurrent = SearchResults.dDocName$>		 
+	<$endloop$>
+ 
+<$contentDdocName =''$> 
+<$if  not strEquals(#active.ssDocName,'')$> 
+	<$contentDdocName =''$>
+	<$contentDdocName = #active.ssDocName$>	
+<$else$> 
+	<$contentDdocName =contentDdocNameCurrent$>
+	
+<$endif$>
+<$status =''$>
+<$if strEquals(contentDdocName,contentDdocNameCurrent)$> 
+	<$status= "CURRENT"$>
+<$else$> 
+	<$status= "COMPLETED"$>
+<$endif$>
+<$resCounA = ''$>
+<$resCounB = ''$>
+<$resCounC = ''$>
+<$resCounD = ''$>
+<$resCounE = ''$>
+<$resCounTotal=''$> 
+<$SER_DDOCNAME =contentDdocName$>
+<$ executeService('GET_CEROW_SURVEY_RESULTS')$> 
+<$include survey_response_count$>
+<$ ResultCount = 10$>
+	<$include widget_search_survey_queryresults$>
+<div class="content_main">
+
+	<h1><$lc('wwWidgetCurrentSurvey')$></h1>
+	<$if  NOT isTrue(strEqualsIgnoreCase(#active.nodeId,"SurveyAdmin")) $>
+	
+	<div class="survey_results_wrapper">
+		 <p><$lc('wwWidgetSubmitMsg')$></p>
+		<p><strong><$ssIncludeXml(contentDdocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></p>
+								
+		<$Ans1 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+        <$Ans2 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+        <$Ans3 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+		<$Ans4 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+		<$Ans5 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+        
+		<ul class="survey_results">
+		<$if strLength(Ans1) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+					
+					"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></p>
+				<$if not strEquals(resCounPerA,'')$>
+					<span class="s_option s_blue" style="width: <$resCounPerA$>%; display: block;">
+					<strong><$resCounPerA$>%</strong></span>
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans2) GT 0 $>
+			<li class="survey_option">
+			<p><$ssIncludeXml(contentDdocName,
+				
+				"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></p>
+				<$if not strEquals(resCounPerB,'')$>
+					<span class="s_option s_green" style="width: <$resCounPerB$>%; display: block;"><strong>
+					<$resCounPerB$>%</strong></span>
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans3) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></p>
+				<$if not strEquals(resCounPerC,'')$>
+					<span class="s_option s_brown" style="width: <$resCounPerC$>%; display: block;"><strong><$resCounPerC$>%</strong></span>				
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans4) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></p>
+				<$if not strEquals(resCounPerD,'')$>
+					<span class="s_option s_orange" style="width: <$resCounPerD$>%; display: block;"><strong><$resCounPerD$>%</strong></span>				
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans5) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></p>
+				<$if not strEquals(resCounPerE,'')$>
+					<span class="s_option s_purple" style="width: <$resCounPerE$>%; display: block;"><strong><$resCounPerE$>%</strong></span>				
+				<$endif$>
+			</li>
+			<$endif$>
+		
+		</ul>
+	</div>
+	
+	 
+	<$else$>
+	
+	<p><$lc('wwWidgetSubmitMsg')$></p>
+	
+	<$loop SearchResults$>
+	<$SER_DDOCNAME = SearchResults.dDocName$>
+	<$resCounA = ''$>
+	<$resCounB = ''$>
+	<$resCounC = ''$>
+	<$resCounD = ''$>
+	<$resCounE = ''$>
+	<$ executeService('GET_CEROW_SURVEY_RESULTS')$>
+
+	<$if rsNumRows("SURVEY_CEROW_RESULTS")  gt 0 $>
+	<$include survey_response_count$>
+	<$contentDdocName=SearchResults.dDocName$>
+	
+	<div class="survey_results_wrapper">
+		
+		 <p> <$lc('wwWidgetNoOfReplyMsg')$> :  
+		 <strong><$resCounTotal$></strong></p>
+		<p><strong><$ssIncludeXml(contentDdocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$> </strong> </p>
+		
+		<$Ans1 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+        <$Ans2 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+        <$Ans3 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+		<$Ans4 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+		<$Ans5 = ssIncludeXml(contentDdocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+
+		<ul class="survey_results">
+	 <$if strLength(Ans1) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+					
+					"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></p>
+				<$if not strEquals(resCounPerA,'')$>
+					<span class="s_option s_blue" style="width: <$resCounPerA$>%; display: block;">
+					<strong><$resCounA$>&nbsp;&nbsp;<$resCounPerA$>%</strong></span>
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans2) GT 0 $>
+			<li class="survey_option">
+			<p><$ssIncludeXml(contentDdocName,
+				
+				"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></p>
+				<$if not strEquals(resCounPerB,'')$>
+					<span class="s_option s_green" style="width: <$resCounPerB$>%; display: block;"><strong>
+					<$resCounB$>&nbsp;&nbsp;&nbsp;<$resCounPerB$>%</strong></span>
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans3) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></p>
+				<$if not strEquals(resCounPerC,'')$>
+					<span class="s_option s_brown" style="width: <$resCounPerC$>%; display: block;">
+					<strong> <$resCounC$>&nbsp;&nbsp;&nbsp;<$resCounPerC$>%</strong></span>				
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans4) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></p>
+				<$if not strEquals(resCounPerD,'')$>
+					<span class="s_option s_orange" style="width: <$resCounPerD$>%; display: block;">
+					<strong> <$resCounD$>&nbsp;&nbsp;&nbsp;<$resCounPerD$>%</strong></span>				
+				<$endif$>
+			</li>
+			<$endif$>
+			<$if strLength(Ans5) GT 0 $>
+			<li class="survey_option">
+				<p><$ssIncludeXml(contentDdocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></p>
+				<$if not strEquals(resCounPerE,'')$>
+					<span class="s_option s_purple" style="width: <$resCounPerE$>%; display: block;">
+					<strong> <$resCounE$>&nbsp;&nbsp;&nbsp;<$resCounPerE$>%</strong></span>				
+				<$endif$>
+			</li>
+			<$endif$>
+			
+		</ul>
+	</div>
+		<$endif$>
+	<$endloop$>
+		<$endif$>
+	</div>
+
+<@end@>
+
+<@dynamichtml apac_country_check_inc@>
+
+	<$isAPACCountry=0$>
+  	<$if isoCountryCode like "AU|NZ|JP|CN|HK|SG|MY"$>
+		<$isAPACCountry=1$>  			
+	<$endif$>
+	
+<@end@>
+
+[[%This include is used to display confirmation text to employer and jobseeker%]]
+<@dynamichtml rgtmp_confirmation_text_inc@>
+ <$wcmElement("Content")$>
+<@end@>
+
+
+
+<!--****SERVE SUGGESTIONS****-->
+<@dynamichtml rgtmp_getRecommendedJobs@>
+<$title=wcmElement("Title")$>
+<$requestCode = wcmElement("RequestCode")$> 
+<$section=ssNodeLink("jobs-search",'uk')$>
+  <$index = strIndexOf(section,"index")$>
+  <$substr = strSubstring(section,0,index)$>
+  <$sectionUrl = substr$>
+<div id = "recjobs">
+<script type ="text/javascript">
+
+	function getRecommendedJobs()
+	{
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady)
+		{ 
+		var jobids = "";	
+		var loggedin = $.trim('<$getCookie("prz_inf")$>');
+		var category = '<$getCookie("prispc")$>';
+	    //var user_domain = '<$domainId$>';
+	  var user_domain = '-1'; //stop PI calls
+		var data1 = '';
+		var items = '';
+		var job_id = '<$getCookie("prjap")$>';
+		if ('<$event$>' == 'browse')
+        {
+           items = '<$dDocName$>'; 	   
+	    }
+     else              	                                //In case of buy and like; portal events
+         {
+		       if (job_id !=null && job_id.indexOf(',')>0)              //We need to get the current job only
+	          {
+          		
+				job_id = job_id.substring(0,job_id.indexOf(','));
+				
+		      }
+		 		 items = job_id;
+          } 				 
+		
+		if('<$job_title$>'.length>0) //It is empty only in case where isAdvancesearch=1 and isOnlyJobTitle=1
+		     data1 = '<$job_title$>';		                 			  
+		   else
+		    data1 = '<$job_keywords$>';
+	   if(user_domain ==22) //For Australian User's
+	    {
+	      var prslz = $.cookie('prslz'); //personalization cookie
+	     if(loggedin != null && loggedin.length >0)  //check-for logged in user 
+	      {
+		      if (prslz != 'N' ) //check for personalization
+		      {
+	           if (category.indexOf("hays:ResMiningXResEnergy") != -1 ) // Only for user tagged to Resource and Mining specialism
+		       {
+		
+		$.ajax({
+					  url: "<$HttpBrowserFullCgiPath$>",
+					  dataType :"jsonp",
+								data: {
+									outputFormat : "json",
+									prz_info : loggedin,
+									IdcService: "CHECK_MIN_USER_MAX_CALL"
+									
+							  },
+							  success : function(data) {
+							  
+							  status = data.result.resultsets.Status[0].status;
+							
+					         if (status == "false") // min user events are satisfied and also PI hits have not exceeded the Cap
+                              {
+							   
+					           
+                                $.ajax({
+							url: "<$#env.baseAPICall$>/suggest/<$#env.requestcode$>/"+'<$requestCode$>',
+							dataType: "jsonp",
+							data: {
+								fmt : "jsonp",
+								visitorid : loggedin,
+								locale : '<$SiteLocale$>',
+								visitorcategory:'<$getCookie("prispc")$>',
+								criteria : $.trim(data1), //for search suggestions
+								items : items //for browse and buy suggestions
+							 },
+							error: function() {
+                        // alert('Error loading JSON=');
+                            },
+
+							success: function(data) {
+							$.each(data.response.suggestions, function(i, item) {
+                             			 
+							 
+                            jobids =  jobids + "," + data.response.suggestions[i].itemCode;
+							
+		                          
+                            });
+							
+							if(jobids.charAt(0)==',')
+							{
+							 
+							  jobids = jobids.slice(1,(jobids.length));
+							  
+							 
+							 
+							}
+					
+							$.ajax({
+			      url: "<$HttpBrowserFullCgiPath$>",
+				  dataType :"jsonp",
+				 // crossDomain :true,
+							data: {
+								outputFormat :'json',
+								contentids : jobids,
+								IdcService: "GET_RECOMMENDED_JOBS"
+								
+                          },
+						  success : function(data) {
+						      
+						   
+						   var ul = '<ul id ="scroller">';
+							var li = '';
+							var url = '<$sectionUrl$>';
+							var closing_tags =' </ul></div></div>'
+							var host = window.location.hostname; // done for Development port wil be removed in deployment
+							var count =0;
+							var jobsource ='jobSource=Website%20Recommendation';
+							var img_up = "";
+							var img_down = "";
+							var height = "";
+							$.each(data.result.resultsets.JOB_INFO,function(i,item) {
+							     count = count+1;
+																 
+								   li += '<li id ='+count+'><h3><a href=http://'+host+url+data.result.resultsets.JOB_INFO[i].dDocName+'?'+jobsource+'>'+data.result.resultsets.JOB_INFO[i].dDocTitle+
+								          '</a></h3>'+'<p>'+data.result.resultsets.JOB_INFO[i].xLocationDescription+'</p>';
+							       
+							});
+							
+						
+                          var height = '0';
+						  var url = '<$HttpBrowserFullCgiPath$>';
+						  var index = url.indexOf('idcplg');
+						  url = url.substring(0,index);
+						 // alert(url);
+						 if(count>3) //display img only when returned jobs are more than 3 else display none.
+                           {
+						    img_up = '<img src="'+url+'HaysGeneralComponent/assets/img/arrow-up-blue.png" alt = "up-arrow" border=0>';
+							img_down = '<img src="'+url+'HaysGeneralComponent/assets/img/arrow-down-blue.png" alt = "down-arrow" border=0>';
+                             }						   
+						  var html = '<div class="side_box"><div class="rc_blue"><div class="cnr"></div>'+
+						   '<h2 style="height: 40px; padding:12px 12px 14px 10px;font-weight:bold;font-size:14px"><span style="float:left;width:120px;"><$title$></span><span id="overlay" style="float: right; background: none repeat scroll 0px 0px rgb(243, 243, 243);"><a href="javascript:void(0);" onMouseover="move(5);" onMouseout="clearTimeout(move.to)">'+img_up+'</a></span></h2></div>'+'<div id = "outer_container" class="rc_grey sb_inner pull block_list even" style="position:relative;height:'+height+'px;overflow:hidden;border-radius:0 0 0 0;width: 176px;"><div id = "container" style="position: absolute; top: 0px; right: 0px; left: 0px; padding: 4px;">';						  					  				  
+						  var addhtml = '<div class="rc_blue" style="height: 25px; padding:0px 15px 0px 0px;border-radius:0 0 0 0;">'+
+						   '<span id="overlay" style="float:right;"><a href="javascript:void(0);" onMouseover="move(-5);" onMouseout="clearTimeout(move.to)">'+img_down+'</span></div>';
+						    $('div#recjobs').html(html+ul+li+closing_tags+addhtml+"</div>");
+							
+							//Calculating height of the outer container
+							
+							if (count>=3)
+							{
+                               height = $("#1").outerHeight()+$("#2").outerHeight()+$("#3").outerHeight();
+							   				
+							}
+							else if (count == '2')
+							 {
+							   height = $("#1").outerHeight()+$("#2").outerHeight();
+                                
+							 }
+							else
+                              {
+							   height = $("#1").outerHeight();
+							   
+							  }
+                         var heightpx = height+'px';	
+						 //Setting the height of the outer conatiner
+                           $("#outer_container").css("height",heightpx); 	
+						  },
+						  error: function() {
+                                alert('Error loading JSON=');
+                                   }
+						  
+						  });	
+							
+							
+				        } //endof success function
+							}); //endof ajax call
+													  
+							  
+				      }							 
+			                     
+																	  
+							  },
+							  error: function() {
+				 // alert('Error loading JSON for CHECK_MIN call=');
+					 }
+							  
+							  });
+		
+				  			
+					
+					}
+				}
+		
+			}
+     }
+   }			
+		
+		
+	else {
+				window.setTimeout(getRecommendedJobs, 100);
+			}
+
+}
+getRecommendedJobs();
+
+function move(spd){
+  var id='container';
+ var obj=document.getElementById(id),max=-obj.offsetHeight+obj.parentNode.offsetHeight,top=parseInt(obj.style.top);
+ if ((spd>0&&top<=0)||(spd<0&&top>=max)){
+  obj.style.top=top+spd+"px";
+  move.to=setTimeout(function(){ move(spd); },20);
+ }
+ else {
+  obj.style.top=(spd>0?0:max)+"px";
+ }
+}
+
+	
+</script>
+</div>
+<@end@>
+
+<!--****** FIRING EVENTS ****-->
+<@dynamichtml fire_events@>
+
+<script type ="text/javascript">
+ function fireEvents(event)
+ { 
+ 
+ if(event == undefined){
+	var event = "<$event$>";
+	}
+
+  if (window.jQuery && jQuery.ui && jQuery.isReady) {
+     var status = "";
+	  var loggedin = $.trim('<$getCookie("prz_inf")$>');
+	  var category = '<$getCookie("prispc")$>';
+	  //var user_domain = '<$domainId$>';
+	  var user_domain = '-1'; //stop PI calls
+	  var job_id = '<$getCookie("prjap")$>';
+	  var tgtaud = '<$getCookie("tgtaud")$>';
+	  var data1 = '';
+	 
+	   
+	  if(event == 'search')
+	     {
+		   if('<$job_title$>'.length>0) //It is empty only in case where isAdvancesearch=1 and isOnlyJobTitle=1
+		     data1 = '<$job_title$>';		                 			  
+		   else
+		    data1 = '<$job_keywords$>';
+		 }
+		 
+	 else if (event == 'browse')
+        {
+           data1 = '<$dDocName$>'; 	   
+	    }
+     else              	                                //In case of buy and like; portal events
+         {
+		       if (job_id.indexOf(',')>0)              //We need to get the current job only
+	          {
+          		
+				job_id = job_id.substring(0,job_id.indexOf(','));
+				
+		      }
+		 		 data1 = job_id;
+          }
+  if((window.location.href).indexOf('StartRow')==-1 && data1.length >0) //Search event should fire on the first page rendered and when searched using a keyword
+   {  
+	   if(user_domain ==22) //For Australian User's
+	    {
+	  var prslz = $.cookie('prslz'); //personalization cookie
+	    if(loggedin != null && loggedin.length >0 && tgtaud == '1')  //check-for logged in user and jobseeker
+	       {
+	       if (prslz != 'N' ) //check for personalization
+		   {
+	      
+				 $.ajax({
+					  url: "<$HttpBrowserFullCgiPath$>",
+					  dataType :"jsonp",
+								data: {
+									outputFormat : "json",
+									//IsJson : "1",
+									prz_info : loggedin, //loggedin
+									update : "Y",
+									IdcService: "CHECK_MIN_USER_MAX_CALL"
+									
+							  },
+							  success : function(data) {
+							  
+							  status = data.result.resultsets.Status[0].status;
+							 
+					         if (status == "false")		  
+			                       { 
+									
+									$.ajax({
+									  url: "<$#env.baseAPICall$>/notify/<$#env.requestcode$>/"+event,
+									  dataType :"jsonp",
+												data: {
+													
+													data:  $.trim(data1),
+													visitorid : loggedin,//wil be replaced with loggedin
+													cookieid : 'cookie_'+loggedin, // will be replaced with cookie+prz_info
+													criteria : $.trim('<$job_keywords$>')
+											  },
+											  success : function(data) {
+											   																					 
+											  },
+											  error: function() {
+								  //alert('Error loading JSON=');
+									 }
+										
+									});
+					
+								   }
+							else{
+									//alert("Max calls reached");// total calls reached
+									
+									} 
+													  
+							  },
+							  error: function() {
+				  //alert('Error loading JSON=');
+					 }
+							  
+							  });
+			
+		}	
+	}	    
+  }
+ }
+}
+	
+  else
+ window.setTimeout(fireEvents, 100);
+ }
+ fireEvents();
+
+</script>
+<@end@>
+
+<@dynamichtml rgtmp_call_us@>
+<$if domainId ==36 OR domainId ==37$>
+<$callUsPhone = wcmElement("Phone")$>
+	<$include call_us$>		
+<$endif$>
+
+<@end@>
+
+<@dynamichtml call_us@>
+<$callUs=callUsPhone$>
+<@end@>
+
+<@dynamichtml imageurl_haysresponse_inc@>
+	<$urlimage = imageUrl$>
+<@end@>
+
+<@dynamichtml haysresponse_background_image_script@>
+<$if siteId like 'itITHR' OR siteId like 'esESHR' OR siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE'$>
+<script type="text/javascript">
+function height_get_bc() {
+		if (window.jQuery && jQuery.ui && jQuery.isReady) {
+			$(document).ready(function() {				
+				var img=new Image();				
+				img.onload=function(){
+				var img_height = img.height; 
+				var header_height=$('#pl_header').height();	
+				var img_bottom=img_height+header_height;
+				var specialismbox_height = $('.home_panel2' ).height();	
+				var specialismbox_bottom = $('.home_panel2' ).position().top + specialismbox_height;			 
+				$('.featured_boxes').first().css('margin-top', (img_bottom-specialismbox_bottom - 30) +'px');					
+				};			
+				<$include imageurl_haysresponse_inc$>
+				img.src='<$urlimage$>';					
+			});
+		 }
+      else {
+	     window.setTimeout(height_get_bc, 100);
+		}
+     }
+	 height_get_bc();
+</script>
+<$endif$>
+<@end@>
+
+<@dynamichtml haysresponse_background_image_script_uk@>
+<$if siteId like 'itITHR' OR siteId like 'esESHR' OR siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE'$>
+<script type="text/javascript">
+function height_get() {
+		if (window.jQuery && jQuery.ui && jQuery.isReady) {
+			$(document).ready(function() {
+				
+				var a = $('.home_panel2' ).height();
+				var b = $('#slideshow > img').height();
+				
+				var content = $('.home_panel2' );
+				var position = content.position();
+				var contentBottomPosition = (position.top + a);
+				 
+				var slideshowPane = $('#slideshow');
+				var positionSSP = slideshowPane.position();
+				var slideshowBottomPosition = (positionSSP.top + b);
+				 
+				var diff='';
+				if(contentBottomPosition > slideshowBottomPosition)
+				{
+					//alert('gre');
+					diff = contentBottomPosition-slideshowBottomPosition;
+					//alert('diff'+ diff);
+					
+				 }
+				if(contentBottomPosition < slideshowBottomPosition)
+				{
+					//alert('less');
+					diff = slideshowBottomPosition-contentBottomPosition;
+					//alert('diff'+ diff);
+				 }
+				 diff = diff + 35; 
+				 $('#slideshow > img').css('height',(b + diff)+'px' );
+				 $('.grid_15' ).css('height', ((slideshowBottomPosition+diff)-240) +'px'); 
+			});
+		 }
+      else {
+	     window.setTimeout(height_get, 100);
+		}
+     }
+	 height_get(); 
+
+</script>
+<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_linkedin_interests_inc@>
+	<div class="clear"></div>
+	<div class="main_box promo_box partners_box">
+		<div class="pb_inner" style="overflow:visible">
+			<$if not strEquals(wcmElement("CompanyID"),'')$>
+				<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+				<script type="IN/JYMBII" data-companyid="<$wcmElement('CompanyID')$>" data-format="inline"></script>
+			<$else$>
+				<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+				<script type="IN/JYMBII" data-companyid="3486" data-format="inline"></script>		
+			<$endif$>			
+			<div id="cssdivision">
+			</div>			
+		</div>
+	</div>
+	<script type="text/javascript">
+		function sponsoredImageUrl() {
+		if (window.jQuery && jQuery.ui && jQuery.isReady) {
+			$(document).ready(function() {
+				$('.side_box').attr('style','width:300px; margin: 0pt 5px;margin-bottom:20px;');
+				if (typeof bigImageUrL != "undefined") {
+					$('#SponsorImg').css('background-image','url('+bigImageUrL +')');
+					$('#sponsored_link').css('margin-top','228px');	
+					$('#sponsored_link').css('font-size','100%');
+				}
+		});
+		 }
+       else {
+	     window.setTimeout(sponsoredImageUrl, 100);
+		}
+     }
+	 sponsoredImageUrl();
+	</script>
+<@end@>
+<@dynamichtml rgtmp_adnl_footer_inc@>
+
+<$if not strEqualsIgnoreCase(IdcService,"WCM_PLACEHOLDER")$>	
+	<div class="footer_bg">
+<$endif$>
+	
+	<style media="screen" type="text/css">.headFont{font-size:14px;white-space:normal;float:left;text-transform:uppercase}.bodyFont a{font-size:13px;color:#747678}.bodyFont{list-style:none;padding-left:0;margin-top:5px}.footer_bg{width:100%;float:left;padding-bottom:0;margin:15px 0 0;padding-top:15px}</style>
+		<div id="pl_footer" class="container_24" style="text-align:left">
+            
+							 <div  class="grid_5" style="padding-left:30px">
+								<h2 class="headFont"><$wcmElement("Header1")$></h2>
+								</br>
+								<$wcmListStart("URLlist1")$>
+								<$wcmListIndex = 0$>
+								<$wcmListNumRows = wcmListRowCount()$>
+								<ul class="bodyFont">
+								<li></li>
+								<$loopwhile wcmListIndex < wcmListNumRows$>
+									<li><$wcmListElement("Link", wcmListIndex)$></li>						
+								<$wcmListIndex = wcmListIndex + 1$>
+								<$endloop$>
+								<$wcmListEnd("URLlist1")$>						
+								</ul>
+							 </div>
+							 <div  class="grid_5 prefix_1" >
+								<h2 class="headFont"><$wcmElement("Header2")$></h2>
+								</br>
+								<$wcmListStart("URLlist2")$>
+								<$wcmListIndex = 0$>
+								<$wcmListNumRows = wcmListRowCount()$>
+								<ul class="bodyFont">
+								<li></li>
+								<$loopwhile wcmListIndex < wcmListNumRows$>
+									<li><$wcmListElement("Link", wcmListIndex)$></li>						
+								<$wcmListIndex = wcmListIndex + 1$>
+								<$endloop$>
+								<$wcmListEnd("URLlist2")$>						
+								</ul>                        
+							 </div>
+							 <div  class="grid_5 prefix_1" >
+								<h2 class="headFont"><$wcmElement("Header3")$></h2>
+								</br>
+								<$wcmListStart("URLlist3")$>
+								<$wcmListIndex = 0$>
+								<$wcmListNumRows = wcmListRowCount()$>
+								<ul class="bodyFont">
+								<li></li>
+								<$loopwhile wcmListIndex < wcmListNumRows$>
+									<li><$wcmListElement("Link", wcmListIndex)$></li>						
+								<$wcmListIndex = wcmListIndex + 1$>
+								<$endloop$>
+								<$wcmListEnd("URLlist3")$>						
+								</ul>
+							 </div>
+							 <div  class="grid_5 prefix_1" >
+								<h2 class="headFont"><$wcmElement("Header4")$></h2>
+								</br>
+								<$wcmListStart("URLlist4")$>
+								<$wcmListIndex = 0$>
+								<$wcmListNumRows = wcmListRowCount()$>
+								<ul class="bodyFont">
+								<li></li>
+								<$loopwhile wcmListIndex < wcmListNumRows$>
+									<li><$wcmListElement("Link", wcmListIndex)$></li>						
+								<$wcmListIndex = wcmListIndex + 1$>
+								<$endloop$>
+								<$wcmListEnd("URLlist4")$>						
+								</ul>
+							 </div>						  
+				
+			</div>
+		
+<$if not strEqualsIgnoreCase(IdcService,"WCM_PLACEHOLDER")$>	
+	</div>
+<$endif$>
+		
+<$if siteId like 'enVUS'$>	
+	<$include javascript_string_files_inc$>	
+<$endif$>	
+	
+<@end@>
+
+<@dynamichtml rgtmp_employer_logo_inc@>
+<div class="content_main">
+	<h1><$wcmElement("Title")$></h1>
+	<$wcmElement("Summary")$>
+	
+	<!--wcmElement("Image")-->
+	<$imageLink = wcmElement("Employer_URL")$>
+	<$if strLength(strTrimWs(imageLink)) gt 0$>
+		<a href="<$wcmElement("Employer_URL")$>" target="_blank"><$wcmElement("Image")$></a>
+	<$else$>
+		<$wcmElement("Image")$>
+	<$endif$>
+</div>
+
+<@end@>
+<@dynamichtml rgtmp_main_region_hts_inc@>
+<!-- Page [begin] -->
+<div class="row">
+	<div class="col col-9">
+		<div class="row">
+			<div class="col">
+				<div class="box">
+				<h1 class="underline"><$wcmElement('Title')$></h1>
+					<div class="content-img">
+					<div class="f-left">
+						<$ wcmElement('Image')$>												
+					</div>	
+					<$wcmElement('Body')$>
+					</div>
+				</div>
+			</div>
+		</div>
+<@end@>
+<@dynamichtml rgtmp_main_promo_block_inc@>
+<$wcmListStart("PromoList")$>
+<$if wcmListRowCount() gt 0$>
+	
+	<$nNumRecords=wcmListRowCount()$>
+	<$nPos=0$>
+	<$loopwhile nPos lt nNumRecords$>
+	<$num=nNumRecords$>
+	<$include get_one_third_ceil$>
+		<$if nPos%3 == 0 or nPos ==0$>
+			<div class="row">
+		<$endif$>
+			<div class="col col-3">
+			<div class="box">
+				<div class="box-pix"><$wcmListElement("Image", nPos)$></div>
+				<h2><$wcmListElement("Title", nPos)$></h2>
+				<p><$wcmListElement("Body", nPos)$></p>
+				<$if strLength(wcmListElement('Link',nPos)) > 0$>
+				<div class="btn"><$wcmListElement('Link',nPos)$>	</div>
+				<$endif$>
+			</div>
+			</div>
+			<$if (nPos+1)%3 == 0 $>
+			</div>
+			<$endif$>
+				
+			<$nPos=nPos+1$>
+	<$endloop$>
+<$endif$>
+
+<$wcmListEnd("PromoList")$> 
+
+<@end@>
+<@dynamichtml rgtmp_right_top_hts_inc@>
+<div class="col col-3">
+	<$wcmListStart("RightBlockList")$>
+			<$if wcmListRowCount() gt 0$>
+				<$nNumRecords=wcmListRowCount()$>
+				<$nPos=0$>
+				<$loopwhile nPos lt nNumRecords$>
+					<div class="box share-price">
+						<h2 class="underline"><$wcmListElement("Title", nPos)$></h2>
+       					<h1><$wcmListElement("SubTitle", nPos)$></h1>
+       					<$wcmListElement("Body", nPos)$>
+						<div class="btn"><$wcmListElement("Link", nPos)$></div>
+					</div>
+					<$nPos=nPos+1$>
+				<$endloop$>
+				<$endif$>	
+			<$wcmListEnd("RightBlockList")$>
+</div>
+<@end@>
+<@dynamichtml rgtmp_error_display_hts_inc@>
+<!-- Page [begin] -->
+<div class="row">
+	<div class="col col-12">
+		<div class="box">
+              <div class="page-not-found">
+			<h1><$wcmElement('Title')$></h1>
+		<$wcmElement('Body')$>
+	</div>
+</div>
+</div>
+</div>
+<@end@>
+<@dynamichtml get_one_third_ceil@>
+<$if num%3 == 0$>
+	<$half=num/3$>
+<$else$>	
+	<$half=(num/3)+1$>
+<$endif$>	
+<@end@>
+<@dynamichtml zopim_enabled_countries@>
+	<$countrylistZopim=#env.ZopimEnabledCountries$>
+	<$countrylistZopim=","&ZopimEnabledCountries&","$>
+	
+	<$CountryCodeZopim = #active.isoCountryCode$>
+	<$CountryCodeZopim=","&CountryCode&","$>
+	
+	<$if strIndexOf(countrylistZopim,CountryCodeZopim) >=0$> 
+		<$isZopimCountry=1$>	
+	<$else$>
+		<$isZopimCountry=0$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_expertsite_siteassets_inc@>
+	<$wcmListStart("Links")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$linkValue = wcmListElement("Link", wcmListIndex)$>
+			<$linkValue = js(linkValue)$>
+			<$startIndex=strIndexOf(linkValue, "href=")$>
+			
+			<$index = strIndexOf(linkValue,".css")$>
+			<$if index gt -1$>
+				<$endIndex = strIndexOf(linkValue, ".css")$>
+				<$linkValue=strSubstring(linkValue,startIndex+7,endIndex+4)$>
+				<$pathCount=ssSplitString(linkValue , "/" , "pathSlitBySlash")$>
+					<$loop pathSlitBySlash$>
+						<$cssFileName = strSubstring(String,0,strIndexOf(String, ".css"))$>
+					<$endloop$>
+				<$dDocName = cssFileName$>
+				<$executeService('DOC_INFO_BY_NAME')$>
+						<$if rsFirst('DOC_INFO') $>
+							<$cacheBusterCtb = "?"&DOC_INFO.dRevLabel$>
+				<$endif$>
+				
+				<link rel="stylesheet" type="text/css" href="<$linkValue$><$cacheBusterCtb$>" media="screen" />
+			<$endif$>
+
+			<$index = strIndexOf(linkValue,".js")$>
+			<$if index gt -1$>
+				<$endIndex = strIndexOf(linkValue, ".js")$>
+				<$linkValue=strSubstring(linkValue,startIndex+7,endIndex+3)$>
+				<script type="text/javascript" src="<$linkValue$><$cacheBusterCtb$>"></script>
+			<$endif$>
+
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$wcmListEnd("Links")$>
+	<$wcmElement("WysiwygHeader")$>
+<@end@>
+</body></html>

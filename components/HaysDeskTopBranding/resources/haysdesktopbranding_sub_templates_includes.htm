@@ -1,0 +1,2560 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysDeskTopBranding htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml home_main_blocks_R6_HDB_LEFT1@>
+inside home_main_blocks_R6_HDB_LEFT
+<@end@>
+
+<@dynamichtml home_main_blocks_R6_HDB_LEFT@>
+<$fe_count = 0$>
+<$survey_count = 0$>
+<$rsCreateResultSet("2ColIndexes", "index,type") $>
+[[%Find Indexes%]]
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>			
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		<$if strLength(widgetXML) GT 0$>	
+			[[%<$if (strIndexOf(widgetXML , 'featuredEmployer') GT 0)$>
+				<$fe_count = fe_count+1 $>
+				<$res=rsAppendRowValues("2ColIndexes", wcmListIndex1 & ", featuredEmployer")$>
+			<$endif$>%]]
+			<$if (strIndexOf(widgetXML , 'survey') GT 0)$>		
+				<$survey_count = survey_count+1 $>
+				<$ rsAppendRowValues("2ColIndexes", wcmListIndex1 & ",survey")$>
+			<$endif$>
+		<$endif$>
+		<$wcmListIndex1 = wcmListIndex1 + 1$>	
+	<$endloop$>	
+<$wcmListEnd("SelectedContent")$>
+	<$rsName="2ColIndexes"$>
+[[%Draw%]]
+<div class="col col-8">
+<!--Homepage caraousal start-->
+	<$wcmListStart("carouselMesages")$>
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$if wcmListNumRows gt 0$>
+	
+	<div class="row">
+            <div class="col col-8">
+            	<div class="box bottom-slider">
+                	<div class="bg-hays-cyan">
+                	 <div class="row hero-area-image-bottom" id="hero-area-image">
+					 
+					<ul id="slider1" class="hays-slider">
+						<$wcmListStart("carouselMesages")$>	
+						<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+						<$loopwhile wcmListIndex1 LT wcmListNumRows$>			
+							<$title = wcmListElement("Title",wcmListIndex1) $>	
+							<$Summary = wcmListElement("Summary",wcmListIndex1) $>	
+							<$Link = wcmListElement("Link",wcmListIndex1) $>
+							<$Image = wcmListElement("CImage",wcmListIndex1) $>
+								<$classNoImage = ""$>
+							<$if not strEquals(image,'')$>
+							<$index=strIndexOf(Image,"src=")$>
+							<$if index gt -1$> 
+							<$src1=strIndexOf(Image,"src=")$>
+							<$imageUrl=strSubstring(Image,src1+5)$>
+							<$src2=strIndexOf(imageUrl,'"')$>
+							<$imageUrl=strSubstring(imageUrl,0,src2)$>
+							<$else$>
+								<$classNoImage = "noImage"$>
+							<$endif$>
+							
+						<li class="first panel <$classNoImage$>" >
+						<div class="slider-container">
+						<$if strEquals(classNoImage,"")$>
+							<div class="img-container"><$Image$></div>
+							<$endif$>
+							<div class="text-container">
+								<h2><$title$></h2>
+                	<p><$Summary$></p>
+                	<div class="action"><$Link$></div>
+							</div>
+						</div>
+						</li>
+						<$endif$>
+						<$wcmListIndex1 = wcmListIndex1 + 1$>	
+					<$endloop$>	
+					</ul>
+				</div>
+				
+                 </div>
+                </div>
+            	
+            </div>
+			</div>
+			
+			<$endif$>
+			<style>
+		
+			</style>
+	<!--Homepage caraousal end-->
+<$rsCreateResultSet("1ColBoxes", "title,icon,body,image,bigimage,link,widget") $>
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>			
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		<$if strLength(widgetXML) GT 0 AND (strIndexOf(widgetXML , 'survey') GT 0)$>
+			<$contributableBigImage = wcmListElement("BigImage", wcmListIndex1)$>	
+			<$include home_main_blocks_R6_HDB_Draw_Double$>
+		<$else$>
+			<$widgetname = widgetXML$>
+			<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex1)$>
+			<$queryString=wcmListElement("Query", wcmListIndex1)$>
+			<$if strLength(queryString) GT 0 $>
+					<$include set_query_locale_include$>
+					<$ QueryText = queryString & "<AND> xWebsiteObjectType <MATCHES> `Data File`"$>
+					<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount='1'$>
+					<$executeService("SS_GET_SEARCH_RESULTS")$>
+					<$if rsFirst('SearchResults')$>
+						<$ dataFileName = dDocName $>
+					<$endif$>
+			<$endif$>
+
+			<$contributableTitle = wcmListElement("Title", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableTitle)) EQ 0 $>
+				<$ contributableTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+			<$endif$>
+			<$contributableIcon = wcmListElement("Icon", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableIcon)) EQ 0 $>
+				<$ contributableIcon = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Icon']/text()")$>
+			<$endif$>
+			<$ contributableContent = wcmListElement("Content", wcmListIndex1)$>
+			<$if strLength(contributableContent) EQ 0 $>
+				<$ contributableContent = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']")$>
+			<$endif$>
+			<$ contributablelink = wcmListElement("Link", wcmListIndex1)$>
+			<$ contributableBigImage = wcmListElement("BigImage", wcmListIndex1)$>
+			<$ contributableImage = wcmListElement("BigImage", wcmListIndex1)$>
+			<$if strLength(contributableImage) EQ 0 $>
+				<$ contributableImage = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Image']/text()")$>
+			<$endif$>
+			[[%<$if strLength(contributableImage) GT 0 $>
+				<$ contributableImage = strReplace(contributableImage, '<img ', '<img height="60" width="60" ') $>
+			<$endif$>%]]
+		[[%%<$ rsAppendRowValues("1ColBoxes", contributableTitle & "," & contributableIcon & "," & contributableContent & "," & contributableImage & "," & contributablelink)$>%]]
+		<$rsAppendNewRow("1ColBoxes")$>
+		<$setValue("1ColBoxes","title",contributableTitle)$>
+		<$setValue("1ColBoxes","icon",contributableIcon)$>
+		<$setValue("1ColBoxes","body",contributableContent)$>
+		<$setValue("1ColBoxes","image",contributableImage)$>
+		<$setValue("1ColBoxes","bigimage",contributableBigImage)$>
+		<$setValue("1ColBoxes","link",contributablelink)$>
+		<$setValue("1ColBoxes","widget",widgetname)$>
+		[[%Draw all single boxes if another double box approaching or we are at end of list%]]
+		<$if (wcmListIndex1 == wcmListNumRows-1) OR rsFindRowPrimary("2ColIndexes", (wcmListIndex1+1))$>
+			<$include home_main_blocks_R6_HDB_Draw_Singles$>
+			<$rsCreateResultSet("1ColBoxes", "title,icon,body,image,bigimage,link,widget") $>
+		<$endif$>
+		<$endif$>
+		<$wcmListIndex1 = wcmListIndex1 + 1$>	
+	<$endloop$>	
+<$wcmListEnd("SelectedContent")$>
+</div>
+<@end@>
+
+<@dynamichtml rsPrint@>	
+	numRows:<$rsNumRows(rsName)$>:
+	<$rsFirst(rsName)$>
+	<$loopwhile getValue(rsName, "#isRowPresent")$>
+			index:<$getValue(rsName, "index")$>
+			type:<$getValue(rsName, "type")$>
+		<$rsNext(rsName)$>
+	<$endloop$>
+<@end@>
+
+<@dynamichtml home_main_blocks_R6_HDB_Draw_Singles@>	
+	<div class="row">
+	<$index=0$>
+	<$numRows1Col = rsNumRows("1ColBoxes")$>
+	<$loop 1ColBoxes$>
+		<$num=numRows1Col$>
+		<$include get_half_ceil$>
+		<$if index ==0 OR index == half$>
+				<div class="col col-4">
+		<$endif$>	
+		<$if (strLength(1ColBoxes.widget) GT 0) AND (strIndexOf(1ColBoxes.widget, 'featuredEmployer') GT 0)$>
+			<$ contributableBigImage = 1ColBoxes.bigimage$>
+			<$include widget_featuredEmployer_display_hdb$>
+		<$else$>	
+			<div class="box">
+				<$if strLength(1ColBoxes.image) GT 0 $><div class="box-pix"><$1ColBoxes.image$></div><$endif$>
+				<h2><$1ColBoxes.icon$><$1ColBoxes.title$></h2>
+				<p><$1ColBoxes.body$></p>
+				<$strReplace(1ColBoxes.link,"<a ","<a class='btn' ")$>
+			</div>
+		<$endif$>
+		<$if index == half-1 OR index ==numRows1Col-1$>
+			</div>
+		<$endif$>	
+		<$index=index+1$>
+	<$endloop$>
+	</div>
+<@end@>
+<@dynamichtml home_main_blocks_R6_HDB_Draw_Double@>	
+  <$if (strIndexOf(widgetXML , 'survey') GT 0)$>	
+	<$include widget_survey_display_hdb$>
+ <$endif$> 
+<@end@>
+
+<@dynamichtml home_main_blocks_R6_HDB_RIGHT@>	
+
+<div class="col col-4">
+
+[[%Draw%]]
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount()$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>	
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		<$if strLength(widgetXML) GT 0  AND (strIndexOf(widgetXML, 'featuredEmployer') GT 0)$>	
+			<$ contributableBigImage = wcmListElement("BigImage", wcmListIndex1)$>
+			<$include widget_featuredEmployer_display_hdb$>
+		<$else$>
+			<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex1)$>
+			<$queryString=wcmListElement("Query", wcmListIndex1)$>
+			<$if strLength(queryString) GT 0 $>
+					<$include set_query_locale_include$>
+					<$ QueryText = queryString & "<AND> xWebsiteObjectType <MATCHES> `Data File`"$>
+					<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount='1'$>
+					<$executeService("SS_GET_SEARCH_RESULTS")$>
+					<$if rsFirst('SearchResults')$>
+						<$ dataFileName = dDocName $>
+					<$endif$>
+			<$endif$>
+
+			<$contributableTitle = wcmListElement("Title", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableTitle)) EQ 0 $>
+				<$ contributableTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+			<$endif$>
+			<$contributableIcon = wcmListElement("Icon", wcmListIndex1)$>
+			<$if strLength(strTrimWs(contributableIcon)) EQ 0 $>
+				<$ contributableIcon = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Icon']/text()")$>
+			<$endif$>
+			<$ contributableContent = wcmListElement("Content", wcmListIndex1)$>
+			<$if strLength(contributableContent) EQ 0 $>
+				<$ contributableContent = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']")$>
+			<$endif$>
+			<$ contributablelink = wcmListElement("Link", wcmListIndex1)$>
+			<$ contributableImage = wcmListElement("BigImage", wcmListIndex1)$>
+			<$if strLength(contributableImage) EQ 0 $>
+				<$ contributableImage = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Image']/text()")$>
+			<$endif$>
+			[[%<$if strLength(contributableImage) GT 0 $>
+				<$ contributableImage = strReplace(contributableImage, '<img ', '<img height="60" width="60" ') $>
+			<$endif$>%]]
+		
+			<div class="box">
+				<$if strLength(contributableImage) GT 0 $><div class="box-pix"><$contributableImage$></div><$endif$>
+				<h2><$contributableIcon$><$contributableTitle$></h2>
+				<p><$contributableContent$></p>
+				<$strReplace(contributablelink,"<a ","<a class='btn' ")$>
+			</div>
+		<$endif$>	
+		<$wcmListIndex1 = wcmListIndex1 + 1$>	
+	<$endloop$>	
+<$wcmListEnd("SelectedContent")$>
+</div>
+<@end@>
+
+<@dynamichtml get_half_ceil@>
+<$if num%2 == 0$>
+	<$half=num/2$>
+<$else$>	
+	<$half=(num/2)+1$>
+<$endif$>	
+<@end@>
+
+<@dynamichtml widget_display_hdb@>
+		<$ if strLength( widgetXML) GT 0 $>
+				<$if strEquals(#active.siteId,"news")$>
+					<$addThisParam = "?v=250&username=NandR"$>
+				<$else$>
+					<$addThisParam = ""$>
+				<$endif$>
+				<$crXmlToResultSet(widgetXML, "widgetRS") $>
+				<$if getValue("widgetRS", "#numRows") > 0 $>
+						<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+				<$endif$>
+		<$endif$>
+<@end@>
+
+<@dynamichtml widget_featuredEmployer_display_hdb@>
+			<$xLocale = SiteLocale$>
+			<$executeService("Get_Featured_Employers")$>
+			<$numRows=rsNumRows("FEATURED_EMPLOYERS")$>	
+			<$if strEquals(isoCountryCode,"IT") or strEquals(isoCountryCode,"JP") or strEquals(isoCountryCode,"CN")$>
+			[[%<style>
+			.comb_5_6 li{
+			margin-left:19px;
+			margin-right:19px;
+			}
+			</style> %]]
+			<$endif$>
+				
+					<div class="box">
+						<$if strLength(contributableBigImage) GT 0 $><div class="box-pix"><$contributableBigImage$></div><$endif$>
+						<h2><$lc("wwPartneredCompaniesLabel")$></h2>
+						<ul class="list emp-list">
+							<$loop FEATURED_EMPLOYERS$>
+								<$urlLink=haysIncludeXML(FEATURED_EMPLOYERS.CONTENT_ID,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+								<$if not strEquals(urlLink,'')$>								
+									<li><a href="<$urlLink$>" target="_blank"><$haysIncludeXML(FEATURED_EMPLOYERS.CONTENT_ID,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>								
+								<$endif$>
+							<$endloop$>	
+						</ul>
+							<!-- BAU 18293 -->
+						<$queryString="dDocType<matches>`SponsoredEmployer`<AND>(xIsFeatured<matches>`yes`)"$>
+						<$include set_query_string_no_empty_catagory$>
+				<$if strLength(queryString) GT 0 $>
+							<$ queryString = queryString & "&SortField=dInDate" $>
+							<$ queryString = queryString & "&SortOrder=Desc" $>
+					<!-- BAU 18293 -->
+						<$endif$>
+	<!-- added for Ticket 6809822 on 06/04/2012 -->
+							<$SortField='dInDate'$>
+							<$SortOrder='DESC'$>
+						<!--end -->						<$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>		
+					
+					 <a href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>" class="btn"><$lc('wwViewMore')$></a>
+						</div>
+			
+<@end@>
+
+
+
+<@dynamichtml widget_survey_display_hdb@>
+
+<$if ((strEquals(SiteLocale,'en-GB')) OR (strEquals(SiteLocale,'en-AUS')) OR (strEquals(SiteLocale,'en-HKG')) OR (strEquals(SiteLocale,'cn-CHN')) OR (strEquals(SiteLocale,'en-CHN')) OR (strEquals(SiteLocale,'jp-JP')) OR (strEquals(SiteLocale,'en-JP')) OR (strEquals(SiteLocale,'en-MLS')) OR (strEquals(SiteLocale,'en-NZL')) OR (strEquals(SiteLocale,'en-SGP')) )$>
+
+<$ResultCount = 1$>
+<$isRHS = "false"$>
+<$PrimaryTemplateUrl=ssGetNodeProperty("primaryTemplateUrl")$> 
+<$if regexMatches(PrimaryTemplateUrl,".*Right Block.*=SUBTMP_SURVEY_DISPLAY.*")$>
+  <$isRHS = "true"$>
+<$endif$>
+ <$include widget_search_survey_queryresults$>
+
+<$JobSearchDirName=ssGetNodeProperty('jobs-search','urlDirName')$>
+<$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0$>
+	 
+		<div class="box">
+			<$if strLength(contributableBigImage) GT 0 $>
+				<div class="box-pix"><$ contributableBigImage $></div>
+			<$endif$>
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						 <h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop SearchResults$>
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								<ul class="form">
+									<li><strong><$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>	
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+								  </div>
+							   </li>
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+								  </div>
+							   </li>   
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+								  </div>
+							   </li>   	
+								<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+						  </ul>
+							<$endloop$>
+			</form>
+		</div>
+	
+<$else$>
+
+<$if strEquals(isRHS,"true") $>
+	[[%	<div class="box" >
+		%]]
+<$endif$>
+ 
+		<div class="box">
+			<$if strLength(contributableBigImage) GT 0 $>
+				<div class="box-pix"><$ contributableBigImage $></div>
+			<$endif$>
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						 <h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop SearchResults$>
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								<ul class="form">
+									<li><strong><$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>	
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+								  </div>
+							   </li>
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+								  </div>
+							   </li>   
+								<li>
+								  <div class="input input-radio">
+								  <label><span>
+								  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+								  </span><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+								  </div>
+							   </li>   	
+								<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+						  </ul>
+							<$endloop$>
+			</form>
+		</div>
+	
+<$if strEquals(isRHS,"true") $>
+	[[%
+	</div>
+		</div> %]]
+<$endif$>
+		
+<$endif$>
+
+<$else$>
+
+<!--From Here below 9411 requirment is implemented for CEROW Regions-->
+       <$include widget_survey_cerow_display_hdb$>
+    
+<$endif$>
+<@end@>
+
+
+<@dynamichtml widget_survey_cerow_display_hdb@>
+
+<$ ResultCount = 1$>
+    <$isRHS = "false"$>
+    <$PrimaryTemplateUrl=ssGetNodeProperty("primaryTemplateUrl")$> 
+    <$if regexMatches(PrimaryTemplateUrl,".*Right Block.*=SUBTMP_SURVEY_DISPLAY.*")$>
+      <$isRHS = "true"$>
+    <$endif$>
+    <$include widget_search_survey_queryresults$>
+    <$widgetXMLsurvey=strReplace(widgetXML,"survey","")$> 
+    <$crXmlToResultSet(widgetXMLsurvey, "rstSurvey")$>
+	
+
+  <$JobSearchDirName=ssGetNodeProperty('jobs-search','urlDirName')$>
+  <$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0 and strEqualsIgnoreCase(isRHS,'false')$>
+	 <div class="box">
+	 		<$if strLength(contributableBigImage) GT 0 $>
+				<div class="box-pix"><$ contributableBigImage $></div>
+			<$endif$>
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						<h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop rstSurvey$>
+								
+								<input type="hidden" name="SER_DDOCNAME" value="<$rstSurvey.SurveyId$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								<ul class="form">
+									<li><strong><$ssIncludeXml(rstSurvey.SurveyId,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>
+
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+								<$if strLength(Ans2) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+									</ul>
+							<$endloop$>
+			</form>
+		</div>
+		<$elseif strIndexOf(ssoriginalurl,JobSearchDirName)>=0 and strEqualsIgnoreCase(isRHS,'true')$>	
+			 <$include widget_cerow_subtemplate_survey_display_hdb$>
+		<$else$>
+			<$if strEquals(isRHS,"true") $>		
+				 <$include widget_cerow_subtemplate_survey_display_hdb$>
+			<$else$>
+				 <$include widget_cerow_other_survey_display_hdb$>
+			<$endif$>			
+		<$endif$>
+<@end@>
+
+<!--MR9 9411 Changes-->
+<@dynamichtml widget_search_survey_queryresults_hdb@> 
+ [[%Query text%]]
+	<$ QueryText = ''$>
+	<$strdocContentType = "Survey" $>
+	<$ QueryText = QueryText & "dDocType <matches> `" & strdocContentType  & "`"  $> 
+
+	<$queryString = QueryText$>
+	<$include subtmp_worldwide_set_query_locale_include$>
+	<$QueryText=queryString$>
+	<$ ssLimitScope  = "false",  SortField="xEventDate", SortOrder="desc" $>
+	<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount  & '&LimitScope='&ssLimitScope$>
+ 	<$executeService("SS_GET_SEARCH_RESULTS")$>
+<@end@>
+
+<@dynamichtml widget_cerow_subtemplate_survey_display_hdb@>
+<div class="box">
+	<$if strLength(contributableBigImage) GT 0 $>
+		<div class="box-pix"><$ contributableBigImage $></div>
+	<$endif$>
+	<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+	<input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+	<h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+	<$loop SearchResults$>
+
+		<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+		<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+		
+		<$Ans1 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+		<$Ans2 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+		<$Ans3 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+		<$Ans4 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+		<$Ans5 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+
+		<ul class="form">
+		<li><strong><$ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+		
+		<$if strLength(Ans1) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans2) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans3) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans4) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+			  </div>
+		   </li>
+			<$endif$>
+			<$if strLength(Ans5) GT 0 $>
+			<li>
+			  <div class="input input-radio">
+			  <label><span>
+			  <input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+			  </span><$ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+			  </div>
+		   </li>
+		<$endif$>
+			
+		<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+		</ul>
+	<$endloop$>
+		</form>
+		</div>
+     
+<@end@> 
+
+<@dynamichtml widget_cerow_other_survey_display_hdb@> 
+	
+	<$if regexMatches(SS_PLACEHOLDER_DEFINITION,"PLDEF_RIGHT_HAND_BLOCK.*")$>
+
+	<$else$>
+		<div class="row">
+					<div class="col col-8">
+	<$endif$>
+			<div class="box">
+			<$if strLength(contributableBigImage) GT 0 $>
+				<div class="box-pix"><$ contributableBigImage $></div>
+			<$endif$>
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+						<h2><i class="icon-glyph-7"></i><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop rstSurvey$>
+								
+								<input type="hidden" name="SER_DDOCNAME" value="<$rstSurvey.SurveyId$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								<ul class="form">
+									<li><strong><$ssIncludeXml(rstSurvey.SurveyId,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></strong></li>
+
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+								<$if strLength(Ans2) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+									  </div>
+								   </li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+									  <div class="input input-radio">
+									  <label><span>
+									  <input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+									  </span><$ssIncludeXml(rstSurvey.SurveyId, "wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+									  </div>
+								   </li>
+								<$endif$>
+									<li><div class="action"><input type="submit" name="SubmitButton" class="btn" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled"> </div></li>
+									</ul>
+							<$endloop$>
+			</form>
+		</div>
+      	<$if regexMatches(SS_PLACEHOLDER_DEFINITION,"PLDEF_RIGHT_HAND_BLOCK.*")$>
+
+		<$else$>
+		</div>
+		</div>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml LeftHandNav_r6_hdb@> 
+			<$include build_left_navigation_r6_hdb$>
+<@end@>
+
+<@dynamichtml build_left_navigation_r6_hdb@>
+	<$  startNodeId = '' $>
+	<$if NOT rsExists('HaysNavNodes') $>
+		<$ haysLoadSiteNavResultSet(siteId) $>
+	<$endif$>
+	
+	[[%Added for release 9.0 start%]] 
+	<$country= strUpper(strSubstring(siteId,strLength(siteId)-2,strLength(siteId)))$>
+	<$customizeLHNav = strUpper(getValue('#env','customizeLHNavigationCountryList'))$>
+	<$isCountryCNorJP=''$>
+	<$if (strIndexOf(customizeLHNav,country) < 0)$>
+	<$isCountryCNorJP=0$>
+	<$else$>
+	<$isCountryCNorJP=1$>
+	<$endif$>
+	[[%Added for release 9.0 end%]]
+	
+	<$if (rsFindRowPrimary('HaysNavNodes', #local.nodeId)) AND ( strLength(HaysNavNodes.parentNodeId) GT 0 ) $> [[% Specialism or sub-specialism page %]]
+		<$if HaysNavNodes.contributorOnly like '1' $>
+			<$include build_left_nav_admin_main_r6_hdb_inc$>
+		<$else$>
+		
+			[[% commented for release 9.0 <$if HaysNavNodes.level == 2$>	
+							<$ startNodeId = #local.nodeId $>
+					<$else$>											
+							<$ startNodeId = HaysNavNodes.parentNodeId $>
+					<$endif$>%]]
+			
+			 [[%Added for release 9.0 start%]]
+			   <$if isCountryCNorJP == 0$>
+					<$if HaysNavNodes.level == 2$> [[% specialism %]]
+					 <$ startNodeId = #local.nodeId $>
+					<$else$>           [[% sub-specialism %]]
+					 <$ startNodeId = HaysNavNodes.parentNodeId $>
+					<$endif$>
+			   <$else$>
+					<$if HaysNavNodes.level == 2$> 
+							<$ startNodeId = HaysNavNodes.parentNodeId  $>
+					<$else$>
+						<$ startNodeId = #local.nodeId  $>
+					<$endif$>
+			   <$endif$>
+			   [[%Added for release 9.0 end%]]
+			
+			<$include build_left_nav_specialisms_r6_hdb_inc$>
+		<$endif$>
+	<$else$>														[[% general %]]
+		<$if #active.navType AND (navType like 'Candidates' OR navType like '2') $>
+			<$ startNodeId = getValue('#env', 'PageType_2') $>
+		<$else $>
+			<$ startNodeId = getValue('#env', 'PageType_' & ssGetNodeProperty(#local.nodeId, 'HeaderType')) $>
+		<$endif$>
+		<$include build_left_nav_general_inc_r6_hdb$>
+	<$endif$>
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : ADMIN MAIN *******
+**********************************************-->
+<@dynamichtml build_left_nav_admin_main_r6_hdb_inc@>
+	<$rsCopyFiltered('HaysNavNodes', 'HaysNavNodesAdmin', 'contributorOnly', '1') $>
+	<$if rsFindRowPrimary('HaysNavNodesAdmin', #local.nodeId)$>
+		<$include build_left_nav_sub_admin_hdb_inc$>
+	<$else$>
+		<$if rsFirst('HaysNavNodesAdmin') $>
+			<$ parentId = HaysNavNodesAdmin.parentNodeId $>
+			<$rsCopyFiltered('HaysNavNodesAdmin', 'HaysNavNodesAdminTop', 'parentNodeId', parentId) $>
+			<$ numberOfKids = HaysNavNodesAdminTop.#numRows, gridClass = ''$>
+			
+			<$if numberOfKids GT 0 $>
+						
+				<div class="box expandable-in-mobile">
+				<h3><$lc('wwHaysAdmin')$></h3>
+				<ul class="list job-list exp-list">
+					<$loop HaysNavNodesAdminTop $>
+						<li><a href="<$ HaysNavNodesAdminTop.href $>"><$ HaysNavNodesAdminTop.label $></a></li>
+					<$endloop$>
+				</ul>
+				</div>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+
+<!--**************************************************
+****** LEFT SIDE NAVIGATION : ADMIN PAGES    *********
+***************************************************-->
+<@dynamichtml build_left_nav_sub_admin_hdb_inc@>
+	<div class="box expandable-in-mobile">
+		<h3><$ HaysNavNodesAdmin.label $></h3>
+		<ul class="list job-list exp-list">
+		<$ exec rsNext('HaysNavNodesAdmin') $>
+		<$loopwhile getValue('HaysNavNodesAdmin', '#isRowPresent') $>
+			<$if HaysNavNodesAdmin.parentNodeId like #local.nodeId $>
+				<li><a href="<$ HaysNavNodesAdmin.href $>" ><$ HaysNavNodesAdmin.label $></a></li>
+			<$endif$>
+			<$ exec rsNext('HaysNavNodesAdmin') $>
+		<$endloop$>
+		</ul>
+	</div>	
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM *******
+**********************************************-->
+<@dynamichtml build_left_nav_specialisms_r6_hdb_inc@>
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",startNodeId)$>
+	<div class="box expandable-in-mobile">
+	<$if startNodeId like #local.nodeId$>
+		<h3><$ ssGetNodeProperty(startNodeId, "label") $></h3>
+	<$else$>
+		<h3><a href="<$ ssNodeLink(startNodeId,siteId) $>"><$ ssGetNodeProperty(startNodeId, "label") $></a></h3>
+	<$endif$>
+	<ul class="list job-list exp-list">
+	<$loop rsSubSpecialisms$>
+		<$if rsSubSpecialisms.nodeId like #local.nodeId$>
+			<li><a href="#" class="active"><$ rsSubSpecialisms.label $></a></li>
+		<$else$>
+			<li><a href="<$ rsSubSpecialisms.href $>"><$ rsSubSpecialisms.label $></a></li>
+		<$endif$>
+	<$endloop$>
+	</ul>
+	<$include left_nav_back_hdb$>
+	</div>
+		[[% Admin pages %]]
+		<$if isTrue(#active.SSContributor) $>
+			<$include build_left_nav_admin_main_r6_hdb_inc$>
+		<$endif$>
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : GROUPING *********
+**********************************************-->
+<@dynamichtml build_left_nav_general_inc_r6_hdb@>
+	<div class="box expandable-in-mobile">
+	<h3><$lc('wwHaysExpertise')$></h3>
+	<ul class="list job-list exp-list">
+  <$rsCopyFiltered("HaysNavNodes", "rsGroupingAndSpecialisms", "startingNodeId",startNodeId)$>
+  
+  [[% commented for release 9.0
+  <$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+  <$rsSort("rsSpecialisms","label","string","asc")$>%]]
+  
+   [[%Added for release 9.0 start%]]
+	
+	<$if isCountryCNorJP == 0$>
+	<$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+	<$rsSort("rsSpecialisms","label","string","asc")$>
+	<$else$>
+	<$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","1")$>
+	<$endif$>
+	[[%Added for release 9.0 end%]]
+  
+ <$loop rsSpecialisms$>
+	<$specNodId = rsSpecialisms.nodeId$>
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",specNodId)$>
+	<$numberOfSubSpecKids=rsNumRows("rsSubSpecialisms")$>
+	<$if numberOfSubSpecKids gt 0$>
+		<li><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a>
+			<$include build_left_navigation_specialism_popup__hdb_inc$>
+		</li>
+	<$else$>
+		<li ><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a></li>
+	<$endif$>
+ <$endloop$>
+</ul>
+<$include left_nav_back_hdb$>
+</div>
+	[[% Admin pages %]]
+	<$if isTrue(#active.SSContributor) $>
+		<$include build_left_nav_admin_main_r6_hdb_inc$>
+	<$endif$>
+<@end@>
+
+
+<!--***********************************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM POPUPS OF SUBSPEC *********
+************************************************************-->
+<@dynamichtml build_left_navigation_specialism_popup__hdb_inc@>
+	<ul class="box expandable-in-mobile">
+		<$loop rsSubSpecialisms$>
+				<li><a href="<$ rsSubSpecialisms.href $>"><$ rsSubSpecialisms.label $> <$lc('wwLeftNavJobSuffix')$></a></li>
+		<$endloop$>
+	</ul>
+<@end@>
+
+<@dynamichtml left_nav_back_hdb@>
+	<a href="javascript: history.go(-1)" class="btn btn-block"><$lc('wwBackExpertise')$></a>
+<@end@>
+
+<@dynamichtml rgtmp_half_width_blocks_r6_hdb_inc@>
+<$if strEquals(#active.IdcService,"WCM_PLACEHOLDER")$> <!--Thank You Page Event firing-->
+	<$event = "buy"$>
+	<$include fire_events$>
+<$endif$>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+
+		<div class="row">
+		
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$num=wcmListNumRows$>
+				<$include get_half_ceil$>
+				<$if wcmListIndex ==0 OR wcmListIndex == half$>
+					<div class="col col-3">
+				<$endif$>	
+				<$ temp = dDocName, adDocName = '', aTitle = '',aIcon='', aSummary = '', aLink = '', friendlyURL = '' $>
+					<$ contributableBigImage = wcmListElement("BigImage", wcmListIndex)$>
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<div class="box">
+								<$if strLength(contributableBigImage) GT 0 $>
+									<div class="box-pix"><$ contributableBigImage $></div>
+								<$endif$>
+							<h2><$shortcutTitle$></h2>
+							<p><$ shortcutText $></p>
+							<a href="<$ shortcutTarget$>"><$ shortcutLink $></a>
+							</div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+							 <$contextStringIcon = wcmListElement("Icon", wcmListIndex)$>
+								<$if NOT strEquals(contextStringIcon, '&nbsp;') AND strLength(contextStringIcon) GT 0 $>
+								<$ aIcon = contextStringIcon $>
+							<$endif$>
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+								<div class="box">
+								<$if strLength(contributableBigImage) GT 0 $>
+									<div class="box-pix"><$ contributableBigImage $></div>
+								<$endif$>
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$aIcon$><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(aSummary) GT 0 $>
+										<$aSummary$>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<a href="<$ aLink$>">more....</a>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<a href="<$ aLink$>">more....</a>
+									<$endif$>
+								<$else$>
+									<$ aLink$>
+								<$endif$>
+								</div>
+					<$endif$>
+				<$if wcmListIndex == half-1 OR wcmListIndex ==wcmListNumRows-1$>
+					</div>
+				<$endif$>	
+				
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		</div>
+		<$wcmListEnd(blockName)$>
+		
+<@end@>
+<!--Promotional block template for CA(R53925) for contribute three block in every row -->
+<@dynamichtml rgtmp_promo_block_hdb_3column_inc@>
+<$if strEquals(#active.IdcService,"WCM_PLACEHOLDER")$> <!--Thank You Page Event firing-->
+	<$event = "buy"$>
+	<$include fire_events$>
+<$endif$>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>		
+		
+		
+		
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$num=3$>
+				<$include get_half_ceil$>
+				<$if wcmListIndex%3==0$>
+					<div class="row">
+				<$endif$>
+				<$if wcmListIndex<wcmListNumRows$>
+					<div class="col col-3">
+				<$endif$>	
+				<$ temp = dDocName, adDocName = '', aTitle = '',aIcon='', aSummary = '', aLink = '', friendlyURL = '' $>
+					<$ contributableBigImage = wcmListElement("BigImage", wcmListIndex)$>
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<div class="box">
+								<$if strLength(contributableBigImage) GT 0 $>
+									<div class="box-pix"><$ contributableBigImage $></div>
+								<$endif$>
+							<h2><$shortcutTitle$></h2>
+							<p><$ shortcutText $></p>
+							<a href="<$ shortcutTarget$>"><$ shortcutLink $></a>
+							</div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+							 <$contextStringIcon = wcmListElement("Icon", wcmListIndex)$>
+								<$if NOT strEquals(contextStringIcon, '&nbsp;') AND strLength(contextStringIcon) GT 0 $>
+								<$ aIcon = contextStringIcon $>
+							<$endif$>
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+								<div class="box">
+								<$if strLength(contributableBigImage) GT 0 $>
+									<div class="box-pix"><$ contributableBigImage $></div>
+								<$endif$>
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$aIcon$><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(aSummary) GT 0 $>
+										<$aSummary$>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<a href="<$ aLink$>">more....</a>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<a href="<$ aLink$>">more....</a>
+									<$endif$>
+								<$else$>
+									<$ aLink$>
+								<$endif$>
+								</div>
+					<$endif$>
+				<$if (wcmListIndex+1)%3==0 OR (wcmListIndex+1)==wcmListNumRows $>
+					</div>
+				<$endif$>	
+				</div>
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		
+		<$wcmListEnd(blockName)$>
+		
+<@end@>
+
+
+<@dynamichtml rgtmp_full_width_blocks_r6_hdb_inc@>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+
+		<div class="row">
+			<div class="col col-6">
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$ temp = dDocName, adDocName = '', aTitle = '', aSummary = '', aLink = '', friendlyURL = '' $>
+					<$ contributableBigImage = wcmListElement("BigImage", wcmListIndex)$>
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<div class="box">
+								<$if strLength(contributableBigImage) GT 0 $>
+									<div class="box-pix"><$ contributableBigImage $></div>
+								<$endif$>
+							<h2><$shortcutTitle$></h2>
+							<p><$ shortcutText $></p>
+							<a href="<$ shortcutTarget$>"><$ shortcutLink $></a>
+							</div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display_hdb" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+								<div class="box">
+								<$if strLength(contributableBigImage) GT 0 $>
+									<div class="box-pix"><$ contributableBigImage $></div>
+								<$endif$>
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(aSummary) GT 0 $>
+										<$aSummary$>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<a href="<$ aLink$>">more....</a>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<a href="<$ aLink$>">more....</a>
+									<$endif$>
+								<$else$>
+									<$ aLink$>
+								<$endif$>
+								</div>
+					<$endif$>
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+			</div>
+			</div>
+		<$wcmListEnd(blockName)$>
+<@end@>
+<@dynamichtml subtmp_contact_us_hts_inc@>
+<div class="col col-3">
+<h3><$lc("wwHTSContactUsHeadingLabel")$></h3>
+<nav id="footerHTS">
+<ul>
+	<li><$lc("wwHTSGolbalOfficeLabel")$></li>
+	<li><$lc("wwHTSContactUs1Title")$></li>
+	<li><$lc("wwHTSContactUs1AddressLine1")$></li>
+	<li><$lc("wwHTSContactUs1AddressLine2")$></li>
+	<li><a href="mailto:<$lc("wwHTSContactUs1EmailAddress")$>"><$lc("wwHTSContactUs1EmailAddress")$></a></li>
+	<li><$lc("wwHTSContactUs1PhoneNumber")$></li>
+	<li><$lc("wwHTSLocalOfficeLabel")$></li>
+</ul>
+</nav>
+</div>
+<@end@>
+<@dynamichtml subtmp_hays_salary_guide_UKCeRoW@>
+	
+	<$currentCountry=strSubstring(SiteLocale,strIndexOf(SiteLocale,"-")+1)$>
+	<$tempVal1="#env.Show_DropDownList_" &currentCountry$>
+	<$tempVal2= "<$" & tempVal1 & "$>" $> 
+	<$countrylistSG= eval(tempVal2)$>
+	<$countrylistSG="|"&countrylistSG&"|" $>
+	
+	
+<script> var currentForm = document.forms[0];</script>
+<$siteLocale=#active.SiteLocale$>
+<$locale = #active.SiteLocale$>
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+	   <$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+     <$endif$>
+	  <$if strEquals(siteLocale,"en-CA")$>	
+	 	<$industriesWithDocName='true'$>
+	<$endif$>
+	<$if NOT rsExists('allCategoryRS')$>
+	 <$executeService('HAYS_SALARY_GUIDE_GET_CATEGORY')$>
+    	<$endif$>
+	<$formName = 'SGFORM'$>
+<script type="text/javascript">
+ 
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+	$(".barometerDisplay").hide();
+
+$(document).ready(function() {
+	
+	$(".salary-statement").hide();
+	//Remove change language button from salary-guide page
+	<$if strEquals(siteId,"ruRU")$>
+		$(".chLang").hide();
+	<$endif$>
+	$(document).on('keyup keypress', 'form input[id="currentSalary"],form input[id="category_salary_guide"],form input[id="SGFORMSECTOR_value"],form input[id="SGFORMPOSITIONNAME_value"],form input[id="SGFORMLOCATIONNAME_value"],form input[id="SGFORMPOSITIONTYPE_value"],form input[id="SGFORMAREA_value"],form input[id="SGFORMCOMPANY_value"]',function(e) {
+    	if(e.keyCode == 13) {
+        e.preventDefault();
+        $("#submitbutton").click();    
+        return false;
+    	}
+	});
+
+	 $("#submitbutton").click(function() {
+	  var validate=$("#SGFORM").validate().form();
+      if(validate==true)
+		{
+		getData($('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),$('#SGFORMPOSITIONTYPE_value').val(),$('#SGFORMAREA_value').val(),$('#SGFORMCOMPANY_value').val(),$('#SGFORMPOSITIONNAME_value').val(),$('#SGFORMLOCATIONNAME_value').val(),'<$siteLocale$>');
+		$(".barometerDisplay").show();
+		$(".salary-statement").show();
+		$("#submitbutton").prop("value", "<$lc("wwSGButtonUpdateLabel")$>");
+	    } // end IF(validate)
+	}); //end $(".button").click(function)
+}); //end $()document).Ready(function)
+		jQuery.validator.addMethod("noDecimal",function(value) {
+		if(value.indexOf(".") >-1 || value.indexOf(",")>-1 || value.indexOf("-")>-1){
+		return false;
+		}
+		else {
+		return true;
+		} 		
+		}, "<$lc('wwSGValidNumberMessage')$>");
+jQuery.validator.classRuleSettings.noDecimal = { noDecimal: true };
+	jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+	   
+		   jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc('wwJsmandatory_msg_input')$>",
+		number: "<$lc('wwSGValidNumberMessage')$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>"
+			
+		});
+		$("#SGFORM").validate({
+			errorPlacement: function(error, element) {
+					error.insertAfter(element);
+			}
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+	function updateNext(currentItem,categoryValue,sectorValue,positionValue,areaValue,companyValue,titleValue) {
+<!--Added for Canada salary guide-->
+		var dropdownVal = currentItem.value;		
+		<$if strEquals(siteLocale,"en-CA")$>
+				var specialismId=currentItem.selectedIndex;
+				var Sitelocale="<$siteLocale$>"
+				console.log("Sitelocale"+Sitelocale);
+				console.log("currentItem.value"+currentItem.value);
+		
+		
+		if(currentItem.id=="<$formName$>INDUSTRY"){		
+		dropdownVal = 	currentItem.value.split("|")[1];	
+		var fileName = currentItem.value.split("|")[0];
+		console.log("fileName"+fileName);
+		console.log("currentItemCheck");
+		var val =currentItem.value;
+		var currentUrl="<$ssNodeLink('Hays-Salary-Guide',siteId)$>";
+		console.log("currentUrlCheck"+currentUrl);
+		var newUrl=currentUrl.replace("index.htm","")+fileName+"?specialismId="+currentItem.selectedIndex;
+		if(specialismId!=0)
+		window.location.href = newUrl;
+		else
+		window.location.href = currentUrl;
+		
+		}
+		<$endif$>
+		<!--Added for Canada salary guide-->
+		
+		$("#"+$(currentItem).attr('id') + "_value").val(dropdownVal);
+		nextItem = $(currentItem).parent().next().find('select').attr('id');;
+		queryNumber = $(currentItem).parent().next().attr('id').replace('query','');
+		var resultKey = "SALARYGUIDEDRS";
+		var onlyItemFlag = false;
+		$(currentItem).parent('li').nextAll().find('select').html('<option value=""><$lc("wwSGDropDownSelect")$></option>').removeClass('disabledOp');
+		if(currentItem.value=='') return false;
+		$("#"+ nextItem).html('<option value=""><$lc("wwLoadingSG")$></option>');
+		$.ajax({
+				url: "<$HttpRelativeWebRoot$>idcplg",
+				dataType: "jsonp",
+				type: "POST",
+				data: {
+					outputFormat: "json",
+					locale: "<$siteLocale$>",
+					queryNumber : queryNumber,
+					industry: categoryValue,
+					sector: sectorValue,
+					positiontype: positionValue,
+					area: areaValue,
+					company: companyValue,
+					positionname: titleValue,
+					IdcService: "HAYS_SALARY_GUIDE_GET_DETAILS"
+				},
+				success: function(data) {
+					var dataList=data.result.resultsets.salaryGuideRS;
+					$("#"+ nextItem).removeClass('disabledOp');
+					var listItems='';
+					if(dataList.length >1 )
+					listItems = '<option  value=""><$lc("wwSGDropDownSelect")$></option>';
+					else
+					onlyItemFlag = true;
+					var j=0;
+					for (var i = 0; i < dataList.length; i++){
+      					listItems+= '<option value="' + dataList[i][resultKey] + '">'+dataList[i][resultKey]+'</option>';
+						 }	
+     					 $("#"+ nextItem).html(listItems);
+						if(onlyItemFlag) {
+						$("#"+ nextItem).addClass('disabledOp').keyup().change();
+						}
+				}
+			})
+		}
+		
+		function setValueForhiddenField(location){
+		$("#"+$(location).attr('id') + "_value").val(location.value);
+		}
+		
+	function getData(categoryValue,sectorValue,positionValue,areaValue,companyValue,titleValue,locationValue) {
+		var sperator = ",";
+		<$currencySperator = lc('wwSGCurrencySeparator')$>
+		<$if not strEquals(currencySperator,'')$>
+		sperator = '<$currencySperator$>';
+		<$endif$>
+		sperator = sperator.replace("space"," ");
+		var sgCurrencySymbol = '<$lc("wwSGCurrencySymbol")$>';
+		var sgCurrencySymbolPost = '<$lc("wwSGCurrencySymbolPost")$>';
+		sgCurrencySymbol = sgCurrencySymbol.replace("space"," ");
+		sgCurrencySymbolPost = sgCurrencySymbolPost.replace("space"," ");
+		
+		$.ajax({
+				url: "<$HttpRelativeWebRoot$>idcplg",
+				dataType: "jsonp",
+				type: "POST",
+				data: {
+					outputFormat: "json",
+					siteLocale: "<$siteLocale$>",
+					industry: categoryValue,
+					sector: sectorValue,
+					positiontype: positionValue,
+					area: areaValue,
+					company: companyValue,
+					positionname: titleValue,
+					<$if not strEquals(siteId, "enCA")$>
+					similarJobsTitle: titleValue,
+					<$else$>
+					similarJobsTitle: companyValue,
+					<$endif$>
+					<$if not (domainId eq 10 or domainId eq 14)$>
+					ResultCount : "3",
+					responseType: "json",
+					<$endif$>
+					location:locationValue,
+					IdcService: "HAYS_SALARY_GUIDE_GET_SALARY_RANGE"
+				},
+				success: function(data) {
+					<$if not (domainId eq 10 or domainId eq 14 or domainId eq 29)$>
+					var similarJobsList=data.result.localdata.Output;
+					obj = JSON.parse(similarJobsList);
+					var count = obj.rows.length;
+					var similarJobsHtml = "";
+					var userTitle = titleValue;
+					for(var j=0; j<count; j++){
+					var linkSimilarJob = obj.rows[j].xLocaleRecordID;
+					var titleSimilarJob = obj.rows[j].JobTitle;
+					var salarySimilarJob = obj.rows[j].xSalaryDescription;
+                                        if(salarySimilarJob === undefined){
+                                           salarySimilarJob = '';
+
+                                        }
+
+					similarJobsHtml = similarJobsHtml + '<li><a href="'+linkSimilarJob+'"><strong>'+titleSimilarJob+'</strong><small><p>'+salarySimilarJob+'</p></small></a></li>';
+					}
+					$(".similarJobsHtml").html(similarJobsHtml);
+					if(similarJobsHtml != "")
+					$(".similarJobs").show();
+					else
+					$(".similarJobs").hide();
+					<$endif$>
+					<$if domainId eq 29$>
+					var userTitle = positionValue;
+					<$endif$>
+					var resultDataList=data.result.resultsets.allResultRS;
+					for (var i = 0; i < resultDataList.length; i++){
+						if(resultDataList[i].SALARYRANGE.indexOf("-")>-1){ 
+							var sRange = resultDataList[i].SALARYRANGE.split("-");
+							var upperRange = 0;
+							var upperRangeUK = 0;
+							if(resultDataList[i].SALARYRANGE.indexOf("+")>-1){
+							upperRangeUK = parseInt(sRange[1].substring(0,sRange[1].length - 1));
+							}
+							else{
+							upperRangeUK = parseInt(sRange[1].trim());
+							}
+							var lowerRangeUK = parseInt(sRange[0].trim());
+							upperRange = parseInt(upperRangeUK)/1000;
+							var lowerRange = lowerRangeUK/1000;
+							var upperRangeCurrency = upperRangeUK;
+							upperRangeCurrency=(upperRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var lowerRangeCurrency = lowerRangeUK;
+							lowerRangeCurrency=(lowerRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var averageRangeCurrency = (upperRangeUK + lowerRangeUK)/2;
+							<$if (domainId eq 10) or (domainId eq 6) or (domainId eq 8) or (domainId eq 14) or (domainId eq 29)$>
+								averageRangeCurrency = parseInt(resultDataList[i].SALARYTYPICAL) ;
+							<$endif$>
+							<$if (domainId eq 10) or (domainId eq 14) $>
+								userTitle = areaValue;
+							<$endif$>
+		
+							averageRangeCurrency =(averageRangeCurrency + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							
+							var differece = (upperRange - lowerRange);
+							var angleUnit = 267/differece;
+							var transAngleBase = -42;
+							var transAngleHigh = 223;
+							var transAngleLowest = -48;
+							var transAngleHighest = 233;
+							var currentSalary = parseInt($("#currentSalary").val())/1000;
+							var userInput = parseInt($("#currentSalary").val());
+							userInput =(userInput+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var $bElement = $("#baramoterAngle");
+							$("#self_salary").html(sgCurrencySymbol +userInput + sgCurrencySymbolPost);
+							if(resultDataList[i].SALARYRANGE.indexOf("+")>-1){
+								$("#highest_salary").html(sgCurrencySymbol +upperRangeCurrency+"+" + sgCurrencySymbolPost);
+							}
+							else{
+							$("#highest_salary").html(sgCurrencySymbol+upperRangeCurrency + sgCurrencySymbolPost);
+							}
+							$("#average_salary").html(sgCurrencySymbol+averageRangeCurrency + sgCurrencySymbolPost);
+							$("#lowest_salary").html(sgCurrencySymbol+lowerRangeCurrency + sgCurrencySymbolPost);
+							$(".salary-statement .content-img > h2").text(sgCurrencySymbol+userInput +sgCurrencySymbolPost+"/<$lc('wwAnnumSG')$>");
+							$(".salary-statement .content-img > p").text("<$lc('wwSGCurrentSalary')$> "+userTitle);
+							if (currentSalary < lowerRange){
+									$bElement.css({ transform: 'rotate(' + transAngleLowest + 'deg)'});
+									$bElement.css('-webkit-transform', 'rotate('+transAngleLowest+'deg)');
+							}
+							else if(currentSalary > upperRange){
+									$bElement.css({ transform: 'rotate(' + transAngleHighest + 'deg)'});
+									$bElement.css('-webkit-transform', 'rotate('+transAngleHighest+'deg)');
+							}
+							else
+							{
+								var rangeDiff = currentSalary - lowerRange;
+								var angleToRotate = transAngleBase + (rangeDiff * angleUnit);
+								$bElement.css({ transform: 'rotate(' + angleToRotate + 'deg)'});
+								$bElement.css('-webkit-transform', 'rotate('+angleToRotate+'deg)');
+							}
+						}
+						else if(resultDataList[i].SALARYRANGE.length > 0 ){ 
+							var lowerRange = null;
+							var upperRangeUK = parseInt(resultDataList[i].SALARYRANGE.toString());
+							var upperRange = parseInt(upperRangeUK)/1000;
+							var upperRangeCurrency = upperRange*1000;
+							upperRangeCurrency=(upperRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var lowerRangeCurrency = lowerRange*1000;
+							lowerRangeCurrency=(lowerRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var averageRangeCurrency = (parseInt(upperRange*1000) + parseInt(lowerRange*1000))/2;
+							<$if (domainId eq 10) or (domainId eq 6) or (domainId eq 8) or (domainId eq 14) or (domainId eq 29)$>
+								averageRangeCurrency = parseInt(resultDataList[i].SALARYTYPICAL) ;
+							<$endif$>
+							<$if (domainId eq 10) or (domainId eq 14)$>
+								userTitle = areaValue;
+							<$endif$>
+							averageRangeCurrency =(averageRangeCurrency + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var transAngleBase = 92;
+							var transAngleHigh = 233;
+							var currentSalary = parseInt($("#currentSalary").val())/1000;
+							var userInput = parseInt($("#currentSalary").val());
+							userInput =(userInput + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+sperator);
+							var $bElement = $("#baramoterAngle");
+							$("#self_salary").html(sgCurrencySymbol+userInput +sgCurrencySymbolPost);
+							$("#highest_salary").html(sgCurrencySymbol+upperRangeCurrency + sgCurrencySymbolPost);
+							$("#average_salary").html("");
+							$("#lowest_salary").html("");
+							$(".salary-statement .content-img > h2").text(sgCurrencySymbol+userInput+sgCurrencySymbolPost+"/<$lc('wwAnnumSG')$>");
+							$(".salary-statement .content-img > p").text("<$lc('wwSGCurrentSalary')$> "+userTitle);
+							if (currentSalary <= upperRange){
+									$bElement.css({ transform: 'rotate(' + transAngleBase + 'deg)'});
+							}
+							else if(currentSalary >= upperRange){
+									$bElement.css({ transform: 'rotate(' + transAngleHigh + 'deg)'});
+							}
+						}	
+    					 }
+
+            
+				}
+
+			})
+
+
+		}
+	
+	</script>
+	<!--Added for Canada salary guide-->
+	<$if strEquals(siteLocale,"en-CA")$>
+	<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function(){
+	var specialism = '<$#active.specialismId$>';
+	console.log("outer"+specialism);
+	if(specialism != null && specialism !=undefined && specialism !="")
+	{
+		console.log(specialism);
+	//  $("#<$formName$>INDUSTRY").selectedIndex = specialism;
+	  document.getElementById("<$formName$>INDUSTRY").selectedIndex = specialism;
+	  var obj=$("#<$formName$>INDUSTRY");
+	  dropdownVal1 = 	obj.val().split("|")[1];	
+		var fileName1 = obj.val().split("|")[0];  
+	 
+	  document.getElementById("<$formName$>INDUSTRY_value").value =dropdownVal1;		
+	  updateNext($("#SGFORMINDUSTRY_value"),dropdownVal1);
+}
+});
+	</script>
+	<$endif$>
+	<!--Added for Canada salary guide-->
+	
+	<form class="hays_form" id="<$formName$>">
+				<div class="box check-salary-benchmark">
+					<h2 class="underline"><$lc("wwSGHeadingText")$></h2>
+					<p class="text-heading"><$lc("wwSGSummaryText")$></p>
+					<$if strEquals(siteLocale,"en-AUS")$>	
+					<p><$lc("wwSGSuperAnnotationText")$></p>
+					<$endif$>
+				<$if rsExists('allCategoryRS') AND rsFirst('allCategoryRS') $>
+				<div class="row">
+                        	<$if strEquals(siteId,"enCA")$>
+							<$classForBenchmark = "col col-4 first"$>
+							<$endif$>
+							<div class="<$classForBenchmark$>"> <!--salary guide design change for enCA-->
+                            	<ul class="form label-in-row salary-benchmark">
+					<li>
+						<label class="required"><$lc("wwSGAreaOfExpertiseLabel")$></label>				  
+				 
+					<select class="selectbox_salary_guide mandatory" name="category_salary_guide" id= "<$formName$>INDUSTRY" onchange="updateNext(this,this.options[this.selectedIndex].value);">
+						<option  value="" ><$lc("wwSGDropDownSelect")$></option>
+						<$loop allCategoryRS$>
+						<script type="text/javascript">
+						</script>
+						<$valueForDropdown= allCategoryRS.INDUSTRY$>
+						<$if strEquals(siteLocale,"en-CA")$>	
+						<$valueForDropdown = allCategoryRS.SGDDOCNAME&"|"&allCategoryRS.INDUSTRY$>
+						<$endif$>
+						<option name="category_salary_guide<$allCategoryRS.#row$>" id="category_salary_guide<$allCategoryRS.#row$>" value="<$valueForDropdown$>" >
+						<label for="category_salary_guide<$allCategoryRS.#row$>" id="<$formName$>category_salary_guide<$allCategoryRS.#row$>"><$allCategoryRS.INDUSTRY$></label>
+						</option>
+						<$endloop$>
+					</select>
+					<input name="INDUSTRY_value" id="<$formName$>INDUSTRY_value" type="hidden" value="" />
+				
+				</li>
+				<$if strIndexOf(countrylistSG,"|Sector|") lt 0$>
+					<li id="query1" style="display:none;">
+					<$else$>
+				<li id="query1">
+					<$endif$>	
+				<label class="required"><$lc("wwSGCategoryLabel")$></label>
+				
+					<select id="<$formName$>SECTOR" class="mandatory" name="SECTOR"  onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="SECTOR_value" id="<$formName$>SECTOR_value" type="hidden" value="" />
+				
+				</li>
+				<$if strIndexOf(countrylistSG,"|PositionType|")  lt 0$>
+					<li id="query2" style="display:none;">
+					<$else$>
+				<li id="query2">
+					<$endif$>	
+				
+				<label class="required"><$lc("wwSGPositionType")$></label>
+				
+					<select id="<$formName$>POSITIONTYPE" class="mandatory"  name="POSITIONTYPE" onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="POSITIONTYPE_value" id="<$formName$>POSITIONTYPE_value" type="hidden" value="" />
+				
+				</li>
+					
+				<$if strIndexOf(countrylistSG,"|Area|") lt 0$>
+				
+					<li id="query3" style="display:none;">
+					<$else$>
+				<li id="query3">
+				<$endif$>
+				
+				<label class="required"><$lc("wwSGArea")$></label>
+				
+					<select id="<$formName$>AREA" class="mandatory"  name="AREA" onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),$('#SGFORMPOSITIONTYPE_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="AREA_value" id="<$formName$>AREA_value" type="hidden" value="" />
+				
+				</li>
+					<$if strIndexOf(countrylistSG,"|Company|") lt 0$>
+					<li id="query4" style="display:none;">
+					<$else$>
+				<li id="query4">
+					<$endif$>
+					
+				<label class="required"><$lc("wwSGOrganisationType")$></label>
+				
+					<select id="<$formName$>COMPANY" class="mandatory"  name="COMPANY" onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),$('#SGFORMPOSITIONTYPE_value').val(),$('#SGFORMAREA_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="COMPANY_value" id="<$formName$>COMPANY_value" type="hidden" value="" />
+				
+				</li>
+				<$if strIndexOf(countrylistSG,"|PositionName|") lt 0$>
+					<li id="query5" style="display:none;">
+					<$else$>
+				<li id="query5">
+					<$endif$>	
+					
+				<label class="required"><$lc("wwSGJobTitleLabel")$></label>
+				
+					<select id="<$formName$>POSITIONNAME" name="POSITIONNAME" class="mandatory" onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),$('#SGFORMPOSITIONTYPE_value').val(),$('#SGFORMAREA_value').val(),$('#SGFORMCOMPANY_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="POSITIONNAME_value" id="<$formName$>POSITIONNAME_value" type="hidden" value="" />
+				
+				</li>
+				
+				<$if strIndexOf(countrylistSG,"|Location") lt 0$>
+					<li id="query6" style="display:none;">
+					<$else$>
+				<li id="query6">
+					<$endif$>
+				
+	   			<label class="required"><$lc("wwSGRegionLabel")$></label>
+				
+					<select id="<$formName$>LOCATIONNAME" name="LOCATIONNAME" class="mandatory"  onchange="setValueForhiddenField(this);" >
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="LOCATIONNAME_value" id="<$formName$>LOCATIONNAME_value" type="hidden" value="" />
+				
+				</li>
+					
+				<li>
+				<$arCurrencySymbol = lc('wwSGCurrencySymbol')$>
+				<$arCurrencySymbolPost = lc('wwSGCurrencySymbolPost')$>
+				<label class="required"><$lc("wwSGCurrentSalaryLabel")$> (<$strReplace(arCurrencySymbol,'space','')$><$strReplace(arCurrencySymbolPost,'space','')$>)</label>
+				<input id="currentSalary" class="mandatory number noDecimal" type="text" autocomplete="off" placeholder="<$lc("wwSGCurrentSalaryWatermark")$>"/>
+		  		</li>
+                <li>
+					<input type="button" id="submitbutton" name="Submit" class="btn btn-block" value="<$lc("wwSGSubmitButtonLabel")$>" />
+                </li>
+				</ul>
+                       	</div>
+				<$endif$>
+	<div class="clear"></div>
+	<$classForlegend = ""$>
+	<$classForBarometer = "col col-4 box barometerDisplay last floatRight"$>
+	<$if not strEquals(siteId,"enCA")$>
+	<$classForBarometer = "box barometerDisplay barometerDisplayukcerow"$>
+	<$classForlegend = "legendukcerow"$>
+					</div>
+					
+					<$endif$>
+					<div class="<$classForBarometer$>">
+                            	<p class="text-heading"><$lc("wwSGBaromoterHeadingText", portalUrl & #env.ProjectS_Find_Us)$></p>
+                            	<div class="barometer barometerukcerow">
+                                	<div id = "baramoterAngle" style="transform:rotate(60deg); -ms-transform:rotate(60deg); -webkit-transform:rotate(60deg)"></div>
+                                </div>
+				    <div class="legend <$classForlegend$>">
+					<table>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_self.png" class="self" alt=""></td>
+							<td class="name"><$lc("wwSGYouLabel")$></td>
+							<td id="self_salary" class="amount"></td>
+						</tr>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_highest.png" class="highest" alt=""></td>
+							<td class="name"><$lc("wwSGHighestLabel")$></td>
+							<td id="highest_salary" class="amount"></td>
+						</tr>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_avarage.png" class="avarage" alt=""></td>
+							<td class="name"><$lc("wwSGAverageLabel")$></td>
+							<td id="average_salary" class="amount"></td>
+						</tr>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_lowest.png" class="lowest" alt=""></td>
+							<td class="name"><$lc("wwSGLowestLabel")$></td>
+							<td id="lowest_salary" class="amount"></td>
+							</tr>
+					</table>
+				</div>
+	<$if not strEquals(siteId,"enCA")$>
+				<a href="<$portalUrl & #env.ProjectS_JobseekerAccount$>" class="btn btn-block" ><$lc("wwSGSendCVButtonText")$></a>
+				<a href="<$portalUrl & #env.ProjectS_Find_Us$>" class="btn btn-block" ><$lc("wwSGContactUsButtonText")$></a>
+<$endif$>																												  
+				    <p><$lc("wwSGSubmitText")$></p>                              
+                       </div>
+					   <$if strEquals(siteId,"enCA")$>
+					</div>
+					<$endif$>
+					    <$if chartImage$>
+					   <div class="box chartImage">
+					   
+					   <$chartImage$>
+					   <$InputElementsCount=ssGetXmlNodeCount(SS_DATAFILE,"wcm:root/wcm:list[@name='SalaryGuideButtons']/wcm:row")$>
+					   <$count=1$>
+					   <$loopwhile count le InputElementsCount$>
+					   <$inputElementValue=eval(ssIncludeXml(SS_DATAFILE,"wcm:root/wcm:list[@name='SalaryGuideButtons']/wcm:row[" & count & "]/wcm:element[@name='Link']/text()"))$>
+					  
+				<$inputElementValue$>
+						<$count=count+1$>
+		    <$endloop$>	
+					   </div>
+					   <style>
+					   .chartImage img{width:100%;height:100%}
+					   </style>
+					   <script>
+					   $(".chartImage > a").addClass("btn  btn-block");
+					   </script>
+					   <$endif$>
+				</div>
+			</form>
+			<$if not strEquals(siteId,"enCA")$>
+	            <div class="box salary-statement">
+                	<div class="content-img">
+                    	<img class="f-left" src="/cs/HaysDeskTopBranding/assets/images/salary-guide/salary-icon.jpg"/>
+                        <h2></h2>
+                        <p></p>
+                    </div>
+                </div>
+				<$endif$>
+				<div class="box similarJobs" style="display:none;">
+         <section>
+            <div class="hays-tabs">               
+               <div>
+                  <ul>
+                     	<h2><$lc("wwSGSImilarJobs")$></h2>
+                  </ul>
+               </div>
+               	<ul class="tab-contents">
+                  <li class="first" style="display: list-item;">
+                     <ul class="list sponsored-list similarJobsHtml">
+                     </ul>
+                  </li>
+               </ul>               
+            </div>
+         </section>
+      </div>
+<@end@>
+
+<@dynamichtml subtmp_hays_salary_guide@>
+
+	
+<script> var currentForm = document.forms[0];</script>
+<$siteLocale=#active.SiteLocale$>
+<$salaryGuideUpdated=0$>
+<$salaryGuideUpdated = ssGetNodeProperty(nodeId ,"salaryGuideUpdated")$>
+<$locale = #active.SiteLocale$>
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+	   <$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+     <$endif$>
+	<$if NOT rsExists('allCategoryRS')$>
+	 <$executeService('HAYS_SALARY_GUIDE_GET_CATEGORY')$>
+    	<$endif$>
+	<$formName = 'SGFORM'$>
+<script type="text/javascript">
+ 
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+	$(".barometerDisplay").hide();
+
+$(document).ready(function() {
+	
+	$(".salary-statement").hide();
+
+	$(document).on('keyup keypress', 'form input[id="currentSalary"],form input[id="category_salary_guide"],form input[id="SGFORMSECTOR_value"],form input[id="SGFORMPOSITIONNAME_value"],form input[id="SGFORMLOCATIONNAME_value"],form input[id="SGFORMPOSITIONTYPE_value"],form input[id="SGFORMAREA_value"],form input[id="SGFORMCOMPANY_value"]',function(e) {
+    	if(e.keyCode == 13) {
+        e.preventDefault();
+        $("#submitbutton").click();    
+        return false;
+    	}
+	});
+
+	 $("#submitbutton").click(function() {
+	  var validate=$("#SGFORM").validate().form();
+      if(validate==true)
+		{
+		getData($('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),$('#SGFORMPOSITIONTYPE_value').val(),$('#SGFORMAREA_value').val(),$('#SGFORMCOMPANY_value').val(),$('#SGFORMPOSITIONNAME_value').val(),$('#SGFORMLOCATIONNAME_value').val(),'<$siteLocale$>');
+		$(".barometerDisplay").show();
+		$(".salary-statement").show();
+		$("#submitbutton").prop("value", "<$lc("wwSGButtonUpdateLabel")$>");
+	    } // end IF(validate)
+	}); //end $(".button").click(function)
+}); //end $()document).Ready(function)
+		jQuery.validator.addMethod("noDecimal",function(value) {
+		if(value.indexOf(".") >-1 || value.indexOf(",")>-1 || value.indexOf("-")>-1){
+		return false;
+		}
+		else {
+		return true;
+		} 		
+		}, "<$lc('wwSGValidNumberMessage')$>");
+jQuery.validator.classRuleSettings.noDecimal = { noDecimal: true };
+	jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+	   
+		   jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc('wwJsmandatory_msg_input')$>",
+		number: "<$lc('wwSGValidNumberMessage')$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>"
+			
+		});
+		$("#SGFORM").validate({
+			errorPlacement: function(error, element) {
+					error.insertAfter(element);
+			}
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+	function updateNext(currentItem,categoryValue,sectorValue,positionValue,areaValue,companyValue,titleValue) {
+		areaValue = 'NA';
+		companyValue = 'NA';
+		$("#"+$(currentItem).attr('id') + "_value").val(currentItem.value);
+		nextItem = $(currentItem).parent().next().find('select').attr('id');;
+		queryNumber = $(currentItem).parent().next().attr('id').replace('query','');
+		var resultKey = "SALARYGUIDEDRS";
+		var onlyItemFlag = false;
+		$(currentItem).parent('li').nextAll().find('select').html('<option value=""><$lc("wwSGDropDownSelect")$></option>').removeClass('disabledOp');
+		if(currentItem.value=='') return false;
+		$("#"+ nextItem).html('<option value=""><$lc("wwLoadingSG")$></option>');
+		$.ajax({
+				url: "<$HttpRelativeWebRoot$>idcplg",
+				dataType: "jsonp",
+				type: "POST",
+				data: {
+					outputFormat: "json",
+					locale: "<$siteLocale$>",
+					queryNumber : queryNumber,
+					industry: categoryValue,
+					sector: sectorValue,
+					positiontype: positionValue,
+					area: areaValue,
+					company: companyValue,
+					positionname: titleValue,
+					IdcService: "HAYS_SALARY_GUIDE_GET_DETAILS"
+				},
+				success: function(data) {
+					var dataList=data.result.resultsets.salaryGuideRS;
+					$("#"+ nextItem).removeClass('disabledOp');
+					var listItems='';
+					if(dataList.length >1 )
+					listItems = '<option  value=""><$lc("wwSGDropDownSelect")$></option>';
+					else
+					onlyItemFlag = true;
+					var j=0;
+					for (var i = 0; i < dataList.length; i++){
+      					listItems+= '<option value="' + dataList[i][resultKey] + '">'+dataList[i][resultKey]+'</option>';
+						 }	
+     					 $("#"+ nextItem).html(listItems);
+						if(onlyItemFlag) {
+						$("#"+ nextItem).keyup().change();
+						}
+				}
+			})
+		}
+		
+		function setValueForhiddenField(location){
+		$("#"+$(location).attr('id') + "_value").val(location.value);
+		}
+		
+	function getData(categoryValue,sectorValue,positionValue,areaValue,companyValue,titleValue,locationValue) {
+		areaValue = 'NA';
+		companyValue = 'NA';
+		var factor = 1000;
+		<$if strEquals(siteLocale,"en-JP") or strEquals(siteLocale,"jp-JP")$>	
+		factor = 1000000;
+		<$endif$>
+		$.ajax({
+				url: "<$HttpRelativeWebRoot$>idcplg",
+				dataType: "jsonp",
+				type: "POST",
+				data: {
+					outputFormat: "json",
+					siteLocale: "<$siteLocale$>",
+					industry: categoryValue,
+					sector: sectorValue,
+					positiontype: positionValue,
+					area: areaValue,
+					company: companyValue,
+					positionname: titleValue,
+					location:locationValue,
+					<$if salaryGuideUpdated eq  1 $>
+					ResultCount : "5",
+					responseType:"json",
+					<$endif$>
+					IdcService: "HAYS_SALARY_GUIDE_GET_SALARY_RANGE"
+				},
+				success: function(data) {
+					var positionSalaryText = "<$lc('wwSGCurrentSalary')$> "+titleValue;
+					<$if strEquals(siteLocale,"jp-JP")$>	
+						positionSalaryText = titleValue + " <$lc('wwSGCurrentSalary')$> "
+					<$endif$>
+					<$if salaryGuideUpdated eq  1 $>
+					var linkAllJobs = "<$portalUrl & #env.ProjectS_Search_Results & '?q='$>" + titleValue;
+					$(".linkAllJobs").attr("href",linkAllJobs);
+					var similarJobsList=data.result.localdata.Output;
+					obj = JSON.parse(similarJobsList);
+					var count = obj.rows.length;
+					var similarJobsHtml = "";
+					var userTitle = titleValue;
+					for(var j=0; j<count; j++){
+					var linkSimilarJob = obj.rows[j].xLocaleRecordID;
+					var titleSimilarJob = obj.rows[j].JobTitle;
+					var webSnippet = obj.rows[j].xDescription;
+                                        if(webSnippet === undefined){
+                                           webSnippet = '';  }
+					var salarySimilarJob = obj.rows[j].xSalaryDescription;
+                                        if(salarySimilarJob === undefined){
+                                           salarySimilarJob = '';
+
+                                        }
+					similarJobsHtml = similarJobsHtml + '<li><a href="'+linkSimilarJob+'"><strong>'+titleSimilarJob+'</strong><small><p>'+webSnippet+'</p></small><small><p>'+salarySimilarJob+'</p></small></a></li>';
+					}
+					$(".similarJobsHtml").html(similarJobsHtml);
+					if(similarJobsHtml != "")
+					$(".similarJobs").show();
+					else
+					$(".similarJobs").hide();
+					<$endif$>
+					var resultDataList=data.result.resultsets.allResultRS;
+					for (var i = 0; i < resultDataList.length; i++){
+						if(resultDataList[i].SALARYRANGE.indexOf("-")>-1){ 
+							var sRange = resultDataList[i].SALARYRANGE.split("-");
+							var upperRange = 0;
+							var upperRangeUK = 0;
+							if(resultDataList[i].SALARYRANGE.indexOf("+")>-1){
+							upperRangeUK = parseInt(sRange[1].substring(0,sRange[1].length - 1));
+							}
+							else{
+							upperRangeUK = parseInt(sRange[1].trim());
+							}
+							upperRange = parseInt(upperRangeUK);
+							var lowerRange = parseInt(sRange[0].trim());
+							
+							var upperRangeCurrency = upperRange*factor;
+							upperRangeCurrency=(upperRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var lowerRangeCurrency = lowerRange*factor;
+							lowerRangeCurrency=(lowerRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var averageRangeCurrency = (parseInt(upperRange*factor) + parseInt(lowerRange*factor))/2;
+							averageRangeCurrency =(averageRangeCurrency + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							
+							var differece = (upperRange - lowerRange);
+							var angleUnit = 267/differece;
+							var transAngleBase = -42;
+							var transAngleHigh = 223;
+							var transAngleLowest = -48;
+							var transAngleHighest = 233;
+							var currentSalary = parseInt($("#currentSalary").val())/factor;
+							var userInput = parseInt($("#currentSalary").val());
+							userInput =(userInput+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var $bElement = $("#baramoterAngle");
+							$("#self_salary").html("<$lc('wwSGCurrencySymbol')$>"+userInput);
+							if(resultDataList[i].SALARYRANGE.indexOf("+")>-1){
+								$("#highest_salary").html("<$lc('wwSGCurrencySymbol')$>"+upperRangeCurrency+"+");
+							}
+							else{
+							$("#highest_salary").html("<$lc('wwSGCurrencySymbol')$>"+upperRangeCurrency);
+							}
+							$("#average_salary").html("<$lc('wwSGCurrencySymbol')$>"+averageRangeCurrency);
+							$("#lowest_salary").html("<$lc('wwSGCurrencySymbol')$>"+lowerRangeCurrency);
+							<$if salaryGuideUpdated eq  0 $>
+							$(".salary-statement .content-img > h2").text("<$lc('wwSGCurrencySymbol')$>"+userInput+"/<$lc('wwAnnumSG')$>");
+							$(".salary-statement .content-img > p").text(positionSalaryText);
+							<$else$>
+								$(".salary-statement .content-img > h2").text(titleValue);
+								$(".salary-statement .content-img .average").text("<$lc('wwSGCurrencySymbol')$>"+averageRangeCurrency);
+								$(".salary-statement .content-img .range").text("<$lc('wwSGCurrencySymbol')$>"+lowerRangeCurrency + " - <$lc('wwSGCurrencySymbol')$>"+upperRangeCurrency);
+								
+							<$endif$>
+							if (currentSalary < lowerRange){
+									$bElement.css({ transform: 'rotate(' + transAngleLowest + 'deg)'});
+									$bElement.css('-webkit-transform', 'rotate('+transAngleLowest+'deg)');
+							}
+							else if(currentSalary > upperRange){
+									$bElement.css({ transform: 'rotate(' + transAngleHighest + 'deg)'});
+									$bElement.css('-webkit-transform', 'rotate('+transAngleHighest+'deg)');
+							}
+							else
+							{
+								var rangeDiff = currentSalary - lowerRange;
+								var angleToRotate = transAngleBase + (rangeDiff * angleUnit);
+								$bElement.css({ transform: 'rotate(' + angleToRotate + 'deg)'});
+								$bElement.css('-webkit-transform', 'rotate('+angleToRotate+'deg)');
+							}
+						}
+						else if(resultDataList[i].SALARYRANGE.length > 0 ){ 
+							var lowerRange = null;
+							var upperRangeUK = parseInt(resultDataList[i].SALARYRANGE.toString());
+							var upperRange = parseInt(upperRangeUK);
+							var upperRangeCurrency = upperRange*factor;
+							upperRangeCurrency=(upperRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var lowerRangeCurrency = lowerRange*factor;
+							lowerRangeCurrency=(lowerRangeCurrency+ "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var averageRangeCurrency = (parseInt(upperRange*factor) + parseInt(lowerRange*factor))/2;
+							averageRangeCurrency =(averageRangeCurrency + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var transAngleBase = 92;
+							var transAngleHigh = 233;
+							var currentSalary = parseInt($("#currentSalary").val())/factor;
+							var userInput = parseInt($("#currentSalary").val());
+							userInput =(userInput + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+							var $bElement = $("#baramoterAngle");
+							$("#self_salary").html("<$lc('wwSGCurrencySymbol')$>"+userInput);
+							$("#highest_salary").html("<$lc('wwSGCurrencySymbol')$>"+upperRangeCurrency);
+							$("#average_salary").html("");
+							$("#lowest_salary").html("");
+							<$if salaryGuideUpdated eq  0 $>
+							$(".salary-statement .content-img > h2").text("<$lc('wwSGCurrencySymbol')$>"+userInput+"/<$lc('wwAnnumSG')$>");
+							
+							$(".salary-statement .content-img > p").text(positionSalaryText);
+							<$else$>
+								$(".salary-statement .content-img > h2").text(titleValue);
+								$(".salary-statement .content-img .average").text("<$lc('wwSGCurrencySymbol')$>"+averageRangeCurrency);
+								$(".salary-statement .content-img .range").text("<$lc('wwSGCurrencySymbol')$>"+lowerRangeCurrency + " - <$lc('wwSGCurrencySymbol')$>"+upperRangeCurrency);
+								//Accounts Payable Officer</br>Average Salary: $49,000</br>Range: $43,000 - $55,000
+								<$endif$>
+							if (currentSalary <= upperRange){
+									$bElement.css({ transform: 'rotate(' + transAngleBase + 'deg)'});
+							}
+							else if(currentSalary >= upperRange){
+									$bElement.css({ transform: 'rotate(' + transAngleHigh + 'deg)'});
+							}
+						}	
+    					 }
+
+            
+				}
+
+			})
+
+
+		}
+	
+	</script>
+	
+	<form class="hays_form" id="<$formName$>">
+				<div class="box check-salary-benchmark">
+					<h2 class="underline"><$lc("wwSGHeadingText")$></h2>
+					<p class="text-heading"><$lc("wwSGSummaryText")$></p>
+					<$if strEquals(siteLocale,"en-AUS")$>	
+					<p><$lc("wwSGSuperAnnotationText")$></p>
+					<$endif$>
+				<$if rsExists('allCategoryRS') AND rsFirst('allCategoryRS') $>
+				<div class="row">
+                        	<div class="col col-3">
+                            	<ul class="form label-in-row salary-benchmark">
+					<li>
+						<label class="required"><$lc("wwSGAreaOfExpertiseLabel")$></label>				  
+				 
+					<select class="selectbox_salary_guide mandatory" name="category_salary_guide" id= "<$formName$>INDUSTRY" onchange="updateNext(this,this.options[this.selectedIndex].value);">
+						<option  value="" ><$lc("wwSGDropDownSelect")$></option>
+						<$loop allCategoryRS$>
+						<script type="text/javascript">
+						</script>
+						<option name="category_salary_guide<$allCategoryRS.#row$>" id="category_salary_guide<$allCategoryRS.#row$>" value="<$allCategoryRS.INDUSTRY$>" >
+						<label for="category_salary_guide<$allCategoryRS.#row$>" id="<$formName$>category_salary_guide<$allCategoryRS.#row$>"><$allCategoryRS.INDUSTRY$></label>
+						</option>
+						<$endloop$>
+					</select>
+					<input name="INDUSTRY_value" id="<$formName$>INDUSTRY_value" type="hidden" value="" />
+				
+				</li>
+					
+				<li id="query1">
+				<label class="required"><$lc("wwSGCategoryLabel")$></label>
+				
+					<select id="<$formName$>SECTOR" class="mandatory" name="SECTOR"  onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="SECTOR_value" id="<$formName$>SECTOR_value" type="hidden" value="" />
+				
+				</li>
+				<li id="query2">
+				<label class="required"><$lc("wwSGPositionType")$></label>
+				
+					<select id="<$formName$>POSITIONTYPE" class="mandatory"  name="POSITIONTYPE" onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="POSITIONTYPE_value" id="<$formName$>POSITIONTYPE_value" type="hidden" value="" />
+				
+				</li>
+				<li id="query5">
+				<label class="required"><$lc("wwSGJobTitleLabel")$></label>
+				
+					<select id="<$formName$>POSITIONNAME" name="POSITIONNAME" class="mandatory" onchange="updateNext(this,$('#SGFORMINDUSTRY_value').val(),$('#SGFORMSECTOR_value').val(),$('#SGFORMPOSITIONTYPE_value').val(),$('#SGFORMAREA_value').val(),$('#SGFORMCOMPANY_value').val(),this.options[this.selectedIndex].value);">
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="POSITIONNAME_value" id="<$formName$>POSITIONNAME_value" type="hidden" value="" />
+				
+				</li>
+				
+				<li id="query6">
+	   			<label class="required"><$lc("wwSGRegionLabel")$></label>
+				
+					<select id="<$formName$>LOCATIONNAME" name="LOCATIONNAME" class="mandatory"  onchange="setValueForhiddenField(this);" >
+					<option value=""><$lc("wwSGDropDownSelect")$></option>
+					</select>
+					<input name="LOCATIONNAME_value" id="<$formName$>LOCATIONNAME_value" type="hidden" value="" />
+				
+				</li>
+					
+				<li>
+				<label class="required"><$lc("wwSGCurrentSalaryLabel")$></label>
+				<input id="currentSalary" class="mandatory number noDecimal" type="text" autocomplete="off" placeholder="<$lc("wwSGCurrentSalaryWatermark")$>"/>
+		  		</li>
+                <li>
+					<input type="button" id="submitbutton" name="Submit" class="btn btn-block" value="<$lc("wwSGSubmitButtonLabel")$>" />
+                </li>
+				</ul>
+                       	</div>
+				<$endif$>
+	<div class="clear"></div>
+					
+					<div class="col col-3 barometerDisplay">
+                            	<div class="barometer">
+                                	<div id = "baramoterAngle" style="transform:rotate(60deg); -ms-transform:rotate(60deg); -webkit-transform:rotate(60deg)"></div>
+                                </div>
+				    <div class="legend">
+					<table>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_self.png" class="self" alt=""></td>
+							<td class="name"><$lc("wwSGYouLabel")$></td>
+							<td id="self_salary" class="amount"></td>
+						</tr>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_highest.png" class="highest" alt=""></td>
+							<td class="name"><$lc("wwSGHighestLabel")$></td>
+							<td id="highest_salary" class="amount"></td>
+						</tr>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_avarage.png" class="avarage" alt=""></td>
+							<td class="name"><$lc("wwSGAverageLabel")$></td>
+							<td id="average_salary" class="amount"></td>
+						</tr>
+						<tr>
+							<td class="color-palate"><img src="/cs/HaysDeskTopBranding/assets/images/salary-guide/legend_lowest.png" class="lowest" alt=""></td>
+							<td class="name"><$lc("wwSGLowestLabel")$></td>
+							<td id="lowest_salary" class="amount"></td>
+							</tr>
+					</table>
+				</div>
+				    <p><$lc("wwSGSubmitText")$></p>                              
+                       </div>
+					   </div>
+				</div>
+			</form>
+	            <div class="box salary-statement">
+                	<div class="content-img">
+                    	<img class="f-left" src="/cs/HaysDeskTopBranding/assets/images/salary-guide/salary-icon.jpg"/>
+						
+<$if salaryGuideUpdated eq  1 $>
+ <h2></h2>
+	<p class="salary-range"><$lc('wwSGAvgSalaryText')$> <span class="average"></span></p>
+	<p class="salary-range"><$lc('wwSGARangeText')$><span class="range"></span></p> 
+	<style>
+	.salary-statement .salary-range {
+    font-size: 13px;
+    line-height: 16px;
+   
+}
+
+	</style>
+<$else$>
+                        <h2></h2>
+                        <p></p>
+<$endif$>
+					  
+						
+                      
+                    </div>
+                </div>
+				<$if salaryGuideUpdated eq  1 $>
+				<!--3 button for apac-->
+				<div class="box">
+										<P><a href="<$portalUrl & #env.ProjectS_JobseekerAccount$>" target="_blank" class="btn btn-block"><$lc("wwSGSendCVButtonText")$></a></p> <p><a href="<$portalUrl & #env.ProjectS_Find_Us$>" target="_blank" class="btn btn-block"><$lc("wwSGContactUsButtonText")$></a></p> <p class="last"><a href="<$ ssNodeLink('request-copy',siteId) $>" target="_blank" class="btn btn-block"><$lc("wwSGDownloadPDFButtonText")$></a></p>
+								</div>
+								
+				<div class="box similarJobs" style="display:none;">
+         <section>
+            <div class="hays-tabs">               
+               <div>
+                  <ul>
+                     	<h2><$lc("wwSGSImilarJobs")$></h2>
+                  </ul>
+               </div>
+               	<ul class="tab-contents">
+                  <li class="first" style="display: list-item;">
+                     <ul class="list sponsored-list similarJobsHtml">
+                     </ul>
+                  </li>
+               </ul>               
+            </div>
+         </section>
+		 <a href="#" target="_blank" class="btn btn-block linkAllJobs"><$lc('wwSGViewAllText')$></a>
+      </div>
+	  <$endif$>
+				<script>
+				$("#SGFORM").parent().removeClass("col");
+				</script>
+<@end@>
+<@dynamichtml subtmp_hays_salary_guide_pdf_download_form@>
+<$siteLocale=#active.SiteLocale$>
+	<$formName = 'sg_pdf_download'$>
+	<$locale = #active.SiteLocale$>
+	
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+	   <$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+     <$endif$>
+<$include hays_salary_guide_pdf_download_form_submit$>
+
+<script type="text/javascript">
+ 
+<!--//--><![CDATA[//><!--
+function HAYSformSG() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	$(document).on('keyup keypress', 'form input[id="sg_email_id"],form input[id="sg_name"],form input[id="sg_organisation"],form input[id="sg_title"],form input[id="sg_state"],form input[id="sg_disc_id"] ',function(e) {
+    	if(e.keyCode == 13) {
+        e.preventDefault();
+	//alert("enter key pressed inside download form");
+        $("#sg_submit_button").click();    
+        return false;
+    	}
+	});
+	 $("#sg_submit_button").click(function() {
+
+      
+	
+    }); //end $(".button").click(function)
+}); //end $()document).Ready(function)
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+		jQuery.validator.addClassRules("sg_email_id", {
+	        email:true
+	       });
+		   jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>"
+		});
+		jQuery.validator.addMethod("checkRecaptchaValRule", function(value, element) {
+    	var resultCaptcha = grecaptcha.getResponse();
+		if(resultCaptcha==""){ 
+		return false;
+		}
+		else{return true;}
+	    }, "<$lc("wwJsmandatory_msg_input")$>");
+		$("#sg_pdf_download").validate({
+			onkeyup:false,
+			rules:{
+				    <$if isCaptchaEnabled gt 0$>
+					recaptcha : {checkRecaptchaValRule : true},
+				     <$endif$>
+				},
+
+			errorPlacement: function(error, element) {				
+			 if (element.attr('name') == "sg_disc_id") {
+					error.insertAfter($(element).parents('li'));
+				}
+				else {
+					error.insertAfter(element);
+			}
+			}
+		});
+
+         
+	}
+	else {
+		window.setTimeout(HAYSformSG, 100);
+	}
+}
+HAYSformSG();
+<$if isCaptchaEnabled gt 0$>
+					function checkRecaptchaVal(){
+						$('label[for="recaptcha"]').hide();
+					}
+				<$endif$>
+//--><!]]>
+</script>
+
+
+<@end@>
+<@dynamichtml hays_salary_guide_pdf_download_form_submit@>
+<script type="text/javascript">
+function sendMail() {
+		var validateSG=$("#sg_pdf_download").validate().form();
+      		if(validateSG==true)
+		{
+		var dataString = 'domainId='+ $("#domainId").val() 
+					  + '&siteId=' + $("#siteId").val()
+                      		  + '&Locale=' + $("#Locale").val()
+	                  		  + '&sg_name=' + $("#sg_name").val()
+					  + '&sg_title=' + $("#sg_title").val() 
+					  + '&sg_organisation=' + $("#sg_organisation").val()
+					  + '&sg_email_id=' + $("#sg_email_id").val()
+					  + '&sg_state=' + $("#sg_state").val()
+					  + '&emailTemplate=' + $("#emailTemplate").val()
+					  + '&DataFormName='+ $("#DataFormName").val()
+					  + '&DataFormName='+ $("#DataFormName").val()
+					  + '&captcha=' + $("#captcha").val()
+					  + '&g-recaptcha-response=' + $("#g-recaptcha-response").val()
+                                          + '&sg_disc_id=' + $("#sg_disc_id").val();
+
+		 $.ajax({
+          type: "POST",
+          url: "<$HttpCgiPath$>?IdcService=HAYS_MAIL&IsJson=1&routing="+"<$routingVal$>",
+          data: dataString,
+          success: function(response) {
+			if(response.LocalData.mailResponse=='true'){
+			$("#sg_pdf_download")[0].reset();
+			$("#sg_submit_button").addClass("sg_submit_button_tick");
+			}
+			}
+			});
+
+		window.open('<$lc("wwSGFileLocation","@")$>', '_blank');
+        	//this.target = 'formpopup';
+	  
+	   
+		
+
+
+		}
+	 } // end IF(validate)
+</script>
+
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include namevalue_hidden$>	
+<$include captcha_country_inc$>		
+<$str= strSubstring(fwstr, strIndexOf(fwstr, "<dd1>")+5, strIndexOf(fwstr, "</dd1>"))$>
+<$str1= strSubstring(fwstr, strIndexOf(fwstr, "<dd2>")+5, strIndexOf(fwstr, "</dd2>"))$>
+
+<form class="hays_form" name="sg_pdf_download" id="sg_pdf_download" method="post" >
+  <input type="hidden" id="DataFormName" value="sg_pdf_download" name="DataFormName"/>
+  <input type="hidden" id="emailTemplate" value="SG_PDF_Download_EmailTemplate" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" /> 
+  <input type="hidden" id="domainId" name="domainId" value="<$domainId$>" /> 
+  <input type="hidden" id="siteId" name="siteId" value="<$siteId$>" /> 
+  <input type="hidden" id="Locale" name="locale" value="<$SiteLocale$>" />
+  <input type="hidden" id="routing" name="routing" value="<$routingVal$>"/>
+ 	
+	<$strcode =   strReplace(SiteLocale,"-","")$>
+  	<$HaysSGLocationsLink = lc("wwHays"&strcode&"LocationLink")$>  
+	<$rsMakeFromString("RSLocationsList", HaysSGLocationsLink, "locationSourceLink")$>
+<div class="box salary-guide-download">
+	<h2><$lc("wwSGReportHeadingText")$></h2>
+                    <ul class="form label-in-row">
+                    				<li>
+                                    	<label class="required"><$lc("wwSGName")$></label>
+                                      	<div class="input"><input autocomplete="off" class="mandatory" type="text" placeholder="<$lc("wwSGNameWatermark")$>" name="sg_name" id="sg_name"></div>
+                                     </li>
+                                     <li>
+                                     	<label class="required"><$lc("wwSGTitle")$></label>
+                                      	<div class="input"><input autocomplete="off" class="mandatory" type="text" placeholder="<$lc("wwSGJobTitleWatermark")$>" name="sg_title" id="sg_title"></div>
+                                     </li>
+                                     <li>
+                                     	<label class="required"><$lc("wwSGOrganisation")$></label>
+                                      	<div class="input"><input autocomplete="off" class="mandatory" type="text" placeholder="<$lc("wwSGOrganisationWatermark")$>" name="sg_organisation" id="sg_organisation"></div>
+                                     </li>
+                                 	 <li>
+					<label class="required"><$lc("wwSGState")$></label>
+					 <div class="input">
+					<select class="sg_state mandatory" name="sg_state" id= "sg_state">
+						<option  value="" ><$lc("wwSGDropDownSelect")$></option>
+						<$loop RSLocationsList$>							 
+								<option value="<$locationSourceLink$>">	<$locationSourceLink$></option>		
+						<$endloop$>
+					</select>
+
+				</div>                           	
+                                      	
+                                     </li>
+                                     <li>
+                                     	<label class="required"><$lc("wwSGEmailAddressLabel")$></label>
+                                      	<div class="input"><input class="mandatory email" type="text" placeholder="<$lc("wwSGEmailAddressWatermark")$>" autocomplete="off" name="sg_email_id" id="sg_email_id"></div>
+                                     </li>
+                                    <$if isCaptchaEnabled EQ 1$>
+										<$include captcha_enable_inc$>
+									<$endif$>
+
+                                 <$SalaryGuideCheckBoxAddCountry=","&#env.SalaryGuideCheckBoxAddCountry&","$>
+									<$domainID = ","&#active.domainId&","$>
+									<$if strIndexOf(SalaryGuideCheckBoxAddCountry,domainID) gt 0$> 
+										<$isCheckBoxEnabled=1$>
+									<$else$>
+										<$isCheckBoxEnabled=0$>
+									<$endif$>
+								  <$if isCheckBoxEnabled eq 1$>
+								     <li id="li_sg_disc_id">
+                                        <div class="input" ><input type="checkbox" class="mandatory checkbox" name="sg_disc_id" value="sg_disc_value" id="sg_disc_id" /><$lc("wwTermandcondition")$></div>
+									</li>
+                                   <$endif$>
+                                     <li>
+						<button type="button" id="sg_submit_button" name="sg_submit_button" class="btn btn-block" onclick="sendMail();"><span><$lc("wwSGPDFButtonText")$></span></button>
+                                     </li>
+									  <$if isCheckBoxEnabled eq 0$><span><$lc("wwSGSDNLDLegalText1")$> </span><br/> <span> <$lc("wwSGSDNLDLegalText2")$></span><$endif$>
+                                 </ul>
+               		
+                </div>
+		  </form>
+<@end@>
+</body></html>	

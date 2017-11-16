@@ -1,0 +1,3632 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml datPicker_CSS@>
+<link rel="stylesheet" type="text/css"  href="/haysassets/HaysGeneralComponent/assets/custom_form_assets/datePicker.css" />
+<@end@>
+
+<@dynamichtml hays_FormString@>
+<$lst_String=ssIncludeXml(SS_DATAFILE,"wcm:root/wcm:list[@name='SelectedContent']")$>
+<$if strLength(lst_String) GT 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$if strLength(wcmListNumRows) GT 0$>
+<$count=0$>
+<$loopwhile count< wcmListNumRows$>
+<$widget_XML = wcmListElement("Widget", count)$>
+<$if strLength(widget_XML) GT 0$>
+<$fwstr=wcmListElement("Widget", count)$>
+<$endif$>
+<$count=count+1$>
+<$endloop$>
+<$endif$>
+<$else$>
+<$fwstr=ssIncludeXml(SS_DATAFILE,"wcm:root/wcm:element[@name='Widget']/text()")$>
+<$endif$>
+<$email= strSubstring(fwstr, strIndexOf(fwstr, "<Email>")+7, strIndexOf(fwstr, "</Email>"))$>
+<$customForm= strSubstring(fwstr, strIndexOf(fwstr, "<sf_include>")+12, strIndexOf(fwstr, "</sf_include>"))$>
+<$required_fields= strSubstring(fwstr, strIndexOf(fwstr, "<RequiredFields>")+16, strIndexOf(fwstr, "</RequiredFields>"))$>
+<$display_fields= strSubstring(fwstr, strIndexOf(fwstr, "<FormFields>")+12, strIndexOf(fwstr, "</FormFields>"))$>
+
+<$dropdown_type= strSubstring(fwstr, strIndexOf(fwstr, "<DropdownType>")+14, strIndexOf(fwstr, "</DropdownType>"))$>
+<$dropdown_label= strSubstring(fwstr, strIndexOf(fwstr, "<DropdownLabel>")+15, strIndexOf(fwstr, "</DropdownLabel>"))$>
+<$dropdown_required= strSubstring(fwstr, strIndexOf(fwstr, "<DropdownRequired>")+18, strIndexOf(fwstr, "</DropdownRequired>"))$>
+<$dropdown_addtoform= strSubstring(fwstr, strIndexOf(fwstr, "<DropdownAddToForm>")+19, strIndexOf(fwstr, "</DropdownAddToForm>"))$>
+<$dropdown_options= strSubstring(fwstr, strIndexOf(fwstr, "<DropdownOptions>")+17, strIndexOf(fwstr, "</DropdownOptions>"))$>
+<@end@>
+
+<@dynamichtml namevalue_hidden@>
+<script type="text/javascript">
+function createSetHidden (){
+var nameVal= document.getElementById("name").value;
+	if(document.getElementById("newDiv")!=null){
+	   	   document.getElementById("user_name").value=nameVal;
+	}else{
+		    var newdiv = document.createElement("div");
+			newdiv.setAttribute("id","newDiv");
+			var input = '<input type="hidden" id="user_name" name="user_name" value=' + nameVal + ' />';
+			newdiv.innerHTML=input;
+			document.getElementById("name").parentNode.appendChild(newdiv);
+			if(document.getElementById("user_name").value=='/'){
+				document.getElementById("user_name").value="";	
+			}
+	}	
+}
+</script>
+<@end@>
+
+<@dynamichtml Form_display@>
+<script type="text/javascript">
+window.onload = function () { 
+var reqfields_string='<$required_fields$>';
+//alert("required fields = "+reqfields_string);
+var dsplyfields_string='<$display_fields$>';
+var dropdownrequired='<$dropdown_required$>'
+var dropdown_addtoform='<$dropdown_addtoform$>';
+var customForm='<$customForm$>';
+//alert("Req:"+dropdownrequired);
+//alert("addtoform:"+dropdown_addtoform);
+
+if(dropdown_addtoform=="true" && dropdownrequired=="true")
+{
+ 
+ document.getElementById("lbl_PreferredLocation").innerHTML  = "<$lc('wwRequiredField')$>"+ document.getElementById("lbl_PreferredLocation").innerHTML;
+ document.getElementById("PreferredLocation").className += " " + "mandatory";
+}
+
+if(dsplyfields_string !="")
+{
+displayFieldsArray =dsplyfields_string.split(",");
+for(i=0;i < displayFieldsArray.length;i++)
+  {
+    //alert(displayFieldsArray[i]);
+    if(document.getElementById(displayFieldsArray[i])!=null)
+     {
+    	//alert(displayFieldsArray[i]);
+	document.getElementById(displayFieldsArray[i]).style.display = 'block';
+     }
+  } 
+ }
+ 
+ if(reqfields_string !="")
+{
+requiredFieldsArray =reqfields_string.split(",");
+for(i=0;i < requiredFieldsArray.length;i++)
+  {
+	
+	if(document.getElementsByName(requiredFieldsArray[i])[0] != undefined)
+       {
+		//alert("inside mandatory");
+		var labelID = 'lbl_'+requiredFieldsArray[i];
+		document.getElementsByName(requiredFieldsArray[i])[0].className += " " + "mandatory";
+		document.getElementById(labelID).innerHTML  = "<$lc('wwRequiredField')$>"+ document.getElementById(labelID).innerHTML;
+       }
+  }
+}
+
+if(customForm=="DataForm_1")
+{
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li5').style.display =="block")) {
+      $('#emailaddress').addClass('email');
+      }
+	  
+   if ($("#friends_email").hasClass("mandatory") || (document.getElementById('li6').style.display =="block")) {
+      $('#friends_email').addClass('email');
+      }
+					
+   if ($("#phoneno").hasClass("mandatory") || (document.getElementById('li11').style.display =="block")) {
+ 	  $('#phoneno').addClass('digits');
+     }
+
+   if ($("#friends_phoneno").hasClass("mandatory") || (document.getElementById('li12').style.display =="block")) {
+       $('#friends_phoneno').addClass('digits');
+    } 
+ }  
+
+
+if(customForm=="DataForm_2")
+{
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li2').style.display =="block")) {
+      $('#emailaddress').addClass('email');
+      }
+	  
+     if ($("#telephoneno").hasClass("mandatory") || (document.getElementById('li3').style.display =="block")) {
+ 	  $('#telephoneno').addClass('digits');
+      }  
+ }  
+
+
+if(customForm=="DataForm_3")
+{
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li4').style.display =="block")) {
+          $('#emailaddress').addClass('email');
+          }
+	  
+         if ($("#telephoneno").hasClass("mandatory") || (document.getElementById('li5').style.display =="block")) {
+ 	     $('#telephoneno').addClass('digits');
+          }   
+ }  
+
+
+if(customForm=="DataForm_4")
+{
+
+    if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li2').style.display =="block")) {
+          $('#emailaddress').addClass('email');
+          }
+	  
+         if ($("#telephoneno").hasClass("mandatory") || (document.getElementById('li3').style.display =="block")) {
+ 	     $('#telephoneno').addClass('digits');
+          }  
+ }  
+
+
+if(customForm=="DataForm_5")
+{
+
+   if ($('#home_emailaddress').hasClass('mandatory') || (document.getElementById('li10').style.display =="block")) {
+          $('#home_emailaddress').addClass('email');
+          }
+ } 
+
+
+if(customForm=="DataForm_6")
+{
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li3').style.display =="block")) {
+      $('#emailaddress').addClass('email');
+      }
+	
+					
+     if ($("#contactno").hasClass("mandatory") || (document.getElementById('li2').style.display =="block")) {
+ 	  $('#contactno').addClass('digits');
+     }
+
+   if ((document.getElementById('li4').style.display =="block") || (document.getElementById('li5').style.display =="block")) {
+	document.getElementById('heading1').style.display ="block";
+      }
+	  
+	 if ((document.getElementById('li6').style.display =="block") || (document.getElementById('li7').style.display =="block")) {
+      	  document.getElementById('heading2').style.display ="block";
+      }
+  
+	 if ((document.getElementById('li8').style.display =="block") || (document.getElementById('li9').style.display =="block")) {
+     	  document.getElementById('heading3').style.display ="block";
+      } 
+    
+ }  
+ 
+
+
+if(customForm=="DataForm_7")
+{
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li4').style.display =="block")) {
+          $('#emailaddress').addClass('email');
+          }
+	  
+         if ($("#telephoneno").hasClass("mandatory") || (document.getElementById('li3').style.display =="block")) {
+ 	     $('#telephoneno').addClass('digits');
+          }    
+ }  
+ 
+ if(customForm=="DataForm_8")
+{
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li3').style.display =="block")) {
+      $('#emailaddress').addClass('email');
+      }
+	  
+     if ($("#telephoneno").hasClass("mandatory") || (document.getElementById('li5').style.display =="block")) {
+ 	  $('#telephoneno').addClass('digits');
+      }  
+ } 
+ 
+if(customForm=="DataForm_9")
+{
+	
+
+   if ($('#emailaddress').hasClass('mandatory') || (document.getElementById('li5').style.display =="block")) {
+      $('#emailaddress').addClass('email');
+      }
+	  
+   if ($("#friends_email").hasClass("mandatory") || (document.getElementById('li6').style.display =="block")) {
+      $('#friends_email').addClass('email');
+      }
+					
+   if ($("#phoneno").hasClass("mandatory") || (document.getElementById('li11').style.display =="block")) {
+ 	  $('#phoneno').addClass('digits');
+     }
+
+   if ($("#friends_phoneno").hasClass("mandatory") || (document.getElementById('li12').style.display =="block")) {
+       $('#friends_phoneno').addClass('digits');
+    } 
+ } 
+ 
+}  
+</script>
+<@end@>
+
+
+
+
+<!--************************* REFER A FRIEND Form *******************
+*****************************************************************-->
+<@dynamichtml DataForm_1@>
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+	  
+	$.watermark.hideAll();  
+	 
+      var validate=$("#DataForm1").validate().form();
+      if(validate==true)
+	{
+	  $("#DataForm1").submit();
+       
+    } // end IF(validate)
+	
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="friends_name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('textarea[name="youraddress"]').watermark('<$lc('wwDataFormUserAddressWatermark')$>');
+		$('textarea[name="friends_address"]').watermark('<$lc('wwDataFormUserAddressWatermark')$>');
+		$('input[name="phoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="friends_phoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="postcode"]').watermark('<$lc('wwDataFormUserPostcodeWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		$('input[name="friends_email"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+        jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+		jQuery.validator.addClassRules("digits", {
+			digits:true,
+			<$if domainId eq 3$>			  
+			  minlength:8
+			<$else$>		
+			  minlength:10
+			<$endif$>
+		});
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+
+
+		$("#DataForm1").validate({
+			onkeyup:false,
+		       errorPlacement: function(error, element) {
+				if (element.attr('name') == "friendsdetails_permission") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else {
+					error.insertAfter(element);
+				}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include referAFriend$>
+<$endif$>
+
+<$else$>
+<$include referAFriend$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+
+<@end@>
+
+
+<@dynamichtml referAFriend@>
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include namevalue_hidden$>
+
+<$str= strSubstring(fwstr, strIndexOf(fwstr, "<dd1>")+5, strIndexOf(fwstr, "</dd1>"))$>
+<$str1= strSubstring(fwstr, strIndexOf(fwstr, "<dd2>")+5, strIndexOf(fwstr, "</dd2>"))$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+<form id="DataForm1" name="DataForm1" class="hays_form" action="" method="post">
+
+<fieldset class="rc_grey">
+  <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+  <input type="hidden" id="DataFormName" value="DataForm_1" name="DataFormName"/>
+  <input type="hidden" id="Subject" value="<$lc('wwReferAFriendEmailSubject')$>" name="Subject"/>
+  <input type="hidden" id="emailTemplate" value="ReferAFriend_EmailTemplate,ReferAFriend_EmailTemplate_Referee,ReferAFriend_EmailTemplate_Friend" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" /> 
+  <input type="hidden" name="domainId" value="<$domainId$>" /> 
+  <input type="hidden" name="siteId" value="<$siteId$>" /> 
+ 
+<ol>
+<li>
+<p><$wcmElement("Summary")$></p>
+</li>
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+ 
+ <$if not strEquals(str, "")$>
+ <li id="li1" class="" style="display:none">
+
+		<div class="grid_4 alpha">
+					<label id="lbl_your_gift" for="your_gift"><$lc('wwGiftLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="your_gift" name="your_gift">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$cond = strIndexOf(str,",")$>
+              <$loopwhile cond != -1 $> <$desc=strSubstring(str,0,strIndexOf(str,","))$>
+              <option value="<$desc$>"><$desc$></option> <$str=strSubstring(str,strIndexOf(str,",")+1)$>
+              <$cond = strIndexOf(str,",")$> <$endloop$>
+              <option value="<$str$>"><$str$></option>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+ <$endif$>
+
+<li id="li2" class="" style="display:none">
+  <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm1NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+</li>
+
+ <li id="li3" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_youraddress" for="youraddress"><$lc('wwDataForm1AddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <textarea rows="6" cols="" id="youraddress" name="youraddress" class=""></textarea>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li4" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_postcode" for="postcode"><$lc('wwDataForm1PostCode')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="postcode" id="postcode" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li5" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm1EmailAddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li6" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_phoneno" for="phoneno"><$lc('wwDataForm1PhoneNoLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="phoneno" id="phoneno"  class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li7" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_haysconsultant_name" for="haysconsultant_name"><$lc('wwHaysConsultantNameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="haysconsultant_name" id="haysconsultant_name" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+<li id="li8" class="" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_referralscheme_source"  for="referralscheme_source"><$lc('wwReferralShemeSourceLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="referralscheme_source" name="referralscheme_source">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			  <$ rsCreateResultSet("RefScheme_RS", "lbl,val") $>
+		      <$ rsAppendRowValues("RefScheme_RS", lc('wwReferralSchemeSourceOptions'))$>
+			  <$loop RefScheme_RS$>
+			 <option value='<$RefScheme_RS.val$>' name='<$RefScheme_RS.lbl$>'><$RefScheme_RS.val$></option>
+			 <$endloop$>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+
+ 
+
+ <li>
+  <br/><br/><br/>
+ <h3><$lc('wwFriendDetailsLabel')$></h3>
+  </li>
+
+
+ <li id="li9" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_name" for="friends_name"><$lc('wwFriendNameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_name" id="friends_name" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+ 
+  <li id="li10" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_location" for="friends_location"><$lc('wwFriendLocationLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_location" id="friends_location" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li11" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_email" for="friends_email"><$lc('wwFriendPersonalEmailLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_email" id="friends_email" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li12" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_phoneno" for="friends_mobileno"><$lc('wwFriendPhoneNo')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_phoneno" id="friends_phoneno" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ 
+ <$if not strEquals(str1, "")$>
+ <li id="li13" class="" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_friends_profession" for="label"><$lc('wwFriendsProfessionLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="friends_profession" name="friends_profession">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$cond = strIndexOf(str1,",")$>
+              <$loopwhile cond != -1 $> <$desc=strSubstring(str1,0,strIndexOf(str1,","))$>
+              <option value="<$desc$>"><$desc$></option> <$str1=strSubstring(str1,strIndexOf(str1,",")+1)$>
+              <$cond = strIndexOf(str1,",")$> <$endloop$>
+              <option value="<$str1$>"><$str1$></option>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+
+ </li>
+ <$endif$>
+
+ <li id="li14" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_town" for="friends_town"><$lc('wwFriendWorkplaceLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_town" id="friends_town" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li15" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_jobtitle" for="friends_jobtitle"><$lc('wwFriendJobTitleLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_jobtitle" id="friends_jobtitle"/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+
+
+ <li id="li16" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friendsdetails_permission" for="friendsdetails"><$lc('wwFriendDetailConfirmationText')$></label>
+   </div>
+   <div class="grid_9 suffix_1 omega">
+	<fieldset>
+		<legend><$lc('wwFriendDetailConfirmationText')$></legend>
+			<div class="select_row">
+			<input type="checkbox" value="<$lc('wwFriendDetailConfirmationvalue')$>" id="friendsdetails_permission" name="friendsdetails_permission"/>
+			<label for="friendsdetails_permission"><$lc('wwFriendDetailConfirmationlabel')$></label>
+			</div>
+			</fieldset>
+   </div>
+</li>
+
+ 
+ <li><p><$lc('wwFriendNBText')$></p></li>
+
+
+</ol>
+  </fieldset>
+
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton" value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+<!--************************* REFER A FRIEND BELGIUM CAREER Form *******************
+*****************************************************************-->
+<@dynamichtml DataForm_9@>
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+	  
+	$.watermark.hideAll();  
+	 
+      var validate=$("#DataForm9").validate().form();
+      if(validate==true)
+	{
+		
+	  $("#DataForm9").submit();
+       
+    } // end IF(validate)
+	
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="friends_name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('textarea[name="youraddress"]').watermark('<$lc('wwDataFormUserAddressWatermark')$>');
+		$('textarea[name="friends_address"]').watermark('<$lc('wwDataFormUserAddressWatermark')$>');
+		$('input[name="phoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="friends_phoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="postcode"]').watermark('<$lc('wwDataFormUserPostcodeWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		$('input[name="friends_email"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+        jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+		jQuery.validator.addClassRules("digits", {
+			digits:true,
+			<$if domainId eq 3$>			  
+			  minlength:8
+			<$else$>		
+			  minlength:10
+			<$endif$>
+		});
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+
+
+		$("#DataForm9").validate({
+			onkeyup:false,
+		       errorPlacement: function(error, element) {
+				if (element.attr('name') == "friendsdetails_permission") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else {
+					
+					error.insertAfter(element);
+				}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include referAFriend_BEHC$>
+<$endif$>
+
+<$else$>
+<$include referAFriend_BEHC$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+
+<@end@>
+
+
+<@dynamichtml referAFriend_BEHC@>
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include namevalue_hidden$>
+
+<$str= strSubstring(fwstr, strIndexOf(fwstr, "<dd1>")+5, strIndexOf(fwstr, "</dd1>"))$>
+<$str1= strSubstring(fwstr, strIndexOf(fwstr, "<dd2>")+5, strIndexOf(fwstr, "</dd2>"))$>
+
+<div id="Form">
+
+<span class="sub_text"><$wcmElement("Title")$></span>
+
+<p style="margin-top:20px; margin-bottom:12px;"><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+<form id="DataForm9" name="DataForm9" class="hays_form" action="" method="post">
+
+<fieldset class="rc_grey">
+  <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+  <input type="hidden" id="DataFormName" value="DataForm_9" name="DataFormName"/>
+  <input type="hidden" id="Subject" value="<$lc('wwReferAFriendEmailSubject')$>" name="Subject"/>
+  <input type="hidden" id="emailTemplate" value="ReferAFriend_EmailTemplate,ReferAFriend_EmailTemplate_Referee,ReferAFriend_EmailTemplate_Friend" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" /> 
+  <input type="hidden" name="domainId" value="<$domainId$>" /> 
+  <input type="hidden" name="siteId" value="<$siteId$>" /> 
+ 
+<ol>
+<li>
+<p><$wcmElement("Summary")$></p>
+</li>
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+ 
+ <$if not strEquals(str, "")$>
+ <li id="li1" class="" style="display:none">
+
+		<div class="grid_4 alpha">
+					<label id="lbl_your_gift" for="your_gift"><$lc('wwGiftLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="your_gift" name="your_gift">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$cond = strIndexOf(str,",")$>
+              <$loopwhile cond != -1 $> <$desc=strSubstring(str,0,strIndexOf(str,","))$>
+              <option value="<$desc$>"><$desc$></option> <$str=strSubstring(str,strIndexOf(str,",")+1)$>
+              <$cond = strIndexOf(str,",")$> <$endloop$>
+              <option value="<$str$>"><$str$></option>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+ <$endif$>
+
+<li id="li2" class="" style="display:none">
+  <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm9NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+</li>
+
+ <li id="li3" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_youraddress" for="youraddress"><$lc('wwDataForm9AddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <textarea rows="6" cols="" id="youraddress" name="youraddress" class=""></textarea>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li4" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_postcode" for="postcode"><$lc('wwDataForm9PostCode')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="postcode" id="postcode" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li5" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm9EmailAddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li6" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_phoneno" for="phoneno"><$lc('wwDataForm9PhoneNoLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="phoneno" id="phoneno"  class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li7" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_haysconsultant_name" for="haysconsultant_name"><$lc('wwHaysConsultantNameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="haysconsultant_name" id="haysconsultant_name" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+<li id="li8" class="" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_referralscheme_source"  for="referralscheme_source"><$lc('wwReferralShemeSourceLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="referralscheme_source" name="referralscheme_source">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			  <$ rsCreateResultSet("RefScheme_RS", "lbl,val") $>
+		      <$ rsAppendRowValues("RefScheme_RS", lc('wwReferralSchemeSourceOptions'))$>
+			  <$loop RefScheme_RS$>
+			 <option value='<$RefScheme_RS.val$>' name='<$RefScheme_RS.lbl$>'><$RefScheme_RS.val$></option>
+			 <$endloop$>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+
+ 
+
+ <li>
+  <br/><br/><br/>
+ <h3><div id ="be_heading"><$lc('wwFriendDetailsLabel')$></div></h3>
+  </li>
+
+
+ <li id="li9" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_name" for="friends_name"><$lc('wwFriendNameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_name" id="friends_name" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+ 
+  <li id="li10" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_location" for="friends_location"><$lc('wwFriendLocationLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_location" id="friends_location" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li11" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_email" for="friends_email"><$lc('wwFriendPersonalEmailLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_email" id="friends_email" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li12" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_phoneno" for="friends_mobileno"><$lc('wwFriendPhoneNo')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_phoneno" id="friends_phoneno" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ 
+ <$if not strEquals(str1, "")$>
+ <li id="li13" class="" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_friends_profession" for="label"><$lc('wwFriendsProfessionLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="friends_profession" name="friends_profession">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$cond = strIndexOf(str1,",")$>
+              <$loopwhile cond != -1 $> <$desc=strSubstring(str1,0,strIndexOf(str1,","))$>
+              <option value="<$desc$>"><$desc$></option> <$str1=strSubstring(str1,strIndexOf(str1,",")+1)$>
+              <$cond = strIndexOf(str1,",")$> <$endloop$>
+              <option value="<$str1$>"><$str1$></option>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+
+ </li>
+ <$endif$>
+
+ <li id="li14" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_town" for="friends_town"><$lc('wwFriendWorkplaceLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_town" id="friends_town" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li15" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friends_jobtitle" for="friends_jobtitle"><$lc('wwFriendJobTitleLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="friends_jobtitle" id="friends_jobtitle"/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+
+
+ <li id="li16" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_friendsdetails_permission" for="friendsdetails"><$lc('wwFriendDetailConfirmationText')$></label>
+   </div>
+   <div class="grid_9 suffix_1 omega">
+	<fieldset>
+		<legend><$lc('wwFriendDetailConfirmationText')$></legend>
+			<div class="select_row">
+			<input type="checkbox" value="<$lc('wwFriendDetailConfirmationvalue')$>" id="friendsdetails_permission" name="friendsdetails_permission"/>
+			<label for="friendsdetails_permission"><$lc('wwFriendDetailConfirmationlabel')$></label>
+			</div>
+			</fieldset>
+   </div>
+</li>
+
+ 
+ <li><p><$lc('wwFriendNBText')$></p></li>
+
+
+</ol>
+  </fieldset>
+
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton" value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<div id ="be_footer">
+<$wcmElement("Footer")$>
+</div>
+</div>
+<@end@>
+
+
+<!--************************* FEEDBACK Form *******************
+*****************************************************************-->
+<@dynamichtml DataForm_2@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+
+      $.watermark.hideAll();
+
+      var validate=$("#DataForm2").validate().form();
+      if(validate==true)
+	{
+	  $("#DataForm2").submit();
+    } // end IF(validate)
+	
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		$('input[name="telephoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="mobileno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+		jQuery.validator.addClassRules("email", {
+	        email:true
+	       });
+		
+              jQuery.validator.addClassRules("digits", {
+			<$if domainId eq 26$>
+			  digits:true,
+			  minlength:8
+			<$elseif domainId eq 10$>		
+			  digits:true,
+			  minlength:9
+			<$else$>		
+			  digits:true,
+			  minlength:10
+			<$endif$>
+	       });
+		   
+		   jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+		
+		$("#DataForm2").validate({
+			onkeyup:false,
+
+			errorPlacement: function(error, element) {
+				if (element.attr('name') == "CurrentlyRecruiting") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else if (element.attr('name') == "lookingjob") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else {
+					error.insertAfter(element);
+				}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include feedbackForm$>
+<$endif$>
+
+<$else$>
+<$include feedbackForm$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+
+<@dynamichtml feedbackForm@>
+
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include namevalue_hidden$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+
+
+<!-- Step 1 -->
+<form id="DataForm2" name="DataForm2" class="hays_form" action="" method="post" enctype="multipart/form-data">
+   <fieldset class="rc_grey">
+    <input type="hidden" id="Email"  name="Email" value="<$email$>"/>
+    <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/> <!-- Relay  9514-->
+    <input type="hidden" id="DataFormName" value="DataForm_2" name="DataFormName"/>
+    <input type="hidden" id="emailTemplate" value="Feedback_EmailTemplate" name="emailTemplate"/>
+    <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+    <input type="hidden" name="submitted" value="1" />
+	<input type="hidden" name="domainId" value="<$domainId$>" /> 
+	<input type="hidden" name="siteId" value="<$siteId$>" /> 
+
+
+ <ol>
+ 
+ <li>
+ <p><$wcmElement("Summary")$></p>
+ </li>
+ 
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+ <li id="li1" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm2NameLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="name" id="name" class=""/>
+   </div>
+ </li>
+
+ <li id="li2" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm2EmailLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+ </li>
+
+ <li id="li3" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_telephoneno" for="telephoneno"><$lc('wwDataForm2PhoneLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="telephoneno" id="telephoneno" class=""/>
+   </div>
+ </li>
+
+ 
+ <li id="li4" class="" style="display:none">
+    <div class="grid_4 alpha">
+    <label id="lbl_ContactPreference" for="ContactPreference"><$lc('wwContactPreferenceLabel')$></label>
+   </div>
+   <div class="grid_5">
+	 <select  class="" id="ContactPreference" name="ContactPreference">
+	   <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+	  <$ rsCreateResultSet("ContactPreference_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("ContactPreference_RS", lc('wwContactPreferenceOptions'))$>
+			 <$loop ContactPreference_RS$>
+			 <option value='<$ContactPreference_RS.val$>' name='<$ContactPreference_RS.lbl$>'><$ContactPreference_RS.val$></option>
+	  <$endloop$>
+     </select>
+  </div>
+</li>
+
+
+  <li id="li5" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_DataForm2_job_title" for="DataForm2_job_title"><$lc('wwDataForm2JobTitleLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="DataForm2_job_title" id="DataForm2_job_title" class=""/>
+   </div>
+ </li>
+
+  <li id="li6" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_organization" for="organization"><$lc('wwOrganizationLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="organization" id="organization" class=""/>
+   </div>
+ </li>
+
+ <li id="li7" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_consultantname" for="consultantname"><$lc('wwDataForm2ConsultantLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="consultantname" id="consultantname" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li8" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_hays_office" for="hays_office"><$lc('wwDataForm2HaysOfficeLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+   <$if siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE'$>
+	<$ QueryText="(dDocType <matches> `Office-Belgium` <AND> xCountry <matches> `" & SiteLocale  & "`)" $>
+	<$executeService("SS_GET_SEARCH_RESULTS")$>
+	 <select  class="" id="hays_office" name="hays_office">
+	   <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>	  
+	  <$loop SearchResults$>
+	   <option value='<$SearchResults.dDocTitle$>' name=''><$SearchResults.dDocTitle$></option>
+	  <$endloop$>
+     </select>
+	<$else$>
+		<input type="text" name="hays_office" id="hays_office" class="" />
+	<$endif$>
+   </div>
+ </li>
+ 
+ 
+<li id="li9" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_CurrentlyRecruiting" for="CurrentlyRecruiting"><$lc('wwDataForm2CurrentlyRecruiting')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+   <fieldset id="expected_radio">
+	<legend><$lc('wwDataForm2CurrentlyRecruiting')$></legend>
+	 <div class="select_row">
+     <input type="radio" class="" name="CurrentlyRecruiting" value="<$lc('wwDataForm2CurrentlyRecruiting_option1')$>" checked/>
+	 <label class="" for="opt"><$lc('wwDataForm2CurrentlyRecruiting_option1')$></label>
+	 </div>
+	 <div class="select_row">
+	 <input type="radio" class="" name="CurrentlyRecruiting" value="<$lc('wwDataForm2CurrentlyRecruiting_option2')$>"/>
+	 <label class="" for="opt"><$lc('wwDataForm2CurrentlyRecruiting_option2')$></label>
+	 </div>
+	 </fieldset>
+   </div>
+</li>
+
+<li id="li10" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_lookingjob" for="lookingjob"><$lc('wwDataForm2lookingjobLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+   <fieldset id="expected_radio">
+	<legend><$lc('wwDataForm2CurrentlyRecruiting')$></legend>
+	 <div class="select_row">
+     <input type="radio"   name="lookingjob" value="<$lc('wwDataForm2lookingjob_option1')$>" class="" checked/>
+	 <label class="" for="opt"><$lc('wwDataForm2lookingjob_option1')$></label>
+	 </div>
+	 <div class="select_row">
+	 <input type="radio"  name="lookingjob" value="<$lc('wwDataForm2lookingjob_option2')$>" class=""/>
+	 <label class="" for="opt"><$lc('wwDataForm2lookingjob_option2')$></label>
+	 </div>
+	 </fieldset>
+   </div>
+</li>
+
+<li id="li11" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_comments" for="comments"><$lc('wwDataForm2CommentsLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+   <textarea rows="6" cols=""  id="comments" name="comments" class=""></textarea>
+   </div>
+</li>
+
+<li id="li12" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_AttachedDocument" for="AttachedDocument"><$lc('wwDataForm2JobDescLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">  
+	<input type="file" id="AttachedDocument" name="AttachedDocument" class=""/>  
+   </div>
+</li>
+
+ </ol>
+  </fieldset>
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton" value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+
+
+
+<!--*************************Speculative CV submission*******************
+*****************************************************************-->
+<@dynamichtml DataForm_3@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+    	
+	 $(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+	  
+	$.watermark.hideAll();  
+	 
+      var validate=$("#DataForm3").validate().form();
+      if(validate==true)
+	{
+	    var job_role="";
+	    var security_level="";
+	      for (var i=0; i < document.DataForm3.jobrole.length; i++)
+           {
+             if (document.DataForm3.jobrole[i].checked)
+             {
+              job_role = job_role + document.DataForm3.jobrole[i].value + ",";
+             }
+            }
+	 
+	     for (var i=0; i < document.DataForm3.securitylevel.length; i++)
+		   {
+		    if (document.DataForm3.securitylevel[i].checked)
+			 {
+				security_level = security_level + document.DataForm3.securitylevel[i].value + ",";
+			 }
+		   }
+			job_role=job_role.substr(0,job_role.length-1);
+			security_level=security_level.substr(0,security_level.length-1);
+			document.getElementById("IntrestedRoles").value=job_role;
+			document.getElementById("SecurityLevels").value=security_level;
+
+	  $("#DataForm3").submit();
+       
+    } // end IF(validate)
+	
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="telephoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		$('textarea[name="address"]').watermark('<$lc('wwDataFormUserAddressWatermark')$>');
+
+
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+              });
+
+		jQuery.validator.addClassRules("email", {
+	        email:true
+	       });
+		
+              jQuery.validator.addClassRules("digits", {
+		   digits:true,
+		   minlength:<$if domainId eq 26$>8 <$else$>10 <$endif$> <!--MR change, Sprint 17 -- Pt. 216 -->
+	       }); 
+		   
+		   jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+		
+		$("#DataForm3").validate({
+			onkeyup:false,
+
+           errorPlacement: function(error, element) {
+				if (element.attr('name') == "jobrole") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else if (element.attr('name') == "securitylevel") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else {
+					error.insertAfter(element);
+				}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include registerCV$>
+<$endif$>
+
+<$else$>
+<$include registerCV$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+
+<@dynamichtml registerCV@>
+
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include namevalue_hidden$>
+
+<$str= strSubstring(fwstr, strIndexOf(fwstr, "<dd4>")+5, strIndexOf(fwstr, "</dd4>"))$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$> <$lc('wwDataFormsRequiredText')$></p>
+
+
+<!-- Step 1 -->
+<form id="DataForm3" name="DataForm3" class="hays_form" action="" method="post" enctype="multipart/form-data">
+ <fieldset class="rc_grey">
+  <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+  <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/>
+  <input type="hidden" id="IntrestedRoles" value="" name="IntrestedRoles"/>
+  <input type="hidden" id="SecurityLevels" value="" name="SecurityLevels"/>
+  <input type="hidden" id="DataFormName" value="DataForm_3" name="DataFormName"/>
+  <input type="hidden" id="emailTemplate" value="SpeculativeCVSubmission_EmailTemplate" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" /> 
+
+
+<ol>
+
+<li>
+<p><$wcmElement("Summary")$></p>
+</li>
+
+ 
+<li id="li1" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm3NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class=""/>
+   </div>
+</li>
+
+ <li id="li2" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_address" for="address"><$lc('wwDataForm3AddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <textarea rows="6" cols=""  id="address" name="address" class=""></textarea>
+   </div>
+ </li>
+ 
+ <li id="li3" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_postcode" for="postcode"><$lc('wwDataForm3PostcodeLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <input type="text" name="postcode" id="postcode" class=""/>
+   </div>
+ </li>
+ 
+ 
+ <li id="li4" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm3EmailLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+ </li>
+
+<li id="li5" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_telephoneno" for="telephoneno"><$lc('wwDataForm3ContactNoLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="telephoneno" id="telephoneno" class=""/>
+   </div>
+</li>
+
+<li id="li6" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_current_jobtitle" for="current_jobtitle"><$lc('wwDataForm3JobTitleLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="current_jobtitle" id="current_jobtitle" class=""/>
+   </div>
+</li>
+
+<li id="li7" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_salary_expectation" for="salary_expectation"><$lc('wwDataForm3SalaryExpectationLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="salary_expectation" id="salary_expectation" class=""/>
+   </div>
+</li>
+
+<li id="li8" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_subject_specialism" for="subject_specialism"><$lc('wwDataForm3SubjectSpecialismLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="subject_specialism" id="subject_specialism" class=""/>
+   </div>
+</li>
+
+ <li id="li9" style="display:none">
+    <div class="grid_4 alpha">
+    <label id="lbl_jobrole" for="jobrole"><$lc('wwJobRoleLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	 <fieldset>
+		<legend><$lc('wwJobRoleLabel')$></legend>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwJobRoleOption1Label')$>"  name="jobrole" class=""/>
+			<label for="JobRoleOption1"><$lc('wwJobRoleOption1Label')$></label>
+			</div>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwJobRoleOption2Label')$>"  name="jobrole" class=""/>
+			<label for="JobRoleOption2"><$lc('wwJobRoleOption2Label')$></label>
+	   </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwJobRoleOption3Label')$>"  name="jobrole" class=""/>
+			<label for="JobRoleOption3"><$lc('wwJobRoleOption3Label')$></label>
+	  </div>
+	 </fieldset>
+   </div>
+</li>
+
+
+<li id="li10" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_AttachedDocument" for="AttachedDocument"><$lc('wwDataForm3AttachCVLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="file" id="AttachedDocument" name="AttachedDocument" class=""/>
+   </div>
+ </li>
+ 
+
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+ <li id="li11" style="display:none">
+    <div class="grid_4 alpha">
+    <label id="lbl_securitylevel" for="securitylevel"><$lc('wwSecurityLevelLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	 <fieldset>
+		<legend><$lc('wwSecurityLevelLabel')$></legend>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwSecurityLevelOption1Label')$>"  name="securitylevel" class=""/>
+			<label for="securitylevel_option1"><$lc('wwSecurityLevelOption1Label')$></label>
+			</div>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwSecurityLevelOption2Label')$>"  name="securitylevel" class=""/>
+			<label for="securitylevel_option2"><$lc('wwSecurityLevelOption2Label')$></label>
+	   </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwSecurityLevelOption3Label')$>"  name="securitylevel" class=""/>
+			<label for="securitylevel_option3"><$lc('wwSecurityLevelOption3Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwSecurityLevelOption4Label')$>"  name="securitylevel" class=""/>
+			<label for="securitylevel_option4"><$lc('wwSecurityLevelOption4Label')$></label>
+	  </div>
+	 </fieldset>
+   </div>
+</li>
+
+
+<$if not strEquals(str, "")$>
+ <li id="li12" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_Intrestedin"><$lc('wwDataForm3InrestedInLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  id="Intrestedin" name="Intrestedin" class="">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$cond = strIndexOf(str,",")$>
+              <$loopwhile cond != -1 $> <$desc=strSubstring(str,0,strIndexOf(str,","))$>
+              <option value="<$desc$>"><$desc$></option> <$str=strSubstring(str,strIndexOf(str,",")+1)$>
+              <$cond = strIndexOf(str,",")$> <$endloop$>
+              <option value="<$str$>"><$str$></option>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+ <$endif$>
+ 
+ <li id="li13" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_additional_comments" for="additional_comments"><$lc('wwDataForm3AddCommentsInLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <textarea rows="6" cols=""  id="additional_comments" name="additional_comments" class=""></textarea>
+   </div>
+ </li>
+ 
+
+
+  </ol>
+  </fieldset>
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton"  value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+
+
+
+<!--*************************SEN questionnaire Form*******************
+*****************************************************************-->
+<@dynamichtml DataForm_4@>
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+
+         $.watermark.hideAll();
+
+        var validate=$("#DataForm4").validate().form();
+        if(validate==true)
+	{
+
+	   var sen_experiance="";
+	   for (var i=0; i < document.DataForm4.sen_experiance.length; i++)
+          {
+           if (document.DataForm4.sen_experiance[i].checked)
+           {
+            sen_experiance = sen_experiance + document.DataForm4.sen_experiance[i].value + ",";
+           }
+          }
+	     sen_experiance=sen_experiance.substr(0,sen_experiance.length-1);
+            document.getElementById("senExperaince").value=sen_experiance;
+
+
+	   $("#DataForm4").submit();
+
+    } // end IF(validate)
+	 
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="telephoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		
+
+
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+              jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+   		jQuery.validator.addClassRules("digits", {
+			digits:true,
+			minlength:10
+		});
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+
+		$(function()
+       	 {
+	          // $("#startdate").datepicker();
+		   //$('.date-pick').datePicker({startDate:'01/01/1900'}).dpSetSelected(new Date().asString());
+		   $('.date-pick').datepick({yearRange: '1950:2020'});
+        	});
+
+		$("#DataForm4").validate({
+			onkeyup:false,
+
+			errorPlacement: function(error, element) {
+				if (element.attr('name') == "sen_experiance") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else if (element.attr('name') == "currentsituation") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else {
+					error.insertAfter(element);
+				}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include senQuestionaire$>
+<$endif$>
+
+<$else$>
+<$include senQuestionaire$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+<@dynamichtml senQuestionaire@>
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include datPicker_CSS$>
+<$include namevalue_hidden$>
+
+<$str= strSubstring(fwstr, strIndexOf(fwstr, "<dd4>")+5, strIndexOf(fwstr, "</dd4>"))$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$> <$lc('wwDataFormsRequiredText')$></p>
+
+
+<!-- Step 1 -->
+<form id="DataForm4" name="DataForm4" class="hays_form" action="" method="post">
+ <fieldset class="rc_grey">
+  <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+  <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/>
+  <input type="hidden" id="DataFormName" value="DataForm_4" name="DataFormName"/>
+  <input type="hidden" id="senExperaince" value="" name="senExperaince"/>
+  <input type="hidden" id="emailTemplate" value="SENQuestionaire_EmailTemplate" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" />
+
+
+<ol>
+
+<li>
+<p><$wcmElement("Summary")$></p>
+</li>
+
+ 
+<li id="li1" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm4NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class=""/>
+   </div>
+</li>
+
+<li id="li2" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm4EmailLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li3" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_telephoneno" for="telephoneno"><$lc('wwDataForm4ContactLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="telephoneno" id="telephoneno" class=""/>
+   </div>
+</li>
+
+ <li id="li4" style="display:none">
+    <div class="grid_4 alpha">
+    <label id="lbl_currentsituation" for="currentsituation"><$lc('wwDataForm4CurrentSituationLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	 <fieldset>
+		<legend><$lc('wwDataForm4CurrentSituationLabel')$></legend>
+		<div class="select_row">
+			<input type="radio" value="<$lc('wwDataForm4CurrentSituationOption1Label')$>"  name="currentsituation" class="" checked/>
+			<label for="currentsituation"><$lc('wwDataForm4CurrentSituationOption1Label')$></label>
+			</div>
+		<div class="select_row">
+			<input type="radio" value="<$lc('wwDataForm4CurrentSituationOption2Label')$>"  name="currentsituation" class=""/>
+			<label for="currentsituation"><$lc('wwDataForm4CurrentSituationOption2Label')$></label>
+	   </div>
+	  </fieldset>
+   </div>
+</li>
+ 
+ <li id="li5" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_startdate" for="startdate"><$lc('wwDataForm4StartDateLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <input type="text" name="startdate" id="startdate" class="date-pick"/>
+   </div>
+</li>
+
+<br/>
+
+<li>
+<h3><$lc('wwDataForm4InformationText')$></h3>
+</li>
+ 
+ 
+<li id="li6" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_availableforwork" for="availableforwork"><$lc('wwDataForm4AvailableForWorkLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="availableforwork" id="availableforwork" class=""/>
+   </div>
+</li>
+
+
+<li id="li7" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_travelareas" for="travelareas"><$lc('wwDataForm4TravelAreasLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="travelareas" id="travelareas" class=""/>
+   </div>
+</li>
+
+<li id="li8" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_shoolsetting" for="shoolsetting"><$lc('wwDataForm4SchoolSettingLabel')$></label>
+   </div>
+   <div class="grid_5">
+		  <select  class="" id="shoolsetting" name="shoolsetting">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			 <$ rsCreateResultSet("ShoolSetting_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("ShoolSetting_RS", lc('wwDataForm4SchoolSettingOptions'))$>
+			 <$loop ShoolSetting_RS$>
+			 <option value='<$ShoolSetting_RS.val$>' name='<$ShoolSetting_RS.lbl$>'><$ShoolSetting_RS.val$></option>
+			 <$endloop$>
+		  </select>
+   </div>
+</li>
+
+ <li id="li9" style="display:none">
+    <div class="grid_4 alpha">
+    <label id="lbl_sen_experiance" for="sen_experiance"><$lc('wwDataForm4SenExperianceLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	 <fieldset>
+		<legend><$lc('wwDataForm4SenExperianceLabel')$></legend>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption1Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption1Label')$></label>
+			</div>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption2Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption2Label')$></label>
+	   </div>
+	   <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption3Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption3Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption4Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption4Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption5Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption5Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption6Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption6Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption7Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption7Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption8Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption8Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption9Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption9Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption10Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption10Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption11Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption11Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption12Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption12Label')$></label>
+	  </div>
+	  <div class="select_row">
+			<input type="checkbox" value="<$lc('wwDataForm4SenExperianceOption13Label')$>"  name="sen_experiance" class=""/>
+			<label for="sen_experiance"><$lc('wwDataForm4SenExperianceOption13Label')$></label>
+	  </div>
+	 </fieldset>
+   </div>
+</li>
+
+
+<li id="li10" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_additional_experiance" for="additional_experiance"><$lc('wwDataForm4AddSenExperianceLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<textarea rows="6" cols="" id="additional_experiance" name="additional_experiance"></textarea>
+   </div>
+</li>
+
+<li id="li11" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_sen_qualification" for="sen_qualification"><$lc('wwDataForm4SenQualificationLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<textarea rows="6" cols="" id="sen_qualification" name="sen_qualification"></textarea>
+   </div>
+</li>
+
+<li id="li12" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_age_range" for="age_range"><$lc('wwDataForm4PreferredAgeLabel')$></label>
+   </div>
+   <div class="grid_5">
+		  <select  class="" id="age_range" name="age_range">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			 <$ rsCreateResultSet("AgeRange_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("AgeRange_RS", lc('wwDataForm4PreferredAgeOptions'))$>
+			 <$loop AgeRange_RS$>
+			 <option value='<$AgeRange_RS.val$>' name='<$AgeRange_RS.lbl$>'><$AgeRange_RS.val$></option>
+			 <$endloop$>
+		  </select>
+   </div>
+</li>
+ 
+
+<$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+
+
+  </ol>
+  </fieldset>
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton"  value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+
+
+
+<!--************************* P45 REQUEST Form *******************
+*****************************************************************-->
+<@dynamichtml DataForm_5@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+	
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+          
+	  $.watermark.hideAll();
+
+	 var validate=$("#DataForm5").validate().form();
+        if(validate==true)
+	  {
+	    $("#DataForm5").submit();
+      } // end IF(validate)
+	 
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="home_emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+
+
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+		jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+   		jQuery.validator.addClassRules("digits", {
+			digits:true,
+			minlength:10
+		});
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+
+		$(function() {
+		   //$("#last_workingDate").datepicker();
+		   //$("#dob").datepicker();
+		   //$('.date-pick').datePicker({startDate:'01/01/1900'}).dpSetSelected(new Date().asString());
+		   $('.date-pick').datepick({yearRange: '1950:2020'});
+		  
+
+		});
+		
+		$("#DataForm5").validate({
+			onkeyup:false,
+		       errorPlacement: function(error, element) {
+				if (element.attr('name') == "different_addr_submission") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else if (element.attr('name') == "hays_employee") {
+					error.insertAfter($(element).parents('fieldset:first'));
+				}
+				else {
+					error.insertAfter(element);
+				}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+
+}
+HAYSform();
+//--><!]]>
+</script>
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include p45Request$>
+<$endif$>
+
+<$else$>
+<$include p45Request$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+
+<@dynamichtml p45Request@>
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include datPicker_CSS$>
+<$include namevalue_hidden$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+
+<!-- Step 1 -->
+<form id="DataForm5" name="DataForm5" class="hays_form" action="" method="post">
+ <fieldset class="rc_grey">
+  <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+  <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/>
+  <input type="hidden" id="DataFormName" value="DataForm_5" name="DataFormName"/>
+  <input type="hidden" id="emailTemplate" value="P45Request_EmailTemplate" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" />
+
+<ol>
+
+<li>
+<p><$wcmElement("Summary")$></p>
+</li>
+
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+
+ <li id="li1"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name"for="name"><$lc('wwDataForm5NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class="" />
+   </div>
+ </li>
+
+  <li id="li2" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_reference_no" for="reference_no"><$lc('wwReferenceNoLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="reference_no" id="reference_no" class=""  />
+   </div>
+ </li>
+
+ <li id="li3"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_dob" for="dob"><$lc('wwDOBLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="dob" id="dob" class="date-pick"/>
+   </div>
+ </li>
+
+
+
+ <li id="li4"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_ni_number" for="ni_number"><$lc('wwNINumberLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="ni_number" id="ni_number" class=""/>
+   </div>
+ </li>
+
+ <li id="li5"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_address_line1" for="address_line1"><$lc('wwAddressLine1Label')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="address_line1" id="address_line1" class=""/>
+   </div>
+    </li>
+
+ <li id="li6"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_address_line2" for="address_line2"><$lc('wwAddressLine2Label')$></label>
+   </div>
+   <div class="grid_5">
+   <input type="text" id="address_line2" name="address_line2" class=""/>
+   </div>
+ </li>
+
+ <li id="li7"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_address_line3" for="address_line3"><$lc('wwAddressLine3Label')$></label>
+   </div>
+   <div class="grid_5">
+   <input type="text" id="address_line3" name="address_line3" class=""/>
+   </div>
+ </li>
+
+  <li id="li8"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_postcode" for="postcode"><$lc('wwHomePostCodeLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="postcode" id="postcode" class=""/>
+   </div>
+ </li>
+
+ 
+ <li id="li9"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_different_addr_submission" for="terms_conditions"><$lc('wwDiffAddressSubmitLabel')$></label>
+   </div>
+    <div class="grid_9 omega suffix_1">
+	 <fieldset>
+		<legend><$lc('wwDiffAddressSubmitLabel')$></legend>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwDiffAddressSubmitValue')$>" id="different_addr_submission" name="different_addr_submission" class=""/>
+		</div>
+     </fieldset>
+   </div>
+</li>
+
+ <li id="li10"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_home_emailaddress" for="home_emailaddress"><$lc('wwHomeEmailAddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="home_emailaddress" id="home_emailaddress" class=""/>
+   </div>
+ </li>
+
+ <li id="li11"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_last_workingDate" for="last_workingDate"><$lc('wwLastWorkDateLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="last_workingDate" id="last_workingDate" class="date-pick"/>
+   </div>
+ </li>
+
+ <li id="li12"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_last_officename" for="last_officename"><$lc('wwLastOfficeLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="last_officename" id="last_officename" class=""/>
+   </div>
+ </li>
+
+ 
+ <li id="li13"  style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_hays_employee" for="hays_employee"><$lc('wwWorkConfirmationDesc')$></label>
+   </div>
+    <div class="grid_9 omega suffix_1">
+	 <fieldset>
+		<legend><$lc('wwWorkConfirmationDesc')$></legend>
+		<div class="select_row">
+			<input type="checkbox" value="<$lc('wwWorkConfirmationValue')$>" id="hays_employee" name="hays_employee" class=""/>
+		</div>
+     </fieldset>
+   </div>
+</li>
+
+
+
+  </ol>
+  </fieldset>
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton"  value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+
+
+
+<!--*************************CONSULTATION REQUEST   Form *******************
+*****************************************************************-->
+<@dynamichtml DataForm_6@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+
+     $.watermark.hideAll();
+ 
+     var validate=$("#DataForm6").validate().form();
+     if(validate==true)
+	{
+	  $("#DataForm6").submit();
+    } // end IF(validate)
+	 
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="contactno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+				jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+              jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+   		jQuery.validator.addClassRules("digits", {
+			digits:true,
+			minlength:10
+		});
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+		
+
+		$(function() {
+		  //$("#preferred_date1").datepicker();
+		  //$("#preferred_date2").datepicker();
+		  //$("#preferred_date3").datepicker();
+		  //$('.date-pick').datePicker({startDate:'01/01/1900'}).dpSetSelected(new Date().asString());
+		  $('.date-pick').datepick({yearRange: '1950:2020'});
+
+	    });
+
+
+		$("#DataForm6").validate({
+			onkeyup:false
+			
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include consultationRequest$>
+<$endif$>
+
+<$else$>
+<$include consultationRequest$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+
+<@dynamichtml consultationRequest@>
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include datPicker_CSS$>
+<$include namevalue_hidden$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+
+<form id="DataForm6" name="DataForm6" class="hays_form" action="" method="post">
+ <fieldset class="rc_grey">
+ <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+ <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/>
+ <input type="hidden" id="DataFormName" value="DataForm_6" name="DataFormName"/>
+ <input type="hidden" id="emailTemplate" value="ConsultationRequest_EmailTemplate" name="emailTemplate"/>
+ <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+ <input type="hidden" name="submitted" value="1" /> 
+ 
+ <ol>
+ 
+ <li>
+<p><$wcmElement("Summary")$></p>
+</li>
+
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+ <li id="li1" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm6NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li2" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_contactno" for="contactno"><$lc('wwDataForm6ContactNoLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="contactno" id="contactno" class="" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li3" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm6EmailLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="heading1" style="display:none">
+ <br/><p><b><$lc('wwPreferredDateTimeText')$></b></p>
+ </li>
+
+ <li id="li4" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_preferred_date1" for="preferred_date1"><$lc('wwPreferredDateLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="preferred_date1" id="preferred_date1" class="date-pick"  />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li5" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_preferred_time1"><$lc('wwPreferredTimeLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="preferred_time1" name="preferred_time1">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			 <$ rsCreateResultSet("PreferredTime_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("PreferredTime_RS", lc('wwPreferredTimeOptions'))$>
+			 <$loop PreferredTime_RS$>
+			 <option value='<$PreferredTime_RS.val$>' name='<$PreferredTime_RS.lbl$>'><$PreferredTime_RS.val$></option>
+			 <$endloop$>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+
+ <li id="heading2" style="display:none">
+ <br/><p><b><$lc('wwSecondPreferredDateTimeLabel')$></b></p>
+ </li>
+
+  
+ <li id="li6" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_preferred_date2" for="preferred_date2"><$lc('wwPreferredDateLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="preferred_date2" id="preferred_date2" class="date-pick"/>
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ 
+
+ <li id="li7" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_preferred_time2"><$lc('wwPreferredTimeLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="preferred_time2" name="preferred_time2">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			 <$ rsCreateResultSet("PreferredTime_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("PreferredTime_RS", lc('wwPreferredTimeOptions'))$>
+			 <$loop PreferredTime_RS$>
+			 <option value='<$PreferredTime_RS.val$>' name='<$PreferredTime_RS.lbl$>'><$PreferredTime_RS.val$></option>
+			 <$endloop$>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+
+ <li id="heading3" style="display:none">
+ <br/><p><b><$lc('wwThirdPreferredDateTimeLabel')$></b></p>
+ </li> 
+
+ <li id="li8" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_preferred_date3" for="peferred_date3"><$lc('wwPreferredDateLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="preferred_date3" id="preferred_date3" class="date-pick" />
+   </div>
+   <div class="grid_4 omega"></div>
+ </li>
+
+ <li id="li9" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_preferred_time3"><$lc('wwPreferredTimeLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="preferred_time3" name="preferred_time3">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+			 <$ rsCreateResultSet("PreferredTime_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("PreferredTime_RS", lc('wwPreferredTimeOptions'))$>
+			 <$loop PreferredTime_RS$>
+			 <option value='<$PreferredTime_RS.val$>' name='<$PreferredTime_RS.lbl$>'><$PreferredTime_RS.val$></option>
+			 <$endloop$>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+
+
+ </ol>
+  </fieldset>
+
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton" value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+
+
+<!--************************* REGISTER A PROBLEM Form *******************
+*****************************************************************-->
+<@dynamichtml DataForm_7@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+	
+	$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+	  
+	$.watermark.hideAll();  
+	 
+      var validate=$("#DataForm7").validate().form();
+      if(validate==true)
+	{
+	  $("#DataForm7").submit();
+       
+    } // end IF(validate)
+	
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+	
+	
+	
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="telephoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		$('textarea[name="address"]').watermark('<$lc('wwDataFormUserAddressWatermark')$>');
+
+
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+              jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+   		jQuery.validator.addClassRules("digits", {
+			digits:true,
+			minlength:10
+		});
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+
+		$(function() {
+                //$("#dateofbirth").datepicker();
+		  //$('.date-pick').datePicker({startDate:'01/01/1900'}).dpSetSelected(new Date().asString());
+		  $(".date-pick").datepick({yearRange: '1950:2020'});
+        	}); 
+
+		$("#DataForm7").validate({
+			onkeyup:false
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+<$if #active.submitted$>
+<$executeService("HAYS_MAIL")$>
+
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include registerProblem$>
+<$endif$>
+
+<$else$>
+<$include registerProblem$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+
+<@dynamichtml registerProblem@>
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include datPicker_CSS$>
+<$include namevalue_hidden$>
+
+<$str= strSubstring(fwstr, strIndexOf(fwstr, "<dd3>")+5, strIndexOf(fwstr, "</dd3>"))$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$> <$lc('wwDataFormsRequiredText')$></p>
+
+
+<!-- Step 1 -->
+<form id="DataForm7" name="DataForm7" class="hays_form"  action="" method="post" enctype="multipart/form-data">
+ <fieldset class="rc_grey">
+  <input type="hidden" id="Email" name="Email" value="<$email$>"/>
+  <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/>
+  <input type="hidden" id="DataFormName" value="DataForm_7" name="DataFormName"/>
+  <input type="hidden" id="emailTemplate" value="RegisterAProblem_EmailTemplate" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" /> 
+
+<ol>
+
+<li>
+<p><$wcmElement("Summary")$></p>
+</li>
+
+
+<$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+
+
+ <li id="li1" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm7NameLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="name" id="name" class=""/>
+   </div>
+ </li>
+
+
+ <li id="li2" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_company" for="company"><$lc('wwDataForm7CompanyLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="company" id="company" class=""/>
+   </div>
+ </li>
+
+<li id="li3" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_telephoneno" for="telephoneno"><$lc('wwDataForm7TelephoneNoLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="telephoneno" id="telephoneno" class=""/>
+   </div>
+ </li>
+
+
+ <li id="li4" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm7EmailLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+ </li>
+
+ <li id="li5" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_address" for="address"><$lc('wwDataForm7AddressLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <textarea rows="6" cols=""  id="address" name="address" class=""></textarea>
+   </div>
+ </li>
+
+ <li id="li6" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_dateofbirth" for="dateofbirth"><$lc('wwDataForm7DOBLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="dateofbirth" id="dateofbirth" class="date-pick"/>
+   </div>
+ </li>
+
+
+ <li id="li7" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_hays_specialism" for="hays_specialism"><$lc('wwHaysSpecialismLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="hays_specialism" id="hays_specialism" class=""/>
+   </div>
+ </li>
+
+ <li id="li8" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_officelocation" for="officelocation"><$lc('wwHaysOfficeLocationLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="officelocation" id="officelocation" class=""/>
+   </div>
+ </li>
+
+ <li id="li9" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_concerned_person" for="concerned_person"><$lc('wwConcernedPersonLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="concerned_person" id="concerned_person" class=""/>
+   </div>
+ </li>
+
+
+<$if not strEquals(str, "")$>
+ <li id="li10" style="display:none">
+		<div class="grid_4 alpha">
+					<label id="lbl_problem"><$lc('wwProblemTypeLabel')$></label>
+		</div>
+		<div class="grid_5">
+		  <select  id="problem" name="problem" class="">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$cond = strIndexOf(str,",")$>
+              <$loopwhile cond != -1 $> <$desc=strSubstring(str,0,strIndexOf(str,","))$>
+              <option value="<$desc$>"><$desc$></option> <$str=strSubstring(str,strIndexOf(str,",")+1)$>
+              <$cond = strIndexOf(str,",")$> <$endloop$>
+              <option value="<$str$>"><$str$></option>
+		  </select>
+		</div>
+		<div class="grid_4 omega"></div>
+ </li>
+ <$endif$>
+
+<li id="li11" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_other_problem" for="other_problem"><$lc('wwOtherAnswerLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="text" name="other_problem" id="other_problem" class=""/>
+   </div>
+ </li>
+
+ <li id="li12" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_problem_details" for="problem_details"><$lc('wwProblemDetailsLabel')$></label>
+   </div>
+   <div class="grid_5">
+   <textarea rows="6" cols=""  id="problem_details" name="problem_details" class=""></textarea>
+   </div>
+ </li>
+
+ <li id="li13" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_AttachedDocument" for="AttachedDocument"><$lc('wwProblemRelatedDocLabel')$></label>
+   </div>
+   <div class="grid_5">
+	<input type="file" id="AttachedDocument" name="AttachedDocument" class=""/>
+   </div>
+ </li>
+
+
+  </ol>
+  </fieldset>
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton"  value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+<!--*************************JOB REQUISITION Form*******************
+*****************************************************************-->
+<@dynamichtml DataForm_8@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+$(document).ready(function() {
+
+	 $("#submitbutton").click(function() {
+
+      $.watermark.hideAll();
+
+      var validate=$("#DataForm8").validate().form();
+      if(validate==true)
+	{
+	  $("#DataForm8").submit();
+    } // end IF(validate)
+	
+    }); //end $(".button").click(function)
+
+}); //end $()document).Ready(function)
+
+
+
+		$('input[name="name"]').watermark('<$lc('wwDataFormUserNameWatermark')$>');
+		$('input[name="emailaddress"]').watermark('<$lc('wwDataFormUserEmailAddressWatermark','@')$>');
+		$('input[name="telephoneno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		$('input[name="mobileno"]').watermark('<$lc('wwDataFormUserPhoneNoWatermark')$>');
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+		jQuery.validator.addClassRules("email", {
+	        email:true
+	       });
+		
+              jQuery.validator.addClassRules("digits", {
+			<$if domainId eq 26$>
+			  digits:true,
+			  minlength:8
+			<$elseif domainId eq 10 OR domainId eq 38$>		
+			  digits:true,
+			  minlength:9
+			 <$else$>		
+			  digits:true,
+			  minlength:10
+			<$endif$>
+	       });
+		   
+		   jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>",
+			digits : "<$lc("wwDataForm_digits_nospace_input")$>",
+			minlength : "<$lc("wwDataForm_min10char_input")$>"
+		});
+		
+		$(function()
+       	 {
+	          $('.date-pick').datepick({yearRange: '2000:2050'});
+        	});
+		
+		$("#DataForm8").validate({
+			onkeyup:false,
+
+			errorPlacement: function(error, element) {
+				//if (element.attr('name') == "CurrentlyRecruiting") {
+					//error.insertAfter($(element).parents('fieldset:first'));
+				//}
+				//else if (element.attr('name') == "lookingjob") {
+					//error.insertAfter($(element).parents('fieldset:first'));
+				//}
+				//else {
+					error.insertAfter(element);
+				//}
+			}
+
+
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+<$if #active.isJobRequisition$>
+<$executeService("HAYS_MAIL")$>
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+<div id="ConfirmationMessage">
+<h2><$wcmElement("ConfirmationTitle")$></h2>
+<p><$wcmElement("ConfirmationSummary")$><p>
+</div>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+<$include jobRequisitionForm$>
+<$endif$>
+
+<$else$>
+<$include jobRequisitionForm$>
+<$endif$>
+
+<div id="dialog"><p></p></div>
+<@end@>
+
+
+<@dynamichtml jobRequisitionForm@>
+
+<$include hays_FormString$>
+<$include setup_TestEmail$>
+<$include Form_display$>
+<$include datPicker_CSS$>
+<$include namevalue_hidden$>
+
+<div id="Form">
+<span class="sub_text" style="text-transform: uppercase;"><h1><$wcmElement("Title")$></h1></span>
+<p><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+
+
+<!-- Step 1 -->
+<form id="DataForm8" name="DataForm8" class="hays_form" action="" method="post" enctype="multipart/form-data">
+   <fieldset class="rc_grey">
+    <input type="hidden" id="Email"  name="Email" value="<$email$>"/>
+    <input type="hidden" id="Subject" value="<$stripHTML(wcmElement('Title'))$>" name="Subject"/>
+    <input type="hidden" id="DataFormName" value="DataForm_8" name="DataFormName"/>
+    <input type="hidden" id="emailTemplate" value="JobRequisition_EmailTemplate" name="emailTemplate"/>
+    <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+    <input type="hidden" name="isJobRequisition" value="1" /> 
+	<input type="hidden" name="domainId" value="<$domainId$>" /> 
+	<input type="hidden" name="siteId" value="<$siteId$>" /> 
+
+
+ <ol>
+ 
+ <li>
+ <p><$wcmElement("Summary")$></p>
+ </li>
+ 
+ <$if strEquals(dropdown_addtoform,"true")$>
+ <li>
+
+		<div class="grid_4 alpha">
+					<label id="lbl_PreferredLocation" for="PreferredLocation"><$dropdown_label$></label>
+		</div>
+		<div class="grid_5">
+		  <select  class="" id="PreferredLocation" name="PreferredLocation">
+		      <option value=""><$lc('wwDataFormsDropdownFirstExpLabel')$></option>
+              <$rsCreateResultSet('OptionList_RS', 'opt_Text,opt_val')$>
+			  <$rsAppendRowValues('OptionList_RS', dropdown_options)$>
+			  <$loop OptionList_RS$>
+			  <$if strIndexOf(OptionList_RS.opt_val,":") != -1$>
+			   <option value="<$strReplace(OptionList_RS.opt_val,':',',')$>"><$OptionList_RS.opt_Text$></option>
+			   <$else$>
+			   <option value="<$OptionList_RS.opt_val$>"><$OptionList_RS.opt_Text$></option>
+			  <$endif$>
+			 <$endloop$>
+		  </select>
+		</div>
+		
+		<div class="grid_4 omega"></div>
+ </li>
+<$endif$>
+ 
+  <li id="li1" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_companyname" for="companyname"><$lc('wwDataForm8CompanyNameLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="companyname" id="companyname" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li2" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_name" for="name"><$lc('wwDataForm8NameLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="name" id="name" class=""/>
+   </div>
+ </li>
+
+ <li id="li3" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_emailaddress" for="emailaddress"><$lc('wwDataForm8EmailLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="emailaddress" id="emailaddress" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li4" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_function" for="function"><$lc('wwDataForm8FunctionLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="function" id="function" class=""/>
+   </div>
+ </li>
+
+ <li id="li5" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_telephoneno" for="telephoneno"><$lc('wwDataForm8PhoneLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="telephoneno" id="telephoneno" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li6" class="" style="display:none">
+    <div class="grid_4 alpha">
+    <label id="lbl_ContactPreference" for="ContactPreference"><$lc('wwDataForm8ContactPreferenceLabel')$></label>
+   </div>
+   <div class="grid_5">
+	 <select  class="" id="ContactPreference" name="ContactPreference">
+	   <option value=""><$lc('wwDataForm8ContactPreferenceSelectLabel')$></option>
+	  <$ rsCreateResultSet("ContactPreference_RS", "lbl,val") $>
+		     <$ rsAppendRowValues("ContactPreference_RS", lc('wwDataForm8ContactPreferenceOptions'))$>
+			 <$loop ContactPreference_RS$>
+			 <option value='<$ContactPreference_RS.val$>' name='<$ContactPreference_RS.lbl$>'><$ContactPreference_RS.val$></option>
+	  <$endloop$>
+     </select>
+  </div>
+</li>
+
+ <li id="li7" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_contacttime" for="contacttime"><$lc('wwDataForm8ContactTimeLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="contacttime" id="contacttime" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li8" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_hearabout" for="hearabout"><$lc('wwDataForm8HearAboutLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="hearabout" id="hearabout" class=""/>
+   </div>
+ </li>
+<!-- <br/><br/>
+<p><$lc('wwDataForm8FillResponseDetailsLabel')$></p>
+ <br/><br/>	-->
+  <li id="li9" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_job_title" for="job_title"><$lc('wwDataForm8JobTitleLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="job_title" id="job_title" class=""/>
+   </div>
+ </li>
+ 
+ <li id="li10" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_startdate" for="startdate"><$lc('wwDataForm8StartDateLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="startdate" id="startdate" class="date-pick"/>
+   </div>
+ </li>
+ 
+ <li id="li11" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_enddate" for="enddate"><$lc('wwDataForm8EndDateLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+	<input type="text" name="enddate" id="enddate" class="date-pick"/>
+   </div>
+ </li>
+ 
+ <li id="li12" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_jobdescription" for="jobdescription"><$lc('wwDataForm8JobDescriptionLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+   <textarea rows="6" cols=""  id="jobdescription" name="jobdescription" class=""></textarea>
+   </div>
+ </li>
+ 
+ <li id="li13" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_hays_office" for="hays_office"><$lc('wwDataForm8HaysOfficeLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+   		<input type="text" name="hays_office" id="hays_office" class="" />	
+   </div>
+ </li>
+
+ <li id="li14" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_specialisation" for="specialisation"><$lc('wwDataForm8SpecialisationLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">
+    <$locale = #active.SiteLocale$>
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+		<$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+	<$endif$>
+	<$metadata = "xCategory" , language = Language , country = isoCountryCode ,
+	ontClass = "hays:Specialism"$>
+	<$if NOT rsExists('IndividualsList')$>
+		<$executeService('ONT_GET_INDIVIDUALS')$>
+	<$endif$>	
+	<select class="" name="specialisation" id= "specialisation">	
+			<option value=""><$lc('wwDataForm8ContactPreferenceSelectLabel')$></option>
+		<$loop IndividualsList$>
+			<option name="specialisation<$IndividualsList.#row$>" id="specialisation<$IndividualsList.#row$>" value="<$IndividualsList.label$>">
+			<label for="specialisation<$IndividualsList.#row$>"
+			id="specialisation<$IndividualsList.#row$><$IndividualsList.#row$><$IndividualsList.#row$>"><$IndividualsList.label$></label>
+			</option>
+		<$endloop$>
+	</select>	
+   </div>
+ </li> 
+ 
+ <li id="li15" class="" style="display:none">
+   <div class="grid_4 alpha">
+    <label id="lbl_AttachedDocument" for="AttachedDocument"><$lc('wwDataForm8UploadDocumentLabel')$></label>
+   </div>
+   <div class="grid_9 omega suffix_1">  
+	<input type="file" id="AttachedDocument" name="AttachedDocument" class=""/>  
+   </div>
+ </li>
+
+ </ol>
+  </fieldset>
+ <div class="s_mrg">
+		<input type="submit" id="submitbutton" value="<$lc('wwDataFormSendButtonLabel')$>" class="button" onclick="createSetHidden()" />
+ </div>
+ <div class="clear"></div>
+</form>
+<$wcmElement("Footer")$>
+</div>
+<@end@>
+
+
+<@dynamichtml setup_TestEmail@>
+<$if strEqualsIgnoreCase(#env.Is_Live_Env,"No") and strLength(#env.Is_Live_Env) GT 0$>
+<$email="sangamemailservice@gmail.com"$>
+<$endif$>
+<@end@>
+
+</body></html>

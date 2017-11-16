@@ -1,0 +1,65 @@
+	<$include std_doctype_html_decl$>
+<head>
+	<$defaultPageTitle = "Ontology Edit"$>
+	<$include std_html_head_declarations$>
+
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+
+
+	<$include std_page_begin$>
+
+
+<h2>Ontology Edit</h2>
+<hr>
+
+<$if #active.ontMetadata $>
+	<table>
+	<tr>
+	<td><$ ontMetadata $></td>
+	<td><applet code="infomentum.ontology.loader.protege.ProtegeApplet.class"
+					 codebase="<$HttpRelativeWebRoot$>FacetedBrowsing/jars/newjars/" 
+					 archive="sjena-2.6.2.jar,slooks-2.1.3.jar, sunicode_panel.jar, sprotege.jar,sprotege-owl.jar,sjcalendar.jar, sbsf.jar, sxercesImpl.jar, sorphanNodesAlg.jar, siri.jar, sicu4j_3_4.jar, slog4j-1.2.12.jar, sHays.jar, ssdordfclient.jar, sslf4j-api-1.5.6.jar, sslf4j-log4j12-1.5.6.jar,
+					 sojdbc6.jar, sarq.jar, idcapplet.jar" 
+					 width="130" 
+					 height="60">
+						<param name="METADATA" value="<$ontMetadata$>" />
+						<param name="idcToken" value="<$idcToken$>" />
+						<$include std_applet_params$>
+
+						Your browser doesn't support the <code>applet</code> tag!
+					</applet>
+	</td>
+	</tr>
+	</table>
+<$else$>
+
+		<$executeService("ONT_GET_ASSIGNED_META")$>
+		<table>
+		<$loop OntMetadataRS$>
+
+			<tr>
+			<td><$metadata$></td>
+			<td>	<applet code="infomentum.ontology.loader.protege.ProtegeApplet.class"
+					 codebase="<$HttpRelativeWebRoot$>FacetedBrowsing/jars/newjars" 
+					 archive="sjena-2.6.2.jar,slooks-2.1.3.jar, sunicode_panel.jar, sprotege.jar,sprotege-owl.jar,sjcalendar.jar, sbsf.jar, sxercesImpl.jar, sorphanNodesAlg.jar, siri.jar, sicu4j_3_4.jar, slog4j-1.2.12.jar, sHays.jar, ssdordfclient.jar, sslf4j-api-1.5.6.jar, sslf4j-log4j12-1.5.6.jar,
+					 sojdbc5.jar, sarq.jar, idcapplet.jar" 
+					 width="130" 
+					 height="60">
+						<param name="METADATA" value="<$metadata$>" />
+						<param name="idcToken" value="<$idcToken$>" />		
+						<$include std_applet_params$>
+
+						Your browser doesn't support the <code>applet</code> tag!
+					</applet>
+			</td>
+			</tr>
+		<$endloop$>
+		</table>
+<$endif$>
+
+<$include std_page_end$>
+
+</body>
+
+</html>

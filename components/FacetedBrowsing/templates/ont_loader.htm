@@ -1,0 +1,70 @@
+	<$include std_doctype_html_decl$>
+<head>
+	<$defaultPageTitle = "Ontology Loader"$>
+	<$include std_html_head_declarations$>
+	<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+	<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+	<!--BAU REL-4 21118-->
+<$include include_jquery_js$>
+<!--BAU REL-4 21118-->
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+
+	<$include std_page_begin$>
+
+<div id="ont">
+	<h2>Ontology Loader</h2>
+	<form name="OntLoader" enctype="multipart/form-data" method=post action="<$HttpCgiPath$>">
+	<input type="hidden" name="IdcService" value="ONT_SAVE_ONTOLOGY"/>
+	<$include idc_token_form_field$>
+	<table>
+		<thead>
+			<tr>
+				<th><label for="ontMetadata">Select metadata field:</label></th>
+				<th><select id="ontMetadata" name="ontMetadata" onChange="sendRequestGet(this.options[this.selectedIndex].value);return false;">
+					<$loop OntMetadataRS$>
+						<option name="ontMetadata" value="<$OntMetadataRS.metadata$>"><$OntMetadataRS.dCaption$></option>
+					<$endloop$></th>
+			</tr>
+		</thead>
+
+	</table>
+	
+	<table>
+		<tbody>
+			<tr>
+				<td class="radio"><input type="radio" name="ontGroup" value="new" id="ontGroup_new" CHECKED/> <label for="ontGroup_new">Create a new Ontology</label></td>
+				<td class="radio"><input type="radio" name="ontGroup" value="exist" id="ontGroup_exist"/> <label for="ontGroup_exist">Upload existing ontology from file</label></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td class="file"><div id="show"><label for="ontFilePath">File:</label><input type="file" name="ontFilePath" id="ontFilePath" size="35"	maxlength="250" value=""></div></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<table class="no_border">		
+		<tfoot>
+			<tr>				
+				[[%<td><$include idc_token_form_field$></td>%]]				
+				<td><input type="submit" name="Next" value="Next" class="button"/></td>
+			</tr>
+		</tfoot>
+	</table>	
+	<script type="text/javascript">
+		$('#show').hide();
+		$('#ontGroup_exist').click(function() {
+			$('#show').show();
+		});
+		$('#ontGroup_new').click(function() {
+			$('#show').hide();
+		});
+    </script>
+
+	
+	</form>	
+</div>
+
+<$include std_page_end$>
+
+</body></html>

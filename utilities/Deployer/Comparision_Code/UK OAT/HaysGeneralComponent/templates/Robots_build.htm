@@ -1,0 +1,72 @@
+<$domain_address = HTTP_HOST$>
+
+<$if (strIndexOf(domain_address, 'testsg') >=0) OR (strIndexOf(domain_address, 'www1') >=0) OR (strIndexOf(domain_address, 'www2') >=0) OR (strIndexOf(domain_address, 'www3') >=0) OR (strIndexOf(domain_address, 'vereduscorp') >=0)$>
+User-agent: *
+Disallow: /
+<$else$>
+User-agent: *
+Disallow: /prd_consump/
+Disallow: /error-page/
+Disallow: /jobs-search/results/
+Disallow: /cs/
+	
+<$if strIndexOf(domain_address, 'co.uk') >=0$>
+Disallow: /search?
+Disallow: /jobs-search/results?
+<$endif$>
+
+User-agent: OmniExplorer_Bot
+Disallow: /
+
+User-agent: YahooSeeker/CafeKelsa
+Disallow: /
+
+User-agent: WijuBot/1.0
+Disallow: /
+
+User-agent: Googlebot
+<$if strIndexOf(domain_address, 'hays.co.uk') >=0$>
+Disallow: /search?
+Disallow: /jobs-search/results/
+Disallow: /jobs-search/results?
+<$endif$>
+Crawl-delay: 10
+
+User-agent: Msnbot
+Crawl-delay: 10
+
+User-agent: Slurp
+Crawl-delay: 10
+
+User-agent: Gigabot
+Crawl-delay: 10
+
+User-agent: Twiceler
+Crawl-delay: 10
+
+User-agent: JobCrawlerBot
+Crawl-delay: 10
+
+User-agent: InnovantageBot
+Crawl-delay: 10
+
+User-agent: InnovantageBot
+Crawl-delay: 10
+
+<$if (strIndexOf(domain_address, 'vereduscorp') < 0)$>
+	<$if strIndexOf(domain_address, 'co.uk') >=0$>
+		Sitemap: http://<$domain_address$>/sitemap.xml 
+	<$else$>
+		<$DADDRESS= HTTP_HOST & "%"$>
+		<$trace("DADDRESS = " & DADDRESS, "#console", "robots")$>
+		<$executeService("GET_ROBOTS_DOMAINS")$>
+		<$trace("ROBOT_DOMAIN = " & ROBOT_DOMAIN, "#console", "robots")$>
+		<$loopwhile getValue('robot_domain', '#isRowPresent')$>
+			<$if strIndexOf(ROBOT_DOMAIN,'jobs') eq -1$>
+				Sitemap: http://<$ROBOT_DOMAIN$>/sitemap.xml 
+			<$endif$>
+			<$exec rsNext("robot_domain")$>
+		<$endloop$>
+	<$endif$>
+<$endif$>	
+<$endif$>

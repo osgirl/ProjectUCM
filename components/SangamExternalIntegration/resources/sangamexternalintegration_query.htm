@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+SangamExternalIntegration query
+</title>
+</head>
+<body>
+
+<@table SangamExternalIntegration_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+
+
+
+
+<tr>
+	<td>Qlist</td>
+	<td>select BrandId,Name from Brand order by Name</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>QGetBrandNames</td>
+	<td>select ABT.BrandId,ABT.BrandName from AllBrandTranslations ABT where ABT.DomainId=? and ABT.LanguageId =? order by ABT.BrandName</td>
+	<td>domainId int
+	    languageId int</td>
+</tr>
+
+
+<tr>
+	<td>QGetOfficeLocations</td>
+	<td>DECLARE @return_value int
+		EXEC @return_value = [dbo].[s_OfficeSelectMultiple_ByRangeBrand]
+		@Latitude = ?,
+		@Longitude= ?,
+		@Miles= 100,
+		@BrandID = ? ,
+		@ISOCountryCode= ?,
+		@Locale= ?</td>
+	<td>latitude varchar
+	    longitude varchar
+	    brandId int
+	    isoCountryCode varchar
+		websiteLocale varchar</td>
+</tr>
+
+<tr>
+	<td>QGetLocations</td>
+	<td>SELECT distinct town  from office
+        INNER JOIN domain
+        on office.domainid=domain.domainid
+        where domain.ISOCountryCode=?
+        order by office.town</td>
+	<td>isocountrycode varchar</td>
+</tr>
+<tr>
+	<td>QGetOfficeSpecialismList</td>
+	<td>select ABT.BrandId as id,ABT.BrandName as label,'' as uri from AllBrandTranslations ABT where ABT.DomainId=? and ABT.LanguageId =? order by ABT.BrandName
+	</td>
+	<td>DomainId int
+	    LanguageId int</td>
+	 
+</tr>
+</table>
+<@end@>
+</body></html>

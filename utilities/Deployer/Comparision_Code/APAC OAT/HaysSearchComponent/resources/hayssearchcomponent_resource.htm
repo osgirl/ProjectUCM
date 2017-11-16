@@ -1,0 +1,1396 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysSearchComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+
+<@dynamichtml subtmp_sponsored_employers_search_results@>
+
+	<!--main content -->
+	<$include sponsored_employers_search_results_getresults_inc$>
+	<$if rsExists("SearchResults") and rsFirst('SearchResults') $>
+		<$include site_search_results_displaycommon_inc$>
+	<$else$>
+	 	<p><$lc('wwYouSearched')$> <strong><$ssGetNodeProperty(#active.nodeId,"label")$></strong></p>
+		<p><$lc('wwNoRes')$></p>
+	<$endif$>
+
+	<!--/main content -->
+<@end@>
+
+
+
+
+
+<@dynamichtml sponsored_employers_search_results_getresults_inc@>
+	<$if #active.QueryText$>
+		<$initialQuery="QueryText=" & url(QueryText)$>
+	<$else$>
+		<$strContentType=ssGetNodeProperty("ContentType")$>
+		<$strSubContentType=ssGetNodeProperty("SubContentType")$>
+
+		<$if not strEquals(strSubContentType,"")$>
+			<$QueryText="xSubType <matches> `" & strSubContentType & "`"$>
+		<$elseif not strEquals(strContentType,"")$>
+			<$QueryText="dDocType <matches> `" & strContentType & "`"$>
+		<$endif$>
+		<$initialQuery="QueryText=" & url(QueryText)$>
+	<$endif$>
+		<$if #active.strContentType and strEquals(#active.strContentType,"SponsoredEmployer")$>
+			<!-- added on 12/04/2012-->
+			<$ SortField="dInDate" $>
+			<$ SortOrder="desc"$>
+			<!-- end-->
+			<$if isTrue(#env.DisableSiteStudioContribution)$>
+				<$QueryText= QueryText & " <AND> xIsFeatured <matches> `Yes`"$>
+				<$initialQuery="QueryText=" & url(QueryText)$>
+			<$endif$>
+		
+		<$endif$>
+	<$queryString=QueryText$>
+	<$include set_query_locale_include $>
+	<$QueryText=queryString$>
+	<$if strEquals(strSubContentType,"Press releases")$>
+	 <$ SortField="xEventDate" $>
+	 <$ SortOrder="desc"$>
+   	<$endif$>
+	<$initialQuery="QueryText=" & url(QueryText)$>
+	<$executeService("SS_GET_SEARCH_RESULTS")$>
+<@end@>
+
+
+
+<!-- ********* ADD xCategory to query ********************
+Adds xCategory and xVisitorType metadata value to the query in order to retrieve
+related content
+********************************************************-->
+<@dynamichtml set_query_string@>
+
+	[[% get the type of the current page: job seeker or candidate %]]
+	<$include job_or_candidate_type_inc$>
+	<$ tail = '(xTargetAudience <matches> `common` ' $>
+	<$if isTrue(isCandidateSeeker) $>
+		<$ tail = tail & " <OR> xTargetAudience <matches> `employer`)" $>
+	<$else$>
+		<$ tail = tail & " <OR> xTargetAudience <matches> `jobseeker`)" $>
+	<$endif$>
+
+	[[% Extract Specialism/Subspealism of the current section %]]
+	<$include get_relevant_category $>
+	<$  subTerms = '' $>
+	<$if strLength(category) GT 0 $>
+
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$if subTerms like '[]'$>
+			<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+			<$if subTerms like '[]'$>
+				<$ subTerms = category$>
+			<$elseif strLength(subTerms) GT 0$>
+				<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$endif$>
+		<$elseif strLength(subTerms) GT 0 $>
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+		<$endif$>
+		<$ tail = tail & " <AND> (xCategory <CONTAINS> `" & subTerms & "` <OR> xCategory <CONTAINS> ``)" $>
+	<$endif$>
+
+	<$if strLength( tail ) GT 0 $>
+		<$if strLength(queryString) GT 0 $>
+			<$ queryString = queryString & " <AND> " $>
+		<$endif$>
+		<$ queryString  = queryString & '(' & tail & ')' $>
+	<$endif$>
+
+	[[% add locale %]]
+	<$include set_query_locale_include $>
+<@end@>
+
+
+
+
+<@dynamichtml set_query_string_no_empty_catagory@>
+
+	[[% get the type of the current page: job seeker or candidate %]]
+	<$include job_or_candidate_type_inc$>
+	<$ tail = '(xTargetAudience<matches>`common`' $><!-- BAU 18293 -->
+	<$if isTrue(isCandidateSeeker) $>
+		<$ tail = tail & "<OR>xTargetAudience<matches>`employer`)" $>
+	<$else$>
+		<$ tail = tail & "<OR>xTargetAudience<matches>`jobseeker`)" $>
+	<$endif$>
+
+	[[% Extract Specialism/Subspealism of the current section %]]
+	<$include get_relevant_category $>
+	<$  subTerms = '' $>
+	<$if strLength(category) GT 0 $>
+
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$if subTerms like '[]'$>
+			<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+			<$if subTerms like '[]'$>
+				<$ subTerms = category$>
+			<$elseif strLength(subTerms) GT 0$>
+				<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$endif$>
+		<$elseif strLength(subTerms) GT 0 $>
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+		<$endif$>
+		<$ tail = tail & "<AND>(xCategory<CONTAINS>`"& subTerms &"`)" $><!-- BAU 18293 -->
+	<$endif$>
+
+	<$if strLength( tail ) GT 0 $>
+		<$if strLength(queryString) GT 0 $>
+			<$ queryString = queryString & "<AND>" $>
+		<$endif$>
+		<$ queryString  = queryString & '('& tail &')' $><!-- BAU 18293 -->
+	<$endif$>
+
+	[[% add locale %]]
+	<$include set_query_locale_include $>
+
+<@end@>
+
+
+
+
+<@dynamichtml set_query_string_simple@>
+
+	[[% get the type of the current page: job seeker or candidate %]]
+	<$include job_or_candidate_type_inc$>
+
+	[[% Extract Specialism/Subspealism of the current section %]]
+	<$include get_relevant_category $>
+	<$  subTerms = '' $>
+	<$if strLength(category) GT 0 $>
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$if subTerms like '[]'$>
+			<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+			<$if subTerms like '[]'$>
+				<$ subTerms = category$>
+			<$elseif strLength(subTerms) GT 0$>
+				<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$endif$>
+		<$elseif strLength(subTerms) GT 0 $>
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+		<$endif$>
+		<$ tail = " (xCategory <CONTAINS> `" & subTerms & "` <OR> xCategory <CONTAINS> ``)" $>
+	<$endif$>
+
+	<$if tail AND strLength( tail ) GT 0 $>
+		<$if strLength(queryString) GT 0 $>
+			<$ queryString = queryString & " <AND> " $>
+		<$endif$>
+		<$ queryString  = queryString & '(' & tail & ')' $>
+	<$endif$>
+
+	[[% add locale %]]
+	<$include set_query_locale_include $>
+	
+<@end@>
+
+
+
+<!----- Add filtering by the current locale -->
+<@dynamichtml set_query_locale_include@>
+	<$if strLength(queryString) GT 0 AND #active.SiteLocale $>
+		<$ queryString = queryString & "<AND>" $>  <!-- BAU 18293 -->
+	<$endif$>
+	<$ queryString  = queryString & '(xLocale<MATCHES>`'& SiteLocale &'`)' $> <!-- BAU 18293 -->
+<@end@>
+
+
+
+
+<!-- ********* ADD xVisitorType to query ********************
+Adds xVisitorType metadata value to the query in order to retrieve
+related content
+********************************************************-->
+<@dynamichtml add_content_type_toquery_inc_deprecated@>
+	[[% Job Seeker or Candidate
+	<$include job_or_candidate_type_inc$>
+	<$ tail = ' xVisitorType <MATCHES> `` '  $>
+	<$if strLength(#active.PAGE_TYPE) GT 0 $>
+		<$ tail = tail & ' <OR> xVisitorType <MATCHES> `' & PAGE_TYPE & '`' $>
+	<$endif$>
+	<$if #active.queryString AND strLength(queryString) GT 0  $>
+		<$ queryString = queryString & ' <and> ' $>
+	<$endif$>
+	<$ queryString  = queryString & '(' & tail & ')' $> %]]
+<@end@>
+
+
+
+
+
+<!-- ******************* GET xCategory METADATA ***************
+If the current section's xCategory metadata is not set than read its value
+from the user's cookie
+*****************************************************************--->
+<@dynamichtml get_relevant_category@>
+	<$if #active.xCategory $>
+
+		<$if strLength(xCategory) GT 0 $>
+			<$ xCategory = strReplace(xCategory, ";", ",") $>
+		<$endif$>
+
+		<$if strIndexOf(xCategory, ',') EQ 0 $>
+			<$ xCategory = strSubstring(xCategory, 1, strLength(xCategory)-1) $>
+		<$endif$>
+	<$else$>
+		<$include get_relevant_category_from_csp$>
+	<$endif$>
+	<$category = xCategory $>
+<@end@>
+
+
+
+
+
+<@dynamichtml get_relevant_category_from_csp@>
+		<$ xCategory = '' $>
+		<$if #active.nodeId$>
+			<$ xCategory = ssGetNodeProperty("xCategory")$>
+
+			<$if strLength(xCategory) EQ 0 $>
+				<$ xCategory = getCookie("prispc")$>
+			<$endif$>
+		<$else$>
+			<$ xCategory = getCookie("prispc")$>
+		<$endif$>
+
+		<$if strLength(xCategory) GT 0 $>
+			<$ xCategory = strReplace(xCategory, ";", ",") $>
+		<$endif$>
+
+		<$if strIndexOf(xCategory, ',') EQ 0 $>
+			<$ xCategory = strSubstring(xCategory, 1, strLength(xCategory)-1) $>
+		<$endif$>
+
+<@end@>
+
+
+
+
+<@dynamichtml get_basket_query_string@>
+	<$jobbkt = getCookie("jobbkt")$>
+	<$if strLength(jobbkt) GT 0 $>
+		<$queryUrl='?action=bskt&portalProfileID=12&job=' & strSubstring(jobbkt,1)$>
+	<$endif$>
+	<@end@>
+
+	<@dynamichtml check_login@>
+	<$loggedIn = "N"$>
+	[[% <$if #env.HTTP_HDR_USER_ID AND NOT strEquals(#env.HTTP_HDR_USER_ID, "")$> %]]
+	<$portalProfileId = getCookie("prz_inf")$>
+	<$if NOT strEquals(portalProfileId, "")$>
+		<$loggedIn = "Y"$>
+	<$endif$>
+	 <@end@>
+
+<@dynamichtml add_create_account_popup@>
+<!--BAU REL-4 21118-->
+<$include include_ga_code_js$>
+ <$if (isGACodeDisabled EQ 1)$>
+ <script type="text/javascript">
+   <!--// --><![CDATA[//><!--
+   var options = { path: '/', expires: 10 };
+   function setPerformz()
+   {
+      if (window.jQuery && jQuery.isReady) {
+     $.cookie('performz', 'N',options);
+     }else {
+     window.setTimeout(setPerformz, 100);
+    }
+   }
+   setPerformz();
+   //--><!]]>
+   </script>
+<$endif$> 
+<!--BAU REL-4 21118-->
+	 <$ exec setLocale(SiteLocale) $> 
+	 <script type="text/javascript">
+			<!--//--><![CDATA[//><!--
+
+			function createAccount() {
+				if (window.jQuery && jQuery.ui && jQuery.isReady) {
+			
+					$(".un-create").click(function() {						
+						<$userRole=getCookie("tgtaud")$>
+				  		<$if strLength(userRole) gt 0 or strEquals(SiteLocale,'en-VUS')$> //Only jobseeker account required for veredus
+				  			<$if strEquals(userRole,'2') and not strEquals(SiteLocale,'en-VUS')$>
+				  				var url = '<$WC_CREATE_ACCOUNT_EMPLOYER$>?siteLocale=<$SiteLocale$>&domainId=<$domainId$>';
+							<$else$>
+				  				var url = '<$WC_CREATE_ACCOUNT_JOBSEEKER$>?siteLocale=<$SiteLocale$>&domainId=<$domainId$>';
+				  			<$endif$>
+							<$if strEqualsIgnoreCase(#active.ver , 'd') OR (strLength(getCookie("ver")) GT 0)$>
+										url=url	+'&ver=d';
+							<$endif$>
+				  			var baskt = $.cookie('jobbkt');                //Item 42.6 MR 3.4
+						    var candbaskt = $.cookie('candbkt');
+ 
+							if(baskt !=null && baskt != '')
+						  	{
+								url=url+'&job='+baskt.substring(1)+'&action=bskt';
+							}
+							if(candbaskt !=null && candbaskt != '')
+							{
+								url=url+'&candidate='+candbaskt.substring(1)+'&action=bskt';
+							}
+							
+							<$if strEquals(SiteLocale,'en-VUS')$>
+								if ($.cookie('performz')!='N')
+								{
+									if (typeof(_gaq) !== 'undefined') 
+									{
+										_gaq.push(['_link', url]); 
+									}
+								}
+								document.location.href=url;
+							<$else$>
+								if ($.cookie('performz')!='N')
+								{
+									_gaq.push(['_link', url]); 
+								}
+								else
+								{						
+									document.location.href=url;
+								}
+							<$endif$>
+														
+							  
+				  		<$else$>
+							$("#accountOpen").dialog('open');
+						<$endif$>
+						return false;
+					});
+										
+					var button_cancel = HAYS.ww_cancel_button;
+					var button_create = HAYS.ww_create_button;
+					var buttons = {}; 
+
+					
+					buttons[button_cancel] = function(){
+						$(this).dialog('close');}
+					
+					buttons[button_create] = function() {
+						url=jQuery('input[name=i_am]:checked').val();
+						//$('form',this).attr('action',url);
+						//$('form',this).submit();
+						<$if strEqualsIgnoreCase(#active.ver , 'd') OR (strLength(getCookie("ver")) GT 0)$>
+							url=url	+'&ver=d';
+						<$endif$>											
+						var baskt = $.cookie('jobbkt');                //Item 42.6 MR 3.4
+					    var candbaskt = $.cookie('candbkt');						
+						 
+					 if(baskt !=null && baskt != '')
+						  {
+							url=url+'&job='+baskt.substring(1)+'&action=bskt';
+							
+						  }			 
+										
+					 if(candbaskt !=null && candbaskt != '')
+						  {
+							url=url+'&candidate='+candbaskt.substring(1)+'&action=bskt';
+							
+						  }
+					 if ($.cookie('performz')!='N')
+						{
+								_gaq.push(['_link', url]);						
+						}
+					else
+					{
+						document.location.href=url;
+					}
+			}
+					
+
+$("#accountOpen").dialog({
+					autoOpen:false,
+					draggable:false,
+					modal:true,
+					resizable:false,
+					buttons: buttons,
+
+					open: function(){
+					$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+					},
+
+					title: '<$lc('wwCreateAccount')$>'
+					});
+					$('.hays-login').click (function(event) {
+					var baskt = $.cookie('jobbkt');
+					var candbaskt = $.cookie('candbkt');
+					if((baskt !=null && baskt != '') || (candbaskt !=null && candbaskt != '')){
+						var queryUrl='<$WC_SAVE_SEARCH$>?action=bskt&redirect=<$WC_MY_ACCOUNT$>&domainId=<$domainId$>&siteLocale=<$SiteLocale$>';
+						<$if strEqualsIgnoreCase(#active.ver , 'd') OR (strLength(getCookie("d")) GT 0)$>
+							queryUrl=queryUrl+'&ver=d';
+						<$endif$>
+						if(baskt !=null && baskt != ''){
+							var queryUrl=queryUrl+'&job='+baskt.substring(1);
+						}
+						if(candbaskt !=null && candbaskt != ''){
+							var queryUrl=queryUrl+'&candidate='+candbaskt.substring(1);
+						}
+						 if ($.cookie('performz')!='N')
+						{						
+								_gaq.push(['_link', queryUrl]); 
+							
+						}
+							
+						$(this).attr('href',queryUrl);
+						
+					}
+					//event.preventDefault();
+					
+				});	
+
+				}
+				else {
+					window.setTimeout(createAccount, 100);
+				}
+			}
+			
+			createAccount();
+			//--><!]]>
+			</script>
+	 <div id="accountOpen">
+		<form action="" id="createAccount">
+		<$bskt = getCookie("jobbkt")$>
+		<$baskt = strSubstring(bskt,1)$>
+		
+		<$candbskt = getCookie("candbkt")$>
+		<$candbaskt = strSubstring(candbskt,1)$>
+			<ol>
+				<li>
+					<div class="grid_4 alpha">
+						<span class="label"><$lc('wwCreateAccountUserLabel')$></span>
+					</div>
+					<div class="grid_9 omega suffix_1">
+						<fieldset>
+							<legend><$lc('wwCreateAccountUserLabel')$></legend>
+
+							<div class="select_row">
+							<$if isProjectSEnabled eq 1$>
+							<input type="radio" value="<$portalUrl$><$ProjectS_JobseekerAccount$>" id="jobseeker" name="i_am" checked="checked"/>
+							<$else$>
+								<input type="radio" value="<$WC_CREATE_ACCOUNT_JOBSEEKER$>?siteLocale=<$SiteLocale$>&domainId=<$domainId$>" id="jobseeker" name="i_am" checked="checked"/>
+							<$endif$>
+								<label for="jobseeker"><$lc('wwCreateAccountUserJobSeeker')$></label>
+							</div>
+							<$if not (strEqualsIgnoreCase(#active.SiteLocale , 'bf-BEL') OR strEqualsIgnoreCase(#active.SiteLocale , 'bn-BEL') OR strEqualsIgnoreCase(#active.SiteLocale , 'eb-BEL') OR strEqualsIgnoreCase(#active.SiteLocale , 'hrbf-HRBE') OR strEqualsIgnoreCase(#active.SiteLocale , 'hrbn-HRBE') OR strEqualsIgnoreCase(#active.SiteLocale , 'hreb-HRBE') )$>
+							<div class="select_row">
+							<$if isProjectSEnabled eq 1$>
+							<input type="radio" value="<$portalUrl$><$ProjectS_EmployerAccount$>" id="employer" name="i_am" />
+							<$else$>
+								<input type="radio" value="<$WC_CREATE_ACCOUNT_EMPLOYER$>?siteLocale=<$SiteLocale$>&domainId=<$domainId$>" id="employer" name="i_am"/>
+							<$endif$>
+								<label for="employer"><$lc('wwCreateAccountUserEmployer')$></label>
+							</div>
+							<$endif$>
+							
+						</fieldset>
+					</div>
+				</li>
+				<!-- Release 7 [Show text on popup]-->
+					<$inThisConfig=#env.ShowTextOnPopup$>
+					<$checkThisValue=siteId$>
+					<$include checkFlagValue$>
+					<$if checkFlag==1$>
+						<div style="margin-top: 5px;">
+							<$lc('wwCreateAccountInfo')$>
+						</div>
+					<$endif$>
+				<!--end-->
+			</ol>
+			<div class="clear"></div>
+
+		</form>
+		</div>
+ <@end@>
+
+
+<@dynamichtml add_search_save_link@>
+	
+	<$include is_employer$>
+		<$if isEmployer==1$>
+		<$entity=lc('wwCandidate')$>
+		<$usertype='2'$>
+		<$saveAlertMsgString=lc('wwSaveCandidateAlertHeading')$>
+	<$else$>
+		<$entity=lc('wwJob')$>
+		<$usertype='1'$>
+		<$saveAlertMsgString=lc('wwSaveJobAlertHeading')$>
+	<$endif$>
+
+	<div id="dialog">
+	<p><$lc(saveAlertMsgString)$></p>
+	<form action="<$WC_LOGIN$>" id="alert_save" class="hays_form">
+		<fieldset class="rc_grey">
+		<ol>		
+			<li>
+				<div class="alertname">
+					<label for="job_alert" id="job_alert_lbl"><em>* </em><$lc('wwSaveAlertName')$></label>
+				</div>
+
+				<div class="alertinput">
+					<input id="job_alert" type="text" name="alertSaveName" class="mandatory"/>
+				</div>
+			</li>
+			<li>
+				<div class="label_col"><span><span class="access"><$entity$> </span><$lc('wwSaveAlertFrequency')$></span></div>
+				<div>
+					<fieldset>
+
+						<legend><$entity$> <$lc('wwSaveAlertFrequency')$></legend>
+						<ol>
+							<li class="select_row">
+								<div>
+									<input type="radio" name="frequency" id="job_daily_search" value="1" />
+									<label for="job_daily_search"><$lc('wwSaveAlertDaily')$></label>
+								</div>
+								<div>
+
+									<input type="radio" name="frequency" id="job_weekly_search" value="7" checked/>
+									<label for="job_weekly_search"><$lc('wwSaveAlertWeekly')$></label>
+								</div>
+							</li>
+						</ol>
+					</fieldset>
+				</div>
+			</li>
+		</ol>
+		</fieldset>
+		<div class="access">
+			<input type="hidden" name="redirect" value="<$WC_SAVE_SEARCH$>?domainId=<$#active.domainId$>&siteLocale=<$#active.SiteLocale$>" />
+			<input type="hidden" name="action" value="alrt" />
+			<input type="hidden" name="portalProfileID" value="181" />
+			<input type="hidden" name="domainId" value="<$#active.domainId$>" />
+			<input type="hidden" name="keywords" value="<$#active.job_keywords$>" />
+			<input type="hidden" name="isOnlyJobTitle" value="<$#active.isOnlyJobTitle$>" />
+			<input type="hidden" name="isFuzzy" value="<$#active.isFuzzy$>" />
+			<input type="hidden" name="distance" value="<$#active.radius$>" />
+			<input type="hidden" name="sectorIds" value="<$#active.job_industry$>" />
+			<input type="hidden" name="postcode" value="<$#active.job_postcode$>" />
+			<input type="hidden" name="locale" value="<$#active.SiteLocale$>" />
+			<input type="hidden" name="siteLocale" value="<$#active.SiteLocale$>" /> <!-- as per WC req, the param name is siteLocale, so it is added  -->
+			<input type="hidden" name="jobTitle" value="<$#active.job_title$>"/>
+			<input type="hidden" name="job_job_title" value="<$#active.job_job_title$>"/>
+			<input type="hidden" name="job_job_title_descr" value="<$#active.job_job_title_descr$>"/>
+			<input type="hidden" name="job_title_ref" value="<$#active.job_title_ref$>"/>
+			<input type="hidden" name="job_category" value="<$#active.job_category$>"/>
+			<input type="hidden" name="location" value="<$#active.job_location$>"/>
+			<input type="hidden" name="ne_longitude" value="<$#active.ne_longitude$>"/>
+			<input type="hidden" name="ne_latitude" value="<$#active.ne_latitude$>"/>
+			<input type="hidden" name="level" value="<$#active.level$>"/>
+			<input type="hidden" name="usertype" value="<$#active.usertype$>"/>
+			<input type="hidden" name="distanceUnit" value="<$#active.distance_unit$>" />
+			<input type="hidden" name="isactive" value="1" />
+			<input type="hidden" name="email" value="" />
+			<input type="hidden" name="minSalary_p" value="<$#active.job_min_permanent$>" />
+			<input type="hidden" name="maxSalary_p" value="<$#active.job_max_permanent$>" />
+			<input type="hidden" name="salaryType_p" value="<$#active.job_select_permanent$>" />
+			<input type="hidden" name="salaryCurrency_p" value="GBP" />
+			<input type="hidden" name="minSalary_t" value="<$#active.job_min_temporary$>" />
+			<input type="hidden" name="maxSalary_t" value="<$#active.job_max_temporary$>" />
+			<input type="hidden" name="salaryType_t" value="<$#active.job_select_temporary$>" />
+			<input type="hidden" name="minSalary_c" value="<$#active.job_min_contract$>" />
+			<input type="hidden" name="maxSalary_c" value="<$#active.job_max_contract$>" />
+			<input type="hidden" name="salaryType_c" value="<$#active.job_select_contract$>" />
+			<input type="hidden" name="job_International" value="<$#active.job_international$>" />
+			<input type="hidden" name="job_Non_National" value="<$#active.job_nonEU$>" />
+			<input type="hidden" name="location_id" value="<$#active.location_id$>" />
+			<!--Start of MR4 changes - Amit Narula -->
+			<$if NOT strCmp(countryName,'Belgium') $>
+		    	<input type="hidden" name="specialism" value="<$#active.job_category_be$>"/>
+		    	<input type="hidden" name="subspecialism" value="<$#active.job_category$>"/>
+		    	<input type="hidden" name="jobtypes" value="<$#active.job_type$>"/>
+			<$else$>
+			<input type="hidden" name="specialism" value="<$#active.job_category$>"/>
+			<$endif$>
+			<!--End of MR4 changes - Amit Narula -->
+			
+		</div>
+		<div class="clear"></div>
+	</form>
+</div>
+
+	<div id="dialog_1">
+	<p>
+		<$if isEmployer==1$>
+			<$lc('wwSaveCandidateSearchHeading')$>
+		<$else$>
+			<$lc('wwSaveJobSearchHeading')$>
+		<$endif$></p>
+	<form action="<$WC_LOGIN$>" id="search_save" class="hays_form">
+		<fieldset class="rc_grey">
+		<ol>
+			<li>
+				<div class="grid_4 alpha">
+					<label for="job_search" id="job_search_lbl"><em>* </em><$lc('wwSaveSearchName')$></label>
+				</div>
+
+				<div class="grid_6 omega suffix_1">
+					<input id="job_search" type="text" name="alertSaveSearch" class="mandatory"/>
+				</div>
+			</li>
+		</ol>
+		</fieldset>
+		<div class="access">
+			<input type="hidden" name="redirect" value="<$WC_SAVE_SEARCH$>?domainId=<$#active.domainId$>&siteLocale=<$#active.SiteLocale$>" />
+			<input type="hidden" name="action" value="srch" />
+			<input type="hidden" name="portalProfileID" value="181" />
+		    <input type="hidden" name="domainId" value="<$#active.domainId$>" />
+			<input type="hidden" name="keywords" value="<$#active.job_keywords$>" />
+			<input type="hidden" name="isOnlyJobTitle" value="<$#active.isOnlyJobTitle$>" />
+			<input type="hidden" name="isFuzzy" value="<$#active.isFuzzy$>" />
+			<input type="hidden" name="distance" value="<$#active.radius$>" />
+			<input type="hidden" name="sectorIds" value="<$#active.job_industry$>" />
+			<input type="hidden" name="postcode" value="<$#active.job_postcode$>" />
+			<input type="hidden" name="locale" value="<$#active.SiteLocale$>" />
+			<input type="hidden" name="siteLocale" value="<$#active.SiteLocale$>" /> <!-- as per WC req, the param name is siteLocale, so it is added  -->
+			<input type="hidden" name="jobTitle" value="<$#active.job_title$>"/>
+			<input type="hidden" name="job_job_title" value="<$#active.job_job_title$>"/>
+			<input type="hidden" name="job_job_title_descr" value="<$#active.job_job_title_descr$>"/>
+			<input type="hidden" name="job_title_ref" value="<$#active.job_title_ref$>"/>
+			<input type="hidden" name="job_category" value="<$#active.job_category$>"/>
+			<input type="hidden" name="location" value="<$#active.job_location$>"/>
+			<input type="hidden" name="ne_longitude" value="<$#active.ne_longitude$>"/>
+			<input type="hidden" name="ne_latitude" value="<$#active.ne_latitude$>"/>
+			<input type="hidden" name="level" value="<$#active.level$>"/>
+			<input type="hidden" name="usertype" value="<$usertype$>"/>
+			<input type="hidden" name="distanceUnit" value="<$#active.distance_unit$>" />
+			<input type="hidden" name="minSalary_p" value="<$#active.job_min_permanent$>" />
+			<input type="hidden" name="maxSalary_p" value="<$#active.job_max_permanent$>" />
+			<input type="hidden" name="salaryType_p" value="<$#active.job_select_permanent$>" />
+			<input type="hidden" name="salaryCurrency_p" value="GBP" />
+			<input type="hidden" name="minSalary_t" value="<$#active.job_min_temporary$>" />
+			<input type="hidden" name="maxSalary_t" value="<$#active.job_max_temporary$>" />
+			<input type="hidden" name="salaryType_t" value="<$#active.job_select_temporary$>" />
+			<input type="hidden" name="salaryCurrency_t" value="GBP" />
+			<input type="hidden" name="minSalary_c" value="<$#active.job_min_contract$>" />
+			<input type="hidden" name="maxSalary_c" value="<$#active.job_max_contract$>" />
+			<input type="hidden" name="salaryType_c" value="<$#active.job_select_contract$>" />
+			<input type="hidden" name="salaryCurrency_c" value="GBP" />
+			<input type="hidden" name="job_International" value="<$#active.job_international$>" />
+			<input type="hidden" name="job_Non_National" value="<$#active.job_nonEU$>" />		    
+		    <!--Start of MR4 changes - Amit Narula -->
+	       	 <$if NOT strCmp(countryName,'Belgium') $>
+		    	<input type="hidden" name="specialism" value="<$#active.job_category_be$>"/>
+		    	<input type="hidden" name="subspecialism" value="<$#active.job_category$>"/>
+		    	<input type="hidden" name="jobtypes" value="<$#active.job_type$>"/>
+			<$else$>
+			<input type="hidden" name="specialism" value="<$#active.job_category$>"/>
+			<$endif$>
+			<!--End of MR4 changes - Amit Narula -->
+			<input type="hidden" name="locations" value="<$#active.location_set$>"/>
+			
+		</div>
+		<div class="clear"></div>
+
+	</form>
+	</div>
+	
+
+	<div id="dialog_save_searches">
+		<!-- <p><$lc('wwSaveSearches_Popup')$></p> -->
+		<form action="<$WC_LOGIN$>" id="formSaveSearches" class="hays_form">
+			<fieldset class="rc_grey" style="margin-bottom:-30px;">
+			<ol>
+				<li>
+					<div class="grid_4 alpha">
+						<label for="job_search" id="job_search_lbl"><em>* </em><$lc('wwSaveSearchName')$></label>
+					</div>
+
+					<div class="grid_6 omega suffix_1">
+						<input id="textSaveSearches" type="text" name="textSaveSearches" class="mandatory" maxlength="15"/>
+					</div>
+				</li>
+			</ol>
+			</fieldset>
+			<div class="clear"></div>
+
+		</form>
+	</div>
+<@end@>
+
+
+
+
+<@dynamichtml handle_wcm_call_inc@>
+<!--dynamichtml handle_wcm_call_inc-->
+		<$localeDomain='?domainId='&#active.domainId&'&siteLocale='&#active.SiteLocale$>
+		<!-- Release 7 [Show text on popup]-->
+		<$inThisConfig=#env.ShowTextOnPopup$>
+		<$checkThisValue=siteId$>
+		<$include checkFlagValue$>
+		<$if checkFlag==1$>
+		<!-- end -->
+			<div id="dialog_2"><$lc('wwCreateAccountInfo')$></div>
+		<$else$>
+			<div id="dialog_2"></div>
+		<$endif$>
+		<div id="dialog_3"></div>
+		<div id="dialog_4"></div>[[% added for release 8.0, job already applied%]]
+		<$include check_login$>
+
+		<$include is_employer$>
+		<$include get_user_role$>
+
+		<$if isEmployer==1$>
+			<$entity='candidate'$>
+			<$string=lc('wwCandidate')$>
+			<$usertype="2"$>
+		<$else$>
+			<$entity='job'$>
+			<$string=lc('wwJob')$>	
+			<$usertype="1"$>
+		<$endif$>
+		<$string=strReplaceReg(string,"'","\\\\'")$>
+		<$portalProfileId = getCookie("prz_inf")$>
+		
+		<script type="text/javascript">
+		<!--//--><![CDATA[//><!--
+		var options = { path: '/', expires: 10 };
+		function HAYSval() {		
+		        if (window.jQuery && jQuery.ui && jQuery.isReady) {
+				jQuery.extend(jQuery.validator.messages, {
+						required: "<$lc("wwJsmandatory_msg_input")$>"			
+					});	
+				
+			
+				
+				/////////////////////// added for release 8.0 for add to job shortlist start /////////////////////////////////////
+				$('.applied').click (function()
+				{
+					$('#dialog_4').dialog(
+					{
+						autoOpen:false,
+						modal:true,
+						buttons: {
+									<$lc('wwJsok_button')$>:function()
+									{
+										$(this).dialog('close');
+									}
+								},
+						title:'<$lc('wwAlreadyApplied')$>'
+					});
+					$('#dialog_4').html('<$lc('wwAlreadyAppliedPopUpMsg')$>');
+					$('#dialog_4').dialog('open');
+					return false;
+				});
+					///////////////////// added for release 8.0 end////////////////////////////////////////////////////
+				
+				
+				
+				
+				$('.job_basket').click (function() 
+				{
+					var isMultiCountry = $(this).hasClass('multipost');
+					if(isMultiCountry){
+						showMessage('<$lc('wwAddToBasketMultiMsg')$>');
+						return false;
+					}
+					var isWip = $(this).hasClass('wip');
+					if(isWip){
+						showMessage('<$lc('wwAddRemoveFromBasketProgress')$>');
+						return false;
+					}
+					var jobId = $(this).attr('rel');
+
+					$(".job_basket").filter("a[rel="+jobId+"]").toggleClass('wip');
+
+					var remove = $(this).hasClass('remove');
+					var element = $(this).get();
+
+					<$if strEquals(loggedIn,"Y")$>
+							$.getJSON($(this).attr('href'), function(data) {
+								var status = data.output;
+								if(status == true){
+									addRemoveCookie(remove, element);
+								}else{
+									showMessage(data.msg);
+									//alert('Error processing request. Please try again later');
+								}
+							});
+
+					<$else$>
+							addRemoveCookie(remove, element);
+					<$endif$>
+					return false;
+				});
+				$("#dialog").dialog({
+				autoOpen:false,
+				draggable:false,
+				modal:true,
+				resizable:false,
+				buttons: {
+					<$lc('wwDialogCancelButton')$>:function(){
+						   $(this).dialog('close');
+					},
+					<$if strEquals(loggedIn,"Y")$>
+					<$lc('wwDialogSaveButton')$>:function() {
+						//session check changes
+						if ($("#alert_save").valid()){
+							var isSessionValid = 'false';
+							//$.getJSON('http://hrlvmdv1046.emea.hays.loc:7778/hayssangam/checksession?callback=?',							
+							//alert('<$WC_CHK_SESSION$>');
+							//$.ajaxSetup( { "async": false } );
+							$.getJSON('<$WC_CHK_SESSION$>?callback=?',
+								function(data) {
+									//alert('data: ' + data);
+									var status = data.output;
+									//alert('status: ' + status);
+									//alert('data.msg: ' + data.msg);
+									if(status == true){
+										//alert('ret response is true');
+										isSessionValid = 'true';
+										//return;
+										var countryName='<$countryName$>';
+										if (countryName == "Belgium") {
+										$.getJSON('<$WC_SAVE_SEARCH$>?action=alrt&usertype=<$usertype$>&portalProfileID=181&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&alertSaveName='+encodeURI($("#job_alert").val())+'&keywords=<$#active.job_keywords$>&job_job_title=<$#active.job_job_title$>&job_job_title_descr=<$#active.job_job_title_descr$>&isOnlyJobTitle=<$#active.isOnlyJobTitle$>&isFuzzy=<$#active.isFuzzy$>&job_title_ref=<$#active.job_title_ref$>&job_category=<$#active.job_category$>&distance=<$#active.radius$>&sectorIds=<$#active.job_industry$>&postcode=<$#active.job_postcode$>&locale=<$#active.SiteLocale$>&jobTitle=<$#active.job_title$>&location=<$#active.job_location$>&ne_longitude=<$#active.ne_longitude$>&ne_latitude=<$#active.ne_latitude$>&level=<$#active.level$>&distanceUnit=<$#active.distance_unit$>&isactive=1&email=&frequency='+jQuery('#alert_save input:radio:checked').val()+'&minSalary_p=<$#active.job_min_permanent$>&maxSalary_p=<$#active.job_max_permanent$>&salaryType_p=<$#active.job_select_permanent$>&salaryCurrency_p=GBP&minSalary_t=<$#active.job_min_temporary$>&maxSalary_t=<$#active.job_max_temporary$>&salaryType_t=<$#active.job_select_temporary$>&salaryCurrency_t=GBP&minSalary_c=<$#active.job_min_contract$>&maxSalary_c=<$#active.job_max_contract$>&salaryType_c=<$#active.job_select_contract$>&salaryCurrency_c=GBP&job_International=<$#active.job_international$>&job_Non_National=<$#active.job_nonEU$>&locations=<$#active.location_set$>&specialism=<$#active.job_category_be$>&subspecialism=<$#active.job_category$>&jobtypes=<$#active.job_type$>&callback=?',
+											function(data) {
+												var status = data.output;
+												//alert('status if cond: ' + status );
+												if(status == true){
+													showMessage('<$lc('wwSaveAlertSuccess')$>','<$lc('wwSaveAlertSuccessDesc',WC_ACCOUNT,localeDomain)$>');
+												}else{
+													showMessage(data.msg,'<$lc('wwSaveAlertFail',WC_ACCOUNT,localeDomain)$>');
+													//alert('Sorry, error occured processing request. Alert could not be saved');
+												}
+											});
+										}
+										else {
+										$.getJSON('<$WC_SAVE_SEARCH$>?action=alrt&usertype=<$usertype$>&portalProfileID=181&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&alertSaveName='+encodeURI($("#job_alert").val())+'&keywords=<$#active.job_keywords$>&job_job_title=<$#active.job_job_title$>&job_job_title_descr=<$#active.job_job_title_descr$>&isOnlyJobTitle=<$#active.isOnlyJobTitle$>&isFuzzy=<$#active.isFuzzy$>&job_title_ref=<$#active.job_title_ref$>&job_category=<$#active.job_category$>&distance=<$#active.radius$>&sectorIds=<$#active.job_industry$>&postcode=<$#active.job_postcode$>&locale=<$#active.SiteLocale$>&jobTitle=<$#active.job_title$>&location=<$#active.job_location$>&ne_longitude=<$#active.ne_longitude$>&ne_latitude=<$#active.ne_latitude$>&level=<$#active.level$>&distanceUnit=<$#active.distance_unit$>&isactive=1&email=&frequency='+jQuery('#alert_save input:radio:checked').val()+'&minSalary_p=<$#active.job_min_permanent$>&maxSalary_p=<$#active.job_max_permanent$>&salaryType_p=<$#active.job_select_permanent$>&salaryCurrency_p=GBP&minSalary_t=<$#active.job_min_temporary$>&maxSalary_t=<$#active.job_max_temporary$>&salaryType_t=<$#active.job_select_temporary$>&salaryCurrency_t=GBP&minSalary_c=<$#active.job_min_contract$>&maxSalary_c=<$#active.job_max_contract$>&salaryType_c=<$#active.job_select_contract$>&salaryCurrency_c=GBP&job_International=<$#active.job_international$>&job_Non_National=<$#active.job_nonEU$>&locations=<$#active.location_set$>&specialism=<$#active.job_category$>&callback=?',
+											function(data) {
+												var status = data.output;
+												//alert('status if cond: ' + status );
+												if(status == true){
+													showMessage('<$lc('wwSaveAlertSuccess')$>','<$lc('wwSaveAlertSuccessDesc',WC_ACCOUNT,localeDomain)$>');
+												}else{
+													showMessage(data.msg,'<$lc('wwSaveAlertFail',WC_ACCOUNT,localeDomain)$>');
+													//alert('Sorry, error occured processing request. Alert could not be saved');
+												}
+											});
+										}
+
+									} else {
+										//session expired. Please login.
+										showMessage('Session expired. Please login.','<$lc('wwSaveAlertFail',WC_ACCOUNT,localeDomain)$>');
+									}
+								});
+							
+							$(this).dialog('close');
+						}
+					}
+					<$else$>
+					'<$lc('wwDialogNextButton')$>':function() {
+						if ($("#alert_save").valid()) {
+							$('form',this).submit();
+						}
+					}
+					<$endif$>
+				},
+				open: function(){
+					$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+				},
+				<$if strEquals(entity,"candidate")$>
+				title: '<$lc('wwSaveAlertCandidateTitle')$>'
+				<$else$>
+				title : '<$lc('wwSaveAlertJobTitle')$>'
+				<$endif$>
+				});
+
+				$('.save_job').click(function() {
+					$("#alert_save").validate({
+						rules: {
+						  alertSaveName: "required"
+						}
+					  });
+					$("#dialog").dialog('open');
+					return false;
+				});
+				$("#dialog_1").dialog({
+					autoOpen:false,
+					draggable:false,
+					modal:true,
+					resizable:false,
+					buttons: {
+						<$lc('wwDialogCancelButton')$>:function(){
+						   $(this).dialog('close');
+						},
+						<$if strEquals(loggedIn,"Y")$>
+						<$lc('wwDialogSaveButton')$>:function() {
+						if ($("#search_save").valid()){
+							var isSessionValid = 'false';
+							$.getJSON('<$WC_CHK_SESSION$>?callback=?',
+								function(data) {
+									//alert('data: ' + data);
+									var status = data.output;
+								//	alert('status: ' + status);
+								//	alert('data.msg: ' + data.msg);
+									if(status == true){
+										//alert('ret response is true');
+										isSessionValid = 'true';
+										//return;
+										var countryName='<$countryName$>';
+										//alert('<$#active.distance_unit$>');
+										if (countryName == "Belgium") {	
+										$.getJSON('<$WC_SAVE_SEARCH$>?action=srch&usertype=<$#active.usertype$>&portalProfileID=181&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&alertSaveSearch='+encodeURI($("#job_search").val())+'&keywords=<$#active.job_keywords$>&isOnlyJobTitle=<$#active.isOnlyJobTitle$>&isFuzzy=<$#active.isFuzzy$>&distance=<$#active.radius$>&job_job_title=<$#active.job_job_title$>&job_job_title_descr=<$#active.job_job_title_descr$>&job_title_ref=<$#active.job_title_ref$>&job_category=<$#active.job_category$>&sectorIds=<$#active.job_industry$>&postcode=<$#active.job_postcode$>&locale=<$#active.siteLocale$>&jobTitle=<$#active.job_title$>&location=<$job_location$>&ne_longitude=<$#active.ne_longitude$>&ne_latitude=<$#active.ne_latitude$>&level=<$#active.level$>&distanceUnit=<$#active.distance_unit$>&minSalary_p=<$job_min_permanent$>&maxSalary_p=<$job_max_permanent$>&salaryType_p=<$#active.job_select_permanent$>&salaryCurrency_p=GBP&minSalary_t=<$#active.job_min_temporary$>&maxSalary_t=<$#active.job_max_temporary$>&salaryType_t=<$#active.job_select_temporary$>&salaryCurrency_t=GBP&minSalary_c=<$#active.job_min_contract$>&maxSalary_c=<$#active.job_max_contract$>&salaryType_c=<$#active.job_select_contract$>&salaryCurrency_c=GBP&job_International=<$#active.job_international$>&job_Non_National=<$#active.job_nonEU$>&locations=<$#active.location_set$>&specialism=<$#active.job_category_be$>&subspecialism=<$#active.job_category$>&jobtypes=<$#active.job_type$>&callback=?',
+										function(data) {
+											var status = data.output;
+											if(status == true){
+												showMessage('<$lc('wwSaveSearchSuccess')$>','<$lc('wwSaveSearchSuccessDesc',WC_ACCOUNT,localeDomain)$>');
+											}else{
+												showMessage(data.msg,'<$lc('wwSaveSearchFail',WC_ACCOUNT,localeDomain)$>');
+											}
+										});
+										}
+										else {
+										$.getJSON('<$WC_SAVE_SEARCH$>?action=srch&usertype=<$#active.usertype$>&portalProfileID=181&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&alertSaveSearch='+encodeURI($("#job_search").val())+'&keywords=<$#active.job_keywords$>&isOnlyJobTitle=<$#active.isOnlyJobTitle$>&isFuzzy=<$#active.isFuzzy$>&distance=<$#active.radius$>&job_job_title=<$#active.job_job_title$>&job_job_title_descr=<$#active.job_job_title_descr$>&job_title_ref=<$#active.job_title_ref$>&job_category=<$#active.job_category$>&sectorIds=<$#active.job_industry$>&postcode=<$#active.job_postcode$>&locale=<$#active.siteLocale$>&jobTitle=<$#active.job_title$>&location=<$job_location$>&ne_longitude=<$#active.ne_longitude$>&ne_latitude=<$#active.ne_latitude$>&level=<$#active.level$>&distanceUnit=<$#active.distance_unit$>&minSalary_p=<$job_min_permanent$>&maxSalary_p=<$job_max_permanent$>&salaryType_p=<$#active.job_select_permanent$>&salaryCurrency_p=GBP&minSalary_t=<$#active.job_min_temporary$>&maxSalary_t=<$#active.job_max_temporary$>&salaryType_t=<$#active.job_select_temporary$>&salaryCurrency_t=GBP&minSalary_c=<$#active.job_min_contract$>&maxSalary_c=<$#active.job_max_contract$>&salaryType_c=<$#active.job_select_contract$>&salaryCurrency_c=GBP&job_International=<$#active.job_international$>&job_Non_National=<$#active.job_nonEU$>&locations=<$#active.location_set$>&specialism=<$#active.job_category$>&callback=?',
+										function(data) {
+											var status = data.output;
+											if(status == true){
+												showMessage('<$lc('wwSaveSearchSuccess')$>','<$lc('wwSaveSearchSuccessDesc',WC_ACCOUNT,localeDomain)$>');
+											}else{
+												showMessage(data.msg,'<$lc('wwSaveSearchFail',WC_ACCOUNT,localeDomain)$>');
+											}
+										});
+										}
+									} else {
+										//session expired. Please login.
+										showMessage('Session expired. Please login.','<$lc('wwSaveSearchFail',WC_ACCOUNT,localeDomain)$>');
+									}
+
+							     });
+							     $(this).dialog('close');
+							  }
+						}
+						<$else$>
+						'<$lc('wwDialogNextButton')$>':function() {
+							if ($("#search_save").valid()) {
+								$('form',this).submit();
+							}
+						}
+						<$endif$>
+
+					},
+					title: '<$lc('wwSaveSearchTitle')$>',
+
+					open: function(){
+						$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+					}
+				});
+				
+				$('.save_search').click(function() {
+						
+					  $("#search_save").validate({
+						rules: {
+						  alertSaveSearch: "required"
+						}
+					  });
+					$("#dialog_1").dialog('open');
+					return false;
+				});
+				$('.hays-login').click (function(event) {
+					var baskt = $.cookie('jobbkt');
+					var candbaskt = $.cookie('candbkt');
+					if((baskt !=null && baskt != '') || (candbaskt !=null && candbaskt != '')){
+						var queryUrl='<$WC_SAVE_SEARCH$>?action=bskt&redirect=<$WC_MY_ACCOUNT$>&domainId=<$domainId$>&siteLocale=<$SiteLocale$>';
+						if(baskt !=null && baskt != ''){
+							var queryUrl=queryUrl+'&job='+baskt.substring(1);
+						}
+						if(candbaskt !=null && candbaskt != ''){
+							var queryUrl=queryUrl+'&candidate='+candbaskt.substring(1);
+						}
+						<$if strEqualsIgnoreCase(#active.ver , 'd') OR (strLength(getCookie("ver")) GT 0)$>
+								queryUrl=queryUrl+'&ver=d';
+						<$endif$>
+						 if ($.cookie('performz')!='N')
+							{				 
+									_gaq.push(['_link', queryUrl]); 
+								
+							}
+						$(this).attr('href',queryUrl);
+					}
+					event.preventDefault();
+				});
+				$('.basket-count').click (function(event) {
+					<$if strEquals(loggedIn,"Y")$>
+						return true;
+					<$else$>
+						var baskt = $.cookie('jobbkt');
+						var candbaskt = $.cookie('candbkt');
+						if((baskt !=null && baskt != '') || (candbaskt !=null && candbaskt != '')){
+							var queryUrl='<$WC_SAVE_SEARCH$>?action=bskt&redirect=<$WC_JOB_BASKET$>&domainId=<$domainId$>&siteLocale=<$SiteLocale$>';
+							if(baskt !=null && baskt != ''){
+								var queryUrl=queryUrl+'&job='+baskt.substring(1);
+							}
+							if(candbaskt !=null && candbaskt != ''){
+								var queryUrl=queryUrl+'&candidate='+candbaskt.substring(1);
+							}
+							<$if strEqualsIgnoreCase(#active.ver , 'd') OR (strLength(getCookie("ver")) GT 0)$>
+								queryUrl=queryUrl+'&ver=d';
+							<$endif$>
+							 if ($.cookie('performz')!='N')
+								{
+										_gaq.push(['_link', queryUrl]);
+									
+								}
+							$(this).attr('href',queryUrl);
+						}
+					event.preventDefault();
+					<$endif$>
+				});
+				<$if contentType like "Jobs"$>
+				
+					<$ backURL = getDefaultHttpSiteAddress(siteId) & ssGetNodeProperty('jobs-search', 'urlDirName') & '/' & ssGetNodeProperty('jobssearchresults', 'urlDirName')$>
+				<$else$>
+				
+					<$ backURL = getDefaultHttpSiteAddress(siteId) & ssGetNodeProperty('candidates-search', 'urlDirName') & '/' & ssGetNodeProperty('candidatessearchresults', 'urlDirName')$>
+				<$endif$>
+				<$if (contentType like "Jobs") and (isGoogleSearch EQ 1)$>
+					var searchurl = 'http://<$HTTP_HOST$><$lc('wwGoogleSearchAction')$>?<$builtQuery$>';
+				<$else$>
+					var searchurl = '<$ backURL $>?<$builtQuery$>';
+				<$endif$>
+				searchurl = searchurl.replace(/\&amp;/g,'&');
+				searchurl = encodeURIComponent(searchurl);
+				
+				
+				//set locale and domainId for international websites
+				<$domainIdCurrent = domainId$>
+				<$SiteLocaleCurrent = SiteLocale$>
+				<$include is_international_website$>							
+				<$if strEquals(isInternationalWebsite,"1") $>					
+					<$if rsExists("LOCALE_DETAILS") and rsFirst("LOCALE_DETAILS")$>
+							<$domainId = strTrimWs(LOCALE_DETAILS.DOMAIN_ID)$>
+							<$SiteLocale =  strTrimWs(LOCALE_DETAILS.SITE_LOCALE)$>						
+					<$endif$>	
+				<$endif$>
+				//set locale and domainId for international websites				
+				
+				$("#dialog_2").dialog({
+					autoOpen:false,
+					draggable:false,
+					modal:true,
+					resizable:false,
+					buttons: {
+						<$lc('wwDialogCancelButton')$>:function(){
+						   $(this).dialog('close');
+						},
+						'<$lc('wwDialogLoginButton')$>' :function() {
+							var queryUrl=$('.job_apply').attr('href');
+							queryUrl=queryUrl+'&reqCandInfo=true&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&searchUrl='+searchurl;
+							
+							[[% var queryUrl='<$WC_LOGIN$>?jobIdList=<$DOC_INFO.dDocName$>&jobsource=<$jobSource$>&searchUrl='+searchurl;%]]
+							 if ($.cookie('performz')!='N')
+								{
+										_gaq.push(['_link', queryUrl]);
+									
+								}
+								else
+								{
+									document.location = queryUrl;
+								}
+						},
+						'<$lc('wwCreateAccountButtonForJobDescription')$>' :function(){
+							<$if strEquals(usertype,"1")$>
+
+								<$if #active.jobSource$>
+									<$jobSource=#active.jobSource$>
+								<$else$>
+									<$jobSource=#env.WC_JOBSOURCE_CONSTANT$>
+								<$endif$>
+								
+								<!-- Changes for Sprint 23 on 15 march 2012-->
+
+								var queryUrl='<$if strEquals(isInternationalWebsite,"1") $><$redirectCreateAccount$>?jobIdList=<$DOC_INFO.dDocName$>&jobsource=<$jobSource$>&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&subDomain=<$DOC_INFO.xSubDomain$><$else$><$WC_CREATE_ACCOUNT_JOBSEEKER$>?jobIdList=<$DOC_INFO.dDocName$>&jobsource=<$jobSource$>&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&subDomain=<$DOC_INFO.xSubDomain$><$endif$>';	
+								
+								var refer_Job = '<$DOC_INFO.xRefJobId$>';
+								
+								if(refer_Job != "")
+								{									
+								    queryUrl = queryUrl + '&referingJobId=JOB_<$DOC_INFO.xRefJobId$>&referingJobDomainId=<$DOC_INFO.xRefDomainId$>';
+								}
+										
+								<!-- end --> 
+								
+							
+							<$else$>
+								var queryUrl='<$WC_CREATE_ACCOUNT_EMPLOYER$>?jobIdList=<$DOC_INFO.dDocName$>&reqCandInfo=true&domainId=<$domainId$>&siteLocale=<$SiteLocale$>';
+							<$endif$>
+							<$if strEqualsIgnoreCase(#active.ver , 'd') OR (strLength(getCookie("ver")) GT 0)$>
+									queryUrl=queryUrl+'&ver=d';
+								<$endif$>
+							 if ($.cookie('performz')!='N')
+								{
+										queryUrl = queryUrl+'&searchUrl='+searchurl;
+										_gaq.push(['_link', queryUrl]);
+																	
+								}
+							else
+								{
+									queryUrl = queryUrl+'&searchUrl='+searchurl;
+									document.location = queryUrl;
+								
+								}
+							
+						    //document.location.href=queryUrl+'&searchUrl='+searchurl;
+						}
+					},
+					open : function() {
+						$('.ui-dialog-buttonpane button:first-child').addClass('button_1 left');
+					},
+                        <$if strEquals(usertype,"1")$>
+						  title: '<$lc('wwJobApplyCreateAccount')$>'
+						<$else$>
+                          title: '<$lc('wwCandidateApplyCreateAccount')$>'
+						<$endif$>
+    
+				});
+			
+			
+				
+				
+				$('.job_apply').click(function() 
+				{
+					var classs = $(this).attr("class");
+					//alert(classs);
+					if(classs=="button job_apply disabled")
+					{
+						return false;
+					}
+					/////////////////////// added for release 8.0 start/////////////////////////////////////
+						var JobOrCand = "<$DOC_INFO.dDocType$>";
+						var loggedIn = "<$loggedIn$>";
+						if(JobOrCand=="Candidates")
+						{
+							if (loggedIn!="Y")
+							{
+								
+								var viewCandDetailsLink = window.location.href;
+								
+								
+								
+								//hrefValue = "<$ssNodeLink('reqest-candidate-information', siteId)$>?jobID=<$dDocName$>";
+								hrefValue = "<$ssNodeLink('reqest-candidate-information', siteId)$>?viewCandDetailsLink="+viewCandDetailsLink+"&jobID=<$dDocName$>";
+								if ($.cookie('performz')!='N')
+								{							
+										_gaq.push(['_link',hrefValue]);								
+								}			
+								$('.job_apply').attr("href", hrefValue);
+								return true;
+							}
+						}
+
+					///////////////////// added for release 8.0 end////////////////////////////////////////////////////
+
+					
+					var button_cancel = HAYS.ww_cancel_button;
+					var button_login = HAYS.ww_login_button;
+					var button_myAcc = HAYS.ww_myaccount_button;
+					var buttons = {}; 
+						
+					buttons[button_cancel] = function() {
+								// alert('called page');
+									  $(this).dialog('close');}
+					buttons[button_login] = function() {
+					
+						$(this).dialog('close');
+						 
+						document.location.href='<$WC_LOGOUT$>?domainId=<$domainId$>&siteLocale=<$SiteLocale$>';
+					}
+					buttons[button_myAcc] = function() {
+						
+						  //$(this).dialog('close');
+						 //   alert('called page');
+						  document.location.href='<$WC_ACCOUNT$>';
+						 
+						  }
+						  
+				
+					<$if strEquals(loggedIn,"Y")$>
+						var queryUrl=$('.job_apply').attr('href');
+						queryUrl=queryUrl+'&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&searchUrl='+searchurl;
+						
+						<$if strEquals(user_role,"1") AND isEmployer==1$>
+							$('#dialog_2').dialog({
+								 autoOpen:false,
+								  modal:true,
+								  buttons: buttons,
+								  title:'<$lc('wwcandRoleError')$>'
+								});
+								$('#dialog_2').dialog('open');
+						<$else$>
+							<$if strEquals(user_role,"2") AND isEmployer==0$>
+								$('#dialog_2').dialog({
+								 autoOpen:false,
+								  modal:true,
+								  buttons: buttons,
+								  title:'<$lc('wwjobRoleError')$>'
+								});
+								$('#dialog_2').dialog('open');
+							<$else$>
+								 if ($.cookie('performz')!='N')
+								{
+									
+										_gaq.push(['_link', queryUrl]); 
+									
+								}
+								$('.job_apply').attr('href',queryUrl);
+								return true;
+							<$endif$>
+						<$endif$>
+					<$else$>
+						<$checkNewApply=#env.NewDesktopProcess$>	
+						<$if siteId like 'uk'and strEqualsIgnoreCase(checkNewApply, "true") $>
+							var queryUrl=$('.job_apply').attr('href');
+							queryUrl=queryUrl+'&domainId=<$domainId$>&siteLocale=<$SiteLocale$>&searchUrl='+searchurl;
+							 if ($.cookie('performz')!='N')
+								{
+									_gaq.push(['_link', queryUrl]); 
+								}
+								//$('.job_apply').attr('href',queryUrl);
+								//return true;
+						<$else$>
+							$("#dialog_2").dialog('open');	
+						<$endif$>
+										
+					<$endif$>
+					return false;
+				});
+
+				//restore domainId and sitelocale to normal
+				<$domainId = domainIdCurrent$>
+				<$SiteLocale = SiteLocaleCurrent$>
+				//restore domainId and sitelocale to normal
+
+				$('.job_apply.disabled').click(function() {		
+					
+					// condition added after APAC UAT testing defect start///////
+					//alert("<$entity$>");
+					if("job"=="<$entity$>")
+					{
+						/////////////////////////added after review for release 8.0////////////////////////
+								$('#dialog_4').dialog(
+								{
+									autoOpen:false,
+									modal:true,
+									buttons: {
+												<$lc('wwJsok_button')$>:function()
+												{
+													$(this).dialog('close');
+												}
+											},
+									title:'<$lc('wwAlreadyApplied')$>'
+								});
+								$('#dialog_4').html('<$lc('wwAlreadyAppliedPopUpMsg')$>');
+								$('#dialog_4').dialog('open');
+								return false;
+						/////////////////////////added after review for release 8.0////////////////////////
+					}
+					// condition added after APAC UAT testing defect end///////
+					//return false; 
+						
+			
+				});
+
+			}
+			else {
+				window.setTimeout(HAYSval, 100);
+			}
+		}
+
+		function addRemoveCookie(remove, element) {
+			var jobId = $(element).attr('rel');
+			<$include check_nav_type$>
+			<$if isEmployer==1$>
+				var jobbkt = $.cookie('candbkt');
+			<$else$>
+				var jobbkt = $.cookie('jobbkt');
+			<$endif$>
+
+			if(jobbkt == null){
+				//alert('basket null');
+				jobbkt = '';
+			}
+			if(remove){
+				jobbkt = jobbkt.replace(','+jobId,'');
+			}else{
+				jobbkt = jobbkt + ','+jobId;
+			}
+			<$if isEmployer==1$>
+				$.cookie('candbkt',jobbkt,options);
+			<$else$>
+				$.cookie('jobbkt',jobbkt,options);
+			<$endif$>
+
+			$('span:first',$(".basket")).html((jobbkt.split(',')).length-1);
+			if (remove) {
+				<$if isEmployer==1$>
+					<$addBasketKey="wwAddToCandidateBasket"$>
+					showMessage('<$lc('wwCandidateBasketRemove')$>');
+				<$else$>
+					<$addBasketKey="wwAddToJobBasket"$>
+					showMessage('<$lc('wwJobBasketRemove')$>');
+				<$endif$>
+				$('span:first',$(".job_basket").filter("a[rel="+jobId+"]")).html('<$lc(addBasketKey)$>');
+				$(".job_basket").filter("a[rel="+jobId+"]").attr('href',$(element).attr('href').replace('action=bsktdel','action=bskt'));
+			}
+			else {
+				<$if isEmployer==1$>
+					<$removeBasketKey="wwRemoveFromCandidateBasket"$>
+					showMessage('<$lc('wwCandidateBasketAdd')$>');
+				<$else$>
+					<$removeBasketKey="wwRemoveFromJobBasket"$>
+					showMessage('<$lc('wwJobBasketAdd')$>');
+				<$endif$>
+				$('span:first',$(".job_basket").filter("a[rel="+jobId+"]")).html('<$lc(removeBasketKey)$>');
+				$(".job_basket").filter("a[rel="+jobId+"]").attr('href',$(element).attr('href').replace('action=bskt','action=bsktdel'));
+			}
+			//$(element).toggleClass('remove');
+			$(".job_basket").filter("a[rel="+jobId+"]").toggleClass('remove');
+			$(".job_basket").filter("a[rel="+jobId+"]").toggleClass('wip');
+		}
+
+		 function showMessage(msg, text) {
+			var noteMessage = msg;
+			
+			var ok_button = HAYS.ww_ok_button;
+			var buttons = {};
+
+			buttons[ok_button] = function() {
+				$(this).dialog('close');
+			}
+			
+			$('#dialog_3').html(text);
+			$('#dialog_3').dialog({
+				autoOpen:false,
+				modal:true,
+				buttons: buttons,
+				title:noteMessage
+			});
+			$('#dialog_3').dialog('open');
+
+		  }
+		HAYSval();
+		//setLogin();
+		//--><!]]>
+		</script>
+<@end@>
+
+<@dynamichtml checkFlagValue@>
+	<$configList=","&inThisConfig&","$>
+	<$valueToCheck=","&checkThisValue&","$>	
+	<$if strIndexOf(configList,valueToCheck) >=0$> 
+		<$checkFlag=1$>	
+	<$else$>
+		<$checkFlag=0$>
+	<$endif$>
+<@end@>
+</body></html>

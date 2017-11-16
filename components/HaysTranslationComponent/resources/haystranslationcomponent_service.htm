@@ -1,0 +1,77 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysTranslationComponent service
+</title>
+</head>
+<body>
+
+<@table HaysTranslationComponent_Services@>
+<table border=1><caption><strong>Scripts For Custom Services</strong></caption>
+<tr>
+	<td>Name</td><td>Attributes</td><td>Actions</td>
+</tr>
+<tr>
+	<td>SELECT_TRANSLATE_LANGUAGE_FORM</td>
+	<td>DocService
+		35
+		SELECT_TRANSLATE_LANGUAGE_FORM
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HAYS_EDIT_TRANSLATION_FORM</td>
+	<td>DocService
+		35
+		HAYS_EDIT_TRANSLATION_FORM
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>HAYS_SWITCH_REGION_ASSOCIATION</td>
+	<td>Service
+		35
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:setTranslateRegionAssiciationDetails:::null
+		3:switchRegionAssociation:::null
+		3:prepareRedirect:IdcService=SS_GET_PAGE&ssDocName=<$ssDocName$>::null</td>
+</tr>
+<tr>
+	<td>HAYS_TRANSLATE_CONTENT</td>
+	<td>Service
+		35
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getTransaltionDetails:HAYS_EDIT_TRANSLATION_FORM,HAYS_CHECKIN_NEW_FORM::null
+		3:prepareRedirect:IdcService=<$IdcService$>&dDocName=<$dDocName$>&siteLocale=<$siteLocale$>&WCMPopupId=<$WCMPopupId$>&siteId=<$siteId$>&nodeId=<$nodeId$>::null</td>
+</tr>
+<tr>
+	<td>HAYS_CHECKIN_NEW_FORM</td>
+	<td>DocService
+		50
+		CHECKIN_NEW_FORM
+		null
+		null<br>
+		!csUnableToBuildCheckInForm</td>
+	<td>3:setDefaultTranslationValues:::null
+		3:setLocalValues:isNew,1:0:null
+		3:loadMetaOptionsLists::0:!csErrorRetrievingOptionLists
+		3:loadDocDefaults::0:null
+		3:loadDefaultInfo::0:null
+		3:loadMetaDefaults::0:null
+		3:loadProfileForRequest:CheckinNew:0:null</td>
+</tr>
+</table>
+<@end@>
+</body></html>

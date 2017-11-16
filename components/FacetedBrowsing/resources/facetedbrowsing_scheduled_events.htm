@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+FacetedBrowsing staticResTable
+</title>
+</head>
+<body>
+
+<@table FacetedBrowsing_ScheduledEvents@>
+<table border=1><caption><strong>
+
+<tr>
+<td>action</td><td>configIntervalKey</td><td>allowEventScript</td><td>intervalType</td><td>defaultInterval</td><td>eventCategory</td>
+</tr>
+<tr>
+	<td>OntologyCustomDailyEvent</td>
+	<td>OntologyCustomDailyEventInterval</td>
+	<td><$include set_ontology_event_for_custom_daily_event$></td>
+	<td>inDays</td>
+	<td>1</td>
+	<td>ScheduledWork</td>
+</tr>
+<tr>
+	<td>SolarCustomDailyEvent</td>
+	<td>SolarCustomDailyEventInterval</td>
+	<td><$include set_solar_doevent_for_custom_daily_event$></td>
+	<td>inDays</td>
+	<td>1</td>
+	<td>ScheduledWork</td>
+</tr>
+<tr>
+	<td>MarketingReportMonthlyEvent</td>
+	<td>MarketingReportMonthlyEventInterval</td>
+	<td><$include set_marketing_report_monthly_event$></td>
+	<td>inDays</td>
+	<td>1</td>
+	<td>ScheduledWork</td>
+</tr>
+</table>
+
+<@end@>
+
+<@dynamichtml set_ontology_event_for_custom_daily_event@>
+
+	<!-- determine the current time -->
+	<$now = dateCurrent()$>
+
+	<!-- determine midnight, today -->
+	<$midnight = parseDate(formatDateOnly(now) & " 00:00:19 AM")$>
+
+	<!-- the difference between now, and midnight today -->
+	<$diff = toInteger(parseDate(now) - parseDate(midnight))$>
+
+	<!-- to be absolutely safe, and only fire this action between midnight
+	     and 2AM, we will will set 'doEvent' if the difference is between
+	     zero and two hours. -->
+	<$if diff > 0 and diff < (2*60*60*1000)$>
+		<$doEvent = 1$>
+	<$endif$>
+
+<@end@>
+
+
+<@dynamichtml set_solar_doevent_for_custom_daily_event@>
+  [[%--
+	<$now = dateCurrent()$>
+	<$midnight = parseDate(formatDateOnly(now) & " 00:00:19 AM")$>
+	
+	<!-- the difference between now, and midnight today -->
+	<$diff = toInteger(parseDate(now) - parseDate(midnight))$>
+  --%]]
+	<$NotifyTime = "00:01"$>
+	<$diff = toInteger(dateCurrent()) - toInteger(dateReplaceTime(dateCurrent(), NotifyTime))$>
+	
+	<!-- to be absolutely safe, and only fire this action between midnight
+	     and 2AM, we will will set 'doEvent' if the difference is between
+	     zero and two hours. -->
+	<$if diff > 0 and diff < (2*60*60*1000)$>
+		<$doEvent = 1$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml set_marketing_report_monthly_event@>
+	<$if isTrue(#env.DisableSiteStudioContribution) AND isFalse(#env.IS_APAC_ENV)$>
+		<$now = dateCurrent()$>
+		<$isFirstDayOfMonth = strEquals(strSubstring(now,0,2),"01")$>
+		<$if isFirstDayOfMonth eq 1$>
+			<$midnight = parseDate(formatDateOnly(now) & " 00:00:19 AM")$>
+			
+			<!-- the difference between now, and midnight today -->
+			<$diff = toInteger(parseDate(now) - parseDate(midnight))$>
+			
+			<!-- to be absolutely safe, and only fire this action between midnight
+				 and 2AM, we will will set 'doEvent' if the difference is between
+				 zero and two hours. -->
+			<$if diff > 0 and diff < (2*60*60*1000)$>
+				<$doEvent = 1$>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+</body></html>

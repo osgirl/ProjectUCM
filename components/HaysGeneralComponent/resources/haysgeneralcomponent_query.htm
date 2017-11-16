@@ -1,0 +1,1100 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent query
+</title>
+</head>
+<body>
+
+<@table HaysGeneralComponent_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>SponsoredEmployersQuery</td>
+	<td>Select * from
+                (SELECT Revisions.dDocName, Revisions.dDocType, DocMeta.xDescription
+                FROM Revisions, DocMeta
+                WHERE Revisions.dID= DocMeta.dID 
+                AND Revisions.dRevRank=0
+                AND Revisions.dStatus='RELEASED'
+                AND Revisions.ddoctype = ?
+                and DocMeta.xcategory like ?
+                AND DocMeta.xLocale = ?
+                order by revisions.dreleasedate desc) tab
+                where rownum <= ?</td>
+	<td>dDocTypeSponsoredEmployer varchar
+	    specialism varchar
+	    locale varchar
+	    numRows int</td>
+</tr>
+<tr>
+<td>Qwidget</td>
+<td>SELECT wm.page_name,wm.locale,wm.widget_name,wm.widget_order,cm.widget_label,cm.widget_title,cm.widget_content,cm.widget_link,cm.button_name
+FROM widget_mapping wm,content_widget_master cm
+where wm.widget_name=cm.widget_name(+) and wm.page_name like ? and wm.locale like ? and wm.is_active=1 
+order by wm.widget_order asc</td>
+<td>page_name varchar
+locale varchar</td>
+</tr>
+
+<tr>
+<td>QallWidget</td>
+<td>select distinct widget_name from widget_table order by widget_name</td>
+<td></td>
+</tr>
+
+<tr>
+<td>QwidgetInsert</td>
+<td>insert into widget_table values(?,?,?,?) </td>
+<td>page_name varchar
+locale varchar
+widget_name varchar
+widget_order varchar</td>
+</tr>
+<tr>
+<td>QwidgetMappingPages</td>
+<td>select distinct page_name from page_table order by page_name</td>
+<td></td>
+</tr>
+
+
+
+<!--tr>
+	<td>GetMatchingLocations_PostCode</td>
+	<td>select l.location_id, upper(s.synonym_desc) location_desc, l.geo_location.SDO_POINT.x NE_LONGITUDE,
+		l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no,l.parent_location_id
+		from hays_locations l,hays_location_synonyms s
+		where regexp_like(s.synonym_desc, ?,'im')
+		and s.is_PostCode = 1 and l.location_id=s.location_id
+		order by lpad(s.synonym_desc,10) asc</td>
+	<td>locationPrefix varchar</td>
+</tr>
+
+<tr>
+	<td>GetMatchingLocations_PostCode_For_Domain</td>
+	<td>select l.location_id, upper(s.synonym_desc) location_desc, l.geo_location.SDO_POINT.x NE_LONGITUDE,
+		l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no,l.parent_location_id
+		from hays_locations l,hays_location_synonyms s
+		where regexp_like(s.synonym_desc, ?,'im')
+		and s.is_PostCode = 1 and l.location_id=s.location_id and s.domain_id=? and ROWNUM <= ?
+		order by lpad(s.synonym_desc,10) asc</td>
+	<td>locationPrefix varchar
+		domainId int
+		ResultCount int</td>
+</tr>
+
+<tr>
+	<td>GetMatchingLocations_Name</td>
+	<td>select DISTINCT * from ( select l.default_description location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l where regexp_like(l.default_description, ?,'im')
+    union
+    select s.synonym_desc location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_synonyms s
+    where s.location_id = l.location_id
+    and regexp_like(s.synonym_desc, ?,'im') and s.is_postcode=0
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>locationPrefix varchar
+	    locationPrefix varchar
+		ResultCount int</td>
+</tr>
+
+<tr>
+	<td>GetMatchingLocations_Name_For_Domain</td>
+	<td>select DISTINCT * from ( select l.default_description location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_domains dm where regexp_like(l.default_description, ?,'im') and dm.location_id = l.location_id and dm.domain_id=?
+    union
+    select s.synonym_desc location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_synonyms s ,hays_location_domains dm
+    where s.location_id = l.location_id
+    and regexp_like(s.synonym_desc, ?,'im') and dm.location_id = l.location_id and s.location_id= dm.location_id and dm.domain_id=? and s.is_postcode=0
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>locationPrefix varchar
+		domainId int
+	    locationPrefix varchar
+	    domainId int
+		ResultCount int</td>
+</tr-->
+<tr>
+	<td>GetMatchingLocations_PostCode</td>
+	<td>select /*+ USE_NL(s l) */ l.location_id, upper(s.synonym_desc) location_desc, l.geo_location.SDO_POINT.x NE_LONGITUDE,
+		l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no,l.parent_location_id
+		from hays_locations l,hays_location_synonyms s
+		where REPLACE(s.synonym_desc,' ','') LIKE ?
+		and s.is_PostCode = 1 and l.location_id=s.location_id
+		order by lpad(s.synonym_desc,10) asc</td>
+	<td>locationPrefix varchar</td>
+</tr>
+
+<tr>
+	<td>GetMatchingLocations_PostCode_For_Domain</td>
+	<td>select /*+ USE_NL(s l) */ l.location_id, upper(s.synonym_desc) location_desc, l.geo_location.SDO_POINT.x NE_LONGITUDE,
+		l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no,l.parent_location_id
+		from hays_locations l,hays_location_synonyms s
+		where REPLACE(s.synonym_desc,' ','') LIKE ?
+		and s.is_PostCode = 1 and l.location_id=s.location_id and s.domain_id=? and ROWNUM <= ?
+		order by lpad(s.synonym_desc,10) asc</td>
+	<td>locationPrefix varchar
+		domainId int
+		ResultCount int</td>
+</tr>
+
+<!--tr>
+	<td>GetMatchingLocations_Name</td>
+	<td>select DISTINCT * from ( select l.default_description location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l where l.default_description LIKE ?
+    union
+    select s.synonym_desc location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_synonyms s
+    where s.location_id = l.location_id
+    and UPPER(s.synonym_desc) LIKE UPPER(?) and s.is_postcode=0
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>locationPrefix varchar
+	    locationPrefix varchar
+		ResultCount int</td>
+</tr-->
+
+<!--tr>
+	<td>GetMatchingLocations_Name_For_Domain</td>
+	<td>select DISTINCT * from ( select l.default_description location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_domains dm where UPPER(l.default_description) LIKE UPPER(?) and dm.location_id = l.location_id and dm.domain_id=?
+    union
+    select s.synonym_desc location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_synonyms s ,hays_location_domains dm
+    where s.location_id = l.location_id
+    and UPPER(s.synonym_desc) LIKE UPPER(?) and dm.location_id = l.location_id and s.location_id= dm.location_id and dm.domain_id=? and s.is_postcode=0
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>locationPrefix varchar
+		domainId int
+	    locationPrefix varchar
+	    domainId int
+		ResultCount int</td>
+</tr-->
+
+<tr>
+	<td>GetMatchingLocations_Name</td>
+	<td>select DISTINCT * from ( select ? location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l where ? LIKE ?
+  
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>loc_descr column
+		loc_descr column
+	   locationPrefix varchar
+	   
+		ResultCount int</td>
+</tr>
+
+<tr>
+	<td>GetMatchingLocations_Name_For_Domain</td>
+	<td>select DISTINCT * from ( select ? location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+    from hays_locations l, hays_location_domains dm where UPPER(?) LIKE UPPER(?) and dm.location_id = l.location_id and dm.domain_id = ?
+    
+	) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>loc_descr column
+		loc_descr column
+	    locationPrefix varchar
+		domainId int
+	  	ResultCount int</td>
+</tr>
+
+<tr>
+	<td>GetMatchingLocations_Name_For_Domain_HRBE</td>
+	<td>select DISTINCT * from ( 
+        select default_description location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, 
+        l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+        from hays_locations l, hays_location_domains dm where UPPER(default_description) LIKE UPPER(?) 
+        and dm.location_id = l.location_id and dm.domain_id = ?        
+        UNION
+        select default_description_1 location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, 
+        l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+        from hays_locations l, hays_location_domains dm where UPPER(default_description_1) LIKE UPPER(?) 
+        and dm.location_id = l.location_id and dm.domain_id = ? 
+        UNION
+        select default_description_2 location_desc, l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE, 
+        l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no
+        from hays_locations l, hays_location_domains dm where UPPER(default_description_2) LIKE UPPER(?) 
+        and dm.location_id = l.location_id and dm.domain_id = ?
+		) WHERE ROWNUM <= ? ORDER BY location_desc</td>
+	<td>locationPrefix varchar
+		domainId int
+		locationPrefix varchar
+		domainId int
+		locationPrefix varchar
+		domainId int
+	  	ResultCount int</td>
+</tr>
+
+<tr>
+	<td>QparentLocations</td>
+	<td>select level_no ZOOM, x || '#' || y COORDINATE
+    from
+    (select l.level_no, l.geo_location.SDO_POINT.x,
+    case
+    when l.geo_location.SDO_POINT.x < 1 and l.geo_location.SDO_POINT.x > 0 then replace(l.geo_location.SDO_POINT.x, '.', '0.')
+    when l.geo_location.SDO_POINT.x < 0 and l.geo_location.SDO_POINT.x >= -1 then replace(l.geo_location.SDO_POINT.x, '.', '0.')
+      else to_char(l.geo_location.SDO_POINT.x)
+    end x,
+    case
+    when l.geo_location.SDO_POINT.y < 1 and l.geo_location.SDO_POINT.y > 0 then replace(l.geo_location.SDO_POINT.y, '.', '0.')
+    when l.geo_location.SDO_POINT.y < 0 and l.geo_location.SDO_POINT.y >= -1 then replace(l.geo_location.SDO_POINT.y, '.', '0.')
+      else to_char(l.geo_location.SDO_POINT.y)
+    end y
+    FROM ? l
+		START with l.location_id in (?)
+		CONNECT BY l.location_id = prior l.parent_location_id ORDER BY level_no)</td>
+	<td>
+		tblName column
+		locationId column</td>
+</tr>
+<tr>
+	<td>LocationDetailsQuery</td>
+	<td>select l.location_id, ? default_description, l.level_no "level", l.geo_location.SDO_POINT.x "longitude", l.geo_location.SDO_POINT.y "latitude"
+	from hays_locations l where l.location_id in (?)</td>
+	<td>locationColumn column
+	   locationIds column</td>
+</tr>
+
+<tr>
+	<td>LocationDetailsFilterQuery</td>
+	<td>select default_description where l.location_id in (?)</td>
+	<td>locationIds column</td>
+</tr>
+
+
+<tr>
+	<td>SponsoredJobsQuery</td>
+	<td>select  v3.xSponsored, v3.dDocName, v3.dDocTitle, v3.xLocation,v3.xSalaryCurrency,v3.xMinSalary,v3.xMaxSalary from
+(select D.xSponsored, R.dDocName, R.dDocTitle, D.xLocation,D.xSalaryCurrency,D.xMinSalary,D.xMaxSalary
+from
+(select v1.employer, max(v1. job_did) as latest_job from
+(select D. xSponsored as Employer, R.dDocName as Job, R.did as job_did
+from Revisions R , Docmeta D
+where R.dID = D.dID and
+D.xLocale=?  and
+D.xSponsored in
+(Select distinct vin. Employer from
+(
+select D.xSponsored as Employer, R.dindate
+from Revisions R , Docmeta D
+where R.dID = D.dID and
+R.ddoctype = 'Jobs' and
+R.dReleaseState IN ('Y', 'U', 'I') and
+D.xSponsored is not null
+Group by D.xSponsored, R.dindate
+Order by R.dindate desc
+) vin
+) AND
+R.dReleaseState IN ('Y', 'U', 'I')) v1
+group by  v1.employer) v2, revisions R, docmeta D
+where v2. latest_job = R.did and
+R.did = D.did order by R.dInDate Desc)v3
+where rownum<=?</td>
+<td>SiteLocale varchar
+	    ResultCount int</td>
+</tr>
+<tr>
+	<td>HAYS_GEOCODES_TABLE_PARENT_QUERY</td>
+	<td>select l.location_id, l.level_no from hays_locations l
+where l.level_no = (select max(l.level_no) from hays_locations l
+where sdo_contains(l.geo_viewport, SDO_GEOMETRY(2001, 8307, SDO_POINT_TYPE (?,?,NULL), NULL, NULL)) =  'TRUE')
+and sdo_contains(l.geo_viewport, SDO_GEOMETRY(2001, 8307, SDO_POINT_TYPE (?,?,NULL), NULL, NULL)) =  'TRUE'</td>
+	<td>lng varchar
+	    lat varchar
+	    lng varchar
+	    lat varchar</td>
+</tr>
+<tr>
+	<td>HAYS_GEOCODES_CHECK_DUPLICATE_QUERY</td>
+	<td>select l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE,
+l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no, L.DEFAULT_DESCRIPTION Location_desc
+from hays_locations l
+where l.lat = ? and l."LONG" =?  and l.level_no = ?</td>
+	<td>lat varchar
+	    lng varchar
+	    level varchar</td>
+</tr>
+<tr>
+	<td>HAYS_GEOCODES_TABLE_POPULATE_STMT</td>
+	<td>INSERT INTO HAYS_LOCATIONS (LOCATION_ID,PARENT_LOCATION_ID,DEFAULT_DESCRIPTION,CREATE_DATE,MODIFY_DATE,DISPLAY_ORDER,AREA_ID,GEO_LOCATION,GEO_NOTES,LEVEL_NO,POLYGON_ID,LAT,"LONG",ISPOSTCODE,SW_LAT,SW_LNG,NE_LAT,NE_LNG) VALUES (?,?,?,?,?,null,null,
+MDSYS.SDO_GEOMETRY(2001,8307,MDSYS.SDO_POINT_TYPE(?,?,null),null,null),null,?,null,?,?,?,?,?,?,?)</td>
+	<td>geocode_id varchar
+	    parentLocation varchar
+	    desc varchar
+	    currentDate date
+	    currentDate date
+	    longitude varchar
+	    latitude varchar
+	    level varchar
+	    latitude varchar
+	    longitude varchar
+	    isPostCode varchar
+		swLat varchar
+		swLng varchar
+		neLat varchar
+		neLng varchar</td>
+</tr>
+
+<tr>
+	<td>HAYS_CANDIDATE_STATSVIEW_QUERY</td>
+	<td>call HAYSPOPULATECANDIDATEVIEWSTATS(?, ?, ?,?,current_date)</td>
+	<td>ContentId varchar
+	    PortalProfileId varchar
+	    domainId int
+		languageId int</td>
+</tr>
+
+<tr>
+	<td>HAYS_JOB_STATSVIEW_QUERY</td>
+	<td>call HAYSPOPULATEJOBVIEWSTATS(?, ?, ?,?,current_date)</td>
+	<td>ContentId varchar
+	    PortalProfileId varchar
+	    domainId int
+	    languageId int</td>
+</tr>
+
+
+<tr>
+	<td>(ORACLE.CALLABLE)UpdateLocationSynonymsQuery</td>
+	<td>{call HAYS_UPDATE_LOCATIONS.HAYS_UPDATE_LOCATION_SYNONYMS(?, ?)}</td>
+	<td>googleLocations varchar
+	    locations_Resultset out:resultset</td>
+</tr>
+
+<tr>
+	<td>QGetDomainId</td>
+	<td>select domainid,isocountrycode,languageid from domain@webportal where domainname = ?</td>
+	<td>domainName varchar</td>
+</tr>
+
+<tr>
+	<td>QGetFirstRevision</td>
+	<td>select dInDate
+		FROM docmeta dm,revisions r
+		where dm.did = r.did 
+		and r.dRevLabel=(select min(dRevLabel) FROM docmeta dm,revisions r  where dm.did = r.did  and r.dDocName=?)
+		and r.dDocName=?</td>
+	<td>dDocName varchar
+	    dDocName varchar</td>
+</tr>
+
+<tr>
+	<td>QGetLocations_Name_For_Domain_APAC</td>
+	<td>SELECT ? location_desc , l.parent_location_id parent_location_id ,l.location_id location_id , l.level_no level_no, l.geo_location.SDO_POINT.x NE_LONGITUDE, l.geo_location.SDO_POINT.y NE_LATITUDE
+		FROM hays_locations l, hays_location_domains d where l.location_id = d.location_id and l.level_no >= 3 and d.domain_id=?
+		order by display_order
+	</td>
+	<td>loc_descr column
+	   domainId int</td>
+</tr>
+
+<!--MR4 Requirements Avesh Gupta-->
+<tr>
+	<td>QGetAllOffices</td>
+	<td>SELECT r.ddocname, r.ddoctitle, d.xState, d.xSuburb, XADDRESSLINE1, XADDRESSLINE2, xOfficespecialismId, xemail, xOfficeCode,
+(select ROWTOCOL('select specialismid||''#''||emailid from officespecialismsdetails where officeid ='''||r.ddocname||'''',';') from dual) emailadd, d.xtown, d.xpostcode,d.xphone, d.xfax
+from docmeta d, revisions r 
+where r.did=d.did 
+and r.ddoctype Like 'Office%' and drevrank=0 and r.dstatus='RELEASED'and d.xCountry =? order by xState asc , lower(xSuburb) asc, ddoctitle asc
+	</td>
+	<td>xLocale varchar</td>
+</tr>
+
+<!--MR4 Requirements Avesh Gupta-->
+<tr>
+	<td>QGetAllOfficesForDropDown</td>
+	<td>SELECT r.ddocname, r.ddoctitle, d.xState, d.xSuburb, XADDRESSLINE1, XADDRESSLINE2, xOfficespecialismId, xemail, xOfficeCode from docmeta d, revisions r where r.did=d.did 
+	    and r.ddoctype Like 'Office%' and drevrank=0 and r.dstatus='RELEASED'and d.xCountry=? order by lower(xSuburb) asc, XADDRESSLINE1 asc, XADDRESSLINE2 asc, ddoctitle asc
+	</td>
+	<td>xLocale varchar</td>
+</tr>
+
+<tr>
+	<td>QGetOfficeSpecialisms</td>
+	<td>select xphone, xfax, xemail, xOfficespecialismId
+		FROM docmeta dm,revisions r
+		where dm.did = r.did 
+		and r.dRevRank = 0
+		and r.dDocName=? and r.dstatus='RELEASED'</td>
+	<td>dDocName varchar</td>
+</tr>
+<tr>
+	<td>QGetSpecialismOffices</td>
+	<td>select ddocname, ddoctitle, dm.xState, dm.xSuburb, XADDRESSLINE1, XADDRESSLINE2, xOfficespecialismId, od.emailid xemail, xOfficeCode
+		FROM docmeta dm,revisions r, OfficeSpecialismsDetails od
+		where dm.did = r.did 
+		and r.dRevRank = 0
+		and r.dstatus='RELEASED'
+		and r.ddoctype Like 'Office%' 
+		and dm.xCountry = ?
+		and r.ddocname = od.officeid
+    	and od.subspecialismid=? and r.dstatus='RELEASED'</td>
+	<td>xLocale varchar
+		subspecialismId varchar</td>
+</tr>
+<tr>
+	<td>QGetSpecialismOfficesISNULL</td>
+	<td>select ddocname, ddoctitle, dm.xState, dm.xSuburb, XADDRESSLINE1, XADDRESSLINE2, xOfficespecialismId, od.emailid xemail, xOfficeCode
+		FROM docmeta dm,revisions r, OfficeSpecialismsDetails od
+		where dm.did = r.did 
+		and r.dRevRank = 0
+		and r.dstatus='RELEASED'
+		and r.ddoctype Like 'Office%' 
+		and dm.xCountry = ?
+		and dm.xOfficespecialismId like ?
+		and r.ddocname = od.officeid
+    	and od.specialismid = ? and r.dstatus='RELEASED' and od.subspecialismid IS null</td>
+	<td>xLocale varchar
+		specialismIdLike varchar
+		specialismId varchar</td>
+</tr>
+<tr>
+	<td>QGetOfficeDetails</td>
+	<td>select ddocname, ddoctitle, dm.xState, dm.xSuburb, XADDRESSLINE1, XADDRESSLINE2, xOfficespecialismId, xemail, xOfficeCode, xTown, xPhone, xFax, xPostCode
+		FROM docmeta dm,revisions r
+		where dm.did = r.did 
+		and r.dRevRank = 0
+		and r.ddoctype Like 'Office%' 
+		and r.ddocname = ? and r.dstatus='RELEASED'</td>
+	<td>officeId varchar</td>
+</tr>
+<tr>
+	<td>QGetOfficeSpecialismsAttributes</td>
+	<td>select emailid, phone, fax, jobadderusername, jobadderpassword  from OfficeSpecialismsDetails where specialismid=? and officeid=?</td>
+	<td>specialismid varchar
+	    officeid varchar</td>
+</tr>
+<tr>
+	<td>QGetOfficeSubSpecialismsAttributes</td>
+	<td>select emailid, phone, fax, jobadderusername, jobadderpassword  from OfficeSpecialismsDetails where subspecialismid=? and  officeid=?</td>
+	<td>subspecialismId varchar
+	    officeid varchar
+		</td>
+</tr>
+<tr>
+	<td>QGetOfficeSpecialismsNULL</td>
+	<td>select emailid, phone, fax, jobadderusername, jobadderpassword  from OfficeSpecialismsDetails where specialismid=?  and  officeid=? and subspecialismid IS null</td>
+	<td>specialismid varchar		 
+	    officeid varchar
+		</td>
+</tr>
+<tr>
+	<td>UpdateInsertOfficeSpecialismsDetails</td>
+	<td>Merge into OfficeSpecialismsDetails m 
+		using dual on (OfficeId = ? and specialismId = ? and subspecialismId = ?)
+        when not matched then insert (OfficeId,specialismId,emailId,phone,fax,jobadderusername,jobadderpassword,SCHCREATETIMESTAMP,subspecialismId,pk_id,SCHMODIFYTIMESTAMP) values (?,?,?,?,?,?,?,?,?,officespecialismsdetails_seq.nextval,?)
+        when matched then update set emailid = ?, phone = ?, fax = ?,jobadderusername = ?, jobadderpassword = ?, SCHMODIFYTIMESTAMP = ?</td>
+	<td>officeId varchar
+	    specialismId varchar
+		subspecialismId varchar
+	    officeId varchar
+	    specialismId varchar
+	    emailId varchar
+		phone varchar
+		fax varchar
+		user varchar
+		password varchar
+            ts datetime
+        subspecialismId varchar
+        ts datetime		
+	    emailId varchar
+		phone varchar
+		fax varchar
+		user varchar
+		password varchar
+            ts datetime
+		</td>
+</tr>
+
+<tr>
+	<td>UpdateInsertOfficeSpecialismsDetailsIsNull</td>
+	<td>Merge into OfficeSpecialismsDetails m 
+		using dual on (OfficeId = ? and specialismId = ? and subspecialismId IS null)
+        when not matched then insert (OfficeId,specialismId,emailId,phone,fax,jobadderusername,jobadderpassword,SCHCREATETIMESTAMP,pk_id,SCHMODIFYTIMESTAMP) values (?,?,?,?,?,?,?,?,officespecialismsdetails_seq.nextval,?)
+        when matched then update set emailid = ?, phone = ?, fax = ?,jobadderusername = ?, jobadderpassword = ?, SCHMODIFYTIMESTAMP = ?</td>
+	<td>officeId varchar
+	    specialismId varchar
+	    officeId varchar
+	    specialismId varchar
+	    emailId varchar
+		phone varchar
+		fax varchar
+		user varchar
+		password varchar
+            ts datetime
+            ts datetime 			
+	    emailId varchar
+		phone varchar
+		fax varchar
+		user varchar
+		password varchar
+            ts datetime
+		</td>
+</tr>
+
+
+<tr>
+	<td>QGetOffice</td>
+	<td>select ddocname
+		FROM docmeta dm,revisions r
+		where dm.did = r.did 
+		and r.drevrank = 0
+		and r.dDocTitle=? and
+		xaddressline1 = ? and xpostcode = ? and r.dstatus='RELEASED'</td>
+	<td>dDocTitle varchar
+	    addressline1 varchar
+		postcode varchar
+		</td>
+</tr>
+
+<tr>
+	<td>QGetSpecialismIdForOffice</td>
+	<td>select specialismid from OfficeSpecialismsDetails where officeId =? </td>
+	<td>officeId varchar
+		</td>
+</tr>
+
+<tr>
+	<td>DeleteLinkingEntry1</td>
+	<td>delete from OfficeSpecialismsDetails where officeId =? and specialismId in ('?')</td>
+	<td>officeId varchar
+	    specialismId boolean
+		</td>
+</tr>
+
+<tr>
+	<td>QGetRotationCount</td>
+	<td>SELECT count(d.xhomepagerotation) as Rotation_Count FROM DOCMETA d , REVISIONS r where d.did = r.did and 
+		r.drevrank = 0 and r.ddoctype = 'SponsoredEmployer' and r.dStatus='RELEASED' 
+		and d.xisfeatured = 'Yes' and d.xhomepagerotation = 'Always' and d.xLocale = ?
+	</td>
+	<td>xLocale varchar</td>
+</tr>
+
+<tr>
+	<td>QGetAlwaysCount</td>
+	<td>SELECT r.ddocname as CONTENT_ID , d.xhomepagerotation as HomePageRotation FROM DOCMETA d , REVISIONS r where d.did = r.did  and r.drevrank = 0 and r.ddoctype = 'SponsoredEmployer' and r.dStatus='RELEASED' and d.xisfeatured = 'Yes' and 
+		(d.xhomepagerotation = 'Always' or d.xhomepagerotation = 'Normal')  and d.xLocale = ? order by r.dindate desc
+	</td>
+	<td>xLocale varchar</td>
+</tr>
+
+<tr>
+	<td>QGetNormalCount</td>
+	<td> SELECT r.ddocname as CONTENT_ID FROM DOCMETA d , REVISIONS r where d.did = r.did and r.drevrank = 0 and r.ddoctype = 'SponsoredEmployer' and r.dStatus='RELEASED' and d.xisfeatured = 'Yes' and 
+		d.xhomepagerotation = 'Normal' and d.xLocale = ? order by r.dindate desc
+	</td>
+	<td>xLocale varchar</td>
+</tr>
+<tr>
+	<td>QNormalRowNumCount</td>
+	<td> select tab1.ddocname as CONTENT_ID , tab1.xhomepagerotation as HomePageRotation from
+          (select rownum rowNumber, tab.* from 
+              (SELECT Revisions.dDocName,docmeta.xhomepagerotation
+                FROM Revisions, DocMeta
+                WHERE Revisions.dID= DocMeta.dID 
+                AND Revisions.dRevRank=0
+                AND Revisions.dStatus='RELEASED'
+                AND Revisions.ddoctype = 'SponsoredEmployer'
+                AND docmeta.xisfeatured='Yes' 
+                AND docmeta.xhomepagerotation = 'Normal'
+                AND DocMeta.xLocale = ?
+                order by revisions.dreleasedate desc) tab
+                ) tab1
+                where tab1.rowNumber in (?)
+	</td>
+	<td>xLocale varchar
+		value1 column</td>
+</tr>
+
+
+<tr>
+	<td>QGetOfficeState</td>
+	<td>SELECT * from OFFICESTATE where SITELOCALE = ? order by state_description
+	</td>
+	<td>SITELOCALE varchar</td>
+	 
+</tr>
+<tr>
+	<td>QGetOfficeLocations</td>
+	<td>SELECT  xaddressline1,  xaddressline2, specialismid, a.xpostcode, a.xofficecategory,r.ddoctitle,xsuburb,
+	ddocname, os.emailid, os.fax, os.phone,a.xstate,xcountry
+FROM docmeta a INNER JOIN revisions r
+   ON a.did = r.did JOIN OfficeSpecialismsDetails os
+   ON r.ddocname = os.officeid
+WHERE a.xcountry =? and os.SUBSPECIALISMID is null  and a.xstate = ? and specialismid  = ? and r.drevrank = 0  and r.dstatus='RELEASED' order by ddoctitle 
+	</td>
+	<td>
+		xcountry varchar	 
+		xstate varchar	 
+		specialismid varchar
+	</td>
+	 
+</tr>
+<tr>
+	<td>QGetOfficeLocFORallState</td>
+	<td>SELECT  xaddressline1,  xaddressline2, specialismid, a.xpostcode, a.xofficecategory,r.ddoctitle,xsuburb,
+	ddocname, os.emailid, os.fax, os.phone,a.xstate,xcountry
+FROM docmeta a INNER JOIN revisions r
+   ON a.did = r.did JOIN OfficeSpecialismsDetails os
+   ON r.ddocname = os.officeid
+WHERE a.xcountry =? and os.SUBSPECIALISMID is null and specialismid  = ? and r.drevrank = 0  and r.dstatus='RELEASED' order by ddoctitle 
+	</td>
+	<td>		 
+		xcountry varchar	
+		specialismid varchar
+	</td>
+	 
+</tr>
+<tr>
+	<td>QGetOfficeLocFORallSpeci</td>
+	<td>SELECT  xaddressline1,  xaddressline2, specialismid, a.xpostcode, a.xofficecategory,r.ddoctitle,xsuburb,
+	ddocname, os.emailid, os.fax, os.phone,a.xstate,xcountry
+FROM docmeta a INNER JOIN revisions r
+   ON a.did = r.did JOIN OfficeSpecialismsDetails os
+   ON r.ddocname = os.officeid
+WHERE a.xcountry =? and os.SUBSPECIALISMID is null and a.xstate = ? and r.drevrank = 0  and r.dstatus='RELEASED' order by ddoctitle 
+	</td>
+	<td>	
+		xcountry varchar	
+		xstate varchar	 
+		 
+	</td>
+	 
+</tr>
+<tr>
+	<td>QGetOfficeLocFORALL</td>
+	<td>SELECT  xaddressline1,  xaddressline2, specialismid, a.xpostcode, a.xofficecategory,r.ddoctitle,xsuburb,
+	ddocname, os.emailid, os.fax, os.phone,a.xstate,xcountry
+FROM docmeta a INNER JOIN revisions r
+   ON a.did = r.did JOIN OfficeSpecialismsDetails os
+   ON r.ddocname = os.officeid
+WHERE a.xcountry =? and os.SUBSPECIALISMID is null and r.drevrank = 0  and r.dstatus='RELEASED' order by ddoctitle 
+	</td>
+	<td>	
+		xcountry varchar	
+		 
+		 
+	</td>
+	 
+</tr>
+
+ 
+<tr>
+	<td>QInsertSurvey</td>
+	<td>INSERT INTO SURVEY_RESPONSE 
+	(SER_RES_ID,SER_DDOCNAME,SER_CREATIONDATE,SER_RES_A) values (SURVEY_RESPONSE_SEQ.nextval,?,sysdate,?)
+	</td>
+	<td>
+		
+		SER_DDOCNAME varchar
+		SER_RES_A varchar
+	</td>
+</tr>
+<tr>
+	<td>QGetSurvayData</td>
+	<td>SELECT ser_ddocname,COUNT(*) As RESCOUNT ,ser_res_a FROM survey_response 
+WHERE ser_ddocname IN (?) AND ser_res_a IN('A','B','C') 
+GROUP BY ser_ddocname, ser_res_a 
+ORDER BY ser_res_a
+	</td>
+	<td>
+		
+		SER_DDOCNAME varchar
+		
+	</td>
+</tr>
+<tr>
+	<td>QGetCerowSurvayData</td>
+	<td>SELECT ser_ddocname,COUNT(*) As RESCOUNT ,ser_res_a FROM survey_response 
+WHERE ser_ddocname IN (?) AND ser_res_a IN('A','B','C','D','E') 
+GROUP BY ser_ddocname, ser_res_a 
+ORDER BY ser_res_a
+	</td>
+	<td>
+		
+		SER_DDOCNAME varchar
+		
+	</td>
+</tr>
+
+<tr>
+	<td>QGetCountryRegion</td>
+	<td>SELECT  contry_region from hayswebsites
+		WHERE siteid=? and domainid=? 
+	</td>
+	<td>siteId varchar
+		domainId int
+	</td>
+	 
+</tr>
+
+<tr>
+	<td>QGetUserPiCalls</td>
+	<td>select call_count from user_pi_calls where portal_profile_id=?
+	</td>
+	<td>prz_info int
+	</td>	 
+</tr>
+
+<tr>
+	<td>UpdateUserPiCalls</td>
+	<td>Merge into user_pi_calls m
+		using dual on (portal_profile_id = ?)
+        when not matched then insert (portal_profile_id,call_count) values (?,1)
+        when matched then update set call_count=call_count+1 
+	</td>
+	<td>prz_info int
+	prz_info int
+	</td>	 
+</tr>
+
+<tr>
+	<td>UpdateTotalPiCalls</td>
+	<td>UPDATE total_pi_calls SET call_count = call_count+1
+	</td>
+	<td>
+	</td>	 
+</tr>
+
+<tr>
+	<td>QGetJobDescription</td>
+	<td>Select dDocName, dDocTitle, xLocationDescription from docmeta d,revisions  r where d.did = r.did and dstatus ='RELEASED' and dDocType = 'Jobs'and drevrank=0 and dDocName in ('?')
+	</td>
+	<td>
+	 contentids boolean
+	</td>	 
+</tr>
+<tr>
+	<td>QGetLocalJobSpecialisms</td>
+	<td>select ls.domain_id, ls.specialism_id, ls.specialism_section_id, ls.url, lss.subspecialism_title SUBSPECIALISM_ID, lss.url SUB_URL, lss.is_sub_specialism IS_SUB_SPECIALISM from local_specialism ls, local_sub_specialism lss
+		where ls.specialism_id = lss.specialism_id
+		order by ls.domain_id, ls.specialism_id
+	</td>
+	<td>
+	</td>	 
+</tr>
+<tr>
+	<td>QGetLocalJobLocations</td>
+	<td>select rl.domain_id, rl.location_id, rl.url, l.default_description default_description, l.default_description_1 default_description_1,
+		l.default_description_2 default_description_2, tl.location_id child_location_id, tl.url url_child, dl.default_description default_description_child,
+		dl.default_description_1 default_description_1_child, dl.default_description_2 default_description_2_child
+		from local_region_locations rl, local_town_locations tl, hays_locations l, hays_locations dl
+		where rl.location_id = tl.parent_location_id
+		and rl.location_id = l.location_id
+		and tl.location_id = dl.location_id
+		order by rl.domain_id, rl.location_Id
+	</td>
+	<td>
+	</td>	 
+</tr>
+<tr>
+	<td>QGetLocalJobOtherLocations</td>
+	<td>select location_id, nearby_location_id
+		from local_nearby_locations
+		order by location_id, nearby_location_id
+	</td>
+	<td>
+	</td>	 
+</tr>
+<tr>
+	<td>QcomplexMetadataCount</td>
+	<td>SELECT count(*) as COUNTER FROM (SELECT DISTINCT dDocName FROM ? WHERE dDocType = ? AND METATERM in ('?') AND xLocale=?) </td>
+	<td>tblName column
+	    dDocType varchar
+		METATERM boolean
+		SiteLocale varchar</td>
+</tr>
+<tr>
+	<td>QGetCountryDetails</td>
+	<td> select siteid,contry_region,domainid
+	from hayswebsites where sitelocale =?</td>
+	<td>siteLocale varchar</td>
+</tr>
+<tr>
+	<td>QGetDomainIdtemp</td>
+	<td> select domainid as domainIdtemp
+	from hayswebsites where sitelocale = ?</td>
+	<td>SiteLocale varchar</td>
+</tr>
+<tr>
+	<td>QGetOffices_SingleSpec_LocationPostCode</td>
+	<td>SELECT sdo_nn_distance (1) distance_in_miles,d.xaddressline1,d.xaddressline2 ,r.ddoctitle , d.xtown , d.xsuburb, d.xpostcode ,os.emailid ,os.fax,
+os.phone,os.specialismid FROM revisions r , docmeta d  , officespecialismsdetails os , office_locations ol
+WHERE r.did = d.did AND r.drevrank  = 0 AND r.dstatus = 'RELEASED' AND os.officeid  = r.ddocname AND os.officeid = ol.ddocname AND ol.ddoctype = 'Office-UK' AND os.specialismid  = ? AND ol.xcountry = ?
+AND sdo_nn(ol.geo_location, SDO_GEOMETRY(2001, 8307, 
+SDO_POINT_TYPE (?,?,NULL), NULL, NULL),'distance=20 unit=mile sdo_batch_size=100', 1) = 'TRUE'
+ORDER BY distance_in_miles asc, os.specialismid asc</td>
+	<td>Expertise varchar
+		SiteLocale varchar	
+		ne_longitude varchar
+		ne_latitude varchar</td>
+</tr>
+<tr>
+	<td>QGetOffices_SingleSpecialismOnly</td>
+	<td>SELECT d.xaddressline1,d.xaddressline2 ,r.ddoctitle , d.xtown , d.xsuburb, d.xpostcode ,os.emailid ,os.fax,
+os.phone,os.specialismid FROM revisions r , docmeta d  , officespecialismsdetails os , office_locations ol
+WHERE r.did = d.did AND r.drevrank  = 0 AND r.dstatus = 'RELEASED' AND os.officeid  = r.ddocname AND os.officeid = ol.ddocname AND ol.ddoctype = 'Office-UK' AND os.specialismid  = ? AND ol.xcountry = ?
+order by upper(r.ddoctitle) asc</td>
+	<td>Expertise varchar
+		SiteLocale varchar</td>
+</tr>
+<tr>
+	<td>QGetOffices_AllSpec_LocationPostCode</td>
+	<td>SELECT sdo_nn_distance (1) distance_in_miles,d.xaddressline1,d.xaddressline2 ,r.ddoctitle , d.xtown , d.xsuburb, d.xpostcode ,os.emailid ,os.fax,
+os.phone,os.specialismid FROM revisions r , docmeta d  , officespecialismsdetails os , office_locations ol
+WHERE r.did = d.did AND r.drevrank  = 0 AND r.dstatus = 'RELEASED' AND os.officeid  = r.ddocname AND os.officeid = ol.ddocname AND ol.ddoctype = 'Office-UK' AND ol.xcountry = ? AND sdo_nn(ol.geo_location, SDO_GEOMETRY(2001, 8307, 
+SDO_POINT_TYPE (?,?,NULL), NULL, NULL),'distance=20 unit=mile sdo_batch_size=100', 1) = 'TRUE'
+ORDER BY distance_in_miles asc, os.specialismid asc</td>
+	<td>SiteLocale varchar		
+		ne_longitude varchar
+		ne_latitude varchar</td>
+</tr>
+<tr>
+	<td>QGetOffices_AllSpec_AllLocations</td>
+	<td>SELECT d.xaddressline1,d.xaddressline2 ,r.ddoctitle , d.xtown , d.xsuburb, d.xpostcode ,os.emailid ,os.fax,
+os.phone,os.specialismid FROM revisions r , docmeta d  , officespecialismsdetails os , office_locations ol
+WHERE r.did = d.did AND r.drevrank  = 0 AND r.dstatus = 'RELEASED' AND os.officeid  = r.ddocname AND os.officeid = ol.ddocname  AND ol.ddoctype = 'Office-UK' AND ol.xcountry = ? order by upper(r.ddoctitle) asc</td>
+	<td>SiteLocale varchar</td>
+</tr>
+<tr>
+	<td>QGetAllOfficesForDropDown_UKCEROW</td>
+	<td>SELECT r.ddocname, r.ddoctitle, d.xState, d.xSuburb, XADDRESSLINE1, XADDRESSLINE2, xOfficespecialismId, xemail, xOfficeCode from docmeta d, revisions r where r.did=d.did 
+	    and r.ddoctype Like 'Office%' and drevrank=0 and r.dstatus='RELEASED'and d.xCountry=? order by upper(r.ddoctitle) asc</td>
+	<td>xLocale varchar</td>
+</tr>
+
+<tr>
+	<td>QrobotsDomain</td>
+	<td>SELECT daddress as robot_domain FROM sssiteaddresses WHERE DADDRESS LIKE ?</td>
+	<td>DADDRESS varchar</td>
+</tr>
+<tr>
+	<td>QGetFailedContents</td>
+	<td>select did from revisions r where dstatus = 'EXPIRED' and dReleaseState LIKE 'U'</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QGetAllCerowLocale</td>
+	<td>select sitelocale, country , contry_region from hayswebsites</td>
+	<td></td>	
+</tr>
+<tr>
+	<td>QGetQuestionByLocaleCategory</td>
+	<td>select * from KILLER_QUESTION Q, KILLER_QUESTION_CATGS C where Q.QUESTION_ID = C.QUESTION_ID AND IS_ACTIVE = 1 AND XLOCALE=? and regexp_like(xcategory, ?)  order by Q.QUESTION_ID</td>
+	<td>xLocale varchar
+		categoryIds varchar</td>	
+</tr>
+<tr>
+	<td>QGetQuestionsByLocale</td>
+	<td>select * from KILLER_QUESTION Q, KILLER_QUESTION_CATGS C where Q.QUESTION_ID = C.QUESTION_ID AND IS_ACTIVE = 1 AND Q.QUESTION_TYPE=? AND XLOCALE=? order by Q.QUESTION_ID</td>
+	<td>questionType varchar
+		xLocale varchar</td>	
+</tr>
+<tr>
+	<td>Delete_Questions_By_Id</td>
+	<td>update killer_question set IS_ACTIVE = 0, SCHMODIFYTIMESTAMP=? where QUESTION_ID in (?)</td>
+	<td>ts datetime
+		questionIds column</td>	
+</tr>
+<tr>
+	<td>Update_Question</td>
+	<td>update killer_question set  QUESTION_TEXT=?, SCHMODIFYTIMESTAMP=? where QUESTION_ID=?</td>
+	<td>question varchar
+		ts datetime
+		questionId int</td>	
+</tr>
+<tr>
+	<td>Get_Question_Id</td>
+	<td>select KILLER_QS_SEQ.nextval from dual</td>
+	<td></td>	
+</tr>
+<tr>
+	<td>Insert_Question</td>
+	<td>insert into killer_question(QUESTION_ID, QUESTION_TEXT, XLOCALE, SCHCREATETIMESTAMP, SCHMODIFYTIMESTAMP) values(?, ?, ?, ?, ?)</td>
+	<td>questionId int
+		question varchar
+		xLocale varchar
+		ts datetime
+		ts datetime</td>	
+</tr>
+<tr>
+	<td>Delete_Question_Categories</td>
+	<td>delete from KILLER_QUESTION_CATGS where QUESTION_ID = ?</td>
+	<td>questionId int</td>	
+</tr>
+<tr>
+	<td>Insert_Question_Categories</td>
+	<td>insert into KILLER_QUESTION_CATGS(QUESTION_ID, XCATEGORY, SCHCREATETIMESTAMP, SCHMODIFYTIMESTAMP) values(?, ?, ?, ?)</td>
+	<td>questionId int
+		xCategory varchar
+		ts datetime
+		ts datetime</td>	
+</tr>
+<tr>
+	<td>QGetSpecialismsHavingOffices</td>
+	<td>select  distinct specialismid as "id"
+		from officespecialismsdetails os, revisions r, docmeta d
+		where r.did = d.did
+		and r.ddocname = os.officeid
+		and r.dstatus = 'RELEASED'
+		and d.xcountry = ?</td>
+	<td>xLocale varchar</td>	
+</tr>
+<tr>
+	<td>QregularMarketingReport</td>
+	<td>SELECT r.dDocName as ContentID,r.ddoctitle as OfficeName,d.xaddressline1 as AddressLine1,d.xaddressline2 as AddressLine2 
+		,d.xtown as Town,d.xsuburb as Suburb,d.xpostcode as PostCode,os.emailid,d.xlongitude as Logitude,d.xlatitude as Latitude 
+		,os.fax,os.phone,os.specialismid,os.subspecialismid FROM revisions r , docmeta d  , officespecialismsdetails os , office_locations ol 
+		WHERE r.did = d.did AND r.drevrank  = 0 AND os.officeid  = r.ddocname  
+		AND ol.xcountry = 'en-GB' AND os.officeid = ol.ddocname   
+		order by upper(r.ddoctitle) asc</td>
+	<td></td>	
+</tr>
+<tr>
+	<td>QallContentWidget</td>
+	<td>select widget_name,widget_label from content_widget_master where locale = ? order by widget_name</td>
+	<td>locale varchar
+</td>
+</tr>
+<tr>
+	<td>QcheckContentWidgetUnique</td>
+	<td>select widget_name as cnt from content_widget_master where widget_name = ?</td>
+	<td>widget_name varchar
+	    </td>
+</tr>
+<tr>
+	<td>QtotalJobCount</td>
+	<td>select SEQ,COUNTRY,WEBSITEURL,JOBCOUNT,to_char(DATATIMESTAMP,'DD/MM/YYYY HH:MI:SS AM') DATATIMESTAMP  from total_jobcount where seq=(select max(seq) from total_jobcount) order by country asc</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QallCategorySG</td>
+	<td>select DISTINCT INDUSTRY from hays_salary_guide where siteLocale=? order by INDUSTRY asc</td>
+	<td>siteLocale varchar</td>
+</tr>
+<tr>
+	<td>QallCategoryDDocnameSG</td>
+	<td>select DISTINCT INDUSTRY, SGDDOCNAME from hays_salary_guide where siteLocale=? order by INDUSTRY asc</td>
+	<td>siteLocale varchar</td>
+</tr>
+<tr>
+	<td>QaoeSG</td>
+	<td>select DISTINCT SECTOR from hays_salary_guide where siteLocale=? and INDUSTRY=? order by SECTOR asc</td>
+	<td>siteLocale varchar
+	category varchar</td>
+</tr>
+<tr>
+	<td>QPositionTypeSG</td>
+	<td>select DISTINCT POSITIONTYPE from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? order by POSITIONTYPE asc</td>
+	<td>siteLocale varchar
+	category varchar
+	industry varchar</td>
+</tr>
+<tr>
+	<td>QTitleSG</td>
+	<td>select DISTINCT POSITIONNAME from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? order by POSITIONNAME asc</td>
+	<td>siteLocale varchar
+	category varchar
+	industry varchar
+	position varchar</td>
+</tr>
+
+<tr>
+	<td>QRegionSG</td>
+	<td>select DISTINCT LOCATIONNAME from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? and POSITIONNAME=? order by LOCATIONNAME asc</td>
+	<td>siteLocale varchar
+	category varchar
+	industry varchar
+	position varchar
+	title varchar</td>
+</tr>
+<tr>
+	<td>QResultSG</td>
+	<td>select SALARYRANGE from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? and POSITIONNAME=? and LOCATIONNAME=?</td>
+	<td>siteLocale varchar
+	category varchar
+	industry varchar
+	position varchar
+	title varchar
+	location varchar</td>
+</tr>
+<tr>
+	<td>QsectorSGUK</td>
+	<td>select DISTINCT SECTOR as salaryGuideDRS from hays_salary_guide where siteLocale=? and INDUSTRY=? order by SECTOR asc</td>
+	<td>siteLocale varchar
+	industry varchar</td>
+</tr>
+<tr>
+	<td>QPositionTypeSGUK</td>
+	<td>select DISTINCT POSITIONTYPE as salaryGuideDRS from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? order by POSITIONTYPE asc</td>
+	<td>siteLocale varchar
+	industry varchar
+	sector varchar</td>
+</tr>
+<tr>
+	<td>QAreaSGUK</td>
+	<td>select DISTINCT AREA as salaryGuideDRS from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? order by AREA asc</td>
+	<td>siteLocale varchar
+	industry varchar
+	sector varchar
+	positiontype varchar</td>
+</tr>
+<tr>
+	<td>QCompanySGUK</td>
+	<td>select DISTINCT COMPANY as salaryGuideDRS from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=?  and AREA=?  order by COMPANY asc</td>
+	<td>siteLocale varchar
+	industry varchar
+	sector varchar
+	positiontype varchar
+	area varchar</td>
+</tr>
+<tr>
+	<td>QPositionNameSGUK</td>
+	<td>select DISTINCT POSITIONNAME as salaryGuideDRS from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? and AREA=?  and COMPANY=? order by POSITIONNAME asc</td>
+	<td>siteLocale varchar
+	industry varchar
+	sector varchar
+	positiontype varchar
+	area varchar
+	company varchar</td>
+</tr>
+
+<tr>
+	<td>QLocationNameSGUK</td>
+	<td>select DISTINCT LOCATIONNAME as salaryGuideDRS from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? and AREA=?  and COMPANY=?  and POSITIONNAME=? order by LOCATIONNAME asc</td>
+	<td>siteLocale varchar
+	industry varchar
+	sector varchar
+	positiontype varchar
+	area varchar
+	company varchar
+	positionname varchar</td>
+</tr>
+
+<tr>
+	<td>QResultSGUK</td>
+	<td>select SALARYRANGE, SALARYTYPICAL from hays_salary_guide where siteLocale=? and INDUSTRY=? and SECTOR=? and POSITIONTYPE=? and AREA=?  and COMPANY=?  and POSITIONNAME=? and LOCATIONNAME=?</td>
+	<td>siteLocale varchar
+	industry varchar
+	sector varchar
+	positiontype varchar
+	area varchar
+	company varchar
+	positionname varchar
+	location varchar</td>
+</tr>
+<tr>
+	<td>QInsertSGData</td>
+	<td>insert into hayssguserdata values(hayssguserdata_seq.nextval, ?, ?, ?, ?, ?, ?, sysdate)</td>
+	<td>sg_name varchar
+	sg_title varchar
+	sg_organisation varchar
+	sg_state varchar
+	sg_email_id varchar
+	Locale varchar</td>
+</tr>
+</table>
+<@end@>
+</body></html>

@@ -1,0 +1,749 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>
+RSS htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<!-------------------------------------------------------------------
+                         Web Page Includes
+-------------------------------------------------------------------->
+
+
+
+<!-- Add link to navBuilder object for display in layouts -->
+
+<@dynamichtml custom_finish_layout_init@>
+<$include super.custom_finish_layout_init$>
+	<$if IsLoggedIn$>
+		navBuilder.addChildNodeTo('MY_CONTENT', 'item', 'id==MY_RSS_FEEDS',
+			'label==<$lc("wwMyRssFeeds")$>', 'url==<$HttpCgiPath$>?IdcService=MY_RSS_FEEDS');
+	<$endif$>
+<@end@>
+
+
+
+<!-- add an XML feed to every search results page -->
+<@dynamichtml heading_menu_extra_right@>
+</td><td>
+<$noRssLabel=1, showRssAltLink=1$>
+<$include std_search_results_rss_feed_link$>
+<@end@>
+
+
+<!-- define the XML icon so it can be reused on all standard SCS pages -->
+<@dynamichtml define_image_files@>
+<$include super.define_image_files$>
+<$rssFeedIcon = HttpImagesRoot & "rss/icon_xml.gif"$>
+<@end@>
+
+
+
+<!-- the RSS feeds available on the My Stellent RSS Feeds page -->
+<@dynamichtml my_productivity_rss_feeds@>
+<$include global_rss_search_feeds$>
+
+<tr><td><span class="tableEntry">
+<a href="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&feedName=checked_out_list&<$authString$>">
+<img src="<$rssFeedIcon$>" border=0 width="36" height="14"></a>
+<$lc("wwMyCheckedOutContent")$>
+</span></td></tr>
+
+<tr><td><span class="tableEntry">
+<a href="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&feedName=workflow_queue&<$authString$>">
+<img src="<$rssFeedIcon$>" border=0 width="36" height="14"></a>
+<$lc("wwMyWorkflowAssignments")$>
+</span></td></tr>
+
+<tr><td><span class="tableEntry">
+<a href="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&feedName=personal_urls&<$authString$>">
+<img src="<$rssFeedIcon$>" border=0 width="36" height="14"></a>
+<$lc("wwMyPersonalUrls")$>
+</span></td></tr>
+
+<$isGlobalRssFeed="",
+  QueryText="dDocAuthor <matches> `<$UserName$>`",
+  SortField="dInDate", SortOrder="Desc", ResultCount="50",
+  ResultsTitle=lc("wwContentByUser", UserName)$>
+<tr><td><span class="tableEntry">
+<$include std_search_results_rss_feed_link$>
+</span></td></tr>
+<@end@>
+
+
+
+<!-- the search feeds on the My Stellent RSS Feeds page. You will probably
+want to customize this to have common search feeds for your organization -->
+<@dynamichtml global_rss_search_feeds@>
+<$QueryText="dSecurityGroup <matches> `Public`", SortField="dInDate",
+  SortOrder="Desc", ResultCount="50", ResultsTitle="Recent Public Items",
+  isGlobalRssFeed=1$>
+<tr><td><span class="tableEntry">
+<$include std_search_results_rss_feed_link$>
+</span></td></tr>
+<@end@>
+
+
+
+<!-- personalized saved search feeds -->
+<@dynamichtml my_saved_searches_rss_feeds@>
+<$loop SavedQueries$><$exec inc("map_saved_query_params")$>
+	<tr><td><span class="tableEntry">
+	<$include std_search_results_rss_feed_link$>
+	</span></td></tr>
+<$endloop$>
+<@end@>
+
+
+
+<!-- this include places a RSS link to the search results for the current
+page, or for the currently defined value for QueryText -->
+<@dynamichtml std_search_results_rss_feed_link@>
+<a href="<$strRemoveWs(inc("rss_feed_search_url"))$>">
+<img src="<$rssFeedIcon$>" border=0 width="36" height="14"
+	alt="<$lc("wwSearchResultsRssFeed")$>"></a>
+<$if ResultsTitle$><$rssResultsTitle = eval(ResultsTitle)$><$else$><$rssResultsTitle = lc("wwSearchResults")$><$endif$>
+<$if not noRssLabel$><$rssResultsTitle$><$endif$>
+<$if showRssAltLink$><link rel="alternate" type="application/rss+xml"
+	href="<$strRemoveWs(inc("rss_feed_search_url"))$>" title="<$xml(rssResultsTitle)$>" />
+<$endif$>
+<@end@>
+
+
+
+<!-- The common URL to run a search and return a RSS feed -->
+<@dynamichtml rss_feed_search_url@>
+	<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&feedName=search_results&
+	<$if ResultsTitle$>ResultsTitle=<$url(ResultsTitle)$>&<$endif$>
+	QueryText=<$urlEscape7Bit(QueryText)$>&SortField=<$#active.SortField$>&
+	SortOrder=<$#active.SortOrder$>&ResultCount=<$ResultCount$>&
+	<$if SearchEngineName$>SearchEngineName=<$SearchEngineName$>&<$endif$>
+	<$if Repository$>Repository=<$Repository$>&<$endif$>
+	<$if SearchQueryFormat$>SearchQueryFormat=<$SearchQueryFormat$>&<$endif$>
+	<$if QueryFieldValues$>QueryFieldValues=<$url(QueryFieldValues)$>&<$endif$>
+	<$if QueryFullText$>QueryFullText=<$url(QueryFullText)$>&<$endif$>
+	<$if SearchProviders$>SearchProviders=<$SearchProviders$>&<$endif$>
+	<$if not isGlobalRssFeed and authString$><$authString$><$endif$>
+<@end@>
+
+
+
+<!-- maps the parameters from a saved query so they work with rss_feed_search_url -->
+<@dynamichtml map_saved_query_params@>
+	<$QueryText = SavedQueries.queryText$>
+	<$SortField = SavedQueries.sortField$>
+	<$SortOrder = SavedQueries.sortOrder$>
+	<$ResultCount = SavedQueries.resultCount$>
+	<$ResultsTitle = SavedQueries.queryTitle$>
+<@end@>
+
+
+
+<!-- these links are used on the OPML page off the My RSS Links page.
+This allows a user to subscribe to multiple feeds at once -->
+<@dynamichtml opml_rss_links@>
+<outline title="Recent Public Items" type="rss" version="RSS" xmlUrl="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&amp;feedName=search_results&amp;ResultsTitle=Recent%20Public%20Items&amp;QueryText=dSecurityGroup%3Cmatches%3E%60Public%60&amp;SortField=dInDate&amp;SortOrder=Desc&amp;ResultCount=50" />
+
+<outline title="<$lc("wwMyCheckedOutContent")$>"	type="rss" version="RSS" xmlUrl="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&amp;feedName=checked_out_list&amp;<$authString$>" />
+
+<outline title="<$lc("wwMyWorkflowAssignments")$>" type="rss" version="RSS" xmlUrl="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&amp;feedName=workflow_queue&amp;<$authString$>" />
+
+<outline title="<$lc("wwMyPersonalUrls")$>" type="rss" version="RSS" xmlUrl="<$HttpAbsoluteCgiPath$>?IdcService=GET_SCS_FEED&amp;feedName=personal_urls&amp;<$authString$>" />
+<@end@>
+
+
+
+<!-- used to launch check-out-and-open from a simple RSS link -->
+<@dynamichtml check_out_and_open_launcher@>
+<html>
+<head>
+<title><$lc("wwCOAOLauncher")$></title>
+<$exec inc("std_rss_feed_variables")$>
+<$this_showcheckoutandopenbutton = 'false'$>
+<$if dExtension and (dExtension like checkOutAndOpenFormats)$>
+	<$include checkoutandopen_calc_show_button$>
+<$endif$>
+</head>
+<body>
+<$if isTrue(this_showcheckoutandopenbutton)$>
+	<center><$lc("wwCOAOLauncherSuccessMsg")$></center>
+	<script language="JavaScript">
+		self.resizeTo(500, 200);
+		postCheckoutAndOpen('<$js(dDocName)$>','<$url(dDocTitle)$>','<$dExtension$>')
+		window.setTimeout("window.close()", 2000);
+	</script>
+<$else$>
+	<center><$lc("wwCOAOLauncherFailedMsg")$></center>
+<$endif$>
+</body>
+</html>
+<@end@>
+
+
+<@dynamichtml determine_workflow_queue_checkin_flags@>
+<$AllowReview=1, ShowWorkflowStepInfo=1, AllowCheckin = "", AllowCheckout = "", IsStaging=""$>
+<$if isTrue(dIsCheckedOut)$>
+	<$AllowReview=""$>
+	<$if dCheckoutUser like UserName$>
+		<$AllowCheckin=1$>
+	<$endif$>
+<$elseif not dDocTitle$>
+	<$AllowReview="", AllowCheckout=1$>
+<$elseif strIndexOf(#active.dWfStepType, ":C:") > -1$>
+	<$AllowCheckout=1$>
+<$endif$>
+<$if strEquals(#active.wfQueueActionState, "APPROVE")$>
+	<$AllowReview=""$>
+<$endif$>
+
+<$if AllowReview and dWfStepType and strIndexOf(dWfStepType, ":R:") < 0
+	and ((not isTrue(#env.AutoContributorAllowsReview) or
+		strIndexOf(dWfStepType, ":CA:") < 0))$>
+	<$AllowReview=""$>
+<$endif$>
+<$if dProjectID$>
+	<$IsStaging=1$>
+<$endif$>
+<@end@>
+
+
+
+<!-------------------------------------------------------------------
+                         XML & RSS Includes
+-------------------------------------------------------------------->
+
+
+
+<!-- common data at the beginning of all RSS feeds -->
+<@dynamichtml std_rss_feed_begin@>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"
+		xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">
+	<channel>
+	<$exec inc("std_rss_feed_variables")$>
+	<title><$channelTitle$></title>
+	<link><$HttpAbsoluteCgiPath$>?IdcService=MY_RSS_FEEDS</link>
+	<pubDate><$formatDateWithPattern(dateCurrent(), RssDateFormat)$></pubDate>
+	<description><$channelTitle$></description>
+	<dc:language>en-en</dc:language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+<@end@>
+
+
+
+<!-- variables used on all RSS feeds to determine which links to show -->
+<@dynamichtml std_rss_feed_variables@>
+	<!-- set the content typeto XML -->
+	<$setContentType("text/xml")$>
+
+	<!-- set the date format -->
+	<$if not RssDateFormat$>
+		<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz!tUTC"$>
+	<$endif$>
+
+	<!-- determine the hostname prefix -->
+	<$if UseSSLForRSS$>
+		<$if isTrue(UseSSLForRSS)$>
+		<$rssHttpHost = "https://" & HttpServerAddress$>
+		<$endif$>
+	<$elseif UseSSL and isTrue(UseSSL)$>
+		<$rssHttpHost = "https://" & HttpServerAddress$>
+	<$else$>
+		<$rssHttpHost = "http://" & HttpServerAddress$>
+	<$endif$>
+
+	<!-- set some parameters for caching the feed -->
+	<$if not feedMaxAge$>
+		<$if RssFeedMaxAge$>
+			<$feedMaxAge = RssFeedMaxAge$>
+		<$endif$>
+	<$endif$>
+	<$if feedMaxAge$>
+		<$if not rssCacheScope$>
+			<$rssCacheScope = "session"$>
+		<$endif$>
+	<$endif$>
+
+	<!-- flags for Site Studio RSS feeds -->
+	<$if nodeId$>
+		<!-- determine the parent node -->
+		<$if not sourceId$>
+			<$numRows = getValue("ssNavNodeList", "#numRows")$>
+			<$if numRows > 0$>
+				<$exec rsSetRow("ssNavNodeList", numRows-2)$>
+				<$sourceId = ssNavNodeList.nodeId$>
+			<$endif$>
+		<$endif$>
+
+		<!-- determine the caption text -->
+		<$if not CaptionText$>
+			<$CaptionText = ssGetNodeProperty(nodeId, "xmlCaptionText")$>
+			<$if not CaptionText$>
+				<$CaptionText = ssGetNodeProperty(sourceId, "xmlCaptionText")$>
+			<$endif$>
+			<$if not CaptionText$>
+				<$CaptionText = lc("wwRssResultsForSiteSection",
+					ssGetSiteProperty(siteId, "siteLabel"),
+					ssGetNodeLabel(siteId, sourceId))$>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+
+	<!-- set the suthentication string format -->
+	<$authString = "Auth=internet"$>
+	<$if isTrue(#env.NtlmSecurityEnabled)$>
+		<$authString = "Auth=intranet"$>
+	<$endif$>
+
+	<!-- msc. other parameters to control how links are displayed -->
+	<$isAbsoluteWeb=1, isAbsoluteCgi=1,
+	  checkOutAndOpenFormats="doc|fm|bk|book|vsk|ppt|wpd|lwp|xls"$>
+	<$if isComponentEnabled("CheckoutAndOpenInNative")$>
+		<$showEditLink = 1$>
+	<$endif$>
+<@end@>
+
+
+
+<!-- common data at the end of all RSS feeds -->
+<@dynamichtml std_rss_feed_end@>
+	</channel>
+</rss>
+<@end@>
+
+
+
+<!-- the RSS feed for a search results page -->
+<@dynamichtml search_results_rss_feed@>
+<$queryTitle=#active.ResultsTitle$>
+<$if queryTitle$>
+	<$channelTitle=queryTitle$>
+<$else$>
+	<$channelTitle= lc("wwSearchResults")$>
+<$endif$>
+<$executeService("GET_SEARCH_RESULTS")$>
+<$include std_rss_feed_begin$>
+<$include search_results_rss_feed_items$>
+<$include std_rss_feed_end$>
+<@end@>
+
+
+
+<!-- the items in a search results RSS feed -->
+<@dynamichtml search_results_rss_feed_items@>
+<$loop SearchResults$>
+	<$exec inc("search_results_rss_feed_generate_links")$>
+	<$include rss_channel_item_with_thumb$>
+<$endloop$>
+<@end@>
+
+
+
+<!-- set the flags needed to display a list of search results with
+     the 'rss_channel_item' include -->
+<@dynamichtml search_results_rss_feed_generate_links@>
+	<$itemLink= HttpAbsoluteCgiPath & "?IdcService=GET_FILE&amp;dID="
+		& dID & "&amp;dDocName=" & dDocName & "&amp;Rendition=Web&amp;allowInterrupt=1"$>
+	<$pubDate=formatDateWithPattern(dInDate, RssDateFormat)$>
+	<$itemTitle=dDocTitle$>
+	<$itemAuthor=dDocAuthor$>
+	<$if IsDynamicConverterEnabled and isTrue(IsDynamicConverterEnabled) and dcShowExportLink()$>
+		<$itemDescLink1="[ <a href=\"" & HttpAbsoluteCgiPath &
+			"?IdcService=GET_DYNAMIC_CONVERSION&dID=" & dID & "\">HTML</a> ]"$>
+	<$else$>
+		<$itemDescLink1=""$>
+	<$endif$>
+
+	<$if xWebsites and (xWebsiteObjectType like "Data File|Native Document")$>
+		<$itemDescLink5="[ <a href=\"" & HttpAbsoluteCgiPath &
+			"?IdcService=SS_GET_PAGE&ssDocName=" & dDocName & "\">" &
+			lc("wwSSSiteLabel") & "</a> ]"$>
+	<$else$>
+		<$itemDescLink5=""$>
+	<$endif$>
+	<$itemDescLink2="[ <a href=\"" & rssHttpHost & URL & "\">" &
+		strUpper(dWebExtension) & "</a> ]"$>
+	<$itemDescLink3="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=GET_FILE&dID=" & dID & "&dDocName=" & dDocName &
+		"&allowInterrupt=1\">" & lc("wwNativeFile") & "</a> ]"$>
+	<$itemDescLink4="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=DOC_INFO&dID=" & dID & "&dDocName=" & dDocName &
+		"\">" & lc("wwInfo") & "</a> ]"$>
+	<$if showEditLink and (dExtension like checkOutAndOpenFormats)$>
+		<$coaoEditLink="[ <a href=\"" & HttpCgiPath &
+			"?IdcService=DOC_INFO_BY_NAME&dDocName=" & dDocName &
+			"&MergeInclude=check_out_and_open_launcher&IsJava=1&"
+			& authString & "\">" & lc("wwEdit") & "</a> ]"$>
+	<$endif$>
+	<$if strEquals(xComments,"")$>
+		<$itemDescText=#active.VDKSUMMARY$>
+	<$else$>
+		<$itemDescText=xComments$>
+	<$endif$>
+	<$itemDescTitle= lc("wwDocumentInfo")$>
+<@end@>
+
+
+<!-- the RSS feed for a list of checked out items -->
+<@dynamichtml checked_out_list_rss_feed@>
+<$channelTitle=lc("wwMyCheckedOutContent"), userOnly=1$>
+<$executeService("CHECKIN_LIST")$>
+<$include std_rss_feed_begin$>
+<$include checked_out_list_rss_feed_items$>
+<$include std_rss_feed_end$>
+<@end@>
+
+
+
+<!-- the items in a checked out list RSS feed -->
+<@dynamichtml checked_out_list_rss_feed_items@>
+<$loop CHECKIN_LIST$>
+	<$exec inc("checked_out_list_rss_feed_generate_links")$>
+	<$include rss_channel_item$>
+<$endloop$>
+<@end@>
+
+
+<!-- set the flags needed to display a list of checked-out items with
+     the 'rss_channel_item' include -->
+<@dynamichtml checked_out_list_rss_feed_generate_links@>
+	<$itemLink= HttpAbsoluteCgiPath & "?IdcService=GET_FILE&amp;dID="
+		& dID & "&amp;dDocName=" & dDocName & "&amp;Rendition=Web&amp;noSaveAs=1"$>
+	<$itemTitle=dDocTitle$>
+	<$itemAuthor=dDocAuthor$>
+	<$pubDate=formatDateWithPattern(dInDate,"EEE, dd MMM yyyy HH:mm:ss Z")$>
+	<$if IsDynamicConverterEnabled and isTrue(IsDynamicConverterEnabled) and dcShowExportLink()$>
+		<$itemDescLink1="[ <a href=\"" & HttpAbsoluteCgiPath &
+			"?IdcService=GET_DYNAMIC_CONVERSION&dID=" & dID & "\">HTML</a> ]"$>
+	<$else$>
+		<$itemDescLink1=""$>
+	<$endif$>
+	<$itemDescLink2="[ <a href=\"" & itemLink & "\">" &
+		strUpper(dWebExtension) & "</a> ]"$>
+	<$itemDescLink3="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=GET_FILE&dID=" & dID & "&dDocName=" & dDocName &
+		"&allowInterrupt=1\">" & lc("wwNativeFile") & "</a> ]"$>
+	<$itemDescLink4="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=DOC_INFO&dID=" & dID & "&dDocName=" & dDocName &
+		"\">" & lc("wwInfo") & "</a> ]"$>
+	<$itemDescLink5="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=CHECKIN_SEL_FORM&dID=" & dID & "&dDocName=" & dDocName &
+		"\">" & lc("wwCheckin") & "</a> ]"$>
+	<$itemDescTitle= lc("wwMyCheckedOutContent")$>
+	<$if strEquals(xComments,"")$>
+		<$itemDescText=VDKSUMMARY$>
+	<$else$>
+		<$itemDescText=xComments$>
+	<$endif$>
+<@end@>
+
+
+
+<!-- the RSS feed for a list of workflow queue items -->
+<@dynamichtml workflow_queue_rss_feed@>
+<$channelTitle=lc("wwMyWorkflowAssignments")$>
+<$executeService("LOAD_WORKFLOW_QUEUE")$>
+<$include std_rss_feed_begin$>
+<$include workflow_queue_rss_feed_items$>
+<$include std_rss_feed_end$>
+<@end@>
+
+
+
+<!-- the items in a workflow queue list RSS feed -->
+<@dynamichtml workflow_queue_rss_feed_items@>
+<$if utLoadResultSet("wf_in_queue", "WorkflowInQueue") and rsFirst("WorkflowInQueue")$>
+	<$loop WorkflowInQueue$>
+		<$exec inc("workflow_queue_rss_feed_generate_links")$>
+		<$include rss_channel_item$>
+	<$endloop$>
+<$endif$>
+<@end@>
+
+
+
+<!-- set the flags needed to display a list of workflow queue items with
+     the 'rss_channel_item' include -->
+<@dynamichtml workflow_queue_rss_feed_generate_links@>
+<$include determine_workflow_queue_checkin_flags$>
+<$itemLink=HttpAbsoluteCgiPath & "?IdcService=REVIEW_WORKFLOW_DOC&amp;inQueueRedirect=1&amp;dDocName=" & dDocName$>
+<$itemTitle=dDocTitle$>
+<$itemAuthor=dDocAuthor$>
+<$pubDate=formatDateWithPattern(wfQueueLastActionTs, RssDateFormat)$>
+<$if AllowReview$>
+<$itemDescLink1="[ <a href=\"" & HttpAbsoluteCgiPath &
+	"?IdcService=REVIEW_WORKFLOW_DOC&dDocName=" & dDocName &
+	"\">" & lc("wwWorkflowReview") & "</a> ]"$>
+<$endif$>
+<$if IsDynamicConverterEnabled and isTrue(IsDynamicConverterEnabled) and dcShowExportLink()$>
+	<$itemDescLink2="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=GET_DYNAMIC_CONVERSION&dID=" & dID & "\">HTML</a> ]"$>
+<$endif$>
+<$itemDescLink3="[ <a href=\"" & HttpAbsoluteCgiPath &
+	"?IdcService=GET_FILE&dID=" & dID & "&dDocName=" & dDocName &
+	"&allowInterrupt=1\">" & lc("wwNativeFile") & "</a> ]"$>
+<$itemDescLink4="[ <a href=\"" & HttpAbsoluteCgiPath &
+	"?IdcService=DOC_INFO&dID=" & dID & "&dDocName=" & dDocName &
+	"\">" & lc("wwInfo") & "</a> ]"$>
+<$if AllowCheckin$>
+	<$itemDescLink5="[ <a href=\"" & HttpAbsoluteCgiPath &
+		"?IdcService=CHECKIN_SEL_FORM&dID=" & dID & "&dDocName=" & dDocName &
+		"\">" & lc("wwCheckin") & "</a> ]"$>
+<$endif$>
+<$if AllowCheckout and showEditLink and (dExtension like checkOutAndOpenFormats)$>
+	<$coaoEditLink="[ <a href=\"" & HttpCgiPath &
+		"?IdcService=DOC_INFO_BY_NAME&dDocName=" & dDocName &
+		"MergeInclude=check_out_and_open_launcher&IsJava=1&"
+		& authString & "\">" & lc("wwEdit") & "</a> ]"$>
+<$endif$>
+<$itemDescTitle=dDocTitle$>
+<$itemDescText=getValue("#active","xComments")$>
+<@end@>
+
+
+
+<!-- the RSS feed for a list of personal URLs -->
+<@dynamichtml personal_urls_rss_feed@>
+<$channelTitle=lc("wwPersonalUrls")$>
+<$executeService("LOAD_PNE_PORTAL")$>
+<$include std_rss_feed_begin$>
+<$include personal_urls_rss_feed_items$>
+<$include std_rss_feed_end$>
+<@end@>
+
+
+
+<!-- the items in a personal URLs RSS feed -->
+<@dynamichtml personal_urls_rss_feed_items@>
+<$if utLoadResultSet("pne_portal", "PersonalURLS") and rsFirst("PersonalURLS")$>
+	<$loop PersonalURLS$>
+		<$exec inc("personal_urls_rss_feed_generate_links")$>
+		<$include rss_channel_item$>
+	<$endloop$>
+<$endif$>
+<@end@>
+
+
+
+<!-- set the flags needed to display a list of personal urls with
+     the 'rss_channel_item' include -->
+<@dynamichtml personal_urls_rss_feed_generate_links@>
+	<$pubDate=formatDateWithPattern(dateCurrent(), RssDateFormat)$>
+	<$itemTitle=getValue('PersonalURLS', 'title')$>
+	<$url = xml(getValue('PersonalURLS', 'website'))$>
+	<$if not (url like "http*")$>
+		<$url = HttpWebRoot & url$>
+	<$endif$>
+	<$itemLink=url$>
+	<$itemAuthor=dUser$>
+	<$itemDescLink1="<a href=\"" & url & "\">" & url & "</a>"$>
+	<$itemDescLink2=""$>
+	<$itemDescLink3=""$>
+	<$itemDescLink4=""$>
+	<$itemDescTitle= xml(lc("wwPersonalUrlTo", getValue('PersonalURLS', 'title')))$>
+	<$itemDescText=""$>
+<@end@>
+
+
+
+<!-- the RSS feed for a list of personal URLs -->
+<@dynamichtml project_contents_rss_feed@><?xml version="1.0" encoding="<$PageCharset$>" ?>
+<$channelTitle=lc("wwProjectContents")$>
+<$include std_rss_feed_begin$>
+<$include project_contents_rss_feed_items$>
+<$include std_rss_feed_end$>
+<@end@>
+
+
+
+<!-- the items in a personal URLs RSS feed -->
+<@dynamichtml project_contents_rss_feed_items@>
+<$loop CONTENTS$>
+	<$exec inc("project_contents_rss_feed_generate_links")$>
+	<$include rss_channel_item_with_thumb$>
+<$endloop$>
+<@end@>
+
+
+
+<!-- set the flags needed to display a list of personal urls with
+     the 'rss_channel_item' include -->
+<@dynamichtml project_contents_rss_feed_generate_links@>
+<$itemLink=rssHttpHost & dWebURL$>
+<$itemTitle=dDocTitle$>
+<$itemAuthor=dDocAuthor$>
+<$pubDate=formatDateWithPattern(dInDate,"EEE, dd MMM yyyy HH:mm:ss Z")$>
+<$itemDescLink1="[ <a href=\"" & rssHttpHost & dWebURL & "\">" &
+	strUpper(dWebExtension) & "</a> ]"$>
+<$itemDescLink2="[ <a href=\"" & HttpAbsoluteCgiPath &
+	"?IdcService=GET_FILE&dID=" & dID & "&dDocName=" & dDocName &
+	"&allowInterrupt=1\">" & lc("wwNative") & "</a> ]"$>
+<$itemDescLink3="[ <a href=\"" & HttpAbsoluteCgiPath &
+	"?IdcService=DOC_INFO&dID=" & dID & "&dDocName=" & dDocName &
+	"\">" & lc("wwInfo") & "</a> ]"$>
+<$rsMakeFromString("userList", xClbraUserList,"userText")$>
+<$mailToText=""$>
+<$loop userList$>
+	<$authStart=strIndexOf(userText,"(")$>
+	<$userMailText=strSubstring(userText,1,authStart)$>
+	<$mailToText=userMailText&";"&mailToText$>
+<$endloop$>
+<$itemDescLink4="[ <a href=\"mailto:" & mailToText & "\">" &
+	lc("wwEmailProjectTeam") & "</a> ]"$>
+<$if showEditLink and (dExtension like checkOutAndOpenFormats)$>
+	<$coaoEditLink="[ <a href=\"" & HttpCgiPath &
+		"?IdcService=DOC_INFO_BY_NAME&dDocName=" & dDocName &
+		"MergeInclude=check_out_and_open_launcher&IsJava=1&"
+		& authString & "\">" & lc("wwEdit") & "</a> ]"$>
+<$endif$>
+<$itemDescText=xComments$>
+<$itemDescTitle=lc("wwDocumentInfo")$>
+<$URL=dWebURL$>
+<@end@>
+
+
+
+
+<!-- display a rss channel item with a thumbnail image -->
+<@dynamichtml rss_channel_item_with_thumb@>
+ 	<item>
+ 	 <title><![CDATA[<$itemTitle$>]]></title>
+ 	 <pubDate><$pubDate$></pubDate>
+ 	 <author><![CDATA[<$itemAuthor$>]]></author>
+	<link><$itemLink$></link>
+	<image>
+	      <url>
+	      <$thumbnailUrl = computeRenditionUrl(URL, dRevLabel, dRendition1)$>
+	      <$if strIndexOf(thumbnailUrl, "@t") > 0 or strIndexOf(thumbnailUrl, "@g") > 0 or strIndexOf(thumbnailUrl, "@p") > 0$>
+	      		<$rssHttpHost$><$thumbnailUrl$>
+	      <$elseif dGif$>
+	      		<$HttpWebRoot$>images/docgifs/<$dGif$>
+	      <$endif$>
+	      </url>
+	      <link><$itemLink$></link>
+	      <title>Thumbnail</title>
+	</image>
+	<description>
+		<![CDATA[
+		<h3 style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:10pt;font-weight:bold;border-bottom:1px solid black;white-space:nowrap">
+			<img src="<$HttpWebRoot$>images/stellent/mailheadinglogo.gif">&nbsp;
+	<$itemDescTitle$></h3>
+		<table>
+		<tr><td width="80" align="center" valign="center">
+
+		<$thumbnailUrl = computeRenditionUrl(URL, dRevLabel, dRendition1)$>
+
+			<$if strIndexOf(thumbnailUrl, "@t") > 0 or strIndexOf(thumbnailUrl, "@g") > 0 or strIndexOf(thumbnailUrl, "@p") > 0$>
+				<!-- rendition1 -->
+				<img src="<$rssHttpHost$><$thumbnailUrl$>" border="1">
+			<$elseif dGif$>
+				<img src="<$HttpWebRoot$>images/docgifs/<$dGif$>" border="1"
+					 height="74" width="60">
+			<$else$>
+				<$strTrimWs(inc("doc_doctype_default_image"))$>
+			<$endif$>
+
+		</td><td>
+		<table><tr><td><font size="-1"><b>Links: </b>
+				<$#active.itemDescLink1$>
+				<$#active.itemDescLink2$>
+				<$#active.itemDescLink3$>
+				<$#active.itemDescLink4$>
+				<$#active.itemDescLink5$>
+				<$#active.itemDescLink6$>
+				<$#active.coaoEditLink$>
+		</font></td></tr><tr><td>
+		<font size="-1"><b>Author:</b> <$itemAuthor$></font>
+		</td></tr><tr><td>
+		<font size="-1"><b>Description:</b>
+		<$itemDescText$>
+		</font>
+		</td></tr>
+		</table>
+</td></tr></table>
+]]>
+	</description>
+ 	</item>
+<@end@>
+
+
+
+<!-- display a rss channel item without a thumbnail graphic -->
+<@dynamichtml rss_channel_item@>
+ 	<item>
+ 	 <title><![CDATA[<$itemTitle$>]]></title>
+ 	 <pubDate><$pubDate$></pubDate>
+ 	 <author><![CDATA[<$itemAuthor$>]]></author>
+	<link><$itemLink$></link>
+	<description>
+		<![CDATA[
+		<h3 style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:10pt;font-weight:bold;border-bottom:1px solid black;white-space:nowrap">
+			<img src="<$HttpWebRoot$>images/stellent/mailheadinglogo.gif">&nbsp;
+	<$itemDescTitle$></h3>
+
+		<table><tr><td><font size="-1"><b>Links: </b>
+				<$#active.itemDescLink1$>
+				<$#active.itemDescLink2$>
+				<$#active.itemDescLink3$>
+				<$#active.itemDescLink4$>
+				<$#active.itemDescLink5$>
+				<$#active.itemDescLink6$>
+				<$#active.coaoEditLink$>
+		</font></td></tr><tr><td>
+		<font size="-1"><b>Author:</b> <$itemAuthor$></font>
+		</td></tr><tr><td>
+		<font size="-1"><b>Description:</b>
+		<$itemDescText$>
+		</font>
+		</td></tr>
+		</table>
+]]>
+	</description>
+ 	</item>
+<@end@>
+
+
+
+<!-- add a RSS link to the search results menu-->
+<@dynamichtml custom_searchapi_result_menus_setup@>
+
+	<$include super.custom_searchapi_result_menus_setup$>
+
+	<!--First create a top level menu item in the actions menu header-->
+	<$exec rsAppendNewRow("PageMenusData")$>
+	<$PageMenusData.nodeId = "RSS_LINK"$>
+	<$PageMenusData.parentId = "HEADER_MENU"$>
+	<$PageMenusData.label = "RSS"$>
+	<$PageMenusData.type = "item"$>
+	<$PageMenusData.loadOrder = 100$>
+	<$PageMenusData.href = strRemoveWs(inc("rss_feed_search_url"))$>
+
+
+<@end@>
+
+
+
+<!--
+<$if utLoadResultSet("prj_portal", "MyProjects")$>
+	<$if rsFirst("MyProjects")$>
+		<outline text="<$lc("wwMyProjects")$>">
+		<$loop MyProjects$>
+			<$dClbraName=getValue("MyProjects", "name")$>
+			<$executeService("GET_CLBRA_INFO")$>
+			<$if rsFirst("CLBRA_INFO")$>
+				<$projectName=getValue("CLBRA_INFO","dClbraDescription")$>
+				<$folder=getValue("#active","dCollectionID")$>
+				<outline text="<$projectName$>" title="<$projectName$>" type="rss" version="RSS"
+					xmlUrl="<$HttpAbsoluteCgiPath$>?IdcService=COLLECTION_DISPLAY&amp;hasCollectionID=true&amp;dCollectionID=<$folder$>&amp;MergeInclude=project_contents_rss_feed&amp;IsJava=1&amp;<$authString$>"/>
+			<$endif$>
+		<$endloop$>
+		</outline>
+	<$endif$>
+<$endif$>
+-->
+
+</body>
+</html>

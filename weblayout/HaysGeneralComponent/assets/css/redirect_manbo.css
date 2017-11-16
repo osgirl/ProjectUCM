@@ -1,0 +1,33 @@
+#country-popup{ background:  #fff; width:500px !important; height:auto !important; padding-bottom: 26px; border:solid 1px #ddd; border-radius:3px; font-family:'Helvetica'; text-align:center; position: fixed; left: 50%; top: 50%; margin: -150px 0 0 -250px; z-index: 1000; box-shadow: 0 0 3px rgba(0,0,0,0.15)}
+#country-popup h3{ background:#e8e8e8; color:#052872; font-size:15px; font-weight:bold; line-height: 1; padding:16px 0 14px;  margin:0; text-transform:uppercase; border-bottom:solid 1px #ddd; text-shadow: 0 1px #fff}
+#country-popup .country{text-align:center; margin:15px 0; border-bottom:solid 1px #ddd; padding:0 0 25px 0; position:relative; color:#646464}
+#country-popup .country p{font-size:17px; margin:15px 0 10px;}
+
+#country-popup .country span{position:absolute; top:80%; left:47%; color:#052872; background:#fff; padding:10px}
+#country-popup a.corporate { border:solid 1px #009fda; border-radius:3px;  color:#009fda; margin:25px auto 0 ; display:block; width:220px; text-decoration:none;}
+
+.custom-dropdown{border:solid 1px #009fda; border-radius:3px; color:#646464; text-decoration:none; width:220px; margin: 0 auto; display: table; overflow: hidden}
+.custom-dropdown > a{display: table-cell; text-align: center; vertical-align: middle; text-decoration: none; margin: 0 15px; color: #009FDA}
+.custom-dropdown > a.change-btn{font-size: 80%; color: #052872; border-left: 1px solid #eee; width: 35%; font-weight: normal}
+.custom-dropdown > a.change-btn:hover{background: #FBFBFB}
+.custom-dropdown > a.change-btn.active, .custom-dropdown > a.change-btn.active:hover{background: #E8E8E8}
+.custom-dropdown > div{position: absolute; left: 139px; top: 75px; width: 220px; height: auto; background: #fff; z-index: 1000; display: none; border:solid 1px #646464; border-radius: 3px}
+.custom-dropdown.active > a{border-color: #646464}
+.custom-dropdown > div ul{height: 200px; overflow: auto}
+.custom-dropdown > div a{display: block; margin:0 auto; padding: 9px 8px 8px}
+.custom-dropdown > div a:hover{background: #052872; color: #fff}
+.custom-dropdown > div ul{list-style: none; margin: 0; padding: 0}
+.custom-dropdown > div li{border-bottom: 1px solid #eee; text-align:left}
+.custom-dropdown > div li:last-child{border: 0}
+.custom-dropdown > div li a{text-decoration:none; color:#646464}
+
+.custom-dropdown > a, #country-popup a.corporate{line-height: 1; padding: 12px 0; font-weight: bold}
+.custom-dropdown:hover, #country-popup a.corporate:hover{border-color: #052872; box-shadow: 0 0 3px rgba(0,0,0,0.15)}
+.ui-widget-overlay{background: none repeat scroll 0 0 rgba(0, 0, 0, 0.75);
+    height: 1201px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 1349px;
+    z-index: 1001;
+}

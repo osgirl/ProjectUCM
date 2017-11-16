@@ -1,0 +1,50 @@
+<html>
+<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>HaysCopyWebsite COPY_RESULTS</title>
+		<$defaultPageTitle = "COPY_RESULTS"$>
+		<$include std_html_head_declarations$>
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<!--BAU REL-4 21118-->
+<$include include_jquery_js$>
+<!--BAU REL-4 21118-->
+	</head>
+<body>
+<$include std_page_begin$>
+
+<div id='resultDiv'>
+<$if rsExists('OutputDescription')$>
+	<table border="2">
+	<tr>
+		<th>OLD DOC ID</th>
+		<th>NEW DOC ID</th>	
+		<th>STATUS</th>
+	</tr>
+	<$loop OutputDescription$>
+	<tr>
+		<td><$dDocName$></td>
+		<td><$NewDocName$></td>	
+		<td>
+			<$if Status==0$>
+				Successful
+			<$else$>
+				<$Status$>
+			<$endif$>
+		</td>
+	</tr>
+	<$endloop$>
+	</table>
+	<br/>
+	Total documents copied : <$OutputDescription.#numRows$>
+	<br/>
+	Copy of site <b><$oldSiteLabel$></b> created successfully with site name : <b><$newSiteLabel$></b>
+<$else$>
+	No Records to copy.
+<$endif$>
+
+<br/>
+
+
+</div>
+</body></html>

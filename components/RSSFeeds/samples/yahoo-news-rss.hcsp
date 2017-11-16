@@ -1,0 +1,50 @@
+
+<html>
+<head>
+<title>Stellent RSS Feed Samples</title>
+<!--$feedUrl="http://rss.news.yahoo.com/rss/topstories",
+  isAbsoluteWeb=1,
+  xslUrl= HttpWebRoot join "resources/xsl/yahoo-news-rss.xsl",
+  parseXml="false"-->
+</head>
+<body>
+
+<h1>Stellent RSS Feed Samples</h1>
+
+<h3>Links to Feeds</h3>
+<p><a href="<!--$feedUrl-->"><!--$feedUrl--></a></p>
+
+<p><a href="<!--$HttpCgiPath-->?IdcService=GET_REMOTE_FEED&parseXml=0&feedUrl=<!--$url(feedUrl)-->">
+Remote RSS feed, cached in Stellent</a></p>
+
+<p><a href="<!--$HttpCgiPath-->?IdcService=GET_REMOTE_FEED&parseXml=1&feedUrl=<!--$url(feedUrl)-->">
+RSS Feed with simplified Stellent template</a></p>
+
+<p><a href="<!--$HttpCgiPath-->?IdcService=GET_REMOTE_FEED&parseXml=1&IsJava=1&feedUrl=<!--$url(feedUrl)-->">
+Data from the RSS feed, parsed and displayed in HDA format</a></p>
+
+<p><a href="<!--$HttpCgiPath-->?IdcService=GET_REMOTE_FEED&parseXml=1&IsSoap=1&feedUrl=<!--$url(feedUrl)-->">
+Data from the RSS feed, parsed and displayed in SOAP format</a></p>
+
+
+<h3>RSS feed transformed into HTML with the XSL stylesheet</h3>
+<div style="border:1px solid black; height:300px; overflow:scroll">
+<!--$executeService("GET_REMOTE_FEED")-->
+<!--$htmlOutput = rssTransform(feedUrl, xslUrl)-->
+<!--$xmlDecode(htmlOutput)-->
+</div>
+
+
+<h3>RSS feed parsed, and displayed with IdocScript</h3>
+<div style="border:1px solid black; height:300px; overflow:scroll">
+<!--$parseXml = "true"-->
+<!--$executeService("GET_REMOTE_FEED")-->
+<a href="<!--$channelLink-->"><h1><!--$channelTitle--></h1></a>
+<!--$loop RSS_ENTRIES-->
+	<h3><a href="<!--$link-->"><!--$title--></a></h3>
+	<!--$description-->
+<!--$endloop-->
+</div>
+
+</body>
+</html>

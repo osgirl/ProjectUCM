@@ -1,0 +1,120 @@
+	<$include std_doctype_html_decl$>
+<head>
+	<$defaultPageTitle = "Ontology Configuration"$>
+	<$include std_html_head_declarations$>
+	<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+
+	<$include std_page_begin$>
+
+	
+	<div id="ont">
+	<h2>Ontology Security</h2>
+	<form name="OntSecurity" enctype="multipart/form-data" method=post action="<$HttpCgiPath$>">
+	<input type="hidden" name="IdcService" value="ONT_SECURITY_CONF_SAVE"/>
+	<$include idc_token_form_field$>
+	<table>
+		<thead>
+			<tr>	
+			
+			<$if #active.ontMetadata $>
+				<th colspan="2">Metadata field: <$ontMetadata$>	</th>
+				<input type="hidden" name="ontMetadata" value="<$ontMetadata$>"/>
+			<$else $>
+			
+			<$executeService("ONT_GET_ASSIGNED_META")$>
+				<th><label for="ontMetadata">Select metadata field:</label></th>
+				<th>
+					<select id="ontMetadata" name="ontMetadata" onChange="getClasses(this.options[this.selectedIndex].value);return false;">
+						<option name="ontMetadata" value="" selected>Select metadata ...</option>
+						<$loop OntMetadataRS$>
+							<option name="ontMetadata" value="<$OntMetadataRS.metadata$>" ><$OntMetadataRS.dCaption$></option>
+						<$endloop$>
+					</select>
+				</th>			
+			<$endif$>
+					
+			</tr>
+		</thead>
+
+	</table>
+	
+	<table>
+		<tbody>
+			<$loop OntSecurityConfRS$>
+			<input type="hidden" id="<$OntSecurityConfRS.securityGroup$>_ont" name="<$OntSecurityConfRS.securityGroup$>_ont" value="<$OntSecurityConfRS.root$>"/>
+			<tr class="col3">
+				<th><$OntSecurityConfRS.securityGroup$>:</th>
+			
+
+				<td id="<$OntSecurityConfRS.securityGroup$>_td" ><$OntSecurityConfRS.RootLabel$></td>				
+			
+				<td><button id="<$OntSecurityConfRS.securityGroup$>_select" onClick="popUp(metadataGlobal, '<$OntSecurityConfRS.securityGroup$>'); return false;">Select</button></td>
+			</tr>
+			<$endloop$>			
+		</tbody>
+	</table>
+	
+	<table class="no_border">		
+		<tfoot>
+			<tr>
+				<td></td>
+				<td><input type="submit" name="Finish" value="Finish" class="button"/></td>
+			</tr>
+		</tfoot>
+	</table>
+	
+	
+	</form>	
+</div>
+<$include std_page_end$>
+<script  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+<script>
+		var metadataGlobal = '<$#active.ontMetadata$>';
+
+		function setSelection( metadata ) {
+			metadataGlobal = metadata;
+			document.getElementById('ontMetadata').value = metadata;
+		}
+		
+		
+		function waiting() {
+			document.getElementById('waiting').innerHTML="Wait....";
+			document.getElementById('waiting').style.visibility = "visible";
+		}
+
+		function hide(id) {
+			document.getElementById(id).style.visibility = "hidden";
+		}
+
+		function show(id) {
+			document.getElementById(id).style.visibility = "visible";
+		}
+
+		function extractValue(element) {
+			var value =  element.firstChild;
+			if( value != null)
+				value = value.nodeValue;
+			else value = "";
+			return value;
+		}
+
+		function saveChoice(id, label, secGroup) {
+		 try
+		 {
+			//alert(id + ", " + label + ", " + secGroup)
+			document.getElementById(secGroup + "_ont").value = id;
+			document.getElementById(secGroup + "_td").innerHTML = label;
+		 }
+		 catch ( error)	 {
+			 alert("Error");
+		 }
+		}
+
+		function popUp(meta, secGroup) { alert(meta + " , " + secGroup)
+			window.open("?IdcService=ONT_DISPLAY_TREE&ont_metadata="+meta+"&callback=window.opener.saveChoice&args="+secGroup, "", "width=300, height=300");
+		}
+
+</script>
+</body></html>

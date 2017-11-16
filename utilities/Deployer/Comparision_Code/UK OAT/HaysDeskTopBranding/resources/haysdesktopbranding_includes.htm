@@ -1,0 +1,2023 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+      <script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+      <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+      <title>
+         HaysDesktopBranding htmlIncludeOrString
+      </title>
+   </head>
+   <body>
+      <@dynamichtml rgtmp_main_region_general_r6_inc_hdb@>
+      <script type="text/javascript"> 
+         <!--//--><![CDATA[//><!--
+            function wysToggle() {
+            	if (window.jQuery) {
+            		var expand = $('<a href="#" id="wysEvent" class="more"><span class="switch"><$lc('wwMainRegionReadMore')$></span><span class="access"> on '+$('h1').text()+'</span></a>');
+            		var totalContents = document.getElementById('wysToggle').innerHTML;
+            		var totalHeight = $('#wysToggle').height();
+            		if(totalHeight < 125) {
+            			$('#wysEvent').hide();
+            		}
+            		else {
+            			var newLimit = 0;
+            			var currentHeight = 0;
+            			/*Keep adding characters until the box is less than 105px height*/
+            			while(currentHeight < 105) { 
+            				newLimit ++;
+            				var newVisibleText = totalContents.substring(0,newLimit);
+            				$('#wysToggle').html(newVisibleText);
+            				currentHeight = $('#wysToggle').height();								
+            			}							
+            			//alert('currentHeight final '+currentHeight);
+            			/*With the new text, keep removing charatcers until I find the first blank space*/
+            			//while(newVisibleText.charAt(newVisibleText.length-1) != " "){							
+            			while(!(/\s/.test(newVisibleText.charAt(newVisibleText.length-1)))){
+            			//alert('newVisibleText.charAt(newVisibleText.length-1) '+ newVisibleText.charAt(newVisibleText.length-1)+" "+(/\s/.test(newVisibleText.charAt(newVisibleText.length-1))));
+            			//alert('newVisibleText.length '+newVisibleText.length);
+            				var counter = newVisibleText.length-1;
+            				newVisibleText = totalContents.substring(0,counter);
+            				//alert(newVisibleText);
+            			}							
+            			$('#wysToggle').html(newVisibleText);
+            			/**currentHeight = $('#wysToggle').height(); Removed this (not too sure what is does?)*/
+            			$('#wysToggle > :last-child').append(expand);
+            		}
+            		$('#wysEvent').toggle(function(e){
+            			$(this)
+            				.detach()
+            				.removeClass('more')
+            				.addClass('less')
+            				.children('.switch')
+            				.text('<$lc('wwMainRegionReadLess')$>');
+            			$('#wysToggle')
+            				.html(totalContents)
+            				.find('> :last-child')
+            				.append(this);
+            			
+            			e.preventDefault();
+            		}, function(e){
+            			$(this)
+            				.detach()
+            				.removeClass('less')
+            				.addClass('more')
+            				.children('.switch')
+            				.text('<$lc('wwMainRegionReadMore')$>');
+            			$('#wysToggle')
+            				.html(newVisibleText)
+            				.find('> :last-child')
+            				.append(expand);
+            			e.preventDefault()
+            		});
+            	}else{
+            		window.setTimeout(wysToggle, 100);
+            	}
+            }
+            wysToggle();
+            //--><!]]>
+      </script>
+      <$if strEquals(ssGetNodeProperty('nodeId'), 'linkedin_consent_response')$> 
+      <$include linkedin_consent_token_generation$>
+      <$endif$>
+      <$aTitle = wcmElement("Title")$>
+      <$aSecondaryTitle = wcmElement("Secondary_Title")$>
+      <$variableToTrim = aTitle$>	
+      <$include removeLeadingAndTrailingSpaces_inc$>
+      <$aTitle=variableToTrim$>	
+      <$variableToTrim = aSecondaryTitle$>	
+      <$include removeLeadingAndTrailingSpaces_inc$>
+      <$aSecondaryTitle=variableToTrim$>	
+      <$variableToTrim=""$>	
+      <div class="box">
+         <$if strLength(aTitle) gt 0$>
+         <h1 class="underline"><$aTitle$></h1>
+         <$endif$>
+         <$if strLength(aSecondaryTitle) gt 0$>
+         <$if countryName like 'Hays Response BE'$>
+         <span class="sub_text" style="color:#96B043;text-transform: uppercase;">
+         <$aSecondaryTitle$></span>
+         <$else$>
+         <span class="sub_text" style="text-transform: uppercase;">
+         <$aSecondaryTitle$></span>
+         <$endif$>
+         <$endif$>
+         <div class="content-img">
+            <$if #active.image and not strEquals(strTrimWs(#active.image),'')$>
+            <$ strReplace(image, '<img', '<img class="f-left" ') $>	
+            <$endif$>	
+            <div class="hi_inner">
+               <div class="wysiwyg" id="wysToggle">	
+                  <$wcmElement("Summary")$>
+                  <$sectionCategory=ssGetNodeProperty(nodeId,"xCategory")$>				
+                  <$contentType=ssGetNodeProperty(nodeId,"SpecialismJobsCandidatesCounter")$>
+                  <$showViewAllJobsCand="False"$>
+                  <$if (strLength(sectionCategory) gt 2) and (strLength(strTrimWs(contentType)) gt 0)$>					
+                  <$sectionCategory=strReplace(sectionCategory,";", ",")$>
+                  <$sectionCategory=strSubstring(sectionCategory, 1, strLength(sectionCategory)-1)$>					
+                  <$ subTerms = ontGetRelatedTerms(sectionCategory, 'xCategory@hays:ParentTerm') $>
+                  <$if subTerms like '[]'$>
+                  <$ subTerms = sectionCategory  $>
+                  <$elseif strLength(subTerms) GT 0 $>
+                  <$ subTerms = sectionCategory & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+                  <$endif$>
+                  <$ subTerms = strReplace(subTerms, " ", ""), subTerms1 = subTerms $>
+                  <$ subTerms = strReplace(subTerms, ",", "','") $>					
+                  <$tblName="COMPLEXMETA_XCATEGORY", METATERM= subTerms $>					
+                  <$if contentType like "2" OR contentType like 'Candidate'$>
+                  <$dDocType="Candidates", link = ssGetServerRelativeUrl(siteId, "candidatessearchresults")$>
+                  <$else$>
+                  <$dDocType="Jobs", link = ssGetServerRelativeUrl(siteId, "jobssearchresults")$>
+                  <$endif$>
+                  <$IsJobCountVisible=ssGetSiteProperty(siteId,"isJobCountVisible")$>
+                  <$executeService("GET_COMPLEXMETA_COUNTER")$>
+                  <$if #active.COUNTER GT 0$>
+                  <$showViewAllJobsCand="True"$>
+                  <$endif$>					
+                  <$if strEquals(IsJobCountVisible,"false") $>
+                  <$if contentType like "2"$>
+                  <$ aTitle = lc('wwViewAllCandidates', '') $>
+                  <$else$>
+                  <$ aTitle = lc('wwViewAllJobs', '') $>
+                  <$endif$>				
+                  <$else$>
+                  <$if #active.COUNTER GT 0$>
+                  <$if contentType like "2"$>
+                  <$ aTitle = lc('wwViewAllCandidates', COUNTER) $>
+                  <$else$>
+                  <$ aTitle = lc('wwViewAllJobs', COUNTER) $>
+                  <$endif$>
+                  <$endif$>	
+                  <$endif$>		  
+                  <$endif$>
+               </div>
+            </div>
+            <!-- start of MR6 - Amit Narula -->
+            <$temp3 = strReplace(sectionCategory, 'hays:', '')$>
+            <$temp3 = strReplace(temp3, ',', '|xCategory:')$>
+            <$parentNodeIdLevel1 = ssGetRelativeNodeId(siteId, nodeId , "parent" , "no")$>
+            <$parentNodeIdLevel2 = ssGetRelativeNodeId(siteId, parentNodeIdLevel1 , "parent" , "no")$>
+            <$include is_international_website$>
+            <$include google_search_enabled_countries$>
+            <$if strEquals(isInternationalWebsite,"1") $>
+            <$internationalCategory=ssGetNodeProperty(nodeId,"InternationalCategory")$>
+            <$micrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>
+            <!--MR8 Changes Oil and Gas 10117-->
+            <div class="msg"> <a class="btn" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(InternationalSpecialism:<$internationalCategory$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=IsInternationalPosting:Y|IsOilandGasPosting:Y|MicrositeID:<$MicrositeCode$>&sort=date:D:L:d1"><$aTitle $></a> </div>
+            <!--MR8 Changes Oil and Gas 10117-->
+            <$else$>				
+            <$if (isGoogleSearch EQ 1) and (strEqualsIgnoreCase(parentNodeIdLevel1,"jobseeker") or strEqualsIgnoreCase(parentNodeIdLevel2,"jobseeker")) and not (isEmployer eq 1) $>
+            <$ aTitle = lc('wwViewAllJobs', '*') $>
+            <$include search_google_job_inc$>
+            <$if isProjectSEnabled eq 1$>
+            <$searchUrl = portalUrl & #env.ProjectS_Search_Results$>
+            <$if isCrossCountry ne 1$>
+            <a class="btn" id="googleJobs" style="display:none;" href="<$searchUrl$>?q=hays&specialismId=<$temp3$>"><$ aTitle $></a> 
+            <$else$>
+            <a class="btn" id="googleJobs" style="display:none;" href="<$searchUrl$>?q=hays&specialismId=<$temp3$>&crossCountry=<$SiteLocale$>"><$ aTitle $></a>
+            <$endif$>
+            <$else$>
+            <$include cross_country_enabled_countries$>
+            <$if isCrossCountry ne 1$>
+            <a class="btn" id="googleJobs" style="display:none;" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=xlocale:<$SiteLocale$>&sort=date:D:L:d1"><$ aTitle $></a> 
+            <$else$>
+            <a class="btn" id="googleJobs" style="display:none;" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>).(CrossCountry:<$SiteLocale$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&sort=date:D:L:d1"><$ aTitle $></a> 
+            <$endif$>
+            <$endif$>	
+            <$else$>
+            <$if isTrue(showViewAllJobsCand)$>
+            <a class="btn" href='<$link$>?job_category=<$subTerms1$>&contentType=<$dDocType$>&SiteLocale=<$SiteLocale$>&SortField=SCORE&SortOrder=Desc'><$ aTitle $> </a> 
+            <$endif$>
+            <$endif$>		
+            <$endif$>
+            <!-- end if MR6 - Amit Narula -->			
+         </div>
+         <$wcmListStart("Content")$>
+         <$wcmListIndex = 0$>
+         <$wcmListNumRows = wcmListRowCount()$>
+         <$if wcmListNumRows gt 0$>
+         <div class="content_main">
+            <$loopwhile wcmListIndex < wcmListNumRows$>
+            <$strTitle=wcmListElement("Title", wcmListIndex)$>
+            <$strSummary=wcmListElement("Summary", wcmListIndex)$>
+            <$strBody=wcmListElement("Body", wcmListIndex)$>
+            <$if strLength(strTitle) gt 0$>
+            <h2><$wcmListElement("Title", wcmListIndex)$></h2>
+            <$endif$>
+            <$if strLength(strSummary) gt 0$>
+            <h3><$wcmListElement("Summary", wcmListIndex)$></h3>
+            <$endif$>
+            <!--  $wcmListElement("Body", wcmListIndex)$-->
+            <$include is_output_social_analytics$>
+            <$if isFalse(doOutput)$>
+            <$strBody = strReplace(strBody, 'https://apis.google.com/js/plusone.js?onload=onLoadCallback', '') $>
+            <$strBody = strReplace(strBody, '//platform.linkedin.com/in.js', '') $>
+            <$endif$>
+            <$strBody$>
+            <$wcmListIndex = wcmListIndex + 1$>
+            <$endloop$>
+            <$wcmListEnd("Content")$>
+         </div>
+         <$endif$>
+      </div>
+      <@end@>
+      <@dynamichtml rgtmp_blocks_R6_inc_hdb@>
+      <$include check_nav_type$>
+      <$latestJobsTitle = wcmElement("LatestJobsTitle")$>
+      <$JobSearchesTitle= wcmElement("JobSearchesTitle")$>
+      <$FeaturedEmployersTitle= wcmElement("FeaturedEmployersTitle")$>
+      <$count=0$>
+      <$showColumns=0$>
+      <$wcmListNumRows=0$>  
+      <$wcmListStart("JobSearchesList")$>
+      <$wcmListNumRows = wcmListRowCount()$>
+      <$wcmListEnd("JobSearchesList")$>
+      <$if strLength(FeaturedEmployersTitle) GT 0 $>
+      <$include get_dyn_partnered_companies_r6_inc$>
+      <$rsNewName="FeaturedEmployerSearchResults"$>
+      <$exec rsRename("SearchResults", rsNewName)$>
+      <$endif$>
+      <$include get_jobs_cadidates_latest_r6$>
+      <$if strLength(latestJobsTitle) GT 0 and  rsFirst('SearchResults')$>
+      <$count=count+1$>
+      <$showColumns=1$>
+      <$endif$>
+      <$if strLength(FeaturedEmployersTitle) GT 0 and rsFirst('FeaturedEmployerSearchResults')$>
+      <$count=count+1$>
+      <$showColumns=1$>
+      <$endif$>
+      <$if wcmListNumRows ge 0 and strLength(JobSearchesTitle) GT 0$> 
+      <$count=count+1$>
+      <$showColumns=1$>
+      <$endif$>
+      <$if showColumns==1$>
+      <div class="box">
+         <hr>
+         <section>
+            <div class="hays-tabs">               
+               <div class="tab-scroll-mobile">
+                  <ul class="tabs">
+                     <$if strLength(latestJobsTitle) GT 0 and  rsNext('SearchResults')$>
+					
+                     <li><a href="#"><$latestJobsTitle$></a></li>
+                     <$endif$>
+					 <$if strLength(JobSearchesTitle) GT 0 and wcmListNumRows gt 0$>
+                     <$wcmListStart("JobSearchesList")$>
+                     <$wcmListIndex = 0$>
+                     <$if (wcmListNumRows ge 0)$>
+                     <li><a href="#"><$JobSearchesTitle$></a></li>
+                     <$endif$>
+                     <$wcmListEnd("JobSearchesList")$>
+					 <$endif$>
+                     <$if strLength(FeaturedEmployersTitle) GT 0 and rsNext('FeaturedEmployerSearchResults')$>
+					
+					
+					   <li><a href="#"><$FeaturedEmployersTitle$></a></li>
+                     <$endif$>
+                  </ul>
+               </div>
+               <ul class="tab-contents">
+                  <!-- Tab 1 contents -->
+                  <$if strLength(latestJobsTitle) GT 0 and  rsNext('SearchResults')$>
+                  <li>
+                     <ul class="list sponsored-list">
+                        <$loop SearchResults $>
+                        <li>
+                           <$if isProjectSEnabled eq 1$>
+                           <$jobUrl = portalUrl & #env.ProjectS_Job_Details & dDocName$>
+                           <a href="<$jobUrl$>"><strong><$SearchResults.dDocTitle$></strong>
+                           <$else$>
+                           <a href="<$ssLink(dDocName) $>">
+                              <strong><$SearchResults.dDocTitle$></strong>
+                              <$endif$>	
+                              <small>
+                                 <p><$SearchResults.xLocationDescription$></p>
+                                 <$if isTrue(#active.display_salary_rate)$>
+                                 <p><$SearchResults.xSalaryDescription$></p>
+                                 <$endif$>
+                              </small>
+                           </a>
+                        </li>
+                        <$endloop$>
+                     </ul>
+                     <$if strLength(latestJobsTitle) GT 0$>
+                     <$if isEmployer eq 1$>
+                     <$viewMoreText=lc('wwLatestAllCandidates')$>
+                     <$else$>
+                     <$viewMoreText=lc('wwLatestAllJobs')$>
+                     <$endif$>
+                     <$ category = ssGetNodeProperty(nodeId, 'xCategory')$>
+                     <$if rsFirst('SearchResults') and strLength(category) gt 0$>
+					 <$if isProjectSEnabled eq 1$>
+					<$searchUrl = portalUrl & #env.ProjectS_Search_Results & "?q=hays&specialismId=" & strSubstring(category, strIndexOf(category,":")+1, strLength(category)-1) $>
+					<a class="btn" href="<$searchUrl $>"><span><$viewMoreText$></span></a>
+				     <$else$>
+                     <$include google_search_enabled_countries$>
+                     <$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+                     <a class="btn" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=xlocale:<$SiteLocale$>&sort=date:D:L:d1"><$viewMoreText$></a>
+                     <$else$>
+                     <a class="btn" href="<$sectionUrl $>"><$viewMoreText$></a>
+                     <$endif$>
+					 <$endif$>
+                     <$endif$>
+                     <$endif$>
+                  </li>
+                  <$ sectionUrl = ssNodeLink(searchSection, siteId) & "?contentType=" & contentType $>
+                  <$if strLength(subTerms) GT 0 $>
+                  <$ sectionUrl = sectionUrl & '&job_category=' & subTerms $>
+                  <$endif$>
+                  <$endif$>
+                  <!-- Tab 1 contents [End]-->
+                  <!-- Tab 2 contents -->
+                  <$wcmListStart("JobSearchesList")$>
+                  <$wcmListIndex = 0$>
+                  <$if (wcmListNumRows gt 0)$>
+                  <li>
+                     <ul class="list arrow-list">
+                        <$loopwhile wcmListIndex LT wcmListNumRows$>	
+                        <li><$wcmListElement("Link",wcmListIndex)$></li>
+                        <$wcmListIndex = wcmListIndex + 1$>	
+                        <$endloop$>
+                     </ul>
+                     <$if strLength(JobSearchesTitle) GT 0 and wcmListNumRows ge 0$>
+                     <$if isEmployer eq 1$>
+                     <$searchSectionName = 'candidates-search' $>
+                     <$searchList_title=lc('wwPopularCandidatesSearches')$>
+                     <$else$>
+                     <$searchSectionName = 'jobs-search' $>
+                     <$searchList_title=lc('wwPopularJobsSearches')$>
+                     <$endif$>										
+                     <$if isProjectSEnabled eq 1$>
+                     <$searchalljobs_url=portalUrl$>
+                     <$else$>
+                     <$searchalljobs_url=ssNodeLink(searchSectionName, siteId)$>
+                     <$endif$>
+                     <a class="btn" href="<$searchalljobs_url$>"><$searchList_title$></a>										
+                     <$endif$>
+                  </li>
+                  <$endif$>
+                  <$wcmListEnd("JobSearchesList")$>
+                  <!-- Tab 2 contents [End]-->
+                  <!-- Tab 3 contents -->
+                  <$if strLength(FeaturedEmployersTitle) GT 0 and rsNext('FeaturedEmployerSearchResults')$>
+                  <li>
+                     <ul  class="list emp-list">
+                        <$itemCount = 1$>
+                        <$loop FeaturedEmployerSearchResults$>
+                        <$if itemCount gt 5$>
+                        <$break$>
+                        <$endif$>
+                        <$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>									
+                        <$if not strEquals(link,'')$>
+                        <li><a href="<$link$>" target="_blank"><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>
+                        <$itemCount = itemCount+1$>
+                        <$endif$>
+                        <$endloop$> 
+                     </ul>
+                     <$if strLength(FeaturedEmployersTitle) GT 0$>							
+                     <$SortField='dInDate'$>
+                     <$SortOrder='DESC'$>										
+                     <$if FeaturedEmployerSearchResults.#numRows gt 0$>
+                     <a class="btn" href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>&SortField=<$SortField$>&SortOrder=<$SortOrder$>"><$lc('wwfeaturedEmployersTitle')$></a>
+                     <$endif$>
+                     <$endif$>
+                  </li>
+                  <$queryString="dDocType 
+                  <matches>
+                  `SponsoredEmployer` 
+                  <AND>
+                  (xIsFeatured 
+                  <matches>
+                  `yes`)"$>
+                  <$include set_query_string_no_empty_catagory$>
+                  <$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>
+                  <$endif$>
+                  <!-- Tab 3 contents [End]-->
+               </ul>               
+            </div>
+         </section>
+      </div>
+      <$endif$>
+      <@end@>
+      <@dynamichtml subtmp_header_login_r6_hdb_inc@>
+      [[%<$include extract_datafile_sec_header_r6_inc$> %]]
+      <$if #active.nodeId$>
+      [[%<$wcmPlaceholder("Breadcrumbs", "templateDocName=RGTMP_BREADCRUMBS", "dataFileDocName=DF_BREADCRUMB"), $>%]]
+      <div class="grid_7">
+      <$else$>	
+      <div class="grid_7 prefix_17">
+         <$endif$>      				
+         [[%<$if isFalse(isProjectSEnabled)$>
+         <$if not (isTrue(ssGetSiteProperty(siteId,"isInternationalWebsite")))$>
+         <div class="basket">
+            <!--<$include job_basket_header_label$>-->
+         </div>
+         <$endif$>
+         <$endif$>%]]
+      </div>
+      <!-- /navigation bar --> 
+      <@end@>
+      <!--******           LATEST FEATURES RHB      ****************
+         *********************************************************** -->
+      <@dynamichtml  features_latest_hdb@>
+      <$queryString="dDocType 
+      <matches>
+      `PromotionalContent` 
+      <AND>
+      xSubType 
+      <matches>
+      `Feature`"$>
+      <$include set_query_string$>
+      <$ QueryText = queryString, SortOrder="Desc", ResultCount=2, subContentType="features"$>
+      <$executeService("GET_SEARCH_RESULTS")$>
+      <$ if rsFirst('SearchResults') $>
+      <div class="box">
+         <h3><$lc('wwLatestFeatures')$></h3>
+         <ul class="list sponsored-list">
+            <$loop SearchResults$>
+            [[%<$ summary = ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element[@name='Summary']/text()") $>
+            <$if strLength(summary) GT 100 $>
+            <$ summary = strSubstring(summary, 0, 100) & " ..." $>
+            <$endif$>%]]
+            <li>
+               <a href="<$ SearchResults.dDocName $>"><strong><$ SearchResults.dDocTitle $></strong>
+               <small><$ formatDateWithPattern(SearchResults.dInDate,#active.websiteDateFormat) $></small></a>
+               [[%<$if strLength(summary) GT 0 $>
+               <br/><$ summary $>
+               <$endif$>%]]
+            </li>
+            <$endloop$>
+         </ul>
+         <a class="btn" href="<$ ssNodeLink('features', siteId) $>?<$if #active.navType == 1$>contentType=Jobs&<$else$>navType=Candidates&<$endif$>QueryText=<$xml( QueryText )$>"><$lc('wwViewMore')$></a>
+      </div>
+      <$endif$>
+      <@end@>
+      <!--**********           LATEST NEWS RHB      ****************
+         *********************************************************** -->
+      <@dynamichtml  news_latest_hdb@>
+      <$ queryString  = "dDocType 
+      <matches>
+      `News`"$>
+      <$include set_query_string$>
+      <$ QueryText = queryString $>
+      <$ SortField = 'dInDate', SortOrder = "Desc", ResultCount = 3, dDocType="News" $>
+      <$ executeService("GET_SEARCH_RESULTS") $>
+      <$ if rsFirst('SearchResults') $>
+      <div class="box">
+         <h3><$lc('wwLatestNews')$></h3>
+         <ul class="list sponsored-list">
+            <$ loop SearchResults $>
+            [[%<$ summary = ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element[@name='Summary']/text()") $>
+            <$if strLength(summary) GT 100 $>
+            <$ summary = strSubstring(summary, 0, 100) & " ..." $>
+            <$endif$>%]]
+            <li>
+               <a href="<$ SearchResults.dDocName $>"><strong><$ SearchResults.dDocTitle $></strong><small><$ formatDateWithPattern(SearchResults.dInDate,#active.websiteDateFormat) $></small></a>
+               [[%<$if strLength(summary) GT 0 $>
+               <br/><$ summary $>
+               <$endif$>%]] 
+            </li>
+            <$ endloop $>
+         </ul>
+         <a class="btn" href="<$ ssNodeLink('news', siteId) $>?<$if #active.navType == 1$>contentType=Jobs&<$else$>navType=Candidates&<$endif$>QueryText=<$xml( QueryText )$>"><$lc('wwViewMore')$></a>
+      </div>
+      <$ endif $>
+      <@end@>
+      <!--*************       LATEST EVENTS RHB    ****************
+         *********************************************************** -->
+      <@dynamichtml  events_latest_hdb@>
+      <$ queryString="dDocType 
+      <matches>
+      `PromotionalContent` 
+      <AND>
+      xSubType 
+      <matches>
+      `Event` 
+      <AND>
+      xEventDate >= `" & formatDateOnly(dateCurrent()) & "`" $>
+      <$ include set_query_string $>
+      <$ QueryText = queryString $>
+      <$ SortField="xEventDate", SortOrder="Asc", subContentType="event",, ResultCount=200$>
+      <$ executeService("GET_SEARCH_RESULTS") $>
+      <$rsSort("SearchResults","xEventDate","date","asc")$>
+      <$ if rsFirst('SearchResults') $>
+      <div class="box">
+         <h3><$lc('wwLatestEvents')$></h3>
+         <div id="DatePicker"></div>
+         <ul class="list sponsored-list">
+            <$numEvents = 1$>
+            <$loop SearchResults $>
+            <$if numEvents gt 2$>
+            <$break$>
+            <$endif$>
+            <$numEvents = numEvents+1$>
+            [[%<$ summary = ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element[@name='Summary']/text()") $>
+            <$if strLength(summary) GT 100 $>
+            <$ summary = strSubstring(summary, 0, 100) & " ..." $>
+            <$endif$>%]]
+            <li>
+               <a href="<$ SearchResults.dDocName $>"><strong><$ SearchResults.dDocTitle $></Strong>
+               <small><$ formatDateWithPattern(SearchResults.xEventDate,#active.websiteDateFormat) $></small></a>
+               [[%<$if strLength(summary) GT 0 $>
+               <br/><$ summary $>
+               <$endif$>%]]
+            </li>
+            <$endloop$>
+         </ul>
+         <$eventDates = "\""&formatDateWithPattern(dateCurrent(),"dd/MM/yyyy")&"\""$>
+         <$exec rsFirst('SearchResults')$>
+         <$loop SearchResults$>
+         <$eventDates=eventDates&",\""&formatDateWithPattern(SearchResults.xEventDate,"dd/MM/yyyy")&"\""$>
+         <$endloop$>
+         <$shortMonthNames =  lc('syShortMonthNames')$>
+         <script type="text/javascript">
+            /*<!--[CDATA[*/
+               function datePicker() {
+               if (window.jQuery && jQuery.datepick) {
+               var aDates = [<$eventDates$>];
+               $('#DatePicker').datepick({
+               todayText : '<$lc('wwCurrentMonth')$>',
+               multiSelect : aDates.length,
+               dateFormat : 'dd/mm/yyyy',
+               prevText : '<span class="access"><$lc('wwPreviousMonth')$></span>',
+               nextText : '<span class="access"><$lc('wwNextMonth')$></span>',
+               dayNamesMin : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+               monthNames:[<$"'"&strReplace(shortMonthNames,",","','")&"'"$>],
+               onSelect : function() {
+               $('#DatePicker').datepick('setDate', aDates);
+               }
+               }).datepick('setDate', aDates);
+               }
+               else {
+               window.setTimeout(datePicker, 100);
+               }
+               }
+               datePicker();
+               /*]]-->*/
+         </script>
+         <a class="btn" href="<$ ssNodeLink('event', siteId) $>?<$if #active.navType == 1$>contentType=Jobs&<$else$>navType=Candidates&<$endif$>QueryText=<$xml( QueryText )$>"><$lc('wwViewMore')$></a>
+      </div>
+      <$ endif $>
+      <@end@>
+      <!--** LATEST JOBS/ CANDIDATES RHB WITH SALARY HIGHER THAN 50****************
+         *********************************************************** -->
+      <@dynamichtml jobs_cadidates_latest_plus_50_hdb@>
+      <$ queryString = '' $>
+      <$include set_query_string_simple$>
+      <$if isTrue(isCandidateSeeker) $>
+      <$ queryString = queryString & " 
+      <AND>
+      xMaxSalary >= `50000` 
+      <AND>
+      dDocType 
+      <matches>
+      `Candidates`", aTitleLbl = 'wwLatestCandidates', searchSection = 'candidatessearchresults', contentType = 'Candidates' $>
+      <$else$>
+      <$ queryString = queryString & " 
+      <AND>
+      xMaxSalary >= `50000` 
+      <AND>
+      dDocType 
+      <matches>
+      `Jobs`", aTitleLbl = 'wwLatestJobs', searchSection = 'jobssearchresults', contentType = 'Jobs' $>
+      <$endif$>
+      <$ QueryText = queryString $>
+      <$ SortField = 'dInDate', SortOrder = "Desc", ResultCount = 2 $>
+      <$executeService("GET_SEARCH_RESULTS") $>
+      <$if rsFirst('SearchResults') $>
+      <div class="box">
+         <h3><$lc(aTitleLbl) $></h3>
+         <ul class="list sponsored-list">
+            <$loop SearchResults $>
+            <$if isProjectSEnabled eq 1$>
+            <$jobUrl = portalUrl & #env.ProjectS_Job_Details & dDocName$>
+            <li><a href="<$jobUrl$>"><strong><$SearchResults.dDocTitle$></strong><small><$ SearchResults.xLocationDescription  $></small></a></li>
+            <$else$>
+            <li><a href="<$ssLink(dDocName) $>"><strong><$SearchResults.dDocTitle $></strong><small><$ SearchResults.xLocationDescription  $></small></a></li>
+            <$endif$>	
+            [[%<$include extract_salary_inc$>%]]
+            <$if isTrue(#active.display_salary_rate)$>
+            <$SearchResults.xSalaryDescription $>
+            <$endif$>
+            <$endloop $>
+         </ul>
+         <$if isProjectSEnabled eq 1$>
+         <$sectionUrl = portalUrl & #env.ProjectS_Job_Details & '?q=hays&specialismId=' & strSubstring(category, strIndexOf(category,":")+1, strLength(category)-1)$>
+         <$else$>
+         <$ sectionUrl = ssNodeLink(searchSection, siteId) & "?contentType=" & contentType $>
+         <$if strLength(subTerms) GT 0 $>
+         <$ sectionUrl = sectionUrl & '&job_category=' & subTerms $>
+         <$endif$>
+         <$endif$>
+         <a class="btn" href="<$ sectionUrl $>"><$lc('wwViewMore')$></a>
+      </div>
+      <$endif $>
+      <@end@>
+      <@dynamichtml jobs_sponsored_for_search_hdb@>
+      <$include reset_search_params_inc$>
+      <$job_sponsored='Y'$>
+      <$include related_block_inc$>
+      <$if  rsExists('SearchResults') AND  rsFirst('SearchResults') $>
+      <div class="box">
+         <h3><$lc('wwSponsoredJobsTitle')$></h3>
+         <ul class="list sponsored-list" >
+            <$loop SearchResults$>
+            <li>
+               <a href="<$ssLink(SearchResults.dDocName)$>?<$builtQuery$>"><strong><$SearchResults.dDocTitle$></strong>
+               <small><$SearchResults.xLocationDescription$></small>
+               <$if isTrue(#active.display_salary_rate)$>
+               <small><$SearchResults.xSalaryDescription $></small></a>
+            </li>
+            <$endif$>
+            <$Sponsored=SearchResults.xSponsored$>
+            <$ssIncludeXml(Sponsored,"wcm:root/wcm:element[@name='Image']/text")$>
+            <$endloop$>
+         </ul>
+      </div>
+      <$endif$>
+      <$job_sponsored=''$>
+      <@end@>
+      <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+      <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------> 
+      <@dynamichtml subtmp_cookie_settings_hdb@>
+      <$include inc_isCookieLawBanner$>
+      <$if isCookieLawBanner EQ 1$>
+      <script type="text/javascript">
+         <!--// --><![CDATA[//><!--
+            var dm = document.domain;
+            dm =  dm.replace('www','');
+            dm =  dm.replace('testsg','');
+            var options = { path: '/', expires: 10, domain:dm };
+            function CookieSetting()
+            {
+            
+               if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+            
+            	var performance = $.cookie('performz');
+            	var personalization = $.cookie('prslz');
+            	var functional = $.cookie('functnl');            
+            	if( performance == 'N')
+            {
+            $('#option_1CS').removeClass('state-on');
+            }
+            	else
+            {
+            $.cookie('performz', 'Y',options);
+            $('#option_1CS').addClass('state-on');
+            }
+            
+            
+            	if( personalization == 'N')
+            {
+            $('#option_2CS').removeClass('state-on');
+            }
+            	else
+            {
+            
+            $.cookie('prslz', 'Y',options);
+            $('#option_2CS').addClass('state-on');
+            }
+            
+            
+            	if( functional == 'N')
+            {
+            $('#option_3CS').removeClass('state-on');
+            }
+            	else
+            {
+            
+            $.cookie('functnl', 'Y',options);
+            $('#option_3CS').addClass('state-on');
+            }
+            
+            
+            $("[id^=option_]").click(function (){      
+            if ($('#option_1CS').attr('class').indexOf("state-on") >= 0)
+            {						
+            $.cookie('performz', 'N',options);
+            			performance = $.cookie('performz');
+            }
+            else
+            {						
+            $.cookie('performz', 'Y',options);
+            			performance = $.cookie('performz');
+            }
+            		if ($('#option_2CS').attr('class').indexOf("state-on") >= 0)
+            {						
+            $.cookie('prslz', 'N',options);
+            			personalization = $.cookie('prslz');
+            }
+            else
+            {						
+            $.cookie('prslz', 'Y',options);
+            			personalization = $.cookie('prslz');
+            }
+            
+            		if ($('#option_3CS').attr('class').indexOf("state-on") >= 0)
+            {						
+            $.cookie('functnl', 'N',options);
+            			functional = $.cookie('functnl');
+            }
+            else
+            {						
+            $.cookie('functnl', 'Y',options);
+            			functional = $.cookie('functnl');
+            }
+            
+            		$.ajax({
+            
+            					url: "<$WC_CHK_COOKIE_VALUE$>",
+            					dataType :"jsonp",
+            					data: {
+            								prslz : personalization,
+            								performz: performance,
+            								functnl: functional
+            
+            						  },
+            					success : function(data)
+            alert("data");
+            					{
+            					},
+            					error: function( error )
+            					  {
+            alert("error");
+            					  }
+            				});
+            
+            		});
+            
+            
+            
+            	}
+            	else {
+            			window.setTimeout(CookieSetting, 100);
+            	}
+            
+            }
+            	CookieSetting()
+            // --><!]]>
+      </script>
+      <div class="box" >
+         <form id="cookie_law" class="hays_form">
+            <div class="cookies-setting">
+               <h3><$lc("wwCookieSettings")$></h3>
+               <ul>
+                  <li><strong><$lc("wwPerformanceCookies")$></strong>
+                     <b><a name="radio_1CS" id="option_1CS" class="btn-on-off" href="#"><span>Off</span></a></b>
+                  </li>
+                  <li><strong><$lc("wwPersonalisationCookies")$></strong>
+                     <b><a name="radio_2CS" id="option_2CS" class="btn-on-off" href="#"><span>Off</span></a></b>
+                  </li>
+                  <li><strong><$lc("wwFunctionalityCookies")$></strong>
+                     <b><a name="radio_3CS" id="option_3CS" class="btn-on-off" href="#"><span>Off</span></a></b>
+                  </li>
+               </ul>
+               </fieldset>
+            </div>
+         </form>
+      </div>
+      <$endif$>
+      <@end@>
+      <@dynamichtml subtmp_socialmediablogs_inc_hdb@>
+      <$executeService('GET_SOCIALMEDIA_BLOGS')$>
+      <$if rsFirst('BLOGS_RESULT_SET') $>
+      <div class="box" >
+         <h3><$lc('wwSocialBlogsHeading')$></h3>
+         <ul class="list sponsored-list" >
+            <$loop BLOGS_RESULT_SET$>
+            <li>					
+               <a href="<$BLOGS_RESULT_SET.Url$>"><$BLOGS_RESULT_SET.Title$></a>
+               <img style="float:right;width:100px;height:66px;" src="<$BLOGS_RESULT_SET.Thumbnail$>"/>								
+            </li>
+            <$endloop$>	
+         </ul>
+         <a class="btn" href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+      </div>
+      <$endif$>
+      <@end@>
+      <@dynamichtml subtmp_socialmediablogs_bytagname_inc_hdb@>
+      <$SocialMediaTags=ssGetNodeProperty("SocialMediaTags")$>
+      <$executeService('GET_SOCIALMEDIA_BLOGS_BY_TAGNAME')$>
+      <$if rsFirst('BLOGS_RESULTSET_BYTAGNAME') $>
+      <div class="box" >
+         <h3><$lc('wwSocialBlogsByTagNameHeading')$></h3>
+         <div class="rc_grey sb_inner pull">
+            <ul class="list sponsored-list">
+               <$loop BLOGS_RESULTSET_BYTAGNAME$>
+               <li >					
+                  <a href="<$BLOGS_RESULTSET_BYTAGNAME.Url$>"><$BLOGS_RESULTSET_BYTAGNAME.Title$></a>
+                  <img style="float:right;width:100px;height:66px;" src="<$BLOGS_RESULTSET_BYTAGNAME.Thumbnail$>"/>				
+               </li>
+               <$endloop$>	
+            </ul>
+            <a class="btn" href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+         </div>
+      </div>
+      <$endif$>
+      <@end@>
+      <@dynamichtml subtmp_socialmediablogs_narrow_inc_hdb@>
+      <$executeService('GET_SOCIALMEDIA_BLOGS')$>
+      <$if rsFirst('BLOGS_RESULT_SET') $>
+      <div class="box">
+         <h3><$lc('wwSocialBlogsHeading')$></h3>
+         <ul class="list sponsored-list">
+            <$loop BLOGS_RESULT_SET$>
+            <li  style="clear:both;padding-top:5px;">					
+               <a href="<$BLOGS_RESULT_SET.Url$>"><$BLOGS_RESULT_SET.Title$>
+               </a>								
+            </li>
+            <$endloop$>	
+         </ul>
+         <a class="btn" href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+      </div>
+      <$endif$>
+      <@end@>
+      <@dynamichtml subtmp_socialmediablogs_bytagname_narrow_inc_hdb@>
+      <$SocialMediaTags=ssGetNodeProperty("SocialMediaTags")$>
+      <$executeService('GET_SOCIALMEDIA_BLOGS_BY_TAGNAME')$>
+      <$if rsFirst('BLOGS_RESULTSET_BYTAGNAME') $>
+      <div class="box" >
+         <h2><$lc('wwSocialBlogsByTagNameHeading')$></h2>
+         <ul class="list sponsored-list">
+            <$loop BLOGS_RESULTSET_BYTAGNAME$>
+            <li  style="clear:both;padding-top:5px;">					
+               <a href="<$BLOGS_RESULTSET_BYTAGNAME.Url$>"><$BLOGS_RESULTSET_BYTAGNAME.Title$></a>							
+            </li>
+            <$endloop$>	
+         </ul>
+         <a class="btn" href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+      </div>
+      <$endif$>	
+      <@end@>
+      <!----------------------Region_Template(s)-------------------------------------------------------------------------------------------------------------------->
+  <@dynamichtml rgtmp_rl_hand_blocks_r6_inc_hdb@>
+      <$wcmListStart("SelectedContent")$>
+      <$wcmListIndex = 0$>
+      <$wcmListNumRows = wcmListRowCount()$>
+      
+      <div class="box">
+         <h3><$wcmElement("Title")$></h3>
+		 <ul class="list sponsored-list">
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+		<li>
+		<div>
+         <h4><$wcmListElement("Title", wcmListIndex)$></h4>
+         <$image_rhs=wcmListElement("Image", wcmListIndex)$>
+		 <div class="content-img">
+         <$if #active.image_rhs and not strEquals(strTrimWs(#active.image_rhs),'')$>
+         <$ strReplace(image_rhs, '<img', '<img class="f-left"') $>
+         <$endif$>
+				
+         <p><$wcmListElement("Content", wcmListIndex)$></p>
+         <$strReplace(wcmListElement("Link", wcmListIndex),"<a","
+         <a class=\"btn\"")$>
+		 </div>
+		 </div>
+            <$wcmListIndex = wcmListIndex + 1$>
+		</li>	
+		<$endloop$>
+		</ul>
+      </div>
+      			
+      <$wcmListEnd("SelectedContent")$>	
+<@end@>
+      <@dynamichtml rgtmp_dyn_sponsored_jobs_list_inc_hdb@>
+      <$numResults=wcmElement("ResultCount")$>
+      <$minimumSalary=wcmElement("MinSalary")$>
+      <$if strLength(minimumSalary) gt 0$>
+      <$ queryString = 'dDocType <MATCHES> `Jobs` <AND> xMinSalary >= `'&minimumSalary&'` <AND> <NOT> (xSponsored <CONTAINS> `idcnull`)' $>
+      <$else$>
+      <$ queryString = 'dDocType <MATCHES> `Jobs` <AND> <NOT> (xSponsored <CONTAINS> `idcnull`)' $>
+      <$endif$>
+      <$ include set_query_string $>
+      <$ QueryText = queryString, SortField='SCORE', SortOrder="Desc", ResultCount=numResults $>
+      <$ executeService("GET_SEARCH_RESULTS") $>
+      <$if rsFirst('SearchResults') $>
+      <$if  rsFindRowPrimary('SearchResults', DOC_INFO.dDocName) AND SearchResults.#numRows EQ 1   $>
+      <$else$>
+      <div class="box">
+      <h3><$lc('wwSponsoredJobsTitle')$></h3>
+      <ul class="list sponsored-list">
+      <$loop SearchResults$>
+      <$Sponsored = SearchResults.xSponsored$>
+      <$if isProjectSEnabled eq 1$>
+      <$jobUrl = portalUrl & #env.ProjectS_Job_Details & dDocName$>
+      <li><a href="<$jobUrl$>"><strong><$SearchResults.dDocTitle$></strong><small> <$SearchResults.xLocationDescription$></small></a></li>
+      <$else$>
+      <li><a href="<$ssLink(SearchResults.dDocName)$>"><$SearchResults.dDocTitle$></strong><small><$SearchResults.xLocationDescription$></small></a></li>
+      <$endif$>	
+      <$if isTrue(#active.display_salary_rate)$>
+      <small><$SearchResults.xSalaryDescription $></small>
+      <$endif$>
+      <$ imagePath = ssIncludeXml(Sponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+      <$if strLength(imagePath) GT 0 $><$ imagePath $><$endif$>
+      <$endloop$>
+      </ul>
+      </div>
+      <$endif$>
+      <$endif$>
+      <@end@>
+      <!---------Job List------------------->
+      <@dynamichtml rgtmp_dyn_job_list_inc_hdb@>
+      <$ResultCount=wcmElement("ResultCount")$>
+      <$if not strEquals(ResultCount,'')$>
+      <$executeService("GET_SPONSORED_JOBS")$>
+      <$if rsExists("HAYS_RESULT_SET")$>
+      <!-- featured employers -->
+      <h2><$wcmElement("Title")$></h2>
+      <$loop HAYS_RESULT_SET$>
+      <div class="box">
+         <ul class="list sponsored-list">
+            <h3><strong><a href="<$ssLink(dDocName,"jobs-search", siteId)$>"><$dDocTitle$></a></strong></h3>
+            <li>
+               <$if strLength(strTrimWs(xLocation)) gt 0$>
+               <p><$xLocation$></p>
+               <$endif$> 
+               <$JobSummary=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+               <$if (not strEquals(JobSummary,''))$>	
+               <$if (strLength(JobSummary) gt 100)$>
+               <small><$strSubstring(JobSummary, 0,100)&'..'$></small>
+               <$else$>
+               <small><$JobSummary$></small>	
+               <$endif$>
+               <$endif$>
+               <$ssIncludeXml(xSponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+            </li>
+            <p> <small><$xSalaryCurrency$><$xMinSalary$>-<$xMaxSalary$>k </small> </p>
+         </ul>
+      </div>
+      <$endloop$>
+      <$endif$>
+      <$endif$>
+      <!-- /featured employers --> 
+      <@end@>
+      <!--****SERVE SUGGESTIONS****-->
+      <@dynamichtml rgtmp_getRecommendedJobs_hdb@>
+      <$title=wcmElement("Title")$>
+      <$requestCode = wcmElement("RequestCode")$> 
+      <$section=ssNodeLink("jobs-search",'uk')$>
+      <$index = strIndexOf(section,"index")$>
+      <$substr = strSubstring(section,0,index)$>
+      <$sectionUrl = substr$>
+      <div id = "recjobs">
+         <script type ="text/javascript">
+            function getRecommendedJobs()
+            {
+            if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady)
+            	{ 
+            	var jobids = "";	
+            	var loggedin = $.trim('<$getCookie("prz_inf")$>');
+            	var category = '<$getCookie("prispc")$>';
+                //var user_domain = '<$domainId$>';
+              var user_domain = '-1'; //stop PI calls
+            	var data1 = '';
+            	var items = '';
+            	var job_id = '<$getCookie("prjap")$>';
+            	if ('<$event$>' == 'browse')
+                   {
+                      items = '<$dDocName$>'; 	   
+                }
+                else              	                                //In case of buy and like; portal events
+                    {
+            	       if (job_id !=null && job_id.indexOf(',')>0)              //We need to get the current job only
+                      {
+                     		
+            			job_id = job_id.substring(0,job_id.indexOf(','));
+            			
+            	      }
+            	 		 items = job_id;
+                     } 				 
+            	
+            	if('<$job_title$>'.length>0) //It is empty only in case where isAdvancesearch=1 and isOnlyJobTitle=1
+            	     data1 = '<$job_title$>';		                 			  
+            	   else
+            	    data1 = '<$job_keywords$>';
+               if(user_domain ==22) //For Australian User's
+                {
+                  var prslz = $.cookie('prslz'); //personalization cookie
+                 if(loggedin != null && loggedin.length >0)  //check-for logged in user 
+                  {
+            	      if (prslz != 'N' ) //check for personalization
+            	      {
+                       if (category.indexOf("hays:ResMiningXResEnergy") != -1 ) // Only for user tagged to Resource and Mining specialism
+            	       {
+            	
+            	$.ajax({
+            				  url: "<$HttpBrowserFullCgiPath$>",
+            				  dataType :"jsonp",
+            							data: {
+            								outputFormat : "json",
+            								prz_info : loggedin,
+            								IdcService: "CHECK_MIN_USER_MAX_CALL"
+            								
+            						  },
+            						  success : function(data) {
+            						  
+            						  status = data.result.resultsets.Status[0].status;
+            						
+            				         if (status == "false") // min user events are satisfied and also PI hits have not exceeded the Cap
+                                         {
+            						   
+            				           
+                                           $.ajax({
+            						url: "<$#env.baseAPICall$>/suggest/<$#env.requestcode$>/"+'<$requestCode$>',
+            						dataType: "jsonp",
+            						data: {
+            							fmt : "jsonp",
+            							visitorid : loggedin,
+            							locale : '<$SiteLocale$>',
+            							visitorcategory:'<$getCookie("prispc")$>',
+            							criteria : $.trim(data1), //for search suggestions
+            							items : items //for browse and buy suggestions
+            						 },
+            						error: function() {
+                                   // alert('Error loading JSON=');
+                                       },
+            
+            						success: function(data) {
+            						$.each(data.response.suggestions, function(i, item) {
+                                        			 
+            						 
+                                       jobids =  jobids + "," + data.response.suggestions[i].itemCode;
+            						
+            	                          
+                                       });
+            						
+            						if(jobids.charAt(0)==',')
+            						{
+            						 
+            						  jobids = jobids.slice(1,(jobids.length));
+            						  
+            						 
+            						 
+            						}
+            				
+            						$.ajax({
+            		      url: "<$HttpBrowserFullCgiPath$>",
+            			  dataType :"jsonp",
+            			 // crossDomain :true,
+            						data: {
+            							outputFormat :'json',
+            							contentids : jobids,
+            							IdcService: "GET_RECOMMENDED_JOBS"
+            							
+                                     },
+            					  success : function(data) {
+            					      
+            					   
+            					   var ul = '<ul id ="scroller">';
+            						var li = '';
+            						var url = '<$sectionUrl$>';
+            						var closing_tags =' </ul></div></div>'
+            						var host = window.location.hostname; // done for Development port wil be removed in deployment
+            						var count =0;
+            						var jobsource ='jobSource=Website%20Recommendation';
+            						var img_up = "";
+            						var img_down = "";
+            						var height = "";
+            						$.each(data.result.resultsets.JOB_INFO,function(i,item) {
+            						     count = count+1;
+            															 
+            							   li += '<li id ='+count+'><h3><a href=http://'+host+url+data.result.resultsets.JOB_INFO[i].dDocName+'?'+jobsource+'>'+data.result.resultsets.JOB_INFO[i].dDocTitle+
+            							          '</a></h3>'+'<p>'+data.result.resultsets.JOB_INFO[i].xLocationDescription+'</p>';
+            						       
+            						});
+            						
+            					
+                                     var height = '0';
+            					  var url = '<$HttpBrowserFullCgiPath$>';
+            					  var index = url.indexOf('idcplg');
+            					  url = url.substring(0,index);
+            					 // alert(url);
+            					 if(count>3) //display img only when returned jobs are more than 3 else display none.
+                                      {
+            					    img_up = '<img src="'+url+'HaysGeneralComponent/assets/img/arrow-up-blue.png" alt = "up-arrow" border=0>';
+            						img_down = '<img src="'+url+'HaysGeneralComponent/assets/img/arrow-down-blue.png" alt = "down-arrow" border=0>';
+                                        }						   
+            					  var html = '<div class="side_box"><div class="rc_blue"><div class="cnr"></div>'+
+            					   '<h2 style="height: 40px; padding:12px 12px 14px 10px;font-weight:bold;font-size:14px"><span style="float:left;width:120px;"><$title$></span><span id="overlay" style="float: right; background: none repeat scroll 0px 0px rgb(243, 243, 243);"><a href="javascript:void(0);" onMouseover="move(5);" onMouseout="clearTimeout(move.to)">'+img_up+'</a></span></h2></div>'+'<div id = "outer_container" class="rc_grey sb_inner pull block_list even" style="position:relative;height:'+height+'px;overflow:hidden;border-radius:0 0 0 0;width: 176px;"><div id = "container" style="position: absolute; top: 0px; right: 0px; left: 0px; padding: 4px;">';						  					  				  
+            					  var addhtml = '<div class="rc_blue" style="height: 25px; padding:0px 15px 0px 0px;border-radius:0 0 0 0;">'+
+            					   '<span id="overlay" style="float:right;"><a href="javascript:void(0);" onMouseover="move(-5);" onMouseout="clearTimeout(move.to)">'+img_down+'</span></div>';
+            					    $('div#recjobs').html(html+ul+li+closing_tags+addhtml+"</div>");
+            						
+            						//Calculating height of the outer container
+            						
+            						if (count>=3)
+            						{
+                                          height = $("#1").outerHeight()+$("#2").outerHeight()+$("#3").outerHeight();
+            						   				
+            						}
+            						else if (count == '2')
+            						 {
+            						   height = $("#1").outerHeight()+$("#2").outerHeight();
+                                           
+            						 }
+            						else
+                                         {
+            						   height = $("#1").outerHeight();
+            						   
+            						  }
+                                    var heightpx = height+'px';	
+            					 //Setting the height of the outer conatiner
+                                      $("#outer_container").css("height",heightpx); 	
+            					  },
+            					  error: function() {
+                                           alert('Error loading JSON=');
+                                              }
+            					  
+            					  });	
+            						
+            						
+            			        } //endof success function
+            						}); //endof ajax call
+            												  
+            						  
+            			      }							 
+            		                     
+            																  
+            						  },
+            						  error: function() {
+            			 // alert('Error loading JSON for CHECK_MIN call=');
+            				 }
+            						  
+            						  });
+            	
+            			  			
+            				
+            				}
+            			}
+            	
+            		}
+                }
+              }			
+            	
+            	
+            else {
+            			window.setTimeout(getRecommendedJobs, 100);
+            		}
+            
+            }
+            getRecommendedJobs();
+            
+            function move(spd){
+             var id='container';
+            var obj=document.getElementById(id),max=-obj.offsetHeight+obj.parentNode.offsetHeight,top=parseInt(obj.style.top);
+            if ((spd>0&&top<=0)||(spd<0&&top>=max)){
+             obj.style.top=top+spd+"px";
+             move.to=setTimeout(function(){ move(spd); },20);
+            }
+            else {
+             obj.style.top=(spd>0?0:max)+"px";
+            }
+            }
+            
+            
+         </script>
+      </div>
+      <@end@>
+      <!--*************linkedin intrests***********************-->
+      <@dynamichtml rgtmp_linkedin_interests_inc_hdb@>
+      <div class="box">
+         <div class="pb_inner" style="overflow:visible">
+            <$if not strEquals(wcmElement("CompanyID"),'')$>
+            <script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+            <script type="IN/JYMBII" data-companyid="<$wcmElement('CompanyID')$>" data-format="inline"></script>
+            <$else$>
+            <script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+            <script type="IN/JYMBII" data-companyid="3486" data-format="inline"></script>		
+            <$endif$>			
+            <div id="cssdivision">
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript">
+         function sponsoredImageUrl() {
+         if (window.jQuery && jQuery.ui && jQuery.isReady) {
+         	$(document).ready(function() {
+         		$('.side_box').attr('style','width:300px; margin: 0pt 5px;margin-bottom:20px;');
+         		if (typeof bigImageUrL != "undefined") {
+         			$('#SponsorImg').css('background-image','url('+bigImageUrL +')');
+         			$('#sponsored_link').css('margin-top','228px');	
+         			$('#sponsored_link').css('font-size','100%');
+         		}
+         });
+          }
+              else {
+             window.setTimeout(sponsoredImageUrl, 100);
+         }
+            }
+         sponsoredImageUrl();
+      </script>
+      <@end@>
+      <!-------------------------------------------------------Added on 10/04/2015------------------------------------------------------------->
+      <!---------RGTMP_DYN_PARTNERED_COMPANIES------>
+      <!--
+         <@dynamichtml rgtmp_dyn_partnered_companies_inc_hdb@>
+         <$c=wcmElement("RSSLink")$>
+          <$widgetXML=wcmElement("Widget"), widjetTtle = wcmElement("Title")$>
+          <$if strLength(widgetXML) GT 0 $>                    
+                             		<$include widget_display$>
+         <$else $>
+         <!-- partnered companies <$c=nodeId$><$c=ssGetNodeProperty("label") $>
+         
+         <$dDocTypeSponsoredEmployer="SponsoredEmployer"$> 
+         <$include get_relevant_category_from_csp$>
+         <$if strLength(xCategory) GT 0$>
+         	<$specialism = xCategory$>
+         <$endif$>
+         <$if not (#active.numRows)$>
+         	<$numRows=100$>    
+         <$endif$>		
+         <$dDocTypeJobs="Jobs"$> 
+         <$executeService("GET_SPONSORED_EMPLOYERS")$>
+         
+         <$if rsExists("HAYS_RESULT_SET")$>
+                
+         <div class="clear"></div>
+         <div class="main_box promo_box partners_box">
+         	<div class="pb_inner">
+         		<h2><$lc("wwPartneredCompaniesLabel")$></h2>
+         		<ul>
+         			<$itemCount = 1$>
+         			<$loop HAYS_RESULT_SET$>
+         			    <$if itemCount gt 8$>
+         			  	<$endif$>
+         				<$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+         				<$if not strEquals(link,'')$>
+         						<li><a href="<$link$>"><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>
+         						<$itemCount = itemCount+1$>
+         				<$endif$>
+         
+         			<$endloop$> 
+         		</ul>
+         		<$queryString="dDocType <matches> `SponsoredEmployer`"$>
+         		<$include set_query_string$>
+         		<!-- added for Ticket 6809822 on 06/04/2012
+         			<$SortField='dInDate'$>
+         			<$SortOrder='DESC'$>
+         		<!--end 
+         		<$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>
+         		<div class="msg"> <a href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>&SortField=<$SortField$>&SortOrder=<$SortOrder$>"><$lc('wwViewMore')$> <span class="access">Sponsored Employers</span></a> ></div>
+         	</div>
+         </div>
+         <div class="clear"></div>
+         <$endif$>
+         
+         <$endif$>
+         
+         <@end@> -->
+      <!--*************************** Static Content Blocks TEMPLATE****************
+         *********************************************************** -->
+      <@dynamichtml static_content_blocks_hdb@>
+      <$aTitleStaticBlock=wcmElement("Title")$>
+      <$if strLength(strTrimWs(aTitleStaticBlock)) gt 0$>
+      <div class="box">
+         <$boxClass="rc_blue"$>
+         <h2><$wcmElement("Title")$></h2>
+         <p><strong><$wcmElement("Subtitle")$></strong></p>
+         <p class="color1"><$wcmElement("Content")$></p>
+         <ul class="list sponsored-list">
+            <$wcmListStart("Links")$>
+            <$wcmListIndex = 0$>
+            <$wcmListNumRows = wcmListRowCount()$>
+            <$loopwhile wcmListIndex < wcmListNumRows$>
+            <li><$wcmListElement("Link", wcmListIndex)$></li>
+            <$wcmListIndex = wcmListIndex + 1$>
+            <$endloop$>
+            <$wcmListEnd("Links")$>
+         </ul>
+         <!--$boxClass=""-->
+      </div>
+      <$endif$>
+      <@end@>
+      <!--*************************** Dynamic List Blocks TEMPLATE****************
+         *********************************************************** -->
+      <@dynamichtml dynamic_list_blocks_hdb@>
+      <$ aTitle = wcmElement("Title"), queryString = wcmElement("Query")  $>
+      [[%	<$  widgetXML = wcmElement("Widget") $>	%]]
+      <$if NOT #active.className $>
+      <$ className = 'blue' $>
+      <$endif$>
+      [[%	<$if strLength( widgetXML) GT 0 OR strLength( queryString) GT 0 $>
+      <$if strLength(widgetXML) GT 0 $>
+      <div class="box">
+         <h3><$ aTitle $></h3>
+         <$include widget_rss_display_blocks_hdb $>
+      </div>
+      <$elseif strLength(queryString) GT 0 $>
+      %]]
+      <$if strLength(queryString) GT 0 $>
+      <$ resultCount = wcmElement("Count")$>
+      <$include set_query_string$>
+      <$ QueryText = queryString, LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=resultCount$>
+      <$executeService("SS_GET_SEARCH_RESULTS")$>
+      <$if SearchResults.#numRows GT 0 $>
+      <div class="box">
+         <h3><$ aTitle $></h3>
+         <!--div class="msg color1"></div-->
+         <ul class="list sponsored-list">
+            <$loop SearchResults$>
+            <$dID = SearchResults.dID$>
+            <$executeService('DOC_INFO_SIMPLE')$>
+            <li>
+               <h4><a href="<$ssUrl$>"><$dDocTitle$></a></h4>
+               <p><strong></strong><br/>
+                  <$DOC_INFO.xDescription$>
+               </p>
+            </li>
+            <$endloop$>
+         </ul>
+      </div>
+      <$endif$>
+      <$endif$>
+      [[%		<$endif$>	%]]
+      [[%
+      <$else$>
+      <script language="javascript" src="<$ssWeblayoutUrl('rssajax')$>"></script>
+      <div class="rss" id="chan">
+         <div id="chan_title"></div>
+         <div id="chan_link"></div>
+         <div id="chan_description"></div>
+         <a id="chan_image_link" href=""></a>
+         <div id="chan_items"></div>
+         <div id="chan_pubDate"></div>
+         <div id="chan_copyright"></div>
+      </div>
+      <script language="javascript">
+         getRSS('<$wcmElement("RSSLink")$>',<$resultCount$>);
+      </script>
+      <$endif$>	%]]
+      <@end@>
+      <!--*************************************BOOKMARKS***********************************************-->
+     
+   <@dynamichtml subtmp_bookmark_inc_hdb@>
+      <!-- AddThis Button BEGIN -->
+      <$if isTrue(#env.DisableSiteStudioContribution) $> 
+      <div class="row">
+      	<div class="box">
+      	<div class="addthis_toolbox addthis_32x32_style addthis_default_style">
+         <script type="text/javascript">
+            if(!addthis_config){
+            var addthis_config = {};
+            }
+            addthis_config['ui_language']= "<$LanguageCode$>"; 
+            <$if isTrue(#env.enableCustomAddThis)$>	
+            	<$if domainId ==29 and strEqualsIgnoreCase(SiteLocale,'ru-RU')$>
+            		var addthis_share = { email_template: "HaysRu_Template"};
+            	<$endif$>
+            <$endif$>
+            <$if domainId ==27$>
+            addthis_config['services_exclude']= "facebook,twitter"; 	
+            <$endif$>
+            
+            
+         </script>
+         <a href="http://addthis.com/bookmark.php?v=250&amp;username=xa-4c24d509544421b9" class="addthis_button_compact"></a>
+         <span class="addthis_separator">|</span>
+         <$if domainId !=27 and domainId !=24$>
+         <a class="addthis_button_email" ></a> 
+         <$endif$>
+         <$if domainId !=27$>
+         <a class="addthis_button_facebook" ></a>
+         <$if (strEqualsIgnoreCase(nodeId,'jobs-search') OR strEqualsIgnoreCase(nodeId,'candidates-search')) AND strLength(ssDocName)>0$>
+         <$shortenLink=ssLink(ssDocName)$>
+         <$shortenLink=strSubstring(shortenLink,strIndexOf(shortenLink,SiteLocale),strLength(shortenLink))$>
+         <a class="addthis_button_twitter" addthis:url="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$><$ssGetNodeProperty("urlDirName")$>/<$shortenLink$>" addthis:title="<$DOC_INFO.dDocTitle$> | "></a>
+         <$else$>
+         <a class="addthis_button_twitter"></a>
+         <$endif$>
+         <!--MR89134 changes-->
+         <$if (strEqualsIgnoreCase(nodeId,'jobs-search') OR strEqualsIgnoreCase(nodeId,'candidates-search')) AND (strLength(ssDocName) gt 0)$>
+         <$shortenLink=ssLink(ssDocName)$>
+         <$shortenLink=strSubstring(shortenLink,strIndexOf(shortenLink,SiteLocale),strLength(shortenLink))$>
+         <$TitleDescription=strSubstring(dDocTitle,0,50)$>
+         <$pDescription=strReplace(xDescription,"\"","")$>
+         <$zDescription=strReplace(pDescription,"\'","")$>
+         <$zDescription=stripHTML(zDescription)$>
+         <a class="addthis_button_linkedin" addthis:url="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$><$ssGetNodeProperty("urlDirName")$>/<$DOC_INFO.dDocName$>" addthis:title="<$TitleDescription$> | <$DOC_INFO.xRecordId$> | HAYS Recruiting experts worldwide " addthis:description='<$zDescription$>'></a>
+         <$else$>
+         <a class="addthis_button_linkedin"></a>
+         <$endif$>
+         <!--MR89134 changes-->
+         <a class="addthis_button_favorites"></a>
+         <$else$>
+         <a class="addthis_button_linkedin"></a>
+         <a class="addthis_button_sinaweibo"></a>
+         <a class="addthis_button_kaixin"></a>
+         <a class="addthis_button_baidu"></a>
+         <$endif$>
+         <a class="addthis_button_print"></a>
+      </div>
+      </div></div>
+      <!--BAU- REL-3 20586-->
+      <script type="text/javascript" src="/haysassets/HaysGeneralComponent/assets/js/addthis_widget.js#pubid=ra-5267f953247fb89c"></script>
+      <!--BAU- REL-3 20586-->
+      <!-- AddThis Button END -->
+      <$endif$>
+      <@end@>
+   <@dynamichtml subtmp_bookmark_veredus_inc_hdb@> 
+   <div class="row">
+      	<div class="box">
+      <script type="text/javascript" src="/haysassets/HaysGeneralComponent/assets/js/addthis_widget.js#pubid=ra-5267f953247fb89c"></script>
+      <div>		
+         <a href="http://twitter.com/#!/vereduscorp" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_twitter_icon.png">
+         </a>
+         <a href="http://www.facebook.com/veredus" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_facebook_icon.png">
+         </a>
+         <a href="http://www.pinterest.com/veredus" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_pinterest_icon.png">
+         </a>
+         <a href="http://www.linkedin.com/company/13245" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_linkedin_icon.png">
+         </a>
+         <a href="https://plus.google.com/u/0/b/116853721017255241790/116853721017255241790/posts" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_googleplus_icon.png">
+         </a>
+         <a href="http://vereduscorp.com/job-blogs/" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_blogs_icon.png">
+         </a>
+         <a href="http://www.glassdoor.com/Overview/Working-at-Veredus-EI_IE376629.11,18.htm" target="_blank">
+         <img src="/haysassets/groups/hays_ta/@vus/@content/documents/webassets/veredus_glassdoor_icon.png">
+         </a>
+      </div>
+      </div></div>
+ <@end@>
+      
+<!----********************SUBTMP_DYN_PARTNERED_COMPANIES********************-->
+<@dynamichtml subtmp_dyn_partnered_companies_inc_hdb@>
+      <$widgetXML=wcmElement("Widget"), widjetTtle = wcmElement("Title")$>
+      <$if strLength(widgetXML) GT 0 $>
+      <$include widget_display_hdb$>
+      <$else $>
+      <!-- partnered companies -->
+      <$dDocTypeSponsoredEmployer="SponsoredEmployer"$>
+      <$include get_relevant_category_from_csp$>
+      <$if strLength(xCategory) GT 0$>
+      <$specialism = xCategory$>
+      <$endif$>
+      <$if not (#active.numRows)$>
+      <$numRows=100$>
+      <$endif$>
+      <$dDocTypeJobs="Jobs"$>
+      <$executeService("GET_SPONSORED_EMPLOYERS")$>
+      <$if rsExists("HAYS_RESULT_SET")$>
+      <div class="box">
+            <h2><$lc("wwPartneredCompaniesLabel")$></h2>
+            <ul class="list emp-list">
+               <$itemCount = 1$>
+               <$loop HAYS_RESULT_SET$>
+               <$if itemCount gt 8$>
+               <$break$>
+               <$endif$>
+               <$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+               <$if not strEquals(link,'')$>
+               <li><a href="<$link$>" target="_blank"><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>
+               <$itemCount = itemCount+1$>
+               <$endif$>
+               <$endloop$>
+            </ul>
+            <$queryString="dDocType 
+            <matches>
+            `SponsoredEmployer` 
+            <AND>
+            (xIsFeatured 
+            <matches>
+            `yes`)"$>
+            <$include set_query_string_no_empty_catagory$>
+            <!-- added for Ticket 6809822 on 06/04/2012 -->
+            <$SortField='dInDate'$>
+            <$SortOrder='DESC'$>
+            <!--end -->
+            <$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>
+            <a class="btn" href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>&SortField=<$SortField$>&SortOrder=<$SortOrder$>"><$lc('wwViewMore')$></a>
+      </div>
+      <div class="clear"></div>
+      <$endif$>
+      <$endif$>
+<@end@>
+      <!-- ********************************************
+         Display RSS on website page
+         ************************************************** -->
+      <@dynamichtml widget_rss_display_blocks_hdb@>
+      <$ if strLength( widgetXML) GT 0 $>
+      <$ crXmlToResultSet(widgetXML, "widgetRS") $>
+      <$ Label = getValue("widgetRS","Label")$>
+      <$ ResultCount = getValue("widgetRS","MaxNumber")$>
+      <$ ExternalUrl = getValue("widgetRS", "RSSExternalURL") $>
+      <$ QueryText = getValue("widgetRS","RSSURL")$>
+      <$ rssUrl = "", rssNode= siteId & "rss" $>
+      <$if strLength(SortField) GT 0$>
+      <$SortField =SortField$>
+      <$else$>
+      <$SortField ="Score"$>
+      <$endif$>
+      <$ SortOrder = "Desc" $>
+      <$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+      <$if strLength(QueryText) gt 0$>
+      <$ QueryText=strReplace(QueryText, "[", "<") $>
+      <$ QueryText=strReplace(QueryText, "]", ">") $>
+      <$queryString=QueryText$>
+      <$include set_query_locale_include$>
+      <$QueryText=queryString$>
+      <$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&QueryText=" & url(QueryText) $>
+      <$ executeService("SS_GET_SEARCH_RESULTS")$>
+      <$exec rsRemove("RSS_ENTRIES")$>
+      <$ exec rsRename( "SearchResults", "RSS_ENTRIES")$>
+      <$ isInternal = 1 $>
+      <$elseif strLength( ExternalUrl) gt 0 $>
+      <$ rssUrl = ssGetServerRelativeUrl(siteId, rssNode) & "?view=rss&feedUrl=" & ExternalUrl $>
+      <$ feedUrl = ExternalUrl, parseXml="true"$>
+      <$ executeService("GET_REMOTE_FEED")$>
+      <$ isInternal = 0 $>
+      <$endif$>
+      <$if ResultCount gt 0$>
+      <$Elements = getValue("widgetRS","Elements")$>
+      <$indexTitle = strIndexOf(Elements,"Title")$>
+      <$indexDescription = strIndexOf(Elements,"Description")$>
+      <$indexDate=strIndexOf(Elements,"Date")$>
+      <div class="box">
+         <h3><$ Label $></h3>
+         <ul class="list sponsored-list">
+            <$loop RSS_ENTRIES$>
+            <$if isTrue(isInternal)$>
+            <li>
+               <$if indexTitle gt -1$>
+               <h3><a href="<$ssLink(RSS_ENTRIES.dDocName)$>"><$RSS_ENTRIES.dDocTitle$></a></h3>
+               <$endif$>
+               <$if indexDate GT -1  OR  indexDescription gt -1$>
+               <p class="color1" >
+                  <$if indexDate GT -1 $>
+                  <strong><$ RSS_ENTRIES.dInDate $></strong><br/>
+                  <$endif$>
+                  <$if indexDescription gt -1$>
+               <p><$RSS_ENTRIES.xComments$></p>
+               <$endif$>
+               <$endif$>
+            </li>
+            <$else$>
+            <li>
+               <$if indexTitle gt -1$>
+               <h3><a href="<$RSS_ENTRIES.link$>" class="external" target="_blank"><$RSS_ENTRIES.title$></a></h3>
+               <$endif$>
+               <$if indexDate GT -1  OR  indexDescription gt -1$>
+               <p class="color1" ><$if indexDate GT -1 $>
+                  <strong><$RSS_ENTRIES.pubDate$></strong><br/>
+                  <$endif$>
+                  <$if indexDescription gt -1$>
+                  <$RSS_ENTRIES.description$>
+                  <$endif$>
+               </p>
+               <$endif$>
+            </li>
+            <$endif$>
+            <$if (CURRENT_ROW+1) eq ResultCount$>
+            <$break$>
+            <$endif$>
+            <$endloop$>
+         </ul>
+         [[%	<$if isTrue(isInternal)$>
+         <$ rssSectionId = siteId & 'rss' $>
+         <div class="med_inner pb_links">
+            <ul>
+               <li><a href="<$ssNodeLink(rssSectionId, siteId)$>">More</a></li>
+            </ul>
+         </div>
+         <$endif$>
+         %]]
+      </div>
+      <$endif$>
+      <$exec rsRemove("RSS_ENTRIES")$>
+      <$endif$>
+      <@end@>
+      <!--****************************SUBTMP_JOB_CAND_WDGT_APAC_HDB******************************************-->
+      <!--********************************************Added on 5/5/2015**************************************-->
+      <!--***************************************************************************************************-->
+      <@dynamichtml hays_job_cand_search_form_apac_r6_hdb@>
+      <$include check_nav_type$>
+      <$include google_search_enabled_countries$>
+      <$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+      <$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+      <$formName='Job_Search_APAC', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+      <$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+      <$locale = #active.SiteLocale$>
+      <$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+      <$parentCatTerm=""$>
+      <$if strLength(category) GT 0 $>
+      <$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+      <$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+      <$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+      <$if subTerms like '[]'$>	
+      <$ subTerms = category $>
+      <$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+      <$elseif strLength(subTerms) GT 0 $>	
+      <$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+      <$parentCatTerm=category$>
+      <$endif$>
+      <$temp2 = strReplace(category, 'hays:', '')$>
+      <$temp2 = strReplace(temp2, ',', '|xCategory:')$>
+      <$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+      <$endif$>
+      <$domainId = #active.domainId$>
+      <$executeService("SEARCH_LOCATIONS_APAC")$>
+      <$include search_form_home_apac_google_js_inc$> 
+      <div class="box">
+      <section class="job-search">
+         <h2 class="underline"><$searchTitle$></h2>
+         <form id="<$formName$>" class="home_search_form apac_form hays_form rc_white" action="<$lc('wwGoogleSearchAction')$>" >
+            <ul class="form">
+               <ul class="row inner-search">
+                  <li class="col col-3">
+                     <label><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+                     <div class="input">
+                        <input id="<$formName$>q" class="textbox require_group" type="text" name="q" value="<$#active.q$>" placeholder="<$lc('wwHomePageSrchJobTitleRefWaterMark')$>">
+                     </div>
+					 	<div class="bg_blue" id="<$formName$>_error"></div>
+							[[%<div class="input-chk">
+							<label for="<$formName$>isOnlyJobTitle"><span><input id="<$formName$>isOnlyJobTitle" value="<$#active.isOnlyJobTitle$>" name="isOnlyJobTitle" type="checkbox"></span><$lc('wwHomePageOnlySearchJobTitle')$></label>
+							</div>	%]]													
+							<$if strLength(category) GT 0 $>
+							<div class="input-chk">
+							<label for="<$formName$>x_search"><span><input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked></span><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+							</div>										
+							<$else$>
+							<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+							&nbsp;
+							<$else$>
+							<div class="grid_q_40">
+							<div class="search_inner search_sml_pad">
+							&nbsp;
+							</div>
+							</div>
+							<$endif$>					
+							<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+							<$endif$>
+							<$endif$>
+                  </li>
+				  
+				  
+				  
+				  
+                  <li class="col col-3">
+				  <label><$lc('wwLocation')$></label>
+              
+                     <$if domainId eq 22 OR domainId eq 23$>
+                     <div class="search_inner search_sml_pad oceania location_multiselect">
+                        <$else$>
+                        <div class="search_inner search_sml_pad asia location_multiselect">
+                           <$endif$>
+                           <div class="multiselect apac_google" >
+						   
+                              <$include job_location_dropdown_inc$>
+                       						
+                              <input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+                              <input name="location_set_apac" id="<$formName$>location_set_apac" type="hidden" value="" />
+                           </div>	
+                        </div>
+					
+                  </li>
+               </ul>
+               <li>	
+               <div class="action">
+               <input type="submit" class="btn-primary" value="<$lc('wwSearch')$>">
+               </div>
+               </li>
+            </ul>
+            <label for="<$formName$>partialfields" ></label>
+            <input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+
+   
+            <!--hidden fields-->
+            <input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+            <input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+            <input type="hidden" value="<$#active.contentType$>" name="contentType">
+            <input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+            <input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+            <input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+            <input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+            <input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+            <input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+            <input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+            <input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+            <input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+            <input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+            <input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+            <input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+            <input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+            <input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+            <input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+            <input type="hidden" name="sort" value="date:D:L:d1"/>
+            <input type="hidden" value="<$#active.contentType$>" name="contentType">
+            <input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>			
+         </form>
+      </section>
+      </div>
+      <div id="<$dialog$>" title="Heading"> </div>
+      <!-- added for Release 8.0 sec 7.2 8A-->
+      <$else$>
+      <$if isEmployer eq 1$>
+      <$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+      <$formName='Job_Search_APAC', searchTitle=lc('wwCandidatesJobsSearchSpecialism_title')$>
+      <$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+      <$else$>
+      <$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+      <$formName='Job_Search_APAC', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+      <$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+      <$endif$>
+      <$locale = #active.SiteLocale$>
+      <$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+      <$parentCatTerm=""$>
+      <$if strLength(category) GT 0 $>
+      <$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+      <$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+      <$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+      <$if subTerms like '[]'$>	
+      <$ subTerms = category $>
+      <$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+      <$elseif strLength(subTerms) GT 0 $>	
+      <$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+      <$parentCatTerm=category$>
+      <$endif$>
+      <$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+      <$endif$>
+      <$domainId = #active.domainId$>
+      <$executeService("SEARCH_LOCATIONS_APAC")$>
+      <$include search_form_home_apac_js_inc$> 
+      <div class="box">
+      <section class="job-search">
+     
+      <h2 class="underline"><$searchTitle$></h2>
+      <$if strLength(searchWidgetSuffix) <= 0 $>
+      <div class="advanced_search">
+         <a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+      </div>
+      <$endif$>
+      <form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$urlToSubmitTo$>">
+         <ul class="form">
+			<ul class="row inner-search">
+			<li class="col col-3">
+               <label ><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+			  <div class="input">
+               <input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref" value="<$#active.job_title_key_ref$>">
+            </div>
+			<div class="bg_blue" id="<$formName$>_error"></div>
+                  
+                     <div class="input-chk">
+                        
+                        <label for="<$formName$>isOnlyJobTitle"><span><input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$#active.isOnlyJobTitle$>" name="isOnlyJobTitle"></span><$lc('wwHomePageOnlySearchJobTitle')$></label>
+                    
+                  </div>
+                  <$if strLength(category) GT 0 $>
+                  <div class="input-chk">
+                   
+                        
+                        <label for="<$formName$>x_search"><span><input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked></span><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+                     
+                  </div>
+                  <$else$>
+                  <div class="grid_q_40">
+                     <div class="search_inner search_sml_pad">
+                        &nbsp;
+                     </div>
+                  </div>
+                  <$endif$>		
+            </li>
+         <li class="col col-3">
+		 <label><$lc('wwLocation')$></label>
+         <$if strEquals(contentType,"Candidates")$>
+         <$if domainId eq 22 OR domainId eq 23$>
+         <div class="search_inner search_sml_pad candidate location_multiselect">
+            <$else$>
+            <div class="search_inner search_sml_pad asia location_multiselect">
+               <$endif$>
+               <div class="multiselect" >
+			
+                  <$include candidate_location_dropdown_inc$>	
+                  <$else$>
+                  <$if domainId eq 22 OR domainId eq 23$>
+                  <div class="search_inner search_sml_pad oceania location_multiselect">
+                     <$else$>
+                     <div class="search_inner search_sml_pad asia location_multiselect">
+                        <$endif$>
+                        <div class="multiselect" >
+                           <$include job_location_dropdown_inc$>
+                           <$endif$>							
+                           <input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+                        </div>
+                     </div>
+                 	</li>
+				</ul>		
+				   <li>	<$LOCATION_RESULT_LIST_APAC.LEVEL_NO$>			
+                 <div class="action">
+                 
+                        <input type="submit" class="btn-primary" value="<$lc('wwSearch')$>">
+                     </div>
+            	  </li>
+				</ul>	
+                  <!--<div id="<$formName$>_error"></div>-->
+                 			
+                  <$if not #active.level or (#active.level and #active.level lt 3)$>
+                  <$level=3$>
+                  <$endif$>
+                  <!--hidden fields-->
+                  <input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+                  <input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+                  <input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+                  <input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+                  <input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+                  <input type="hidden" id="parentCatTerm" name="parentCatTerm" value="<$parentCatTerm$>" />
+                  <input type="hidden" value="SCORE" name="SortField">
+                  <input type="hidden" value="Desc" name="SortOrder">
+                  <input type="hidden" value="<$#active.contentType$>" name="contentType">
+                  <input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+                  <$if strLength(subTerms) GT 0 $>
+                  <input type="hidden" name="job_category" id="job_category" value="<$subTerms$>" />
+                  <$endif$>
+      </form>
+  	</section>
+	</div>
+      <div id="<$dialog$>" title="Heading"> </div>
+      
+      <!-- added for Release 8.0 sec 7.2 8A-->
+      <$endif$>
+ <@end@>
+
+      <!--************************************************************************************************-->
+      <!--**********************************************RGTMP_MAIN_SEC_R6_HDB**************************************************-->
+<@dynamichtml rgtmp_main_sec_r6_hdb_inc@>
+      <$aTitle = wcmElement("Title")$>
+      <$aSecondaryTitle = wcmElement("Secondary_Title")$>
+      <$variableToTrim = aTitle$>	
+      <$include removeLeadingAndTrailingSpaces_inc$>
+      <$aTitle=variableToTrim$>	
+      <$variableToTrim = aSecondaryTitle$>	
+      <$include removeLeadingAndTrailingSpaces_inc$>
+      <$aSecondaryTitle=variableToTrim$>
+      <$variableToTrim=""$>
+      <$if strLength(aTitle) gt 0$>
+	    <div class="box">
+      <h1 class="underline"><$aTitle$></h1>
+      <$endif$>
+      <$if strLength(aSecondaryTitle) gt 0$>
+      <span class="sub_text" style="color:#96B043;text-transform: uppercase;"><$aSecondaryTitle$></span>
+      <$endif$>	
+      <div class="content-img">
+         <$if #active.image and not strEquals(#active.image,'')$>
+         <$ strReplace(image, 'img', 'img height="261" width="180" ') $>	
+         <$endif$>	
+         <div class="hi_inner">
+            <div class="wysiwyg" id="wysToggle">
+               <$wcmElement("Summary")$>			
+            </div>
+            <$if #active.nodeId and not strEqualsIgnoreCase(ssGetNodeProperty("SwitchOffDate"),"true")$>
+            <$if #active.ssDocName and strLength(#active.ssDocName)gt 0$>
+            <$dDocName = ssDocName$>
+            <$endif$>
+            <$executeService('DOC_INFO_BY_NAME')$>
+            <div class="date"><$lc('wwContentLatUpdatedLabel')$> <$formatDateWithPattern(DOC_INFO.dReleaseDate,#active.websiteDateFormat)$></div>
+            <$endif$>
+         </div>
+      </div>
+      <div class="clear"></div>
+      <div class="content_main">
+         <$wcmListStart("Content")$>
+         <$wcmListIndex = 0$>
+         <$wcmListNumRows = wcmListRowCount()$>
+         <$loopwhile wcmListIndex < wcmListNumRows$>
+         <$strTitle=wcmListElement("Title", wcmListIndex)$>
+         <$strSummary=wcmListElement("Summary", wcmListIndex)$>
+         <$strBody=wcmListElement("Body", wcmListIndex)$>
+         <$if strLength(strTrimWs(strTitle)) gt 0$>
+         <h2><$wcmListElement("Title", wcmListIndex)$></h2>
+         <$endif$>
+         <$if strLength(strTrimWs(strSummary)) gt 0$>
+         <h3><$wcmListElement("Summary", wcmListIndex)$></h3>
+         <$endif$>
+         <$wcmListElement("Body", wcmListIndex)$>
+         <$wcmListIndex = wcmListIndex + 1$>
+         <$endloop$>
+         <$wcmListEnd("Content")$>
+      </div>
+      <div class="clear"></div>
+      <$ blockName = "Block1" $>
+      <$include rgtmp_half_width_blocks_r6_hdb_inc$>
+      <$ blockName = "Block2", blockTitle = "Block2_Title" $>
+      <$include rgtmp_full_width_blocks_r6_hdb_inc$>
+	  </div>
+<@end@>							
+
+
+      <!--*************************** FULL BLOCK TEMPLATE****************
+         *********************************************************** -->
+ <@dynamichtml full_bloc_template_hdb@>
+      <$wcmListStart(blockName)$>
+      <$wcmListIndex = 0, primarywidget = 0$>
+      <$wcmListNumRows = wcmListRowCount()$>
+      <$fullBlockTitle = wcmElement(blockTitle)$>
+      <$if strLength(strTrimWs(fullBlockTitle)) gt 0$>
+      <div class="row">
+         <div class="col col-6">
+			<div class="box">
+            <h2><$ fullBlockTitle$></h2>
+            <$loopwhile wcmListIndex LT wcmListNumRows$>
+            <$ temp = dDocName, adDocName = '', aTitle = '', aSummary = '', aLink = '', friendlyURL = '' $>
+            
+               <$ widgetXML= wcmListElement("Widget", 0)$>
+               <$if strLength(widgetXML) GT 0$>
+               <$crXmlToResultSet(widgetXML, "widgetRS") $>
+               <$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+               <$include widget_shortcuts_generic_display$>
+               <$ aTitle = shortcutTitle, aSummary = shortcutText $>
+               <$ aLink = '<a href="' & shortcutTarget & '">' & shortcutLink & '</a>' $>
+               <$else$>
+               <$if getValue("widgetRS", "#numRows") > 0 $>
+               <$inc("widget_" & getValue("widgetRS", "Name") & "_display" ) $>
+               <$endif$>
+               <$endif$>
+			   </div>
+               <$else$>
+               <$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+               <$ queryString = wcmListElement("Query", wcmListIndex)$>
+               <$if strLength(dataFileName) GT 0 $>
+               <$temp = dDocName, dDocName = dataFileName$>
+               <$executeService('DOC_INFO_BY_NAME')$>
+               <$if rsFirst('DOC_INFO') $>
+               <$ adDocName = DOC_INFO.dDocName$>
+               <$ aTitle = DOC_INFO.dDocTitle$>
+               <$ aSummary = DOC_INFO.xDescription$>
+               <$ friendlyURL = DOC_INFO.xUrlPageName $>
+               <$endif$>
+               <$ dDocName = temp$>
+               <$elseif strLength(queryString) GT 0 $>
+               <$ queryString = queryString & "
+               <AND>
+               xWebsiteObjectType 
+               <in>
+               `Data File`"$>
+               <$include set_query_string$>
+               <$ QueryText = queryString, LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+               <$executeService("SS_GET_SEARCH_RESULTS")$>
+               <$if rsFirst('SearchResults') $>
+               <$ aTitle = SearchResults.dDocTitle$>
+               <$ aSummary = SearchResults.xDescription$>
+               <$ friendlyURL = SearchResults.xUrlPageName $>
+               <$ adDocName = SearchResults.dDocName$>
+               <$endif$>
+               <$endif$>
+               <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+               <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+               <$ aTitle = contextStringTitle $>
+               <$endif$>
+               <$if strLength(aTitle) EQ 0 $>
+               <$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+               <$endif$>
+               <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+               <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+               <$ aSummary = contextStringSummary $>
+               <$endif$>
+               <$if strLength( aSummary) EQ 0 $>
+               <$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+               <$endif$>
+               <$ aLink = wcmListElement("Link", wcmListIndex)$>
+               <$ anImage = wcmListElement("Image", wcmListIndex)$>
+               <$endif$>
+			   <div class="box">
+               <$if strLength(aTitle) GT 0 $>
+               <h2><$ aTitle $></h2>
+               <$endif$>
+               <$if strLength(aSummary) GT 0 $>
+               <p><$aSummary$></p>
+               <$endif$>
+               <$if strLength(anImage) GT 0 $>
+               <$ anImage $>
+               <$endif$>
+               <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+               <$if strLength(friendlyURL) GT 0 $>
+               <$ aLink = ssLink(friendlyURL) $>
+               
+                 <a href="<$ aLink$>"><$lc('wwMore')$>....</a>
+         
+               <$elseif strLength(adDocName) GT 0 $>
+               <$ aLink = ssLink(adDocName) $>
+               <a href="<$ aLink$>"><$lc('wwMore')$>...</a>
+               <$endif$>
+               <$else$>
+               <p><$aLink$></p>
+               <$endif$>
+            </div>
+            <$if ((wcmListIndex+1)%3==0 and wcmListIndex!=0) or (wcmListIndex+1==wcmListNumRows)$>
+            <$endif$>
+            <$if wcmListIndex lt (wcmListNumRows-1)$>
+            <hr/>
+            <$endif$>
+            <$wcmListIndex = wcmListIndex + 1$>
+            <$endloop$>
+         </div>
+      </div>
+      <$endif$>
+      <$wcmListEnd(blockName)$>
+<@end@>
+   </body>
+</html>

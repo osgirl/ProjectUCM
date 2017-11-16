@@ -1,0 +1,310 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysWebApiComponent service
+</title>
+</head>
+<body>
+
+<@table HaysWebApiComponent_Services@>
+<table border=1><caption><strong>Scripts For Custom Services</strong></caption>
+<tr>
+	<td>Name</td><td>Attributes</td><td>Actions</td>
+</tr>
+ <tr>
+	<td>GET_APAC_OFFICE_STATE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>	
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:getApacOfficeStates:SystemDatabase,APAC_OFFICE_STATE,QGetApacOfficeState::null</td>
+</tr>
+ <tr>
+	<td>GET_OFFICE_DETAILS_API</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>			
+	 <td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:getOfficeDetails:SystemDatabase,OFFICE_DETAILS,QGetOfficeDetailswithSpec,QGetOfficeDetailsApi::null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_RESULTS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>			
+	 <td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null	
+	3:getOfficeResults:SystemDatabase,OFFICE_RESULTS::null</td>
+</tr>
+<tr>
+	<td>GET_LOCATIONID_DATA</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>			
+	 <td>3:getLocationIDdata:SystemDatabase,LOCATION_RESULTS,LocationDetailsQuery::null</td>
+	
+</tr>
+<tr>
+	<td>GET_SPECIALISMS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:getSpecialismList:IndividualsList::null</td>
+</tr>
+<tr>
+	<td>GET_OFFICE_SPECIALISMS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:getOfficeSpecialismList:SystemDatabase,officeSpecialismList,QGetOfficeSpecialismList::null</td>
+</tr>
+<tr>
+	<td>SEARCH_LOCATIONS_OLD</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:setSelect:::null   
+        3:getAllMatchingLocations:SystemDatabase,LOCATION_RESULT_LIST,GetLocations_Custom,GetMatchingLocations_PostCode_New,GetMatchingLocations_Name_For_Domain_New,GetMatchingLocations_PostCode_For_Domain_New::null</td>
+</tr>
+<tr>
+	<td>SEARCH_LOCATIONS_OLD_APAC</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:setSelect:::null
+	   5:GetLocations_Custom_APAC:LOCATION_RESULT_LIST_APAC:2:!csRevisionNoLongerExists</td>
+</tr>
+<tr>
+	<td>SEARCH_LOCATIONS_OLD_APAC_WITHLEVEL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:setSelect:::null
+	   5:GetLocations_Custom_APAC_WithLevel:LOCATION_RESULT_LIST_APAC:2:!csRevisionNoLongerExists</td>
+</tr>
+<tr>
+	<td>GET_LOCATION_LIST</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:searchLocations:LOCATION_RESULT_LIST::null</td>
+</tr>
+<tr>
+	<td>HAYS_WWLINKS_DETAIL</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:getHaysWorldWideLinks:HAYS_DATA::null</td>
+</tr>
+<tr>
+	<td>HAYS_CONTENT_DETAIL</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getDocumentContents:HAYS_DATA,QssSiteAddressesBySite::null</td>
+</tr>
+<tr>
+	<td>GET_HAYS_JOBCAND_DETAILS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>	  
+	<td>3:validateDocName:SystemDatabase,HAYS_DOC_INFO_INTERNAL,QJobCandDocRev,QJobCandDocRevAll::null
+		3:determineID:QdocInfo,DOC_INFO:mustExist:!csUnableToGetRevInfo2(dDocName)
+		5:QdocInfo:DOC_INFO:2:!csItemNotUpdated(dDocName)!csRevisionNoLongerExists
+		3:getHaysJobCandDetails:SystemDatabase,HAYS_DOC_INFO,HAYS_DATA,QJobCandDocRev,HAYS_DOC_INFO_INTERNAL:ignoreError:null
+		3:addSponsoredJobImageUrl:::null</td>		 
+</tr>
+<tr>
+	<td>GET_HAYS_JOBCAND_DETAILS_ALL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>	  
+	<td>3:validateDocName:SystemDatabase,HAYS_DOC_INFO_INTERNAL,QJobCandDocRevAll::null
+	3:determineID:QdocInfo,DOC_INFO:mustExist:!csUnableToGetRevInfo2(dDocName)
+		5:QdocInfo:DOC_INFO:2:!csItemNotUpdated(dDocName)!csRevisionNoLongerExists
+		3:getHaysJobCandDetails:SystemDatabase,HAYS_DOC_INFO,HAYS_DATA,QJobCandDocRev,HAYS_DOC_INFO_INTERNAL:ignoreError:null
+		3:addSponsoredJobImageUrl:::null</td>		 
+</tr>
+<tr>
+	<td>GET_HAYS_JOBCAND_MASTER</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>	  
+	<td>5:QJobCandDocRevAll:HAYS_SHORT_JOB_DETAILS:1:null
+	3:selectInfoMethod:::null</td>		 
+</tr>
+<tr>
+	<td>SEND_EMAIL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:sendEmail:::null</td>
+</tr>
+<tr>
+	<td>HAYS_API_GET_SEARCH_RESULTS</td>
+	<td>SearchService
+		33
+		StandardResults
+		null
+		null<br>
+		!csUnableToRetrieveSearchResults</td>
+	<td>3:apiValidateSearchParams:::null
+		3:setLocalValues:searchType,Hays::null
+		3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+		3:processApiSearchParameters:::null
+		3:getSearchResults::0:null
+		3:appendExtraSearchParameters:::null
+		3:addSponsoredJobImageUrl:::null
+		3:removeResultSetsForApi:::null</td>	
+</tr>
+<tr>
+	<td>HAYS_API_CONTENT_SEARCH</td>
+	<td>SearchService
+		33
+		StandardResults
+		null
+		null<br>
+		!csUnableToRetrieveSearchResults</td>
+	<td>3:setLocalValues:searchType,Hays::null
+		3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+		3:processContentApiSearchParameters:::null
+		3:getSearchResults::0:null		
+		3:removeResultSetsForApi:::null
+		3:postProcessContentSearch:::null</td>	
+</tr>
+<tr>
+	<td>HAYS_API_REGISTER_VACANCY</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:webApiRegisterVacancy:::null</td>
+</tr>
+<tr>
+	<td>HAYS_API_JOB_WC_SEARCH</td>
+	<td>SearchService
+		33
+		StandardResults
+		null
+		null<br>
+		!csUnableToRetrieveSearchResults</td>
+	<td>3:setLocalValues:searchType,Hays::null
+		3:processContentApiSearchParameters:::null
+		3:getSearchResults::0:null
+		3:appendExtraSearchParameters:::null
+		3:removeResultSetsForApi:::null
+		3:postProcessContentSearch:::null</td>	
+</tr>
+<tr>
+	<td>HAYS_API_REQ_CAN_INFO</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:requestCandidateInformation:::null</td>
+</tr>
+<tr>
+	<td>HAYS_API_MASTER_SEARCH_RESULTS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:selectSearchMethod:::null</td>
+</tr>
+<tr>
+	<td>HAYS_API_GOOGLE_SEARCH_RESULTS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		!csUnableToRetrieveSearchResults</td>
+	<td>3:getLocaleDetails:SystemDatabase,LOCALE_DETAILS,QGetLocaleDetails::null
+	3:apiValidateSearchParams:::null
+		3:processGoogleSearch:::null</td>	
+</tr>
+<tr>
+	<td>GET_HEADER_FOOTER_CONTENT</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getHeaderFooterContent:DOC_INFO,QssSiteAddressesBySite:0:null</td>
+</tr>
+<tr>
+	<td>GET_USEFUL_LINKS_CONTENT</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getUsefulLinksContent:DOC_INFO,QssSiteAddressesBySite:0:null</td>
+</tr>
+</table>
+<@end@>
+</body></html>

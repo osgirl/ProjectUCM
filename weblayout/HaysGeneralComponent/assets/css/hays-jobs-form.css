@@ -1,0 +1,40 @@
+@charset "UTF-8";
+/* CSS Document */
+
+/*-----------------------------------------*/
+/*	 	   Searchresults + jobdetails      */
+/*-----------------------------------------*/
+/* Job table header */
+
+#haysjobsform  {font-size: 0.75em; border: 1px solid #e9e9e9; background: url("../images/bg-tab-on.gif") repeat-x scroll 0 0 transparent;}
+
+#haysjobsform table { margin: -14px 0px 0px 0px !important;}
+
+#haysjobsform tr.MicroHeader th 	{ color:#fff; text-align:left; line-height:1.2em; font-size: 1.1em !important; font-weight:bold; padding:10px; color: #101010; }
+
+/* Job row */
+#haysjobsform  tr.MicroItem 		{ width: 70%; line-height:1.2em;}
+#haysjobsform  tr.MicroItem td 		{ padding:10px; text-align:left; border-top: 1px solid #d6d6d6; background-color:#FFF;   }
+#haysjobsform  tr.MicroAltItem 		{ width: 30%; line-height:1.2em;}
+#haysjobsform  tr.MicroAltItem td 	{ padding:10px; text-align:left; border-top: 1px solid #d6d6d6; background-color:#FFF; }
+
+/* Job links */
+#haysjobsform table.Micro a, #haysjobsform table.Micro a:link, #haysjobsform table.Micro a:visited 		{ color: #009fda; text-decoration: none; padding-left: 14px; background-image:url(../images/bullet-nav-chev.gif); background-repeat:no-repeat; background-position:center left; }
+#haysjobsform table.Micro a:hover, #haysjobsform table.Micro a:focus 									{ color: #009fda; text-decoration: underline; padding-left: 14px; background-image:url(../images/bullet-nav-chev-over.gif); background-repeat:no-repeat;  background-position:center left;}
+
+/* Hide 1 of 1 jobs text below table */
+#haysjobsform p.Micro { font-size:inherit; background-color:#f2f2f2; padding: 10px; margin: 0px !important; }
+
+/* Job titles */
+#haysjobsdetails .title { padding:20px 0px 10px 0px!important; margin:-10px 0 0 0px; color:#009fda; font-size:1.4em!important; font-weight: 300 !important; } 
+
+/* Job details bulletpoints */
+#haysjobsdetails p { margin: 0 0 10px 0;}
+#haysjobsdetails .recordInfo { font-size: .75em;}
+#haysjobsdetails .recordInfo li { line-height:18px; list-style:square; list-style-type:square; list-style-position:outside; margin:0 0 5px 10px; }
+
+/* Applylinks */
+#haysjobsdetails .applylinks { font-size: 1.1em; text-transform:uppercase; padding:5px 9px!important; background:#009fda; color:#fff!important; text-decoration:none!important; margin:20px 10px 0 0; font-weight: normal; position:relative; display:inline-block; }
+#haysjobsdetails .applylinks:hover { background:#002776; }
+
+

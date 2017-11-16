@@ -1,0 +1,84 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />
+                </TD>
+              </TR>
+              <TR>
+                <TD vAlign=top width="auto" height=0>
+	          <$site=strSubstring(SiteLocale,strIndexOf(SiteLocale,"-")+1)$>
+		   <$if strEqualsIgnoreCase(site,"GB")$>
+                 <$siteLabel="hays.co.uk"$>
+			<$elseif strEqualsIgnoreCase(site,"US")$>
+				<$siteLabel="hays-us.com"$>	
+		   <$else$>
+		   <$siteLabel="hays."& strLower(isoCountryCode)$>
+		   <$endif$>
+		   <strong><font size="3" face="Arial" color="#009FDA"><a href="<$websiteURL$>" style="text-decoration:none"><$siteLabel$></a></font></strong>
+		  </TD>
+              </TR>
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+		       <p style="FONT-SIZE: 12px; FONT-FAMILY: Arial;">
+                <$lc("wwSENQuestionaireFormText1")$>: <$name$><br/><br/>
+				<$lc("wwSENQuestionaireFormText2")$>: <$emailaddress$><br/><br/>
+				<$lc("wwSENQuestionaireFormText3")$>: <$telephoneno$><br/><br/>
+				<$lc("wwSENQuestionaireFormText4")$>: <$currentsituation$><br/><br/>
+				<$lc("wwSENQuestionaireFormText5")$>: <$startdate$><br/><br/>
+				<$lc("wwSENQuestionaireFormText6")$>: <$availableforwork$><br/><br/>
+				<$lc("wwSENQuestionaireFormText7")$>: <$travelareas$><br/><br/>
+				<$lc("wwSENQuestionaireFormText8")$>: <$shoolsetting$><br/><br/>
+				<$lc("wwSENQuestionaireFormText9")$>: <$senExperaince$><br/><br/>
+				<$lc("wwSENQuestionaireFormText10")$>: <$additional_experiance$><br/><br/>
+				<$lc("wwSENQuestionaireFormText11")$>: <$sen_qualification$><br/><br/>
+				<$lc("wwSENQuestionaireFormText12")$>: <$age_range$>
+			<img src="http://www9.hays.com/eshots/EMAILMAKER/H_Corporate.jpg" alt="H" width="165" height="166" align="right" />
+			<br/><br/><br/><br/>
+			<$lc("wwHaysMailSignatureText1")$><br/>
+			<$lc("wwHaysMailSignatureText2")$>
+			</p>
+			<p style="FONT-SIZE: 10; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+	        </TD></TR>
+			<TR>
+			<TD COLSPAN="2">
+			<$lc("wwHaysMailFooterMessage","@")$>
+			</TD>
+			</TR>
+			</TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>	
+			

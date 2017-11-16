@@ -1,0 +1,102 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+		<$SiteLocale = #active.Locale$>
+		<$ exec setLocale(SiteLocale) $> 
+		<$siteLabel="",websiteURL=""$>	
+				<$dSiteId = siteId$>
+				<$executeService("SS_GET_ALL_SITE_DOMAINS")$>
+				<$loop DomainMap$>			
+					<$if strEqualsIgnoreCase(siteId,DomainMap.ssSiteId)$>				
+						<$if DomainMap.ssIsDefault == 1$>
+							<$siteLabel=DomainMap.ssKey$>
+							<$websiteURL=DomainMap.ssKey$>
+						<$endif$>				
+					<$endif$>
+				<$endloop$>
+				<$siteLabel=strReplace(siteLabel,"testsg.","")$>
+				<$siteLabel=strReplace(siteLabel,"www.","")$>
+				<$websiteURL="http://"&websiteURL$> 
+
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www.hays.com.au/cs/groups/public/documents/document/hays_324117.png" alt="Hays: You're receiving this as you're subscribed to our communications" width="235" height="30" />
+		  <TD valign="top" align="right" width="40%"><a href="http://www.linkedin.com/company/hays" target="_blank" style="text-decoration:none;"><img src="http://www.hays.co.uk/cs/groups/hays_common/@uk/documents/webassets/hays_1585285.png" width="24" height="25" style="display:block; font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: bold; color:#002776; text-transform: uppercase; line-height: 25px;" border="0"alt="linkedin"/></a></TD>
+
+                </TD>
+              </TR>
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+	<tr>
+<td class="em_font24" valign="middle" style="font-family: Arial, sans-serif; font-size: 33px; font-weight: bold; color:#002776; text-transform:uppercase; line-height:35px; padding-left:29px;">
+
+<$lc("wwSGEmailHeadingText")$>
+
+</td>
+</tr>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+		       <p style="FONT-SIZE: 12px; FONT-FAMILY: Arial;">
+ 
+			
+			<$lc("wwSGName")$>: <$sanitizeHtml(sg_name)$><br/><br/>
+			<$lc("wwSGTitle")$>: <$sanitizeHtml(sg_title)$><br/><br/>
+			<$if not strEqualsIgnoreCase(industry,"")$>
+			<$lc("wwSGAreaOfExpertiseLabel")$>: <$sanitizeHtml(industry)$><br/><br/>
+			<$endif$>
+			<$lc("wwSGOrganisation")$>: <$sanitizeHtml(sg_organisation)$><br/><br/>
+			<$lc("wwSGContactEmail")$>: <$sanitizeHtml(sg_email_id)$><br/><br/>
+			<$lc("wwSGState")$>: <$sanitizeHtml(sg_state)$><br/><br/>
+			<br/>
+			<br/>
+			
+			
+			
+			<img src="http://www9.hays.com/eshots/EMAILMAKER/H_Corporate.jpg" alt="H" width="165" height="166" align="right" />
+			<a href="<$websiteURL$>" style="text-decoration:none"><strong>
+					<font size="3" face="Arial" color="#009fda"><$siteLabel$>
+					</font></strong></a>
+			<br/><br/><br/><br/>
+			</p>
+			
+			
+			
+			<p style="FONT-SIZE: 8pt; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+			</TD></TR>
+			</TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>
+				
+			
+
+                     

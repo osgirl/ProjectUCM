@@ -1,0 +1,298 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>SET MICROSITE PROPERTY</title>
+		<$defaultPageTitle = "HAYS_MICROSITE_PROP_FORM"$>
+		<$include std_html_head_declarations$>
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<!--BAU REL-4 21118-->
+				<$include include_jquery_js$>
+		<!--BAU REL-4 21118-->
+		<style>
+			
+			.on {}
+			.off {display:none;}		
+			
+		</style>
+	</head>
+	<body id="pg_3col" onload="onloadCopyForm()">
+	<$executeService('SS_GET_ALL_SITES_EX2')$>
+	
+	<script src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+	<script type="text/javascript">
+	
+		function onloadCopyForm()
+		{
+			document.getElementById("msid").selectedIndex = 0;			
+			document.getElementById("pname").value = "";
+			document.getElementById("pvalue").value = "";
+			document.getElementById("statauslabel").innerHTML = "";
+			getDBSiteIds();
+		}
+		function validateCopyForm() 
+		{
+			var message="";
+			if(document.getElementById("msid").value=="")
+		   {
+				message=message+"Please select a Microsite.\n";
+				
+			}          
+			if(document.getElementById("pname").value=="")
+		   {
+				message=message+"Please enter Property Name.\n";
+				
+			}
+			if(document.getElementById("pvalue").value=="")
+		   {
+				message=message+"Please enter Property Value.\n";
+				
+			}			
+			if(message!="")
+		   {
+				alert(message);
+				return false;
+			}
+			else
+			{
+				setProperty();
+				return true;
+			}
+  
+		}
+	
+		$('#show').hide();
+		$('#ontGroup_exist').click(function() {
+			$('#show').show();
+		});
+		$('#ontGroup_new').click(function() {
+			$('#show').hide();
+		});
+		
+
+		function setProperty()
+		{
+				var m_siteid = document.getElementById("msid").value;
+				var m_pname = document.getElementById("pname").value;
+				var m_pvalue = document.getElementById("pvalue").value;
+			
+				var url = "?IdcService=SS_SET_SITE_PROPERTY&IsSoap=1&Auth=Internet&siteId="+m_siteid + "&property=" + m_pname + "&value=" + m_pvalue + "&idcToken=<$idcToken$>";
+				//alert(url);
+				var loader = dhtmlxAjax.getSync(url);
+				var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				var message = "Property updated successfully."
+				if( list != null) 
+				{
+					for(var i=0;i<list.length;i++) 
+					{
+						if(list[i].attributes[0].value == "StatusCode")
+						{
+							message = "Some error occured. Please try again."
+						}
+						
+					}
+					document.getElementById("statauslabel").innerHTML = message;
+				}
+			
+			//getSiteInfo(siteId);
+		}
+
+		function getDBSiteIds()
+		{    
+		    document.getElementById("msid").options.length = 0;
+			var lOldSite = document.getElementById("msid");
+			var selectOptn = document.createElement("OPTION");
+			selectOptn.text = 'Please Select...';
+			selectOptn.value = '';
+			lOldSite.options.add(selectOptn);
+			document.getElementById("pname").value="";
+			document.getElementById("pvalue").value="";
+					
+			var serviceUrl="";
+			var serviceLoader="";
+			var serviceList="";		
+			serviceUrl = "?IdcService=GET_SITEID_UK_HAYS&IsSoap=1";
+			serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+			serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			//alert("test length= "+serviceList.length);
+			var lCount=0;
+			var strArray=[];
+			var strArrayDB=[];
+			var strArrayDiff=[];
+			var lSiteId="";
+			<$loop SiteIds$>
+				lSiteId='<$SiteIds.siteId$>';
+				strArray[lCount]=lSiteId;
+				lCount++;
+			<$endloop$>
+			if( serviceList != null) 
+			{ 
+				for(var i=0;i<serviceList.length;i++)
+				{
+					if (serviceList[i].firstChild){
+											
+					//alert("test = "+serviceList[i].nodeValue);
+					strArrayDB[i]=serviceList[i].firstChild.nodeValue;
+					}
+				}
+			}
+			strArrayDiff=arr_diff(strArrayDB,strArray);
+			if(strArrayDiff.length>0)
+			{				
+				for(var j=0;j<strArrayDiff.length;j++)
+				{
+					var lSiteIdd=strArrayDiff[j];
+					<$loop SiteIds$>
+					 if(lSiteIdd == '<$SiteIds.siteId$>')
+						{
+							var optn = document.createElement("OPTION");
+							optn.text = '<$SiteIds.label$>';
+							optn.value = '<$SiteIds.siteId$>';
+							lOldSite.options.add(optn);
+						}
+						
+					<$endloop$>
+				}
+			}
+			//getAllLocalesForMicrosite();
+			
+			
+		}
+		function getAllLocalesForMicrosite()
+		{
+			document.getElementById("microlocale").options.length = 0;
+			var serviceUrl="";
+			var serviceLoader="";
+			var serviceList="";
+			var lLocales=document.getElementById("microlocale");
+			var selectOptn = document.createElement("OPTION");
+				selectOptn.text = 'Please Select...';
+				selectOptn.value = '';
+				lLocales.options.add(selectOptn);
+			serviceUrl = "?IdcService=GET_ALL_LOCALES&IsSoap=1";
+			serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+			serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				
+			if( serviceList != null) 
+			{
+				for(var i=0;i<serviceList.length;i++)
+				{
+					if(serviceList[i].attributes[0].value == "SITELOCALE")
+					{
+						var optn = document.createElement("OPTION");
+						optn.text = serviceList[i].firstChild.nodeValue;
+						optn.value = serviceList[i].firstChild.nodeValue;
+						lLocales.options.add(optn);
+					}
+				}
+			}
+		}
+		function arr_diff(a1, a2)
+		{
+		  var diff = $(a1).not(a2).get();
+		  var a=[], diff=[];
+		  for(var i=0;i<a1.length;i++)
+			a[a1[i]]=true;
+		  for(var i=0;i<a2.length;i++)
+			if(a[a2[i]]) delete a[a2[i]];
+			else a[a2[i]]=true;
+		  for(var k in a)
+			diff.push(k);
+		  return diff;
+		}
+		function getSiteInfo(siteId)
+		{
+		    document.getElementById("ProjectdDocName").value="";
+			document.getElementById("ProjectdDocId").value="";
+			var url = "?IdcService=SS_GET_SITE_INFO&IsSoap=1&siteId="+siteId;
+			var loader = dhtmlxAjax.getSync(url);
+			var Attrlist = loader.xmlDoc.responseXML.getElementsByTagName("idc:row")[0].attributes;
+			if( Attrlist != null) 
+			{
+				for(var j=0;j<Attrlist.length;j++)
+				{
+		
+					if(Attrlist[j].nodeName == "dID")
+					{
+						
+						document.getElementById("ProjectdDocId").value=Attrlist[j].nodeValue;
+					}
+					if(Attrlist[j].nodeName == "dDocName")
+					{
+						
+						document.getElementById("ProjectdDocName").value=Attrlist[j].nodeValue;
+					}
+				}
+				
+			}					
+		}
+		function getDomainForLocale(lLocale)
+		{
+			document.getElementById("newsitedomain").value="";
+			var url = "?IdcService=GET_DOMAIN_FOR_LOCALE&IsSoap=1&siteLocale="+lLocale;
+			var loader = dhtmlxAjax.getSync(url);
+			var Attrlist = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			if( Attrlist != null) 
+			{
+				for(var j=0;j<Attrlist.length;j++)
+				{
+					if(Attrlist[j].attributes[0].value == "DOMAINID")
+					{
+						document.getElementById("newsitedomain").value=Attrlist[j].firstChild.nodeValue;
+					}
+				}
+			}
+		}
+		function extractValue(element) 
+		{
+			var value =  element.firstChild;
+			if( value != null)
+				value = value.nodeValue;
+			else value = "";
+			return value;
+		}
+			  
+	</script>
+		<$include std_page_begin$>
+		<div id="ont">
+			<h2>SET MICROSITE PROPERTY</h2>
+	
+				<table style="width:95%;">
+					<thead>
+						<tr>
+						<th >* All fields are mandatory.</th>
+						</tr>
+						<tr>
+							<th><label for="msid"><em>* </em>MicroSite Id:</label></th>
+							<th>
+								<select id="msid"  name="msid" onChange="" STYLE="width: 230px"/>
+								<option value="" name="msid">Please Select...</option>								
+							</th>
+						</tr>						
+						<tr>
+							<th><label for="pname"><em>* </em>Property Name:</label></th>
+							<th><input type="text" value="useNewHeadTag"  class="mandatory" id="pname" name="pname" STYLE="width: 230px"/></th>
+						</tr>						
+						<tr>
+							<th><label for="pvalue"><em>* </em>Property Value:</label></th>
+							<th><input type="text"  value="true" class="mandatory" id="pvalue" name="pvalue" STYLE="width: 900px"/></th>
+						</tr>
+						<tr>
+							<th colspan=2><label id="statauslabel"></label></th>
+							
+						</tr>
+						
+					</thead>
+				</table>
+				<table class="no_border">
+					<tfoot>
+						<tr>
+							<td></td>
+							<td>	<button onclick="onloadCopyForm()">RESET</button><button onclick="validateCopyForm()">UPDATE PROPERTY</button></td>
+						</tr>
+					</tfoot>
+				</table>
+		</div>
+		<$include std_page_end$>
+	</body>
+</html>

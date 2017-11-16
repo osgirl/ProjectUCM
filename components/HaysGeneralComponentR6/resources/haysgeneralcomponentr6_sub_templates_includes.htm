@@ -1,0 +1,3622 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponentR6 htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<!--added by devendra on 26/05/2011 start-->
+
+<@dynamichtml home_job_search_inc@>
+<$contentType="Jobs"$>
+<$searchSectionName = 'jobs-search' $>
+<!--$advSearchTxt=lc('wwHomePageAdvJobSrch')$-->
+<$liveJobs=eval('<$include getNumLiveJobs_inc$>')$>
+<!--added for Rel 8.0 Home Page Search Widget -->
+<$include apac_country_check_inc$>
+<$include google_search_enabled_countries$>
+<$if isAPACCountry EQ 1$>
+	<$formName='home_search_jobs_apac'$>
+	<$dialog='jobs_dialog'$>
+	<$if isGoogleSearch EQ 1$>
+	<$include home_job_candidate_search_google_apac_inc$>	
+	<$else$>
+	<$include home_job_candidate_search_apac_inc$>
+	<$endif$>
+<$else$>
+	<$formName='home_search_jobs'$>
+	<$dialog='jobs_dialog'$>
+	<$if isGoogleSearch EQ 1$>
+	<$include home_job_candidate_search_google_inc$>
+	<$else$>
+	<$include home_job_candidate_search_inc$>
+	<$endif$>
+<$endif$>
+<!--end Rel 8.0 -->
+
+ <!--$include home_SpecialismList$--> 
+<@end@>
+
+<@dynamichtml home_candidate_search_inc@>
+
+<$contentType="Candidates"$>
+<$searchSectionName = 'candidates-search' $>
+<!--$advSearchTxt=lc('wwHomePageAdvCandidateSrch')$-->
+<!--added for Rel 8.0 Home Page Search Widget -->
+<$include apac_country_check_inc$>
+<$if isAPACCountry EQ 1$>
+	<$formName='home_search_cand_apac'$>
+	<$dialog='cand_dialog'$>
+	<$include home_job_candidate_search_apac_inc$>
+<$else$>
+	<$formName='home_search_cand'$>
+	<$dialog='cand_dialog'$>
+	<$include home_job_candidate_search_inc$>
+<$endif$>
+<!--end Rel 8.0 -->
+ <!--$include home_SpecialismList$-->
+<@end@>
+
+<@dynamichtml home_job_candidate_search_google_inc@>
+
+<$locale = #active.SiteLocale$>
+<$temp2 = ""$>
+<$include search_form_home_google_js_inc$>
+        	<form id="<$formName$>" class="home_search_form hays_form rc_white" action="<$lc('wwGoogleSearchAction')$>" >								
+				<div class="left_search">
+					<label for="<$formName$>q" class="access"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+					<input id="<$formName$>q" class="textbox require_group" type="text" name="q" autocomplete="off"  value="<$#active.q$>"/>
+				</div>
+				<div class="right_search">
+					<label for="<$formName$>locationToSearch" class="access"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+					<input type="text" name="locationToSearch" id="<$formName$>locationToSearch" value="<$#active.locationToSearch$>" class="textbox require_group"/>					
+					
+				</div>
+				
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+				
+				<div id="<$formName$>_error"></div>
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+				<$endif$>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+					<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+					<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+					<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+					<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+					<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+					<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+					<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+					<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+					<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+					<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+					<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" value="<$#active.locale$>"/>
+					<$include cross_country_enabled_countries$>
+					<$if isCrossCountry ne 1$>
+					<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+					<$endif$>
+					<input type="hidden" name="sort" value="date:D:L:d1"/>
+					<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+			<$if isFalse(isProjectSEnabled)$>
+				<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$><!-- Release 7 [Hide search only in job title]-->
+				<$else$>
+					<div class="extra_search1" style="width: 150px;">
+						<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" 
+						id="<$formName$>isOnlyJobTitle" value= 
+						"<$#active.isOnlyJobTitle$>"/>
+						<label for="<$formName$>isOnlyJobTitle">
+						<$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+				<$endif$>
+			<$endif$>
+				<div><input type="submit" class="button" value="<$lc('wwSearch')$>"></div>
+        	</form>
+<div id="<$dialog$>"></div>
+<div class="clear"></div>
+<@end@>
+
+<!--************         JAVA SCRIPT FOR search_form_home_js_inc SEARCH  FORM    **************
+***********************************************************************-->
+<@dynamichtml search_form_home_google_js_inc@>
+	<script type="text/javascript">	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() {
+	      if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+			$('input[name="q"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');
+			$('input[name="locationToSearch"]').watermark('<$lc('wwSearchJobCandLocationWaterMark')$>');        
+			var locationObject = null;
+
+			$("#<$formName$>").validate({
+				onkeyup: false,
+				groups: {
+			        jobsearchGroup: "q locationToSearch" 
+               },
+               submitHandler: function(form) {					
+					
+					var locationMap1 = $("#<$formName$>locationMap").attr('value');
+					$.watermark.hideAll();
+					
+					if ((<$formName$>locationMap != 'bypass' && <$formName$>locationMap != null)) {
+						if (<$formName$>locationMap != null) {
+									var locationObject = <$formName$>locationMap;
+									var locationValue = $("#<$formName$>locationToSearch").attr('value');
+									
+							}
+						
+						var locationDescr = "LOCATION_DESC";
+						   jQuery.each(locationObject,
+							   function(i, val) {
+									   if (locationValue.toLowerCase() == val[locationDescr].toLowerCase() && locationValue.length == val[locationDescr].length) {
+										   $('#<$formName$>level').attr('value', val.LEVEL_NO);
+										   $('#<$formName$>ne_longitude').attr('value', val.NE_LONGITUDE);
+										   $('#<$formName$>ne_latitude').attr('value', val.NE_LATITUDE);
+										   $('#<$formName$>location_id').attr('value', val.LOCATION_ID);
+									   }
+							   }
+						   );
+					 } 					
+					
+					var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');		
+				   if(isOnlyJobTitleValue)
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','Y');	
+						//$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+						//$('input[name=job_keywords]').attr('value','');	
+						//$('input[name=job_title_ref]').attr('value','');				
+						
+				   }
+				   else
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','N');	
+						//$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+						//$('input[name=job_keywords]').attr('value',document.getElementById("<$formName$>_title").value);	
+						//$('input[name=job_title_ref]').attr('value',document.getElementById("<$formName$>_title").value);	
+						
+				  }
+									
+					
+					/*var haysCategory=document.getElementById("<$formName$>x_search");
+				
+					
+				  if(haysCategory!=null && haysCategory!="")
+					{
+						var xSearch = $('#<$formName$>x_search').attr('checked');
+						 if(xSearch)
+						{	
+							$('input[name=job_category]').attr('value',document.getElementById("job_category").value);	
+						}
+						else
+						{
+							$('input[name=job_category]').attr('value',"");	
+						}
+					}*/
+					  
+				  
+				  // added later
+				  if((document.getElementById("<$formName$>ne_longitude").value=="") && (document.getElementById("<$formName$>ne_latitude").value==""))
+				 {
+					if(document.getElementById("<$formName$>locationMap")==null)
+					{
+						
+						<$formName$>locationMap=null;
+						
+					}
+				}
+					
+					var dialog_id ="<$dialog$>";		
+				
+				
+					<!--include job_location_autosuggest_inc-->
+					
+					
+					<$include job_location_homeSearch_google_autosuggest_inc$>
+					
+					
+					else {
+						$.watermark.hideAll();
+					
+						if ('<$searchWidgetSuffix$>'=='cerow1' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 4)  {
+							if(($('input[name=locationToSearch]',form).val() == "" || $('input[name=locationToSearch]').is('.watermark')) && (g_CountryCode=='BEL')) {
+							$('#<$formName$>radius').val('<$#env.DefaultRadius$>');
+							}
+							else {
+							$('#<$formName$>radius').val('0');
+							}
+						}
+						else if ('<$searchWidgetSuffix$>'=='' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 5)
+						{
+						  $('#<$formName$>radius').val('0');
+						}
+						
+						if(($('input[name=locationToSearch]',form).val() === "" || $('input[name=locationToSearch]').is('.watermark'))) {
+							$('input[name=ne_longitude]', form).val("");
+							$('input[name=ne_latitude]', form).val("");
+						}
+						var specialism_exists_check = "<$temp2$>";
+						
+						if (specialism_exists_check ==""){
+						
+						<$include google_home_validation$>
+						}
+						else{
+						
+						<$include google_r6_specialism_validation$>						
+						}
+						<$if isProjectSEnabled eq 1$>
+							<$searchUrl = portalUrl & #env.ProjectS_Search_Results$>
+							
+							var qVal = $('#<$formName$>q').val();
+							if(qVal == "")
+								qVal = "hays";
+							var locationHref = "<$searchUrl$>?q="+qVal;
+							if (specialism_exists_check !=""){
+								if (document.getElementById("<$formName$>x_search").checked == true ){
+									locationHref = locationHref+"&specialismId="+specialism_exists_check;
+								}
+							}
+							if($('#<$formName$>isOnlyJobTitle').attr('checked') == true){
+								locationHref = locationHref + "&isOnlyJobTitle=Y";
+							}
+							if (CrossCheck == 1){
+								locationHref = locationHref + "&CrossCountry="+jLocale;
+							}
+							location.href = locationHref+"&location="+$('input[name=locationToSearch]',form).val()+"&locationId="+$('input[name=location_id]',form).val()+"&locationLevel="+$('input[name=level]',form).val();
+						<$else$>
+							form.submit();
+						<$endif$>	
+					}
+				},
+				rules: {
+						q: {
+							require_from_group: [1, '.require_group']
+						} , 
+						locationToSearch: {
+							require_from_group: [1, '.require_group']
+						}
+				},
+				messages : {
+					q : '<$lc('wwSearchFormRequiredMessage')$>',					
+					locationToSearch : '<$lc('wwSearchFormRequiredMessage')$>'
+				},
+				errorPlacement: function(error, element) {
+					error.appendTo('#<$formName$>_error');
+				}
+			});
+			
+			<$include job_keywords_home_autocomplete_inc$>	
+			<$include job_location_google_autocomplete_inc$>	
+        		
+				/* commented , used for auto polulation of the key words field in home search page start
+				$("#<$formName$>job_title_key_ref").autocomplete({
+					source: function(request, response) {
+						$.ajax({
+							url: "<$HttpRelativeWebRoot$>idcplg",
+							dataType: "jsonp",
+							data: {
+								outputFormat: "json",
+								ResultCount: 12,
+								metadata: "xAutomatedTitle",
+								ontClass: "hays:JobFunction",
+								IdcService: "ONT_GET_INDIVIDUALS",
+								ontValue: request.term,
+								language: "<$LanguageCode$>",
+								country: "<$CountryCode$>",
+								parentTerm: $("#parentCatTerm").attr('value')
+							},
+							success: function(data) {
+								/*Added for Release 1.3*//*
+								<$formName$>jobtitleResultSet=data.result.resultsets.IndividualsList;
+								/*end Release 1.3*//*
+								response($.map(data.result.resultsets.IndividualsList, function(item) {
+									return {
+										label: item.label,
+										value: item.label,
+										id: item.id
+									}
+								}))
+							}
+						})
+					},
+					minLength: 2,
+					select: function(event, ui) {
+						$('#<$formName$>job_job_title').attr('value', ui.item.id );
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				}); end of comment*/
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+		
+		var <$formName$>locationMap = null;
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+
+<@end@>
+
+<@dynamichtml job_location_homeSearch_google_autosuggest_inc@>
+ var final_dialog_id="#"+dialog_id;
+ <$if strEquals(#active.varlocaljob,1)$>
+	<$formName$>locationMap = 'bypass';
+ <$endif$>
+	
+	 if (<$formName$>locationMap == null && $("#<$formName$>locationToSearch").attr('value') != '' && !$('#<$formName$>locationToSearch').hasClass('.watermark'))
+	{
+							<$formName$>locationMap = 'bypass';
+							$(final_dialog_id).dialog({ 
+								draggable: false,
+								modal: true,
+								resizable: false,
+								buttons: {
+									<$lc('wwDialogCloseButton')$> : function() {
+											$(final_dialog_id).dialog("destroy");
+											
+									},
+									<$lc('wwDialogSearchButton')$>: function() {
+										$.watermark.hideAll();
+										var geoCords = $('input:checked[name=google_location]').attr('value');
+										geoCords = geoCords.split(",");
+										$('#<$formName$>ne_longitude').attr('value', geoCords[0]);
+										$('#<$formName$>ne_latitude').attr('value', geoCords[1]);
+										$('#<$formName$>level').attr('value', geoCords[2]);
+										$('#<$formName$>location_id').attr('value', geoCords[3]);
+										$('#<$formName$>').submit();
+									}
+								},
+								title: '<$lc('wwLocationDialogTitle')$>',
+								minHeight: 200,
+								open: function() { 
+									$(final_dialog_id).html('<img src="/haysassets/HaysGeneralComponent/assets/css/img/loader.gif" class="loader" alt="Content is loading" />');
+									$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+									$('.ui-dialog-buttonpane button:contains(<$lc('wwDialogSearchButton')$>)').hide();   //Item 21 of MR2
+										$.ajax({
+											url: "<$HttpRelativeWebRoot$>idcplg",
+											dataType: "jsonp",
+											data: {
+												outputFormat: "json",
+												IdcService: "HAYS_GET_GEOCODES",
+												Town: $("#<$formName$>locationToSearch").attr('value'),
+												countryName: "<$countryNameISO$>",
+												LanguageCode: "<$LanguageCode$>"    //Item 78 MR 4.1
+											},
+											success: function(data) { 
+												var start = "<$lc('wwLocationFromGoogle')$><ul class='google'>";
+												var google_result = "";
+												jQuery.each(data.result.resultsets.LocationResults, function(i, val) {
+													google_result = google_result + "<li><div class='select_row'><input type='radio' ";
+													if (i == 0) {
+														google_result = google_result + "checked='checked'";
+													}
+													google_result = google_result + "value='"+val.NE_LONGITUDE+","+val.NE_LATITUDE+","+val.LEVEL_NO+","+val.LOCATION_ID+"' id='" +val.LOCATION_ID+i+"' name='google_location' \/><label for='"+val.LOCATION_ID+i+"'>"+val.LOCATION_DESC+"<\/label><\/div><\/li>";
+												});
+												var end = "<\/ul><\/fieldset>";
+												if (google_result.length < 5) {
+													$(final_dialog_id).html('<$lc('wwLocationNotFoundFromGoogle')$>');
+												}
+												else {
+													$(final_dialog_id).html(start + google_result + end);
+													$('.ui-dialog-buttonpane button:contains(<$lc('wwDialogSearchButton')$>)').show();   //Item 21 of MR2
+												}
+											}
+										});
+								} 
+							});
+							return false;  
+					   }
+                  		   
+<@end@>
+
+<@dynamichtml job_keywords_home_autocomplete_inc@>
+$("#<$formName$>q").autocomplete({
+
+					/*source: ['london1','london2','london3'],*/
+					source: function(request, response) {
+						$.ajax({
+							url: "/suggest",
+							dataType: "jsonp",
+							data: {
+									outputFormat: "json",
+									q: request.term,
+									max: 10,
+									site: "<$#env.GoogleSite$>",
+									client: "<$lc('GoogleClient')$>",
+									access: "p",
+									format: "rich"
+							},
+							success: function(data) {
+							response($.map(data.results, function(item) {
+									item.name=item.name.replace("%20", " ");
+									item.name=item.name.replace(/\+/g, ' ');
+									return {
+										label: item.name,
+										value: item.name
+									}
+								}))
+							}
+							})
+					},
+								
+						select: function(event, ui) {
+						$('#<$formName$>q').attr('value', ui.item.value );
+						
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+					
+				});
+
+<@end@>
+<!--Google Cloud Search autocomplete jobs keyword starts-->
+<@dynamichtml job_keywords_home_autocomplete_GCS_inc@>
+var sourceRecentHistory = [];
+var recentSearchTerm = getRecentSearchCookie("recentSearch");
+                if(recentSearchTerm != undefined){
+                    try {
+                        recentSearchTerm = decodeURIComponent(recentSearchTerm);
+                    } catch (ex) {
+                        console.log("Error in decoding");
+                    }
+                    if (recentSearchTerm) {
+                        var finalRS = [];
+                        finalRS = recentSearchTerm.split("|");
+                        sourceRecentHistory = finalRS;
+                    }
+                }
+var sourceBlank = [];
+$("#<$formNameGCS$>q").autocomplete({
+				/*source: ['london1','london2','london3'],*/
+					source: function(request, response) {
+							if(request.term.length == 0){
+								$(".ui-autocomplete").addClass("history").removeClass("suggestion");
+								response(sourceRecentHistory)
+								}
+							else if (request.term.length >0 && request.term.length < 3){
+								response(sourceBlank)}
+							else{
+							//console.log("hit recorder for GCS");
+							dataLayer.push({
+							'event':'googleAutoSuggest',
+							'GCJAutoSuggest':request.term
+							});
+								$(".ui-autocomplete").addClass("suggestion").removeClass("history");
+								$.ajax({
+										url: "/rest/getKeywords/"+encodeURI(request.term),
+										dataType: "json",
+										data: {
+											outputFormat: "json",
+											limit: 5,
+											completionType: 'JOB_TITLE',
+											siteLocale: "<$#active.SiteLocale$>"
+										},
+										success: function(data) {
+											console.log("trace1 : " + data.result.localdata.responseJson)
+											console.log("trace2 : " + data.result.resultsets.Suggestions)
+											if(data.result.localdata.StatusCode=="UC011")
+											response(sourceBlank)
+										    else  {
+												response($.map(data.result.resultsets.Suggestions, function(item) {
+												item.suggestion=item.Suggestion.replace("%20", " ");
+												item.suggestion=item.Suggestion.replace(/\+/g, ' ');
+												return {
+													label: item.Suggestion,
+													value: item.Suggestion
+												}
+												}))
+											}
+										},
+										error: function(jqXHR, textStatus, errorThrown){
+                                        $(".ui-autocomplete-loading").removeClass("ui-autocomplete-loading");
+                                        console.log("error handler!");
+                                        response(sourceBlank)
+                                        //response(sourceRecentHistory);
+                                    }
+
+										
+										})
+								}
+					},
+					minLength: 0,
+						select: function(event, ui) {
+						$('#<$formNameGCS$>q').attr('value', ui.suggestion );
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				}).focus(function() {
+    $(".sample1").addClass("test");
+	$(this).autocomplete("search", $(this).val());
+	
+});
+
+<@end@>
+<@dynamichtml job_location_google_autocomplete_GCS_inc@>
+            var autocomplete = new google.maps.places.Autocomplete($("#<$formNameGCS$>locationToSearch")[0], {});
+            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                var place = autocomplete.getPlace();
+                console.log(place.address_components);
+            });
+<@end@>	
+
+<!--Google Cloud Search autocomplete jobs keyword ends-->
+<@dynamichtml job_location_google_autocomplete_inc@>
+$("#<$formName$>locationToSearch").autocomplete({
+					/*source: ['london1','london2','london3'],*/
+					source: function(request, response) {
+						$.ajax({
+							url: "<$HttpRelativeWebRoot$>idcplg",
+							dataType: "json",
+							data: {
+								outputFormat: "json",
+								ResultCount: 12,
+								IdcService: "SEARCH_LOCATIONS",
+								location: request.term,
+								domainId: "<$#active.domainId$>",
+								locationColumn :"<$#active.locationColumn$>"
+							},
+							success: function(data) {		
+
+								<$formName$>locationMap = data.result.resultsets.LOCATION_RESULT_LIST;
+
+								
+
+
+								response($.map(data.result.resultsets.LOCATION_RESULT_LIST, function(item) {
+									return {
+										label: item.LOCATION_DESC,
+										value: item.LOCATION_DESC,
+										id: item.LOCATION_ID,
+										longitude: item.NE_LONGITUDE,
+										latitude: item.NE_LATITUDE,
+										level: item.LEVEL_NO
+									}
+								}))
+							}
+						})
+					},
+					minLength: 2,
+					select: function(event, ui) {
+						$('#<$formName$>level').attr('value', ui.item.level );
+						$('#<$formName$>ne_longitude').attr('value', ui.item.longitude );
+						$('#<$formName$>ne_latitude').attr('value', ui.item.latitude);
+						$('#<$formName$>location_id').attr('value', ui.item.id);
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				});
+<@end@>	
+
+<!--end of MR6 change - Amit Narula -->
+
+
+<@dynamichtml home_job_candidate_search_inc@>
+<$if #active.contentType like "Jobs"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$elseif #active.contentType like "Candidates"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+<$endif$>
+<$locale = #active.SiteLocale$>
+<$include search_form_home_js_inc$>
+        	<form id="<$formName$>" class="home_search_form hays_form rc_white" action="<$urlToSubmitTo$>">				
+				<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+				<!-- Rel 8.0 change -->
+				<$if strLength(searchWidgetSuffix) <= 0 $>
+				
+					<div class="extra_search2"><a href="<$ssNodeLink(searchSectionName, siteId)$>"><$lc('wwHomePageAdvSrch')$></a></div>
+        		<$endif$>
+				<!-- end -->
+				
+				<div class="left_search">
+					<label for="<$formName$>_title" class="access"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+					<input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref"  value="<$#active.job_title_key_ref$>"/>
+				</div>
+				<div class="right_search">
+					<label for="<$formName$>job_location" class="access"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+					<input type="text" name="job_location" id="<$formName$>job_location" value="<$#active.job_location$>" class="textbox require_group"/>
+				</div>
+				<div id="<$formName$>_error"></div>
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+					<$endif$>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+					<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+					<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+					<input type="hidden" id="<$formName$>radius" name="radius" value="<$if searchWidgetSuffix like 'cerow1'$><$if countryName like 'Belgium' or countryName like 'Hays Response BE'$><$#env.DefaultRadius$><$else$><$#env.DefaultCerowRadius$><$endif$><$else$><$#env.DefaultRadius$><$endif$>">
+					<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+					<input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+					<input type="hidden" id="parentCatTerm" name="parentCatTerm" value="<$parentCatTerm$>" />
+
+					<input type="hidden" value="SCORE" name="SortField">
+					<input type="hidden" value="Desc" name="SortOrder">
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					
+				<$if contentType like "Candidates"$>
+					<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$><!-- Release 7 [Hide search only in job title]-->
+						<$if strEqualsIgnoreCase(contentType,"Candidates") and (countryName like 'Hays Response MX'  or countryName like 'Hays Response BR' or countryName like 'Hays Response PT')$>
+						 <div class="extra_search1" style="width: 150px;">
+							<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" 
+							id="<$formName$>isOnlyJobTitle" value= 
+							"<$#active.isOnlyJobTitle$>"/>
+							<label for="<$formName$>isOnlyJobTitle">
+							<$lc('wwHomePageOnlySearchJobTitle')$></label>
+						</div>
+						<$endif$>
+					<$else$>
+						<div class="extra_search1" style="width: 150px;">
+							<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" 
+							id="<$formName$>isOnlyJobTitle" value= 
+							"<$#active.isOnlyJobTitle$>"/>
+							<label for="<$formName$>isOnlyJobTitle">
+							<$lc('wwHomePageOnlySearchJobTitle')$></label>
+						</div>
+					<$endif$>
+				<$endif$>
+				<div><input type="submit" class="button" value="<$lc('wwSearch')$>"></div>				 
+				<$if strEqualsIgnoreCase(contentType,"Jobs") and 
+				strLength(wcmElement("Link"))GT 0$>
+				<div class="googlesearch"><$wcmElement("Link")$></div>	
+				<$endif$>	
+        	</form>
+<div id="<$dialog$>"></div>
+<div class="clear"></div>
+<@end@>
+
+<!--start of MR6 - Amit Narula -->
+<@dynamichtml home_job_candidate_search_google_apac_inc@>
+
+	<$locale = #active.SiteLocale$>
+	<$domainId = #active.domainId$>
+	<$temp2 = ""$>
+	<$executeService("SEARCH_LOCATIONS_APAC")$>
+	<$include search_form_home_apac_google_js_inc$>
+	
+			
+        	<form id="<$formName$>" class="home_search_form apac_form hays_form rc_white" action="<$lc('wwGoogleSearchAction')$>" >				
+								
+				<div class="left_search">
+					<label for="<$formName$>q" class="access"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+					<input id="<$formName$>q" class="textbox require_group" type="text" name="q"  value="<$#active.q$>"/>
+				</div>
+				
+				<$if strEquals(contentType,"Candidates")$>
+					<$if domainId eq 22 OR domainId eq 23$>
+						<div class="right_search candidate location_multiselect">								
+					<$else$>
+						<div class="right_search asia location_multiselect">
+					<$endif$>
+					<div class="multiselect" >
+						<$include candidate_location_dropdown_inc$>	
+				<$else$>
+					<$if domainId eq 22 OR domainId eq 23$>
+						<div class="right_search oceania location_multiselect">
+					<$else$>
+						<div class="right_search asia location_multiselect">
+					<$endif$>
+						<div class="multiselect apac_google">
+							<$include job_location_dropdown_inc$>
+				<$endif$>
+                        <input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group "/>
+						<input name="location_set_apac" id="<$formName$>location_set_apac" type="hidden" value="" />
+					</div>
+				</div>
+				
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+				
+				<div id="<$formName$>_error"></div>	
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+					<$endif$>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+					<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+					<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+					<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+					<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+					<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+					<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+					<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+					<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+					<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+					<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+					<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+					<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+					<input type="hidden" name="sort" value="date:D:L:d1"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">			
+					<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+				<$if isFalse(isProjectSEnabled)$>
+					<div class="extra_search1" style="width: 150px;">
+					<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" id="<$formName$>isOnlyJobTitle" value="<$#active.isOnlyJobTitle$>"/>
+					<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>		
+				<$endif$>
+				<div><input type="submit" class="button" value="<$lc('wwSearch')$>"></div>
+				
+        	</form>
+<div id="<$dialog$>"></div>
+<div class="clear"></div>
+<@end@>
+
+<@dynamichtml job_location_dropdown_google_inc@>  
+ <ol> 
+	<$loopwhile (LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 3)$>					
+			<li class = "checkbox_row">
+				<input type="checkbox" name="location_group" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" value="xHaysLocation<$LOCATION_RESULT_LIST_APAC.LEVEL_NO$>:<$LOCATION_RESULT_LIST_APAC.LOCATION_ID$>"/>
+						
+						<label for="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$>"><$LOCATION_RESULT_LIST_APAC.LOCATION_DESC$></label>
+					
+						<$exec rsNext("LOCATION_RESULT_LIST_APAC")$>
+						<$if LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 4 $>
+						<ol>							
+							<$loopwhile (LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 4) $>									
+									<li>
+										<input type="checkbox" name="location_group" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" value="xHaysLocation<$LOCATION_RESULT_LIST_APAC.LEVEL_NO$>:<$LOCATION_RESULT_LIST_APAC.LOCATION_ID$>" />
+										
+										<label for="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$>"><$LOCATION_RESULT_LIST_APAC.LOCATION_DESC$></label>						
+										<$exec rsNext("LOCATION_RESULT_LIST_APAC")$>
+										<$if LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 5 $>
+										<ol>
+											<$loopwhile (LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 5)$>
+												<li>
+														<input type="checkbox" name="location_group" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" value="xHaysLocation<$LOCATION_RESULT_LIST_APAC.LEVEL_NO$>:<$LOCATION_RESULT_LIST_APAC.LOCATION_ID$>" />
+														
+														<label for="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$>"><$LOCATION_RESULT_LIST_APAC.LOCATION_DESC$></label>
+												<$exec rsNext("LOCATION_RESULT_LIST_APAC")$>
+												<$if LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 6 $>
+												<ol>										
+												
+												<$loopwhile (LOCATION_RESULT_LIST_APAC.LEVEL_NO eq 6)$>
+												
+												<li>
+													<input type="checkbox" name="location_group" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" value="xHaysLocation<$LOCATION_RESULT_LIST_APAC.LEVEL_NO$>:<$LOCATION_RESULT_LIST_APAC.LOCATION_ID$>" />
+													
+													<label for="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$>" id="<$formName$>job_location<$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$><$LOCATION_RESULT_LIST_APAC.#row$>"><$LOCATION_RESULT_LIST_APAC.LOCATION_DESC$></label>
+												<$exec rsNext("LOCATION_RESULT_LIST_APAC")$>
+												</li>
+												
+												<$endloop$>
+												
+												</ol>
+												<$endif$>
+												</li>
+												
+												<$endloop$>
+												
+												</ol>
+												<$endif$>
+												</li>
+												
+										<$endloop$>	
+											
+										</ol>
+										<$endif$>
+								</li>
+						 
+								<$endloop$>		
+                                  						
+							</ol>
+
+
+<@end@>
+
+<!-- End of MR6 - Amit Narula -->
+
+
+<!--added for APAC Home Page Search Widget Release 8.0 -->
+<@dynamichtml home_job_candidate_search_apac_inc@>
+<$locale = #active.SiteLocale$>
+<$domainId = #active.domainId$>
+<$executeService("SEARCH_LOCATIONS_APAC")$>
+<$include search_form_home_apac_js_inc$>
+<$if #active.contentType like "Jobs"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$elseif #active.contentType like "Candidates"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+<$endif$>
+        	<form id="<$formName$>" class="home_search_form apac_form hays_form rc_white" action="<$urlToSubmitTo$>">				
+				<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+				<!--Rel 8.0 change -->
+				<$if strLength(searchWidgetSuffix) <= 0 $>
+					<div class="extra_search2"><a href="<$ssNodeLink(searchSectionName, siteId)$>"><$lc('wwHomePageAdvSrch')$></a></div>
+        		<$endif$>
+				<!-- end -->
+				
+				<div class="left_search">
+					<label for="<$formName$>_title" class="access"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+					<input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref"  value="<$#active.job_title_key_ref$>"/>
+				</div>
+				
+				<$if strEquals(contentType,"Candidates")$>
+					<$if domainId eq 22 OR domainId eq 23$>
+						<div class="right_search candidate location_multiselect">								
+					<$else$>
+						<div class="right_search asia location_multiselect">
+					<$endif$>
+					<div class="multiselect" >
+						<$include candidate_location_dropdown_inc$>	
+				<$else$>
+					<$if domainId eq 22 OR domainId eq 23$>
+						<div class="right_search oceania location_multiselect">
+					<$else$>
+						<div class="right_search asia location_multiselect">
+					<$endif$>
+						<div class="multiselect">
+							<$include job_location_dropdown_inc$>
+				<$endif$>
+                        <input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+					</div>
+				</div>
+				<div id="<$formName$>_error"></div>	
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+					<$endif$>
+					
+					<input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+					<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+					<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+					
+					<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+					<input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+					
+					<input type="hidden" value="SCORE" name="SortField">
+					<input type="hidden" value="Desc" name="SortOrder">
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					
+					
+				<$if contentType like "Candidates"$>
+					<div class="extra_search1" style="width: 150px;">
+					<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" id="<$formName$>isOnlyJobTitle" value="<$#active.isOnlyJobTitle$>"/>
+					<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>				
+				<$endif$>
+				
+				<div><input type="submit" class="button" value="<$lc('wwSearch')$>"></div>
+				<div class="googlesearch"><$wcmElement("Link")$></div>
+        	</form>
+<div id="<$dialog$>"></div>
+<div class="clear"></div>
+
+<@end@>
+
+
+<!--start of MR6 change - Amit Narula -->
+<@dynamichtml hays_job_cand_search_form_r6@>
+
+<$include is_international_website$>
+   <$if strEquals(isInternationalWebsite,"1") $>
+     	<$include job_spec_search_form_oilgas$>
+    <$else$>
+
+<$include google_search_enabled_countries$>
+<$include check_nav_type$>
+<$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+
+
+<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+<$formName='Job_Search', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+
+<$locale = #active.SiteLocale$>
+
+<$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+
+<$parentCatTerm=""$>
+	<$if strLength(category) GT 0 $>
+		<$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $> 
+		
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		
+		<$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+		<$if subTerms like '[]'$>	
+			<$ subTerms = category $>
+			<$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+		<$elseif strLength(subTerms) GT 0 $>	
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$parentCatTerm=category$>
+			
+		<$endif$>
+		
+		<$temp2 = strReplace(category, 'hays:', '')$>
+		<$temp2 = strReplace(temp2, ',', '|xCategory:')$>
+		
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+	<$endif$>
+
+	
+<$include search_form_home_google_js_inc$>
+
+<div class="container_flex">
+<div>
+	<div class="search_widget_specialism">
+		<h2><$searchTitle$></h2>
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$lc('wwGoogleSearchAction')$>">
+				<div class="grid_q_40">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input id="<$formName$>q" class="textbox require_group" autocomplete="off" type="text" name="q" value="<$#active.q$>">
+					</div>
+				</div>
+				
+				
+				<div class="grid_q_40">
+					<div class="search_inner search_sml_pad">
+						<label class="access" for="<$formName$>locationToSearch"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+			<!--default location set for Local jobs-->
+						
+						<$if #active.localTownLocationId$>
+							<$locationToSearch=#active.Townlocation$>
+								<input id="<$formName$>locationToSearch" class="textbox require_group localjob" type="text" name="locationToSearch" value="<$#active.locationToSearch$>">
+						<$else$>
+							<input id="<$formName$>locationToSearch" class="textbox require_group" type="text" name="locationToSearch" value="<$#active.locationToSearch$>">
+						<$endif$>
+						<!--end-->
+					</div>
+				</div>
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+				
+				<div class="grid_q_20">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+			<!--<div id="<$formName$>_error"></div>-->
+				<div class="bg_blue" id="<$formName$>_error"></div>	
+				<div class="grid_q_40">
+				<$if isFalse(isProjectSEnabled)$>
+					<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$><!-- Release 7 [Hide search only in job title]-->
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					<$else$>
+						<div class="search_inner">
+							<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+							"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+							"isOnlyJobTitle">
+							<label for="<$formName$>isOnlyJobTitle">
+							<$lc('wwHomePageOnlySearchJobTitle')$></label>
+						</div>				
+					<$endif$>
+				<$endif$>
+				</div>
+				<$if strLength(category) GT 0 $>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							<input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked>
+							<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+						</div>
+					</div>
+					<$else$>
+						<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+							&nbsp;
+						<$else$>
+							<div class="grid_q_40">
+								<div class="search_inner search_sml_pad">
+								&nbsp;
+								</div>
+							</div>
+						<$endif$>	
+					<$endif$>				
+					
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			<!--hidden fields-->
+			
+			<$if #active.locationLevel$>	
+				<$level=#active.locationLevel$>
+				<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+			<$else$>
+				<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+			<$endif$>
+	
+			<!--default location id set for Local jobs-->
+			<$if #active.localTownLocationId$>		
+				<$id=#active.localTownLocationId$>
+				<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<$else$>
+				<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<$endif$>
+			
+			<$if #active.locationLatitude$>	
+				<$ne_latitude=#active.locationLatitude$>
+				<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<$else$>
+				<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<$endif$>
+			
+			<$if #active.locationLongitude$>	
+				<$ne_longitude=#active.locationLongitude$>
+				<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<$else$>
+				<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<$endif$>
+			
+			<!--end-->
+			
+			<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+			<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+			<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+			<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+			<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+			<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+			<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+			<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+			<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+			<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+			<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>		
+			<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+			<$include cross_country_enabled_countries$>
+			<$if isCrossCountry ne 1$>
+			<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+			<$endif$>
+			<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+			<input type="hidden" name="sort" value="date:D:L:d1"/>
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+		
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+<$else$>
+<$include check_nav_type$>
+
+<$if isEmployer eq 1$>
+	<$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+	<$formName='Job_Search', searchTitle=lc('wwCandidatesJobsSearchSpecialism_title')$>
+	<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+<$else$>
+	<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+	<$formName='Job_Search', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+	<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+<$endif$>
+<$locale = #active.SiteLocale$>
+
+<$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+<$parentCatTerm=""$>
+	<$if strLength(category) GT 0 $>
+		<$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+		<$if subTerms like '[]'$>	
+			<$ subTerms = category $>
+			<$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+		<$elseif strLength(subTerms) GT 0 $>	
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$parentCatTerm=category$>
+		<$endif$>
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+	<$endif$>
+
+
+<$include search_form_home_js_inc$> 
+<div class="container_flex">
+<div>
+	<div class="search_widget_specialism">
+		<h2><$searchTitle$></h2>
+		<$if strLength(searchWidgetSuffix) <= 0 $>
+				<div class="advanced_search">
+					<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+				</div>
+		<$endif$>
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$urlToSubmitTo$>">
+				<div class="grid_q_40">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>_title"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref" value="<$#active.job_title_key_ref$>">
+					</div>
+				</div>
+				<div class="grid_q_40">
+					<div class="search_inner search_sml_pad">
+						<label class="access" for="<$formName$>job_location"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+			<!--default location set for Local jobs-->
+						<$if #active.localTownLocationId$>
+							<$job_location=#active.Townlocation$>
+								<input id="<$formName$>job_location" class="textbox require_group localjob" type="text" name="job_location" value="<$#active.job_location$>">
+						<$else$>
+							<input id="<$formName$>job_location" class="textbox require_group" type="text" name="job_location" value="<$#active.job_location$>">
+						<$endif$>
+						<!--end-->
+					</div>
+				</div>
+				<div class="grid_q_20">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+			<!--<div id="<$formName$>_error"></div>-->
+				<div class="bg_blue" id="<$formName$>_error"></div>	
+				<div class="grid_q_40">
+				<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$><!-- Release 7 [Hide search only in job title]-->
+					<$if strEqualsIgnoreCase(contentType,"Candidates") and (countryName like 'Hays Response MX'  or countryName like 'Hays Response BR' or countryName like 'Hays Response PT')$>
+						<div class="extra_search1" style="width: 150px;  padding-left: 10px;">
+						<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" 
+						id="<$formName$>isOnlyJobTitle" value= 
+						"<$#active.isOnlyJobTitle$>"/>
+						<label for="<$formName$>isOnlyJobTitle">
+						<$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+					<$endif$>
+				<$else$>
+					<div class="search_inner">
+						<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+						"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+						"isOnlyJobTitle">
+						<label for="<$formName$>isOnlyJobTitle">
+						<$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>				
+				<$endif$>
+				</div>
+				<$if strLength(category) GT 0 $>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							<input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked>
+							<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+						</div>
+					</div>
+					<$else$>
+						<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+							<$if domainId eq 1 or domainId eq 6$>
+								<div class="googlegrid">
+									<$include googleSearchLink_inc$>
+								</div>
+							<$endif$>
+						<$else$>
+							<div class="grid_q_40">
+								<div class="search_inner search_sml_pad">
+								&nbsp;
+								</div>
+							</div>
+						<$endif$>	
+					<$endif$>				
+					
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			<!--hidden fields-->
+			
+			<!--default location id set for Local jobs-->
+			<$if #active.localTownLocationId$>		
+				<$id=#active.localTownLocationId$>
+				<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<$else$>
+				<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<$endif$>
+			
+			<$if #active.locationLatitude$>	
+				<$ne_latitude=#active.locationLatitude$>
+				<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<$else$>
+				<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<$endif$>
+			
+			<$if #active.locationLongitude$>	
+				<$ne_longitude=#active.locationLongitude$>
+				<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<$else$>
+				<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<$endif$>
+			
+			<$if #active.locationLevel$>	
+				<$level=#active.locationLevel$>
+				<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+			<$else$>
+				<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+			<$endif$>
+			
+			
+			<!--end-->
+			
+					
+			<input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+			<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+			<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+			<input type="hidden" id="<$formName$>radius" name="radius" value="<$if searchWidgetSuffix like 'cerow1'$><$#env.DefaultCerowRadius$><$else$><$#env.DefaultRadius$><$endif$>">
+			<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+			<input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+			<input type="hidden" id="parentCatTerm" name="parentCatTerm" value="<$parentCatTerm$>" />
+			<input type="hidden" value="SCORE" name="SortField">
+			<input type="hidden" value="Desc" name="SortOrder">
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+
+			<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+			
+				<$if strLength(subTerms) GT 0 $>
+					 <input type="hidden" name="job_category" id="job_category" value="<$subTerms$>" />
+				 <$endif$>			
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+
+<$endif$>
+<$endif$>
+<@end@>
+<!--end of MR6 change - Amit Narula -->
+<!-- added for release 8.0 -->
+<@dynamichtml hays_job_cand_search_form_apac_r6@>
+<$include check_nav_type$>
+<$include google_search_enabled_countries$>
+
+<$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+	<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+	<$formName='Job_Search_APAC', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+	<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+
+<$locale = #active.SiteLocale$>
+<$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+<$parentCatTerm=""$>
+		<$if strLength(category) GT 0 $>
+			<$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+			<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+			<$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+		<$if subTerms like '[]'$>	
+			<$ subTerms = category $>
+			<$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+		<$elseif strLength(subTerms) GT 0 $>	
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$parentCatTerm=category$>
+		<$endif$>
+		<$temp2 = strReplace(category, 'hays:', '')$>
+		<$temp2 = strReplace(temp2, ',', '|xCategory:')$>
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+	<$endif$>
+	
+	<$domainId = #active.domainId$>
+	<$executeService("SEARCH_LOCATIONS_APAC")$>
+	
+	
+<$include search_form_home_apac_google_js_inc$> 
+
+<div class="container_flex">
+<div>
+	<div class="search_widget_specialism">
+		<h2><$searchTitle$></h2>
+		
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$lc('wwGoogleSearchAction')$>" >
+				<div class="grid_q_40">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input id="<$formName$>q" class="textbox require_group" type="text" name="q" value="<$#active.q$>">
+					</div>
+				</div>
+				<div class="grid_q_40">
+						<$if strEquals(contentType,"Candidates")$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad candidate location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect" >
+									<$include candidate_location_dropdown_inc$>	
+								
+							<$else$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad oceania location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect apac_google" >
+									<$include job_location_dropdown_inc$>
+								
+							<$endif$>							
+						
+							<input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+							<input name="location_set_apac" id="<$formName$>location_set_apac" type="hidden" value="" />
+						</div>
+					
+					</div>
+				</div>
+				<div class="grid_q_20">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+			<!--<div id="<$formName$>_error"></div>-->
+				<div class="bg_blue" id="<$formName$>_error"></div>	
+				<div class="grid_q_40">
+				<$if isFalse(isProjectSEnabled)$>
+					<div class="search_inner">
+						<input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$#active.isOnlyJobTitle$>" name="isOnlyJobTitle">
+						<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+				<$endif$>
+				</div>
+				<$if strLength(category) GT 0 $>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							<input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked>
+							<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+						</div>
+					</div>
+					<$else$>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							&nbsp;
+						</div>
+					</div>
+				<$endif$>					
+				
+						
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			<!--hidden fields-->
+			
+			<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+			<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+			<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+			<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+			<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+			<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+			<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+			<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+			<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+			<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+			<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+			<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+			<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+			<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+			<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+			<input type="hidden" name="sort" value="date:D:L:d1"/>
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+			<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>			
+			
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+<$else$>
+<$if isEmployer eq 1$>
+	<$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+	<$formName='Job_Search_APAC', searchTitle=lc('wwCandidatesJobsSearchSpecialism_title')$>
+	<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+<$else$>
+	<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+	<$formName='Job_Search_APAC', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+	<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+<$endif$>
+<$locale = #active.SiteLocale$>
+<$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+<$parentCatTerm=""$>
+	<$if strLength(category) GT 0 $>
+		<$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+		<$if subTerms like '[]'$>	
+			<$ subTerms = category $>
+			<$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+		<$elseif strLength(subTerms) GT 0 $>	
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$parentCatTerm=category$>
+		<$endif$>
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+	<$endif$>
+	
+	<$domainId = #active.domainId$>
+	<$executeService("SEARCH_LOCATIONS_APAC")$>
+	
+<$include search_form_home_apac_js_inc$> 
+
+<div class="container_flex">
+<div>
+	<div class="search_widget_specialism">
+		<h2><$searchTitle$></h2>
+		<$if strLength(searchWidgetSuffix) <= 0 $>
+				<div class="advanced_search">
+					<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+				</div>
+		<$endif$>
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$urlToSubmitTo$>">
+				<div class="grid_q_40">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>_title"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref" value="<$#active.job_title_key_ref$>">
+					</div>
+				</div>
+				<div class="grid_q_40">
+						<$if strEquals(contentType,"Candidates")$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad candidate location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect" >
+									<$include candidate_location_dropdown_inc$>	
+								
+							<$else$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad oceania location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect" >
+									<$include job_location_dropdown_inc$>
+								
+							<$endif$>							
+						
+							<input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+							
+						</div>
+					
+					</div>
+				</div>
+				<div class="grid_q_20">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+			<!--<div id="<$formName$>_error"></div>-->
+				<div class="bg_blue" id="<$formName$>_error"></div>	
+				<div class="grid_q_40">
+					<div class="search_inner">
+						<input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$#active.isOnlyJobTitle$>" name="isOnlyJobTitle">
+						<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+				</div>
+				<$if strLength(category) GT 0 $>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							<input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked>
+							<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+						</div>
+					</div>
+					<$else$>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							&nbsp;
+						</div>
+					</div>
+				<$endif$>					
+				
+						
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			<!--hidden fields-->
+			
+			<input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+			<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+			<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+			<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+			<input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+			<input type="hidden" id="parentCatTerm" name="parentCatTerm" value="<$parentCatTerm$>" />
+
+			<input type="hidden" value="SCORE" name="SortField">
+			<input type="hidden" value="Desc" name="SortOrder">
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+			<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+			
+				<$if strLength(subTerms) GT 0 $>
+					 <input type="hidden" name="job_category" id="job_category" value="<$subTerms$>" />
+				 <$endif$>
+			
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+<$endif$>
+<@end@>
+
+<!--************         JAVA SCRIPT FOR search_form_home_apac_js_inc SEARCH  FORM    **************
+***********************************************************************-->
+<@dynamichtml search_form_home_apac_js_inc@>
+	<script type="text/javascript">	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() 
+	   {
+	  // alert("Neha");
+           if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) 
+		   {
+				$('input[name="job_title_key_ref"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');
+				$('input[name="location_set"]').watermark('<$lc('wwSearchJobCandLocationWaterMark')$>'); 
+               				
+				$("#<$formName$>").validate
+				(
+					{
+						onkeyup: false,
+						groups: {
+							jobsearchGroup: "job_title_key_ref location_set" 
+						},
+						submitHandler: function(form) 
+						{	//alert("inside submithandler");		
+							var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');	
+							//alert("inside submithandler" + isOnlyJobTitleValue);
+							$.watermark.hideAll();
+							//	alert("inside submithandler 22222222222");					
+							if(isOnlyJobTitleValue)
+						   {	
+								//alert("inside if");	
+								isOnlyJobTitleValue
+								$('input[name=isOnlyJobTitle]').attr('value','Y');	
+								$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+								$('input[name=job_keywords]').attr('value','');	
+								$('input[name=job_title_ref]').attr('value','');									
+						   }
+							else
+							{
+								//alert("inside elseee");	
+								$('input[name=isOnlyJobTitle]').attr('value','N');
+								//alert($('input[name=isOnlyJobTitle]').attr('value'));	
+								$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+								//alert($('input[name=job_title]').attr('value'));	
+								$('input[name=job_keywords]').attr('value',document.getElementById("<$formName$>_title").value);	
+								//alert($('input[name=job_keywords]').attr('value'));	
+								$('input[name=job_title_ref]').attr('value',document.getElementById("<$formName$>_title").value);
+								//alert($('input[name=job_title_ref]').attr('value'));
+							}								
+					
+							var haysCategory=document.getElementById("<$formName$>x_search");	
+								//alert("haysCategory"+ haysCategory);
+					
+							if(haysCategory!=null && haysCategory!="")
+							{
+								//alert("inside if haysCategory"+ haysCategory);
+								var xSearch = $('#<$formName$>x_search').attr('checked');
+								if(xSearch)
+								{	
+									$('input[name=job_category]').attr('value',document.getElementById("job_category").value);	
+								}
+								else
+								{
+									$('input[name=job_category]').attr('value',"");	
+								}
+							form.submit();
+							}				
+					
+							else 
+							{
+								$.watermark.hideAll();	                               	
+								form.submit();
+							}
+						},
+						rules: {
+							job_title_key_ref: {
+								require_from_group: [1, '.require_group']
+							} ,
+							location_set: {
+								require_from_group: [1, '.require_group']
+							} 
+						
+						},
+						messages : {
+							job_title_key_ref : '<$lc('wwSearchFormRequiredMessage')$>'	,
+							location_set : '<$lc('wwSearchFormRequiredMessage')$>'
+					
+						},
+						errorPlacement: function(error, element) {
+							//alert("inside error");
+							error.appendTo('#<$formName$>_error');
+							$("#<$formName$>location_set").prevAll(".multitoggle").addClass("error");
+							//$("#<$formName$>location_set").prevAll(".multitoggle").addClass("error");
+						}
+				});	
+				
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+		
+		
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+<@end@>
+
+
+<@dynamichtml google_home_validation@>
+var specialism_exists_check = "<$temp2$>";
+var jLocale = "<$locale$>";
+<$include cross_country_enabled_countries$>
+var CrossCheck = <$isCrossCountry$>
+//alert("Cross Country = "+CrossCheck);
+
+//alert("specialism value = " +specialism_exists_check);
+if((g_CountryCode!='HRBE') && (CrossCheck != 1)){
+	//alert("inside if");
+	if ((document.getElementById("<$formName$>locationToSearch").value =="" ) || (document.getElementById("<$formName$>locationToSearch").value =="<$lc('wwSearchJobCandLocationWaterMark')$>" )) {
+		if (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ) {
+			//alert(<$formName$>);
+			document.getElementById("<$formName$>").removeChild(document.getElementById("<$formName$>partialfields"));
+		}
+			else{
+				document.getElementById("<$formName$>partialfields").value="JobTitle:" +escape(document.getElementById("<$formName$>q").value);
+		}
+	}
+	else {
+		if (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ) {
+			//alert("Inside Job title blank");
+			document.getElementById("<$formName$>partialfields").value="xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value;
+		}
+		else{
+			//alert("Inside Job title not blank");
+			document.getElementById("<$formName$>partialfields").value="(xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value + ")";
+			document.getElementById("<$formName$>partialfields").value+=".(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+		}
+	}
+}
+else if(CrossCheck ==1){
+	if ((document.getElementById("<$formName$>locationToSearch").value =="" ) || (document.getElementById("<$formName$>locationToSearch").value =="<$lc('wwSearchJobCandLocationWaterMark')$>" )) {
+		if (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ) {
+			document.getElementById("<$formName$>partialfields").value="CrossCountry:" +jLocale;
+		}
+		else{
+			document.getElementById("<$formName$>partialfields").value="JobTitle:" +escape(document.getElementById("<$formName$>q").value);
+			document.getElementById("<$formName$>partialfields").value+=".(CrossCountry:" +escape(jLocale)+ ")";
+		}
+	}
+	else {
+		if (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ) {
+			document.getElementById("<$formName$>partialfields").value="(xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value + ")";
+			document.getElementById("<$formName$>partialfields").value+=".(CrossCountry:" +escape(jLocale)+ ")";
+		}
+		else{
+			document.getElementById("<$formName$>partialfields").value="(xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value + ")";
+			document.getElementById("<$formName$>partialfields").value+=".(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+			document.getElementById("<$formName$>partialfields").value+=".(CrossCountry:" +escape(jLocale)+ ")";
+		}
+	}
+}
+else{
+	if ((document.getElementById("<$formName$>locationToSearch").value =="" ) || (document.getElementById("<$formName$>locationToSearch").value =="<$lc('wwSearchJobCandLocationWaterMark')$>" )) {
+							
+		document.getElementById("<$formName$>").removeChild(document.getElementById("<$formName$>partialfields"));
+	}
+	else {
+		document.getElementById("<$formName$>partialfields").value="xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value;
+	}
+}
+
+<@end@>
+
+<@dynamichtml google_apac_home_validation@>
+if ((document.getElementById("<$formName$>location_set").value =="" ) || (document.getElementById("<$formName$>location_set").value =="<$lc('wwJsselectLocation')$>" )) {
+			if (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ) {
+			document.getElementById("<$formName$>").removeChild(document.getElementById("<$formName$>partialfields"));
+			}
+			else{
+				document.getElementById("<$formName$>partialfields").value="JobTitle:" +escape(document.getElementById("<$formName$>q").value);
+			}
+			
+		}
+		else {
+				if (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ) {
+					document.getElementById("<$formName$>partialfields").value=document.getElementById("<$formName$>location_set_apac").value;
+				}
+				else{
+					document.getElementById("<$formName$>partialfields").value="(" + document.getElementById("<$formName$>location_set_apac").value + ")";
+					document.getElementById("<$formName$>partialfields").value+=".(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+				}
+		}
+<@end@>
+
+<@dynamichtml google_apac_r6_specialism_validation@>
+	var specialism_exists_check = "<$temp2$>";
+	//alert("specialsim value = " +specialism_exists_check);
+	if ((specialism_exists_check=="") && ((document.getElementById("<$formName$>location_set").value =="" ) || (document.getElementById("<$formName$>location_set").value =="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false )){
+		document.getElementById("<$formName$>").removeChild(document.getElementById("<$formName$>partialfields"));
+	}
+	else if ((specialism_exists_check=="") && ((document.getElementById("<$formName$>location_set").value =="" ) || (document.getElementById("<$formName$>location_set").value =="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") != null && document.getElementById("<$formName$>isOnlyJobTitle").checked == true )){
+		document.getElementById("<$formName$>partialfields").value="JobTitle:" +escape(document.getElementById("<$formName$>q").value);
+	}
+	else if ((specialism_exists_check=="") && ((document.getElementById("<$formName$>location_set").value !="" ) || (document.getElementById("<$formName$>location_set").value !="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false )){
+		document.getElementById("<$formName$>partialfields").value="(" + document.getElementById("<$formName$>location_set_apac").value + ")";
+	}
+	else if ((specialism_exists_check!="") && ((document.getElementById("<$formName$>location_set").value =="" ) || (document.getElementById("<$formName$>location_set").value =="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false )){
+		if (document.getElementById("<$formName$>x_search").checked == false ){
+		}
+		else {
+			document.getElementById("<$formName$>partialfields").value="(xSpecialism:" +specialism_exists_check;	
+			document.getElementById("<$formName$>partialfields").value+="|xSubSpecialism:" +specialism_exists_check + ")";
+			}
+	}
+	else if ((specialism_exists_check!=null) && ((document.getElementById("<$formName$>location_set").value =="" ) || 	(document.getElementById("<$formName$>location_set").value =="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") != null && document.getElementById("<$formName$>isOnlyJobTitle").checked == true )){
+		document.getElementById("<$formName$>partialfields").value="(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+		if (document.getElementById("<$formName$>x_search").checked == false ){
+		}
+		else {
+			document.getElementById("<$formName$>partialfields").value+=".(xSpecialism:" +specialism_exists_check;	
+			document.getElementById("<$formName$>partialfields").value+="|xSubSpecialism:" +specialism_exists_check + ")";
+		}
+	}
+	else if ((specialism_exists_check!="") && ((document.getElementById("<$formName$>location_set").value !="" ) || (document.getElementById("<$formName$>location_set").value !="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false )){
+		document.getElementById("<$formName$>partialfields").value="(" + document.getElementById("<$formName$>location_set_apac").value + ")";
+		if (document.getElementById("<$formName$>x_search").checked == false ){
+		}
+		else {
+			document.getElementById("<$formName$>partialfields").value+=".(xSpecialism:" +specialism_exists_check;	
+			document.getElementById("<$formName$>partialfields").value+="|xSubSpecialism:" +specialism_exists_check + ")";
+		}
+	}
+	else if ((specialism_exists_check=="") && ((document.getElementById("<$formName$>location_set").value !="" ) || (document.getElementById("<$formName$>location_set").value !="<$lc('wwJsselectLocation')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") != null && document.getElementById("<$formName$>isOnlyJobTitle").checked == true )){
+		document.getElementById("<$formName$>partialfields").value+= "(" + document.getElementById("<$formName$>location_set_apac").value + ")";
+		document.getElementById("<$formName$>partialfields").value+=".(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+	}
+	else {
+		document.getElementById("<$formName$>partialfields").value="(" + document.getElementById("<$formName$>location_set_apac").value + ")";
+		document.getElementById("<$formName$>partialfields").value+=".(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+		if (document.getElementById("<$formName$>x_search").checked == false ){
+		}
+		else {
+			document.getElementById("<$formName$>partialfields").value+=".(xSpecialism:" +specialism_exists_check;	
+			document.getElementById("<$formName$>partialfields").value+="|xSubSpecialism:" +specialism_exists_check + ")";
+		}
+	}
+<@end@>
+
+<!--************         JAVA SCRIPT FOR search_form_home_apac_google_js_inc SEARCH  FORM    **************
+***********************************************************************-->
+<@dynamichtml search_form_home_apac_google_js_inc@>
+	<script type="text/javascript">	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() 
+	   {
+	  
+           if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) 
+		   {
+				$('input[name="q"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');
+				$('input[name="location_set"]').watermark('<$lc('wwSearchJobCandLocationWaterMark')$>'); 
+               				
+				$("#<$formName$>").validate
+				(
+					{
+						onkeyup: false,
+						groups: {
+							jobsearchGroup: "q location_set" 
+						},
+						submitHandler: function(form) 
+						{	//alert("inside submithandler");		
+							var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');	
+							//alert("inside submithandler" + isOnlyJobTitleValue);
+							$.watermark.hideAll();
+							//	alert("inside submithandler 22222222222");					
+							if(isOnlyJobTitleValue)
+						   {	
+								//alert("inside if");	
+								isOnlyJobTitleValue
+								$('input[name=isOnlyJobTitle]').attr('value','Y');	
+								//$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+								//$('input[name=job_keywords]').attr('value','');	
+								//$('input[name=job_title_ref]').attr('value','');									
+						   }
+							else
+							{
+								//alert("inside elseee");	
+								$('input[name=isOnlyJobTitle]').attr('value','N');
+								//alert($('input[name=isOnlyJobTitle]').attr('value'));	
+								//$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+								//alert($('input[name=job_title]').attr('value'));	
+								//$('input[name=job_keywords]').attr('value',document.getElementById("<$formName$>_title").value);	
+								//alert($('input[name=job_keywords]').attr('value'));	
+								//$('input[name=job_title_ref]').attr('value',document.getElementById("<$formName$>_title").value);
+								//alert($('input[name=job_title_ref]').attr('value'));
+							}								
+					
+							//var haysCategory=document.getElementById("<$formName$>x_search");	
+								//alert("haysCategory"+ haysCategory);
+							
+							
+					
+							
+								$.watermark.hideAll();
+								var specialism_exists_check = "<$temp2$>";
+								//alert("inside validation = "+specialism_exists_check);
+								if (specialism_exists_check ==""){
+									//alert("inside hompage or job not available check inside else");
+									<$include google_apac_home_validation$>
+								}
+								else{
+									//alert("inside specialism check inside else");
+									<$include google_apac_r6_specialism_validation$>						
+								}
+								<$if isProjectSEnabled eq 1$>
+									<$searchUrl = portalUrl & #env.ProjectS_Search_Results$>
+									var qVal = $('#<$formName$>q').val();
+									if(qVal == "")
+										qVal = "hays";
+									var locationHref = "<$searchUrl$>?q="+qVal;
+									if (specialism_exists_check !=""){
+										if (document.getElementById("<$formName$>x_search").checked == true ){
+											locationHref = locationHref+"&specialismId="+specialism_exists_check;
+										}
+									}
+									if($('#<$formName$>isOnlyJobTitle').attr('checked') == true){
+										locationHref = locationHref + "&isOnlyJobTitle=Y";
+									}
+									location.href = locationHref+"&locationSet="+$('#<$formName$>location_set').val();
+								<$else$>
+									form.submit();
+								<$endif$>
+						},
+						rules: {
+							q: {
+								require_from_group: [1, '.require_group']
+							} ,
+							location_set: {
+								require_from_group: [1, '.require_group']
+							} 
+						
+						},
+						messages : {
+							q : '<$lc('wwSearchFormRequiredMessage')$>'	,
+							location_set : '<$lc('wwSearchFormRequiredMessage')$>'
+					
+						},
+						errorPlacement: function(error, element) {
+							//alert("inside error");
+							error.appendTo('#<$formName$>_error');
+							$("#<$formName$>location_set").prevAll(".multitoggle").addClass("error");
+							//$("#<$formName$>location_set").prevAll(".multitoggle").addClass("error");
+						}
+				});	
+				
+			<$include job_keywords_home_autocomplete_inc$>	
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+		
+		
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+<@end@>
+
+<@dynamichtml hays_job_cand_search_form_search_result_r6@>
+<$if #active.contentType like "Jobs"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$elseif #active.contentType like "Candidates"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+<$endif$>
+<$include check_nav_type$>
+<$formName='home_search_jobs'$>
+<$if isEmployer eq 1$>
+	<$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+	<$else$>
+	<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+<$endif$>
+<$locale = SiteLocale$>
+<$category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+<$parentCatTerm=""$>
+	<$if strLength(category) GT 0 $>
+		<$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+		<$if subTerms like '[]'$>	
+			<$ subTerms = category $>
+			<$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+		<$elseif strLength(subTerms) GT 0 $>	
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$parentCatTerm=category$>
+		<$endif$>
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+	<$endif$>
+<$include search_form_home_js_inc$> 
+		
+		<form id="<$formName$>" class="home_search_form hays_form searchresults" action="<$urlToSubmitTo$>">
+		<!-- Rel 8.0 change-->
+			<div class="clear"></div>
+			
+			<$if strLength(searchWidgetSuffix) <= 0 $>
+			<div class="extra_search2">
+				<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+			</div>
+			<$endif$>
+			<!-- end -->
+			<div class="left_search">
+				<label class="access" for="<$formName$>_title"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+				<input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref" value="" autocomplete="off">
+			</div>
+			<div class="right_search">
+				<label class="access" for="<$formName$>job_location"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+				<input id="<$formName$>job_location" class="textbox require_group" type="text" name="job_location" value="">
+			</div>
+			<div id="<$formName$>_error" class="rc_white"></div>
+			<div class="extra_search1">
+				<input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$isOnlyJobTitle$>" name="isOnlyJobTitle">
+				<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+			</div>
+			<$if strLength(category) GT 0 $>
+			<div class="extra_search_title">
+				<input id="<$formName$>x_search" type="checkbox" name="x_title_only">
+				<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+			</div>
+			<$endif$>				
+			
+			<div>
+			<$if countryName like 'Hays Response MX'  or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$>
+				<input type="submit" class="button" value="<$lc('wwSearch')$>" style="top:2px;">
+			<$else$>
+				<input type="submit" class="button" value="<$lc('wwSearch')$>">
+			<$endif$>
+			</div>
+			
+			
+			<$if not level or (level and level lt 3)$>
+				<$level=3$>
+			<$endif$>
+			
+			<!--hidden fields-->
+			<input type="hidden" name="level" id="<$formName$>level" value=""/>
+			<input type="hidden" name="location_id" id="<$formName$>location_id" value=""/>
+			<input type="hidden" name="job_title" id="<$formName$>job_title" value=""/>
+			<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value=""/>
+			<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value=""/>
+			<input type="hidden" id="<$formName$>radius" name="radius" value="<$if searchWidgetSuffix like 'cerow1'$><$if countryName like 'Belgium' or countryName like 'Hays Response BE'$><$#env.DefaultRadius$><$else$><$#env.DefaultCerowRadius$><$endif$><$else$><$#env.DefaultRadius$><$endif$>">
+			<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+			<input id="<$formName$>job_job_title" type="hidden" value="<$job_job_title$>" name="job_job_title" >
+
+			<input type="hidden" value="SCORE" name="SortField">
+			<input type="hidden" value="Desc" name="SortOrder">
+			<input type="hidden" value="<$contentType$>" name="contentType">
+			<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value=""/>
+			<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value=""/>
+			<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+			<$if #active.contentType like "Jobs"$>
+				<$if domainId eq 1 or domainId eq 6$>
+					<div class="googlegrid">
+						<$include googleSearchLink_inc$>
+					</div>
+				<$endif$>
+			<$endif$>			
+		</form>
+  <div id="<$dialog$>" title="Heading"> </div>		
+
+<div class="clear"></div>
+<@end@>
+
+<!-- added for Release 8.0-->
+<@dynamichtml hays_job_cand_search_form_search_result_apac@>
+<$if #active.contentType like "Jobs"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$elseif #active.contentType like "Candidates"$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+<$endif$>
+<$include check_nav_type$>
+<$formName='home_search_jobs_apac'$>
+<$if isEmployer eq 1$>
+	<$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+	<$else$>
+	<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+<$endif$>
+<$locale = SiteLocale$>
+<$category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+<$parentCatTerm=""$>
+	<$if strLength(category) GT 0 $>
+		<$ category = strSubstring(category, 1, strLength(category)-1), category = strReplace(category, ';', ',') $>
+		<$ subTerms = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm')$>
+		<$ subTerms1 = ontGetRelatedTerms(category, 'xCategory@hays:ParentTerm@true') $>
+		<$if subTerms like '[]'$>	
+			<$ subTerms = category $>
+			<$parentCatTerm=strSubstring(subTerms1,1,strLength(subTerms1)-1)$>
+		<$elseif strLength(subTerms) GT 0 $>	
+			<$ subTerms = category & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+			<$parentCatTerm=category$>
+		<$endif$>
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+	<$endif$>
+	
+	<$domainId = #active.domainId$>
+	<$executeService("SEARCH_LOCATIONS_APAC")$>
+	
+	
+<$include search_form_home_apac_js_inc$> 
+		
+		<div class="content_main job_search_results">
+		<form id="<$formName$>" class="home_search_form apac_form hays_form searchresults" action="<$urlToSubmitTo$>">
+		<div class="clear"></div>
+		<$if strLength(searchWidgetSuffix) <= 0 $>
+			<div class="extra_search2">
+				<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+			</div>
+		<$endif$>
+			<div class="left_search">
+				<label class="access" for="<$formName$>_title"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+				<input id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref" value="" autocomplete="off">
+			</div>
+			<$if strEquals(contentType,"Candidates")$>
+				<$if domainId eq 22 OR domainId eq 23$>
+					<div class="right_search candidate location_multiselect">
+				<$else$>
+					<div class="right_search asia location_multiselect">
+				<$endif$>
+				<div class="multiselect">
+					<$include candidate_location_dropdown_inc$>	
+			<$else$>
+				<$if domainId eq 22 OR domainId eq 23$>
+					<div class="right_search oceania location_multiselect">
+				<$else$>
+					<div class="right_search asia location_multiselect">
+				<$endif$>
+					<div class="multiselect" >
+						<$include job_location_dropdown_inc$>
+				<$endif$>
+				<input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+			</div>
+		</div>
+			
+			<div id="<$formName$>_error" class="rc_white"></div>
+			<div class="extra_search1">
+				<input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$isOnlyJobTitle$>" name="isOnlyJobTitle">
+				<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+			</div>
+			<$if strLength(category) GT 0 $>
+			<div class="extra_search_title">
+				<input id="<$formName$>x_search" type="checkbox" name="x_title_only">
+				<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+			</div>
+			<$endif$>				
+			
+			<div>
+				<input type="submit" class="button" value="<$lc('wwSearch')$>">
+			</div>
+			
+			
+			<$if not level or (level and level lt 3)$>
+				<$level=3$>
+			<$endif$>
+			
+			<!--hidden fields-->
+			
+			<input type="hidden" name="job_title" id="<$formName$>job_title" value=""/>
+			<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value=""/>
+			<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value=""/>
+			<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+			<input id="<$formName$>job_job_title" type="hidden" value="<$job_job_title$>" name="job_job_title" >
+			<input type="hidden" value="SCORE" name="SortField">
+			<input type="hidden" value="Desc" name="SortOrder">
+			<input type="hidden" value="<$contentType$>" name="contentType">
+			<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+			
+						
+		</form>
+		<div class="clear"></div>
+		</div>
+		
+		
+
+
+<@end@>
+
+
+<!--************         JAVA SCRIPT FOR search_form_home_js_inc SEARCH  FORM    **************
+***********************************************************************-->
+<@dynamichtml search_form_home_js_inc@>
+	<script type="text/javascript">	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() {
+	      if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+			$('input[name="job_title_key_ref"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');
+			$('input[name="job_location"]').watermark('<$lc('wwSearchJobCandLocationWaterMark')$>');        
+			var locationObject = null;
+
+			$("#<$formName$>").validate({
+				onkeyup: false,
+				groups: {
+			        jobsearchGroup: "job_title_key_ref job_location" 
+               },
+               submitHandler: function(form) {				
+					var locationMap1 = $("#<$formName$>locationMap").attr('value');
+					$.watermark.hideAll();
+					
+					if ((<$formName$>locationMap != 'bypass' && <$formName$>locationMap != null)) {
+						if (<$formName$>locationMap != null) {
+									var locationObject = <$formName$>locationMap;
+									var locationValue = $("#<$formName$>job_location").attr('value');
+									
+							}
+						
+						var locationDescr = "LOCATION_DESC";
+						   jQuery.each(locationObject,
+							   function(i, val) {
+									   if (locationValue.toLowerCase() == val[locationDescr].toLowerCase() && locationValue.length == val[locationDescr].length) {
+										   $('#<$formName$>level').attr('value', val.LEVEL_NO);
+										   $('#<$formName$>ne_longitude').attr('value', val.NE_LONGITUDE);
+										   $('#<$formName$>ne_latitude').attr('value', val.NE_LATITUDE);
+										   $('#<$formName$>location_id').attr('value', val.LOCATION_ID);
+									   }
+							   }
+						   );
+					 } 					
+					
+					var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');		
+				   if(isOnlyJobTitleValue)
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','Y');	
+						$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+						$('input[name=job_keywords]').attr('value','');	
+						$('input[name=job_title_ref]').attr('value','');				
+						
+				   }
+				   else
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','N');	
+						$('input[name=job_title]').attr('value',document.getElementById("<$formName$>_title").value);	
+						$('input[name=job_keywords]').attr('value',document.getElementById("<$formName$>_title").value);	
+						$('input[name=job_title_ref]').attr('value',document.getElementById("<$formName$>_title").value);	
+						
+				  }
+									
+					
+					var haysCategory=document.getElementById("<$formName$>x_search");
+				
+					
+				  if(haysCategory!=null && haysCategory!="")
+					{
+						var xSearch = $('#<$formName$>x_search').attr('checked');
+						 if(xSearch)
+						{	
+							$('input[name=job_category]').attr('value',document.getElementById("job_category").value);	
+						}
+						else
+						{
+							$('input[name=job_category]').attr('value',"");	
+						}
+					}
+					  
+				  
+				  // added later
+				  if((document.getElementById("<$formName$>ne_longitude").value=="") && (document.getElementById("<$formName$>ne_latitude").value==""))
+				 {
+					if(document.getElementById("<$formName$>locationMap")==null)
+					{
+						
+						<$formName$>locationMap=null;
+						
+					}
+				}
+					
+					var dialog_id ="<$dialog$>";		
+				
+				
+					<!--include job_location_autosuggest_inc-->
+				
+					<$include job_location_homeSearch_autosuggest_inc$>
+				
+					
+					else {
+						$.watermark.hideAll();						
+						if ('<$searchWidgetSuffix$>'=='cerow1' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 4)  {
+							if(($('input[name=job_location]',form).val() == "" || $('input[name=job_location]').is('.watermark')) && ((g_CountryCode=='BEL')||(g_CountryCode=='HRBE'))) {
+							$('#<$formName$>radius').val('<$#env.DefaultRadius$>');
+							}
+							else {
+							$('#<$formName$>radius').val('0');
+							}
+						}
+						else if ('<$searchWidgetSuffix$>'=='' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 5)
+						{
+						  $('#<$formName$>radius').val('0');
+						}
+						
+						if(($('input[name=job_location]',form).val() === "" || $('input[name=job_location]').is('.watermark'))) {
+							$('input[name=ne_longitude]', form).val("");
+							$('input[name=ne_latitude]', form).val("");
+						}
+
+						form.submit();
+					}
+				},
+				rules: {
+						job_title_key_ref: {
+							require_from_group: [1, '.require_group']
+						} , 
+						job_location: {
+							require_from_group: [1, '.require_group']
+						}
+				},
+				messages : {
+					job_title_key_ref : '<$lc('wwSearchFormRequiredMessage')$>',					
+					job_location : '<$lc('wwSearchFormRequiredMessage')$>'
+				},
+				errorPlacement: function(error, element) {
+					error.appendTo('#<$formName$>_error');
+				}
+			});
+			
+			
+			<$include job_location_autocomplete_inc$>	
+        		
+				/* commented , used for auto polulation of the key words field in home search page start
+				$("#<$formName$>job_title_key_ref").autocomplete({
+					source: function(request, response) {
+						$.ajax({
+							url: "<$HttpRelativeWebRoot$>idcplg",
+							dataType: "jsonp",
+							data: {
+								outputFormat: "json",
+								ResultCount: 12,
+								metadata: "xAutomatedTitle",
+								ontClass: "hays:JobFunction",
+								IdcService: "ONT_GET_INDIVIDUALS",
+								ontValue: request.term,
+								language: "<$LanguageCode$>",
+								country: "<$CountryCode$>",
+								parentTerm: $("#parentCatTerm").attr('value')
+							},
+							success: function(data) {
+								/*Added for Release 1.3*//*
+								<$formName$>jobtitleResultSet=data.result.resultsets.IndividualsList;
+								/*end Release 1.3*//*
+								response($.map(data.result.resultsets.IndividualsList, function(item) {
+									return {
+										label: item.label,
+										value: item.label,
+										id: item.id
+									}
+								}))
+							}
+						})
+					},
+					minLength: 2,
+					select: function(event, ui) {
+						$('#<$formName$>job_job_title').attr('value', ui.item.id );
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				}); end of comment*/
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+		
+		var <$formName$>locationMap = null;
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+<@end@>
+
+<@dynamichtml job_location_homeSearch_autosuggest_inc@>
+ var final_dialog_id="#"+dialog_id;
+ 
+  <!--Condition added for LocalJobs-->
+ <$if strEquals(#active.varlocaljob,1)$>
+	<$formName$>locationMap = 'bypass';
+ <$endif$>
+  <!--end -->
+	 if (<$formName$>locationMap == null && $("#<$formName$>job_location").attr('value') != '' && !$('#<$formName$>job_location').hasClass('.watermark'))
+	{
+							<$formName$>locationMap = 'bypass';
+							$(final_dialog_id).dialog({ 
+								draggable: false,
+								modal: true,
+								resizable: false,
+								buttons: {
+									<$lc('wwDialogCloseButton')$> : function() {
+											$(final_dialog_id).dialog("destroy");
+											
+									},
+									<$lc('wwDialogSearchButton')$>: function() {
+										$.watermark.hideAll();
+										var geoCords = $('input:checked[name=google_location]').attr('value');
+										geoCords = geoCords.split(",");
+										$('#<$formName$>ne_longitude').attr('value', geoCords[0]);
+										$('#<$formName$>ne_latitude').attr('value', geoCords[1]);
+										$('#<$formName$>level').attr('value', geoCords[2]);
+										$('#<$formName$>').submit();
+									}
+								},
+								title: '<$lc('wwLocationDialogTitle')$>',
+								minHeight: 200,
+								open: function() { 
+									$(final_dialog_id).html('<img src="/haysassets/HaysGeneralComponent/assets/css/img/loader.gif" class="loader" alt="Content is loading" />');
+									$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+									$('.ui-dialog-buttonpane button:contains(<$lc('wwDialogSearchButton')$>)').hide();   //Item 21 of MR2
+										$.ajax({
+											url: "<$HttpRelativeWebRoot$>idcplg",
+											dataType: "jsonp",
+											data: {
+												outputFormat: "json",
+												IdcService: "HAYS_GET_GEOCODES",
+												Town: $("#<$formName$>job_location").attr('value'),
+												countryName: "<$countryNameISO$>",
+												LanguageCode: "<$LanguageCode$>"    //Item 78 MR 4.1
+											},
+											success: function(data) { 
+												var start = "<$lc('wwLocationFromGoogle')$><ul class='google'>";
+												var google_result = "";
+												jQuery.each(data.result.resultsets.LocationResults, function(i, val) {
+													google_result = google_result + "<li><div class='select_row'><input type='radio' ";
+													if (i == 0) {
+														google_result = google_result + "checked='checked'";
+													}
+													google_result = google_result + "value='"+val.NE_LONGITUDE+","+val.NE_LATITUDE+","+val.LEVEL_NO+"' id='" +val.LOCATION_ID+i+"' name='google_location' \/><label for='"+val.LOCATION_ID+i+"'>"+val.LOCATION_DESC+"<\/label><\/div><\/li>";
+												});
+												var end = "<\/ul><\/fieldset>";
+												if (google_result.length < 5) {
+													$(final_dialog_id).html('<$lc('wwLocationNotFoundFromGoogle')$>');
+												}
+												else {
+													$(final_dialog_id).html(start + google_result + end);
+													$('.ui-dialog-buttonpane button:contains(<$lc('wwDialogSearchButton')$>)').show();   //Item 21 of MR2
+												}
+											}
+										});
+								} 
+							});
+							return false;  
+					   }
+                  
+				   
+<@end@>
+
+<!--Start Job Detail Search form -->
+<@dynamichtml subtmp_detail_page_search_form@>
+<$include cross_country_enabled_countries$>
+<$if countryRegion like 'uk' or  countryRegion like 'cerow'$>	
+	<$include is_international_website$>
+	<$if strEquals(isInternationalWebsite,"1") $>
+		<$include subtmp_international_detail_page_search_form$>
+	<$else$>
+		<$include google_search_enabled_countries$>
+		<$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+			<$include check_nav_type$>
+			<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+			<$formName='Job_Search', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+			<$locale = #active.SiteLocale$>			
+			<$include search_form_home_google_js_inc$>
+			<div class="container_flex">
+				<div>
+				<div class="search_widget_specialism">
+				<h2><$searchTitle$></h2>
+				<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$lc('wwGoogleSearchAction')$>">
+						<div class="" style="width:95%;">
+							<div class="search_inner">
+								<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+								<input id="<$formName$>q" style="font-size:11px;" class="textbox require_group" autocomplete="off" type="text" name="q" value="">
+							</div>
+						</div>
+						<div class="" style="width:95%;">
+						<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$><!-- Release 7 [Hide search only in job title]-->
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						<$else$>
+							<div class="search_inner">
+								<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+								"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+								"isOnlyJobTitle">
+								<label for="<$formName$>isOnlyJobTitle">
+								<$lc('wwHomePageOnlySearchJobTitle')$></label>
+							</div>				
+						<$endif$>
+						</div>	
+						
+						<div class="" style="width:95%;float:left">
+							<div class="search_inner">
+								<label class="access" for="<$formName$>locationToSearch"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+					<!--default location set for Local jobs-->
+								
+								<$if #active.localTownLocationId$>
+									<$locationToSearch=#active.Townlocation$>
+										<input id="<$formName$>locationToSearch" style="font-size:11px;" class="textbox require_group localjob" type="text" name="locationToSearch" value="<$#active.locationToSearch$>">
+								<$else$>
+									<input id="<$formName$>locationToSearch" style="font-size:11px;" class="textbox require_group" type="text" name="locationToSearch" value="<$#active.locationToSearch$>">
+								<$endif$>
+								<!--end-->
+							</div>
+						</div>
+						<label for="<$formName$>partialfields" ></label>
+						<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+						<div class="jobdetail_bg_blue" id="<$formName$>_error"></div> 
+						<div class="" style="float:right;">
+							<div class="search_button_inner">
+								<input type="submit" class="button" value="<$lc('wwSearch')$>">
+							</div>
+						</div>
+						
+						<div class="" style="width:95%;float:left;">					
+							<div class="advanced_search" style="position:relative;">
+								<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+							</div><br/>		
+						</div>
+												
+						<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+							&nbsp;
+						<$else$>
+							<div class="grid_q_40">
+								<div class="search_inner search_sml_pad">
+								&nbsp;
+								</div>
+							</div>
+						<$endif$>					
+						<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+						<$endif$>				
+					<!--hidden fields-->
+					
+					<$if #active.locationLevel$>	
+						<$level=#active.locationLevel$>
+						<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+					<$else$>
+						<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+					<$endif$>
+			
+					<!--default location id set for Local jobs-->
+					<$if #active.localTownLocationId$>		
+						<$id=#active.localTownLocationId$>
+						<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<$else$>
+						<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<$endif$>
+					
+					<$if #active.locationLatitude$>	
+						<$ne_latitude=#active.locationLatitude$>
+						<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<$else$>
+						<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<$endif$>
+					
+					<$if #active.locationLongitude$>	
+						<$ne_longitude=#active.locationLongitude$>
+						<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<$else$>
+						<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<$endif$>
+					
+					<!--end-->
+					
+					<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+					<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+					<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+					<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+					<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+					<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+					<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+					<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+					<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+					<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+					<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>		
+					<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+				<$if isCrossCountry ne 1$>	
+					<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+				<$endif$>
+					<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+					<input type="hidden" name="sort" value="date:D:L:d1"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+				
+					</form>
+				</div>
+
+			<div id="<$dialog$>" title="Heading"> </div>
+		</div>
+		 </div> <!-- added for Release 8.0 sec 7.2 8A-->
+	<$else$>
+		<$include check_nav_type$>
+		<$if isEmployer eq 1$>
+			<$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+			<$formName='Job_Search', searchTitle=lc('wwCandidatesJobsSearchSpecialism_title')$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+		<$else$>
+			<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+			<$formName='Job_Search', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+			<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$endif$>
+		<$locale = #active.SiteLocale$>
+
+		<$include search_form_home_js_inc$> 
+		<div class="container_flex">
+		<div>
+			<div class="search_widget_specialism">
+				<h2><$searchTitle$></h2>
+				
+				<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$urlToSubmitTo$>">
+						<div class="" style="width:95%">
+							<div class="search_inner">
+								<label class="access" for="<$formName$>_title"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+								<input id="<$formName$>_title" style="font-size:11px;" class="textbox require_group" type="text" name="job_title_key_ref" value="">
+							</div>
+						</div>
+						<div class="" style="width:95%;">
+						<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$><!-- Release 7 [Hide search only in job title]-->
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						<$else$>
+							<div class="search_inner">
+								<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+								"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+								"isOnlyJobTitle">
+								<label for="<$formName$>isOnlyJobTitle">
+								<$lc('wwHomePageOnlySearchJobTitle')$></label>
+							</div>				
+						<$endif$>				
+						</div>
+						
+						<div class="" style="width:95%;float:left">
+							<div class="search_inner">
+								<label class="access" for="<$formName$>job_location"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+					<!--default location set for Local jobs-->
+								<$if #active.localTownLocationId$>
+									<$job_location=#active.Townlocation$>
+										<input id="<$formName$>job_location" style="font-size:11px;" class="textbox require_group localjob" type="text" name="job_location" value="<$#active.job_location$>">
+								<$else$>
+									<input id="<$formName$>job_location" style="font-size:11px;" class="textbox require_group" type="text" name="job_location" value="<$#active.job_location$>">
+								<$endif$>
+								<!--end-->
+							</div>
+						</div>
+						<div class="jobdetail_bg_blue" id="<$formName$>_error"></div> 
+						<div class="" style="float:right;">
+							<div class="search_button_inner">
+								<input type="submit" class="button" value="<$lc('wwSearch')$>">
+							</div>
+						</div>
+						<div class="" style="width:95%;float:left">					
+							<div class="advanced_search" style="position:relative;">
+								<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+							</div><br/>
+						</div>						
+						<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+							&nbsp;
+						<$else$>
+							<div class="grid_q_40">
+								<div class="search_inner search_sml_pad">
+								&nbsp;
+								</div>
+							</div>
+						<$endif$>	
+						<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+						<$endif$>
+					
+					<!--hidden fields-->
+					
+					<!--default location id set for Local jobs-->
+					<$if #active.localTownLocationId$>		
+						<$id=#active.localTownLocationId$>
+						<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<$else$>
+						<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<$endif$>
+					
+					<$if #active.locationLatitude$>	
+						<$ne_latitude=#active.locationLatitude$>
+						<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<$else$>
+						<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<$endif$>
+					
+					<$if #active.locationLongitude$>	
+						<$ne_longitude=#active.locationLongitude$>
+						<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<$else$>
+						<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<$endif$>
+					
+					<$if #active.locationLevel$>	
+						<$level=#active.locationLevel$>
+						<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+					<$else$>
+						<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+					<$endif$>			
+					
+					<!--end-->			
+							
+					<input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+					<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+					<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+					<input type="hidden" id="<$formName$>radius" name="radius" value="<$if searchWidgetSuffix like 'cerow1'$><$#env.DefaultCerowRadius$><$else$><$#env.DefaultRadius$><$endif$>">
+					<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+					<input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+					<input type="hidden" id="parentCatTerm" name="parentCatTerm" value="<$parentCatTerm$>" />
+					<input type="hidden" value="SCORE" name="SortField">
+					<input type="hidden" value="Desc" name="SortOrder">
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+
+					<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">			
+							
+					</form>
+				</div>
+
+			<div id="<$dialog$>" title="Heading"> </div>
+		</div>
+		 </div> 
+
+		<$endif$>
+	<$endif$>
+	
+<$else$>	
+	<$include check_nav_type$>
+	<$include google_search_enabled_countries$>	
+	<$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+		<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+		<$formName='Job_Search_APAC', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+		<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$locale = #active.SiteLocale$>	
+		<$domainId = #active.domainId$>
+		<$executeService("SEARCH_LOCATIONS_APAC")$>
+	
+<$include search_form_home_apac_google_js_inc$> 
+
+<div class="container_flex">
+<div>
+	<div class="search_widget_specialism">
+		<h2><$searchTitle$></h2>
+		
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$lc('wwGoogleSearchAction')$>" >
+				<div class="" style="width:95%;">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input style="font-size:11px;" id="<$formName$>q" class="textbox require_group" type="text" name="q" value="">
+					</div>
+				</div>
+				<div class="" style="width:95%;">
+					<div class="search_inner">
+						<input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$#active.isOnlyJobTitle$>" name="isOnlyJobTitle">
+						<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+				</div>
+				<div class="" style="width:95%;float:left;">
+						<$if strEquals(contentType,"Candidates")$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad candidate location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect" style="font-size:11px;padding:0 0 0 5px;width:167px;">
+									<$include candidate_location_dropdown_inc$>	
+								
+							<$else$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad oceania location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect apac_google" style="font-size:11px;padding:0 0 0 5px;width:167px;">
+									<!-- $include job_location_dropdown_google_inc$-->
+									<$include job_location_dropdown_inc$>
+								
+							<$endif$>							
+						
+							<input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+							<input name="location_set_apac" id="<$formName$>location_set_apac" type="hidden" value="" class ="require_group"/>
+							
+						</div>
+					
+					</div>
+				</div>
+				<div class="jobdetail_bg_blue" id="<$formName$>_error"></div>	
+				<div class="" style="float:right;">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+				<div class="" style="width:95%;float:left;">
+					<div class="advanced_search" style="position:relative;"> 
+						<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+					</div><br/>	
+				</div>
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />			
+				
+				
+				<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							&nbsp;
+						</div>
+				</div>			
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			<!--hidden fields-->
+			
+			<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+			<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+			<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+			<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+			<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+			<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+			<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+			<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+			<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+			<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+			<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+			<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+			<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+			<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>			
+		<$if isCrossCountry ne 1$>	
+			<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+		<$endif$>
+			<input type="hidden" name="sort" value="date:D:L:d1"/>
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+			<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>			
+			
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+<$else$>	
+	<$if isEmployer eq 1$>
+		<$contentType="Candidates", searchSectionName = 'candidates-search', dialog='cand_dialog'$>
+		<$formName='Job_Search_APAC', searchTitle=lc('wwCandidatesJobsSearchSpecialism_title')$>
+		<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+	<$else$>
+		<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+		<$formName='Job_Search_APAC', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+		<$urlToSubmitTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+	<$endif$>
+	<$locale = #active.SiteLocale$>	
+	<$domainId = #active.domainId$>
+	<$executeService("SEARCH_LOCATIONS_APAC")$>	
+	<$include search_form_home_apac_js_inc$> 
+
+<div class="container_flex">
+<div>
+	<div class="search_widget_specialism">
+		<h2><$searchTitle$></h2>
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$urlToSubmitTo$>">
+				<div class="" style="width:95%;">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>_title"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input style="font-size:11px;" id="<$formName$>_title" class="textbox require_group" type="text" name="job_title_key_ref" value="<$#active.job_title_key_ref$>">
+					</div>
+				</div>
+				<div class="" style="width:95%;">
+					<div class="search_inner">
+						<input id="<$formName$>isOnlyJobTitle" class="checkbox" type="checkbox" value="<$#active.isOnlyJobTitle$>" name="isOnlyJobTitle">
+						<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+				</div>
+				<div class="" style="width:95%;float:left;">
+						<$if strEquals(contentType,"Candidates")$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad candidate location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect" style="font-size:11px;padding:0 0 0 5px;width:167px;">
+									<$include candidate_location_dropdown_inc$>	
+								
+							<$else$>
+								<$if domainId eq 22 OR domainId eq 23$>
+									<div class="search_inner search_sml_pad oceania location_multiselect">
+								<$else$>
+									<div class="search_inner search_sml_pad asia location_multiselect">
+								<$endif$>
+								<div class="multiselect"  style="font-size:11px;padding:0 0 0 5px;width:167px;">
+									<$include job_location_dropdown_inc$>
+								
+							<$endif$>							
+						
+							<input name="location_set" id="<$formName$>location_set" type="hidden" value="" class ="require_group"/>					
+							<input name="location_set_apac" id="<$formName$>location_set_apac" type="hidden" value="" class ="require_group"/>	
+						</div>
+					
+					</div>
+				</div>
+				<div class="jobdetail_bg_blue" id="<$formName$>_error"></div>	
+				<div class="" style="float:right;">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+				<div class="" style="width:95%;float:left;">
+					<div class="advanced_search" style="position:relative;"> 
+						<a href="<$ssNodeLink(searchSectionName,siteId)$>"><$lc("wwSearchFormJobsCandidateAdvSearchText")$></a>
+					</div><br/>	
+				</div>
+				<div class="grid_q_40">
+					<div class="search_inner search_sml_pad">
+							&nbsp;
+					</div>
+				</div>			
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			<!--hidden fields-->
+			
+			<input type="hidden" name="job_title" id="<$formName$>job_title" value="<$#active.job_title$>"/>
+			<input type="hidden" name="job_keywords" id="<$formName$>job_keywords" value="<$#active.job_keywords$>"/>
+			<input type="hidden" name="job_title_ref" id="<$formName$>job_title_ref_hid" value="<$#active.job_title_ref$>"/>
+			<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+			<input id="<$formName$>job_job_title" type="hidden" value="<$#active.job_job_title$>" name="job_job_title" >
+			<input type="hidden" id="parentCatTerm" name="parentCatTerm" value="<$parentCatTerm$>" />
+
+			<input type="hidden" value="SCORE" name="SortField">
+			<input type="hidden" value="Desc" name="SortOrder">
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+			<input type="hidden" value="1" id="isHomePageSearch" name="isHomePageSearch">
+			
+			
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+<$endif$>
+	<$endif$>
+<@end@>
+<!--End Job Detail Search form -->
+
+
+<!--Start Oil & Gas Home job search form-->
+<@dynamichtml home_international_jobsearch_inc@>
+	<$formName="international_JobSearch_Form"$>
+	<$MicrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>	
+	<$domainId = 97$>
+	<$location="%"$>
+	<$locationColumn="default_description"$>	
+	<$executeService("SEARCH_LOCATIONS")$>	
+	<$include home_international_jobsearch_js_inc$>
+			
+        	<form id="<$formName$>" class="home_search_form apac_form hays_form rc_white" action="<$lc('wwGoogleSearchAction')$>" >				
+								
+				<div class="left_search">
+					<label for="<$formName$>q" class="access"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+					<input id="<$formName$>q" class="textbox require_group" type="text" name="q"  value="<$#active.q$>"/>
+				</div>
+				
+				<div id="<$formName$>international_location" class="right_search asia location_multiselect international_location">				
+					<$include job_international_location_dropdown_inc$>                     
+				</div>
+				
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden"/>	
+				
+				<div id="<$formName$>_error"></div>	
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+					<$endif$>
+					<input type="hidden" name="locationToSearch" id="<$formName$>locationToSearch" value="<$#active.locationToSearch$>"/>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+					<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+					<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+					<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+					<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+					<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+					<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+					<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+					<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+					<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+					<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>					
+					<input type="hidden" name="sort" value="date:D:L:d1"/>							
+					<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+					<!--<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="MicrositeID:<$MicrositeCode$>.IsInternationalPosting:Y" />-->				
+					
+				<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="IsInternationalPosting:Y|IsOilandGasPosting:Y|MicrositeID:<$MicrositeCode$>" />
+
+				<div class="extra_search1" style="width: 150px;">
+					<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" id="<$formName$>isOnlyJobTitle" 
+					value="<$#active.isOnlyJobTitle$>"/>
+					<label for="<$formName$>isOnlyJobTitle"><$lc('wwHomePageOnlySearchJobTitle')$></label>
+				</div>							
+				<div><input type="submit" class="button" value="<$lc('wwSearch')$>"></div>
+				
+        	</form>
+<div id="<$dialog$>"></div>
+<div class="clear"></div>
+<@end@>
+<!--End Oil & Gas Home job search form-->
+
+<@dynamichtml job_international_location_dropdown_inc@>
+<select class="require_group" name="location_group" id="<$formName$>location_group" onchange="setLocationdetails()">
+		<option  value=""><$lc('wwJsselectLocation')$></option>
+		<$loop LOCATION_RESULT_LIST$>
+			<option name="location_group<$IndividualsList.#row$>" id=
+			"<$formName$>location_group<$LOCATION_RESULT_LIST.#row$>" value="<$LOCATION_RESULT_LIST.LOCATION_ID$>,<$LOCATION_RESULT_LIST.LOCATION_DESC$>,<$LOCATION_RESULT_LIST.LEVEL_NO$>,<$LOCATION_RESULT_LIST.NE_LONGITUDE$>,<$LOCATION_RESULT_LIST.NE_LATITUDE$>" >
+			<label for="<$formName$>location_group<$LOCATION_RESULT_LIST.#row$>"
+			id="<$formName$>location_group<$LOCATION_RESULT_LIST.#row$><$LOCATION_RESULT_LIST.#row$><$LOCATION_RESULT_LIST.#row$>">
+			<$LOCATION_RESULT_LIST.LOCATION_DESC$></label>
+			</option>
+		<$endloop$>
+</select>
+<script type="text/javascript">
+	function setLocationdetails() {	
+		if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+			 var LocationSelectId=document.getElementById("<$formName$>location_group");
+			 var elems = LocationSelectId.options[LocationSelectId.selectedIndex].value; 
+			 var arr = jQuery.makeArray(elems.split(","));			 
+			 $('#<$formName$>location_id').attr('value', arr[0]);
+			 $('#<$formName$>locationToSearch').attr('value', arr[1]);
+			 $('#<$formName$>level').attr('value', arr[2]);			
+			 $('#<$formName$>ne_longitude').attr('value', arr[3]);
+			 $('#<$formName$>ne_latitude').attr('value', arr[4]);			
+			}
+		   
+		else {
+				window.setTimeout(setLocationdetails, 100);
+			}
+          }		  
+</script>
+<@end@>
+
+<!--************         JAVA SCRIPT FOR International Job Search form  **************
+***********************************************************************-->
+<@dynamichtml home_international_jobsearch_js_inc@>
+	<script type="text/javascript">	
+	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() {
+	      if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+			$('input[name="q"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');			
+			$("#<$formName$>").validate({
+				onkeyup: false,
+				groups: {
+			        jobsearchGroup: "q location_group" 
+               },
+               submitHandler: function(form) {				
+					
+					$.watermark.hideAll();			
+					
+				   var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');		
+				   if(isOnlyJobTitleValue)
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','Y');						
+				   }
+				   else
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','N');						
+				   }				  
+					
+					var dialog_id ="<$dialog$>";			
+					$.watermark.hideAll();					
+					$('#<$formName$>radius').val('0');					
+					<$include google_home_validation$>						
+					<$if isProjectSEnabled eq 1$>
+						<$searchUrl = portalUrl & #env.ProjectS_Search_Results$>
+						location.href = "<$searchUrl$>?q="+$('input[name=q]',form).val()+"&location="+$('input[name=locationToSearch]',form).val()+"&locationId="+$('input[name=location_id]',form).val()+"&locationLevel="+$('input[name=level]',form).val();
+					<$else$>
+						form.submit();
+					<$endif$>
+					
+				},
+				rules: {
+						q: {
+							require_from_group: [1, '.require_group']
+						} , 
+						location_group: {
+							require_from_group: [1, '.require_group']
+						}
+				},
+				messages : {
+					q : '<$lc('wwSearchFormRequiredMessage')$>',					
+					location_group : '<$lc('wwSearchFormRequiredMessage')$>'
+				},
+				errorPlacement: function(error, element) {
+					
+					if ('<$formName$>'== "international_JobSearch_Form" && (element.attr('name') == "q" || element.attr('name') == "location_group") ) {						
+						$("#<$formName$>location_group").addClass("error_be");
+						error.appendTo('#<$formName$>_error');
+					}
+
+				else {
+						error.insertAfter(element);
+					}
+				}
+			});
+			
+			<$include job_keywords_home_autocomplete_inc$>
+			
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}		
+		
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+
+<@end@>
+
+
+
+<!--***Search forms for Oil and Gas***-->
+
+<@dynamichtml job_spec_search_form_oilgas@>
+
+
+
+	<$MicrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>	
+	<$domainId = 97$>
+	<$location="%"$>
+	<$locationColumn="default_description"$>
+	<$temp2 = ""$>
+	<$executeService("SEARCH_LOCATIONS")$>	
+		
+		<$include check_nav_type$>
+		<$contentType="Jobs", dialog='jobs_dialog'$>
+		<$formName='Job_Search_OG'$>
+		<$category = ssGetNodeProperty(nodeId, 'InternationalCategory')$>
+		<$expertiseLabel=ssGetNodeLabel(siteId,nodeId)$>
+		<$temp2 = strReplace(category, 'hays:', '')$>
+		<$temp2 = strReplace(temp2, ',', '|xCategory:')$>
+		<$include job_spec_search_form_oilgas_js_inc$>
+
+		<div class="container_flex">
+			<div>
+				<div class="search_widget_specialism">
+					<h2><$lc('wwJobsSearchSpecialism_title')$></h2> 
+						<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$lc('wwGoogleSearchAction')$>">
+							<div class="grid_q_40">
+								<div class="search_inner">
+									<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+									<input id="<$formName$>q" class="textbox require_group" autocomplete="off" type="text" name="q" value=	"<$#active.q$>">
+								</div>
+							</div>
+				
+				
+							<div class="grid_q_40">
+								<div class="search_inner search_sml_pad">
+									<$include job_international_location_dropdown_inc$> 									
+								</div>
+							</div>
+							<label for="<$formName$>partialfields" ></label>
+							<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+				
+							<div class="grid_q_20">
+								<div class="search_button_inner">
+									<input type="submit" class="button" value="<$lc('wwSearch')$>">
+								</div>
+							</div>
+		
+							<div class="bg_blue" id="<$formName$>_error"></div>&nbsp; 
+							<div class="grid_q_40">
+								<div class="search_inner">
+									<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+									"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+									"isOnlyJobTitle">
+									<label for="<$formName$>isOnlyJobTitle">
+									<$lc('wwHomePageOnlySearchJobTitle')$></label>
+								</div>						
+						</div>					
+							[[%<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+								&nbsp;
+							<$else$>
+								<div class="grid_q_40">
+									<div class="search_inner search_sml_pad">
+									&nbsp;
+									</div>
+								</div>
+							<$endif$>	%]]
+							
+							
+							<$if strLength(category) GT 0 $>
+								<div class="grid_q_40">
+									<div class="search_inner search_sml_pad">
+										<input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked>
+										<label for="<$formName$>x_search"><$expertiseLabel$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$></label>
+									</div>
+								</div>
+							<$else$>
+								<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+									&nbsp;
+								<$else$>
+									<div class="grid_q_40">
+										<div class="search_inner search_sml_pad">
+											&nbsp;
+										</div>
+									</div>
+								<$endif$>	
+							<$endif$>	
+							
+					
+				
+						<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+						<$endif$>
+			
+						<!--hidden fields-->
+						<label for="<$formName$>partialfields" ></label>
+												
+					<input type="hidden" name="locationToSearch" id="<$formName$>locationToSearch" value="<$#active.locationToSearch$>"/>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+					<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+					<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+					<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+					<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+					<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+					<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+					<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+					<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+					<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+					<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>					
+					<input type="hidden" name="sort" value="date:D:L:d1"/>
+					<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+					<!--<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="MicrositeID:<$MicrositeCode$>.IsInternationalPosting:Y" />-->
+				
+				<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="IsInternationalPosting:Y|IsOilandGasPosting:Y|MicrositeID:<$MicrositeCode$>" />
+
+
+													
+						<!--end-->		
+					</form>
+				</div>
+
+				<div id="<$dialog$>" title="Heading"> </div>
+			</div>
+		</div> <!-- added for Release 8.0 sec 7.2 8A-->
+
+<@end@>
+
+<@dynamichtml job_spec_search_form_oilgas_js_inc@>
+	<script type="text/javascript">	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() {
+	      if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+			$('input[name="q"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');
+			$('input[name="location_group"]').watermark('<$lc('wwSearchJobCandLocationWaterMark')$>');        
+			var locationObject = null;
+
+			$("#<$formName$>").validate({
+				onkeyup: false,
+				groups: {
+			        jobsearchGroup: "q location_group" 
+               },
+               submitHandler: function(form) {					
+					
+				var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');		
+				   if(isOnlyJobTitleValue)
+				    {
+					 	$('input[name=isOnlyJobTitle]').attr('value','Y');						
+				    }
+				   else
+					{
+						$('input[name=isOnlyJobTitle]').attr('value','N');	
+					}
+				
+					var dialog_id ="<$dialog$>";	
+					
+						$.watermark.hideAll();
+					
+						if ('<$searchWidgetSuffix$>'=='cerow1' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 4)  {
+							if(($('input[name=location_group]',form).val() == "" || $('input[name=location_group]').is('.watermark')) && (g_CountryCode=='BEL')) {
+							$('#<$formName$>radius').val('<$#env.DefaultRadius$>');
+							}
+							else {
+							$('#<$formName$>radius').val('0');
+							}
+						}
+						else if ('<$searchWidgetSuffix$>'=='' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 5)
+						{
+						  $('#<$formName$>radius').val('0');
+						}
+						
+						if(($('input[name=location_group]',form).val() === "" || $('input[name=location_group]').is('.watermark'))) {
+							$('input[name=ne_longitude]', form).val("");
+							$('input[name=ne_latitude]', form).val("");
+						}
+						var specialism_exists_check = "<$temp2$>";
+						
+						if (specialism_exists_check ==""){
+						
+						<$include google_home_validation$>
+						}
+						else{
+						
+						<$include international_specialism_validation$>						
+						}
+						<$if isProjectSEnabled eq 1$>
+							<$searchUrl = portalUrl & #env.ProjectS_Search_Results$>
+							location.href = "<$searchUrl$>?q="+$('input[name=q]',form).val()+"&location="+$('input[name=locationToSearch]',form).val()+"&locationId="+$('input[name=location_id]',form).val()+"&locationLevel="+$('input[name=level]',form).val();
+						<$else$>
+							form.submit();
+						<$endif$>
+				},
+				rules: {
+						q: {
+							require_from_group: [1, '.require_group']
+						} , 
+						location_group: {
+							require_from_group: [1, '.require_group']
+						}
+				},
+				messages : {
+					q : '<$lc('wwSearchFormRequiredMessage')$>',					
+					location_group : '<$lc('wwSearchFormRequiredMessage')$>'
+				},
+					errorPlacement: function(error, element) {
+					
+					if ('<$formName$>'== "Job_Search_OG" && (element.attr('name') == "q" || element.attr('name') == "location_group") ) {
+											
+						$("#<$formName$>location_group").addClass("error_be");
+						error.appendTo('#<$formName$>_error');
+					}
+
+				else {
+						error.insertAfter(element);
+					}
+				}
+			});
+			
+			<$include job_keywords_home_autocomplete_inc$>	
+		
+        		
+			
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+		
+		var <$formName$>locationMap = null;
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+
+<@end@>
+
+<@dynamichtml international_specialism_validation@>
+	var specialism_exists_check = "<$temp2$>";		
+	if ((specialism_exists_check!="") && ((document.getElementById("<$formName$>locationToSearch").value !="" ) || (document.getElementById("<$formName$>locationToSearch").value !="<$lc('wwSearchJobCandLocationWaterMark')$>" )) && (document.getElementById("<$formName$>isOnlyJobTitle") == null || document.getElementById("<$formName$>isOnlyJobTitle").checked == false ))
+	{
+		
+		if(document.getElementById("<$formName$>locationToSearch").value !="")
+		{
+			
+			document.getElementById("<$formName$>partialfields").value="(xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value + ")";
+			
+			if (document.getElementById("<$formName$>x_search").checked == false )
+			{
+				
+			}
+			else 
+			{
+			
+				document.getElementById("<$formName$>partialfields").value+=".(InternationalSpecialism:" +specialism_exists_check+ ")";
+				
+			}
+		}
+		else
+		{
+			if (document.getElementById("<$formName$>x_search").checked == false )
+			{
+				
+			}
+			else 
+			{
+				
+				document.getElementById("<$formName$>partialfields").value+="(InternationalSpecialism:" +specialism_exists_check+ ")";
+				
+			}
+		
+		}
+	}
+	
+		else {
+
+			document.getElementById("<$formName$>partialfields").value="(xHayslocation" + document.getElementById("<$formName$>level").value + ":" +document.getElementById("<$formName$>location_id").value + ")";
+			document.getElementById("<$formName$>partialfields").value+=".(JobTitle:" +escape(document.getElementById("<$formName$>q").value) + ")";
+			if (document.getElementById("<$formName$>x_search").checked == false ){
+	
+			}
+			else {
+		
+			document.getElementById("<$formName$>partialfields").value+=".(InternationalSpecialism:" +specialism_exists_check+ ")";
+			
+			}
+		}
+<@end@>
+
+
+<@dynamichtml subtmp_international_detail_page_search_form@> 
+	<$MicrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>	
+	<$domainId = 97$>
+	<$location="%"$>
+	<$locationColumn="default_description"$>
+	<$temp2 = ""$>
+	<$executeService("SEARCH_LOCATIONS")$>	
+	<$include check_nav_type$>
+	<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+	<$formName='Job_DetailPage', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+	<$locale = #active.SiteLocale$>
+	<$include subtmp_international_detail_page_search_form_js_inc$>
+	<div class="container_flex">
+		<div>
+			<div class="search_widget_specialism">
+				<h2><$searchTitle$></h2>
+					<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$lc('wwGoogleSearchAction')$>">
+						<div class="" style="width:95%;">
+							<div class="search_inner">
+								<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+								<input id="<$formName$>q" style="font-size:11px;" class="textbox require_group" autocomplete="off" type="text" name="q" value="">
+							</div>
+						</div>
+						<div class="" style="width:95%;">
+							<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX'$>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+							<$else$>
+								<div class="search_inner">
+									<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+									"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+									"isOnlyJobTitle">
+									<label for="<$formName$>isOnlyJobTitle">
+									<$lc('wwHomePageOnlySearchJobTitle')$></label>
+								</div>				
+							<$endif$>
+						</div>							
+						<div class="" style="width:95%;float:left">
+							<div class="search_inner">
+								<label class="access" for="<$formName$>locationToSearch"><$lc('wwSearchJobCandLocationWaterMark')$></label>								
+								<$include job_international_location_dropdown_inc$>							
+							</div>
+						</div>
+						<label for="<$formName$>partialfields" ></label>
+						
+							<div class="jobdetail_bg_blue" id="<$formName$>_error"></div> 
+							<div class="" style="float:right;">
+								<div class="search_button_inner">
+									<input type="submit" class="button" value="<$lc('wwSearch')$>">
+								</div>
+							</div>
+							<div class="" style="width:95%;float:left;">
+							</div>												
+							<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+								&nbsp;
+							<$else$>
+								<div class="grid_q_40">
+									<div class="search_inner search_sml_pad">
+									&nbsp;
+									</div>
+								</div>
+							<$endif$>						
+							<$if not #active.level or (#active.level and #active.level lt 3)$>
+								<$level=3$>
+							<$endif$>
+										
+							<input id = "<$formName$>partialfields" name="partialfields" type="hidden" value=""/>
+							<input type="hidden" name="locationToSearch" id="<$formName$>locationToSearch" value="<$#active.locationToSearch$>"/>
+							<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+							<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+							<input type="hidden" value="<$#active.contentType$>" name="contentType">
+							<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+							<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+							<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+							<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+							<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+							<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+							<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+							<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+							<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+							<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+							<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+							<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+							<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>					
+							<input type="hidden" name="sort" value="date:D:L:d1"/>
+					
+							<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+							<!--<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="MicrositeID:<$MicrositeCode$>.IsInternationalPosting:Y" />-->
+					<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="IsInternationalPosting:Y|IsOilandGasPosting:Y|MicrositeID:<$MicrositeCode$>" />
+													
+					</form>
+				</div>
+				<div id="<$dialog$>" title="Heading"> </div>
+			</div>
+		</div>
+<@end@>
+
+<@dynamichtml subtmp_international_detail_page_search_form_js_inc@>
+	<script type="text/javascript">	
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() {
+	      if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+			$('input[name="q"]').watermark('<$lc('wwHomePageSrchJobTitleRefWaterMark')$>');
+			$('input[name="location_group"]').watermark('<$lc('wwSearchJobCandLocationWaterMark')$>');        
+			var locationObject = null;
+
+			$("#<$formName$>").validate({
+				onkeyup: false,
+				groups: {
+			        jobsearchGroup: "q location_group" 
+               },
+               submitHandler: function(form) {					
+					
+					var locationMap1 = $("#<$formName$>locationMap").attr('value');
+					$.watermark.hideAll();
+					
+					if ((<$formName$>locationMap != 'bypass' && <$formName$>locationMap != null)) {
+						if (<$formName$>locationMap != null) {
+									var locationObject = <$formName$>locationMap;
+									var locationValue = $("#<$formName$>location_group").attr('value');
+									
+							}
+						
+						var locationDescr = "LOCATION_DESC";
+						   jQuery.each(locationObject,
+							   function(i, val) {
+									   if (locationValue.toLowerCase() == val[locationDescr].toLowerCase() && locationValue.length == val[locationDescr].length) {
+										   $('#<$formName$>level').attr('value', val.LEVEL_NO);
+										   $('#<$formName$>ne_longitude').attr('value', val.NE_LONGITUDE);
+										   $('#<$formName$>ne_latitude').attr('value', val.NE_LATITUDE);
+										   $('#<$formName$>location_id').attr('value', val.LOCATION_ID);
+									   }
+							   }
+						   );
+					 } 					
+					
+					var isOnlyJobTitleValue = $('#<$formName$>isOnlyJobTitle').attr('checked');		
+				   if(isOnlyJobTitleValue)
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','Y');	
+							
+						
+				   }
+				   else
+				   {
+						$('input[name=isOnlyJobTitle]').attr('value','N');	
+						
+				  }
+									
+					
+				  if((document.getElementById("<$formName$>ne_longitude").value=="") && (document.getElementById("<$formName$>ne_latitude").value==""))
+				 {
+					if(document.getElementById("<$formName$>locationMap")==null)
+					{
+						
+						<$formName$>locationMap=null;
+						
+					}
+				}
+					
+					var dialog_id ="<$dialog$>";	
+					$.watermark.hideAll();
+					
+						if ('<$searchWidgetSuffix$>'=='cerow1' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 4)  {
+							if(($('input[name=location_group]',form).val() == "" || $('input[name=location_group]').is('.watermark')) && (g_CountryCode=='BEL')) {
+							$('#<$formName$>radius').val('<$#env.DefaultRadius$>');
+							}
+							else {
+							$('#<$formName$>radius').val('0');
+							}
+						}
+						else if ('<$searchWidgetSuffix$>'=='' && $('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 5)
+						{
+						  $('#<$formName$>radius').val('0');
+						}
+						
+						if(($('input[name=location_group]',form).val() === "" || $('input[name=location_group]').is('.watermark'))) {
+							$('input[name=ne_longitude]', form).val("");
+							$('input[name=ne_latitude]', form).val("");
+						}
+						var specialism_exists_check = "<$temp2$>";
+						
+						if (specialism_exists_check ==""){
+						
+						<$include google_home_validation$>
+						}
+						else{
+						
+						<$include international_specialism_validation$>						
+						}
+						form.submit();
+					
+				},
+				rules: {
+						q: {
+							require_from_group: [1, '.require_group']
+						} , 
+						location_group: {
+							require_from_group: [1, '.require_group']
+						}
+				},
+				messages : {
+					q : '<$lc('wwSearchFormRequiredMessage')$>',					
+					location_group : '<$lc('wwSearchFormRequiredMessage')$>'
+				},
+			
+				errorPlacement: function(error, element) {
+					
+					if ('<$formName$>'== "Job_DetailPage" && (element.attr('name') == "q" || element.attr('name') == "location_group") ) {
+						
+					
+						$("#<$formName$>location_group").addClass("error_be");
+						error.appendTo('#<$formName$>_error');
+					}
+
+				else {
+						error.insertAfter(element);
+					}
+				}
+			});
+			
+			<$include job_keywords_home_autocomplete_inc$>	
+		
+        	
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+		
+		var <$formName$>locationMap = null;
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+<@end@>
+
+
+
+</body></html>	

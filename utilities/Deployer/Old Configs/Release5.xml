@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy>
+	<movement from="UK_OAT_CONSUMP" to="LOCAL_DIR_FOR_UK_OAT">
+		<file name="haysgeneralcomponentr6_left_hand_nav.htm" sourcelocation="/HaysGeneralComponentR6/resources/" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="/HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_OAT_CONSUMP" to="LOCAL_DIR_FOR_APAC_OAT">
+		<file name="haysgeneralcomponentr6_left_hand_nav.htm" sourcelocation="/HaysGeneralComponentR6/resources/" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="/HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="UK_PROD_CONSUMP" to="LOCAL_DIR_FOR_UK_PROD">
+		<file name="haysgeneralcomponentr6_left_hand_nav.htm" sourcelocation="/HaysGeneralComponentR6/resources/" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="/HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_PROD_CONSUMP" to="LOCAL_DIR_FOR_APAC_PROD">
+		<file name="haysgeneralcomponentr6_left_hand_nav.htm" sourcelocation="/HaysGeneralComponentR6/resources/" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="/HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+	</movement>
+</deploy>

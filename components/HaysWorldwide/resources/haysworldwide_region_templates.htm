@@ -1,0 +1,2114 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysWorldwide htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<!--***********************************************************
+	****** HAYS CAREER : SELECT COUNTRY LIST *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_selectcountrylist_inc@>	
+[[% --24983 Hays.com redirect - Manbo request-- %]]
+<$if (strLength(getCookie("UserWebsiteChoice")) eq 0) 
+	and strEqualsIgnoreCase(siteId,'HaysWorldwide')
+	and (strEquals(nodeId,'1963') or strEquals(nodeId,'712')) $> <!-- 1963 (home page) and 712 (our-services/search-for-jobs) -->
+	<div id="country-popup">
+		<$executeService('HAYS_WEBSITE_LIST')$>
+		<h3>Please confirm if you want to visit </h3>		
+		<div class="country">
+			<p>Hays in</p>
+			<div class="custom-dropdown">
+				<a href="#" id="defaultOption" onClick="">Please Select</a><a href="#" class="change-btn">Change</a>
+				<div>
+					<ul class="col col-2">				   
+						<$name="CountryWebsites"$>			
+						<$if rsExists(name) AND rsFirst(name) $>
+							<$loop CountryWebsites$>							
+								<$if strEquals(HTTP_HAYS_CN,CountryWebsites.ISOCOUNTRYCODE)$>
+								<li><a href="http://<$CountryWebsites.WEBSITEADDRESS$>" onClick="return CountryRedirect('<$CountryWebsites.WEBSITEADDRESS$>')" id="selectedOption" ><$CountryWebsites.COUNTRY$></a></li>
+								<$else$>
+								<li><a href="http://<$CountryWebsites.WEBSITEADDRESS$>" onClick="return CountryRedirect('<$CountryWebsites.WEBSITEADDRESS$>')" id="Option" ><$CountryWebsites.COUNTRY$></a></li>
+								<$endif$>							
+							<$endloop$>
+						<$endif$>
+					</ul>
+				</div>
+			</div>
+			<span> or </span>
+		</div>
+		<a href="#" class="corporate" onClick="return CountryRedirect(window.location.host)">Hays plc global</a>
+	</div>
+	<link rel="stylesheet" type="text/css"  href="/haysassets/HaysGeneralComponent/assets/css/redirect_manbo.css" />
+	<script type="text/javascript" src="/haysassets/HaysGeneralComponent/assets/js/document_r6.js"></script>
+
+	<script type="text/javascript">
+			$(document).ready(function() {           
+			   populateCountry();			
+			});
+
+			function populateCountry()
+			{
+					$('.custom-dropdown > .change-btn').click(function(e){
+						$(this).toggleClass('active').next('div').slideToggle(300);
+						e.stopPropagation();
+						e.preventDefault();	
+					});
+					$('body').click(function(){
+						$('.custom-dropdown > .change-btn').removeClass('active').next('div').slideUp(300);	
+					});
+
+					if($("#selectedOption").length)
+					{
+						$("#defaultOption").attr("href", $("#selectedOption").attr("href"));
+						$("#defaultOption").html($("#selectedOption").html());
+						$("#defaultOption").attr("onClick", $("#selectedOption").attr("onClick"));
+					}
+					
+					$("#country-popup").dialog({
+					  resizable: false,
+					  height:120,
+					  width:350,
+					  modal: true,            	  
+					  open: function(){
+							$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+							$('.ui-dialog-titlebar-close').hide();
+							
+							},
+					  title: 'Please select'
+					});
+					
+			}
+
+			function CountryRedirect(desiredRedirect)
+			{
+				var options = { path: '/', expires: 10, domain:'.hays.com'};
+				if (typeof(_gaq) !== 'undefined') 
+				{
+				   _gaq.push(['_trackEvent', 'Redirect', 'Select', '<$HTTP_HAYS_CN$>']);                                  
+				}
+				$.cookie('UserWebsiteChoice', decodeURIComponent(desiredRedirect),options);
+				$("#country-popup").dialog('close');
+				return true;
+			}
+	</script>
+<$endif$>
+[[% --24983 Hays.com redirect - Manbo request END-- %]]
+		
+<$include rgtmp_worldwide_continent_total_number_inc$>
+	
+	<$totalCount = totalCount + 12$>
+	
+		<$if (totalCount%3)==0$>
+			  <$maxcount=totalCount/3$>
+			<$else$>
+			  <$maxcount=(totalCount/3)+1$>
+		<$endif$>
+	
+<$total = 0$>
+<div id="worldwide"><h3><$lc('wwGCHaysWorldwide')$></h3>
+			<div id="worldwide-menu">
+					<div class="worldwide-col">
+
+<ul>
+<$total = total +2$>
+<li><h4><$lc('wwGCAsia')$></h4></li> 
+<$wcmListStart("Asia")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("Asia")$>
+	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul>
+	 <$endif$> 
+
+<$total = total +2$>
+<li><h4><$lc('wwGCAfricaMiddleEast')$></h4></li>
+<$wcmListStart("Africa & Middle East")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("Africa & Middle East")$>
+	  <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul>
+	  <$endif$> 
+
+<$total = total +2$>
+<li><h4><$lc('wwGCAustralia')$></h4></li>
+<$wcmListStart("Australasia")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("Australasia")$>
+ 	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul>
+   	 <$endif$>
+
+<$total = total +2$>
+<li><h4><$lc('wwGCEurope')$></h4></li>
+<$wcmListStart("Europe")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("Europe")$>
+	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul>
+	 <$endif$>
+
+<$total = total +2$>
+<li><h4><$lc('wwGCNorthAmerica')$></h4></li>
+<$wcmListStart("North America")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("North America")$>
+	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul>
+	 <$endif$>
+
+<$total = total +2$>
+<li><h4><$lc('wwGCSouthAmerica')$></h4></li>
+<$wcmListStart("South America")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("South America")$>
+<$if domainId==1001$>
+	<$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul>
+	 <$endif$>
+
+<$total = total +2$>
+<li><h4><$lc('wwGCGlobalServices')$></h4></li>
+<$wcmListStart("GlobalServices")$>
+<$include rgtmp_worldwide_continent_inc$>
+<$wcmListEnd("GlobalServices")$>
+<$endif$>
+	
+</ul>
+				</div> <!--/worldwide-col 2-->
+	
+		</div><!-- /worldwide-menu-->
+	
+</div><!-- /worldwide-->
+
+ <@end@>
+
+ <!--***********************************************************
+	****** HAYS CAREER : Continent Static List *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_continent_inc@>
+
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+	<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+
+		<$if total>=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				</div><!-- /worldwide-col 2-->
+				<div class="worldwide-col"><ul>
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+<$endloop$>
+
+<@end@>
+
+<!--***********************************************************
+	****** HAYS CAREER : Continent Total *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_continent_total_number_inc@>
+
+<$totalCount = 0$>
+<$wcmListStart("Asia")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("Asia")$>
+
+<$wcmListStart("Africa & Middle East")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("Africa & Middle East")$>
+
+<$wcmListStart("Australasia")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("Australasia")$>
+
+<$wcmListStart("Europe")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("Europe")$>
+
+<$wcmListStart("North America")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("North America")$>
+
+<$wcmListStart("South America")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("South America")$>
+
+<$if domainID==1001$>
+<$wcmListStart("GlobalServices")$>
+<$include rgtmp_worldwide_continent_total_inc$>
+<$wcmListEnd("GlobalServices")$>
+<$endif$>
+
+<@end@>
+
+<!--***********************************************************
+	****** HAYS CAREER : Continent Static List Total *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_continent_total_inc@>
+
+<$wcmListNumRows = wcmListRowCount()$> 
+<$totalCount = totalCount + wcmListNumRows$>
+<@end@>
+
+<!--***********************************************************
+	****** HAYS CAREER : Header *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_header_inc@>
+	<div id="top">
+<$if userAgent_tab eq 0$>
+			<div id="logo"><$wcmElement("HaysLogo")$></a></div>
+			<$else$>
+					<a title="<$lc('wwHaysGeneral')$>" href="<$wcmUrl('nodelink','home')$>" id="logo"><img src="/cs/groups/hays_ta/documents/sitestudio/img_logo_hays.gif" alt="<$lc('wwHaysGeneral')$>"></a>
+				<$endif$>
+			<$if domainId == 1005$>
+			<$include set_displayLanguageFlag$>
+			<$include translation_flags_inc$>
+			<$endif$>
+			
+			
+			<$include subtmp_worldwide_site_search_inc$>
+			<$include rgtmp_worldwide_selectcountrylist_inc$>
+	</div><!-- /top-->
+<$include subtmp_worldwide_topNav_inc$> 
+	
+<@end@>
+
+<@dynamichtml extract_datafile_haysWorldwide_header_hdb@>
+<$ PL_NAME = 'Header' $>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_WORLDWIDE_HEADER_HDB', datafileInclude)$>
+<@end@>
+
+<@dynamichtml rgtmp_worldwide_header_hdb@>
+<header class="full-width-container">
+<div class="row" id="header-main">
+			<div class="col col-9">
+<$if userAgent_tab eq 0$>	
+			
+			<div id="logo"><$wcmElement("HaysLogo")$></a></div>
+<$else$>
+			<$if strEquals(siteId, "usHC")$>
+			<a title="<$lc('wwHaysGeneral')$>" href="<$wcmUrl('nodelink','1963')$>" id="logo"><img src="/cs/groups/hays_ta/documents/sitestudio/img_logo_hays.gif" alt="<$lc('wwHaysGeneral')$>"></a>
+			<$else$>
+			<a title="<$lc('wwHaysGeneral')$>" href="<$wcmUrl('nodelink','home')$>" id="logo"><img src="/cs/groups/hays_ta/documents/sitestudio/img_logo_hays.gif" alt="<$lc('wwHaysGeneral')$>"></a>
+			<$endif$>
+			
+<$endif$>
+			
+	       </div>
+		 
+    <div class="col col-3">			   
+            
+
+	<div id="site-search"> 
+			<form action="<$ssNodeLink('sitesearch')$>" class="hays_form" id="sitesearch" method="get">
+						<$searchParametersValue=encodeForHTML(#active.searchParameters)$>
+						<input type="search" placeholder="<$lc('wwGCSearchSiteWaterMark')$>" class="required" name="searchParameters" id="QueryText" value="<$searchParametersValue$>" />
+						<button type="submit" class="btn btn-search icon-glyph-1"></button>
+					</form>
+				
+    </div> 	
+	
+	           <a href="#" id="mobile-search-icon"></a>
+			   
+				<a href="#" id="mobile-menu-icon"><span></span><span></span><span></span></a>		
+	
+	</div><!-- /top-->
+	
+</div> 
+
+
+<$if rsExists("SiteStudioNavNodes") == 0$>
+	<$ssLoadSiteNavResultSet(siteId)$>
+<$endif$>
+
+<$levelnodeCount=1$>
+<!--- 
+
+created result set from node id which needs to be displayed on top nav which hard coded 
+
+into the config file in  #env.TopNavNodeList variable
+
+<$rsMakeFromString("ToplevelOneNodeNavList", #env.TopNavNodeList, "tovNavNodeID")$> 
+
+
+
+-->
+
+<!--- Filtred the site studio nodes results set with level 1 value -->
+<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelOne', 'level', '1') $>
+
+<!--- Filtred the site studio nodes results set with level 2 value -->
+<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelTwo', 'level', '2') $>
+
+<!--- include is used get the node ID of the current node/parrentnodeID/parrent of parrentnodeID-->
+<$include subtmp_worldwide_get_currentNodeID$>
+
+<!--- currentClickLink is used get the current click href or URL-->
+
+<$activeNodeId = #active.nodeId $>
+
+<$ currentClickLink = ssGetServerRelativeUrl(#active.siteId,#active.nodeId)$>
+
+
+
+<!--- to populate filtered level1 sections -->			  
+<$if rsExists("haysNavNodesFilteredlevelOne") and rsNumRows("haysNavNodesFilteredlevelOne") >= 1 $>
+	<$homePageNodeId=ssGetFirstNodeId(siteId)$>
+		
+		<div class="row" id="menu">
+
+			<div class="col col-12">
+			<nav id="nav-social">
+			<$aLinkedin=wcmElement("Linkedin")$>
+			<$aTwitter=wcmElement("Twitter")$>
+			<$Facebook=wcmElement("Facebook")$>
+			<$Instagram=wcmElement("Instagram")$>
+				<ul>
+				<$if strLength(strTrimWs(aLinkedin)) gt 0 $>
+				
+				    <li><a href="<$wcmElement("Linkedin")$>" class="icon icon-30 icon-linkedin" target="_blank"></a></li>
+				
+				<$endif$>
+				<$if strLength(strTrimWs(aTwitter)) gt 0 $>
+				
+				    <li><a href="<$wcmElement("Twitter")$>" class="icon icon-30 icon-twitter" target="_blank"></a></li>
+				
+				<$endif$>
+				<$if strLength(strTrimWs(Facebook)) gt 0 $>
+				
+				    <li><a href="<$wcmElement("Facebook")$>" class="icon icon-30 icon-facebook" target="_blank"></a></li>
+				
+				<$endif$>
+				<$if strLength(strTrimWs(Instagram)) gt 0 $>
+				
+				    <li><a href="<$wcmElement("Instagram")$>" class="icon icon-30 icon-instagram" target="_blank"></a></li>
+				
+				<$endif$>
+				</ul>
+				</nav>
+     <nav id="nav-main">
+      
+			<ul>
+			<$loop haysNavNodesFilteredlevelOne$> 
+				<$showchildClass = "icon-sort-down"$>
+				<li id="toggle-n<$haysNavNodesFilteredlevelOne.nodeId$>" class="toggleParent">
+					<$if strIndexOf(currentParrentNodeID,haysNavNodesFilteredlevelOne.nodeId)  == 0$>				 
+						<a href="<$href$>"><$haysNavNodesFilteredlevelOne.label$></a>
+						<$showchild ="false"$>					 
+					<$else$>	
+              <$showchildClass = "icon-sort-down"$>			  
+						<a href="<$href$>"><$haysNavNodesFilteredlevelOne.label$><i class="dummy"></i></a>				 
+					<$endif$>
+					</li>
+					
+							<$levelnodeCount = levelnodeCount+1$>
+			<$endloop$>	
+			<li id="toggle-worldwide" class="toggleParent"><a href="#" ><$lc('wwGCHaysWorldwide')$><i class="icon-sort-down"></i></a></li>
+					</ul>
+					<$loop haysNavNodesFilteredlevelOne$> 
+					<$rsCopyFiltered('haysNavNodesFilteredlevelTwo',
+									'haysNavNodesFilteredlevelTwoParentMatch','parentNodeId',haysNavNodesFilteredlevelOne.nodeId)$>
+									<$ rowNumChild =rsNumRows("haysNavNodesFilteredlevelTwoParentMatch") $>
+				<div class="dropdown-content" id="dropmenu">
+<$if rowNumChild ne 0$>	
+<script>
+	$("#toggle-n<$haysNavNodesFilteredlevelOne.nodeId$>").find(".dummy").addClass("icon-sort-down");
+</script>			
+				<div id="hays-n<$haysNavNodesFilteredlevelOne.nodeId$>" style="overflow: hidden;" class="toggleChild">
+						<div class="row">
+										<$loop haysNavNodesFilteredlevelTwoParentMatch$>									
+													<ul class="col col-2 first">
+											<li class="first last">
+											<a href="<$haysNavNodesFilteredlevelTwoParentMatch.href$>" target=""><$haysNavNodesFilteredlevelTwoParentMatch.label$></a>
+											</li>
+											</ul>
+										<$endloop$>
+						</div>
+					</div>
+<$endif$>					
+					</div>
+		<$endloop$>	
+<$include rgtmp_worldwide_continent_total_number_inc$>
+<$totalCount = totalCount + 12$>
+	
+		<$if (totalCount%3)==0$>
+			  <$maxcount=totalCount/3$>
+			<$else$>
+			  <$maxcount=(totalCount/3)+1$>
+		<$endif$>
+		<$total = 0$>
+<div class="dropdown-content" id="dropmenu">
+<div id="hays-worldwide" class="toggleChild">
+<a href="#" class="btn-close icon-glyph-3"></a>
+<div class="row">
+		
+<ul class="col col-2">
+<$total = total +2$>
+
+<h4><$lc('wwGCAsia')$></h4>
+<$wcmListStart("Asia")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+	<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+	<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+<$endloop$>
+		<$if total<=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+
+<$wcmListEnd("Asia")$>
+	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul class="col col-2">
+	 <$endif$> 
+
+<$total = total +2$>
+<h4><$lc('wwGCAfricaMiddleEast')$></h4>
+<$wcmListStart("Africa & Middle East")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+		<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+<$endloop$>
+		<$if total<=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+
+<$wcmListEnd("Africa & Middle East")$>
+<$if strEquals(showul,'true')$>
+		 </ul>
+<ul class="col col-2">
+	 <$endif$>
+	 <$total = total +2$>
+<h4><$lc('wwGCAustralia')$></h4>
+<$wcmListStart("Australasia")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+		<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+<$endloop$>
+		<$if total<=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+
+<$wcmListEnd("Australasia")$>
+ 	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul class="col col-2">
+   	 <$endif$>
+	 
+<$total = total +2$>
+<h4><$lc('wwGCEurope')$></h4>
+<$wcmListStart("Europe")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+<$endloop$>
+		<$if total>=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+
+<$wcmListEnd("Europe")$>
+	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul class="col col-2">
+	 <$endif$>
+	 
+<$total = total +2$>
+<h4><$lc('wwGCNorthAmerica')$></h4>
+<$wcmListStart("North America")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+	<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+
+		<$if total>=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+<$endloop$>
+<$wcmListEnd("North America")$>
+	 <$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul class="col col-2">
+	 <$endif$>
+	 
+<$total = total +2$>
+<h4><$lc('wwGCSouthAmerica')$></h4>
+<$wcmListStart("South America")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+	<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+
+		<$if total>=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+<$endloop$>
+<$wcmListEnd("South America")$>
+<$if domainId==1001$>
+	<$if strEquals(showul,'true')$>
+		 </ul>
+		  <ul class="col col-2">
+	 <$endif$>
+
+<$total = total +2$>
+<h4><$lc('wwGCGlobalServices')$></h4>
+<$wcmListStart("GlobalServices")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$> 
+<$loopwhile wcmListIndex < wcmListNumRows$>
+	<$aLink = wcmListElement("Link", wcmListIndex)$>
+	<$aLink= strReplace(aLink,'target=""','target="_blank"')$>
+		<li><$aLink$></li>
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$total = total + 1$>
+
+		<$if total>=maxcount$>
+			<$showul = "false" $>				 
+				</ul>
+				<ul class="col col-2">
+				<$total=0$>
+				<$else$>
+			<$showul = "true" $>
+		<$endif$>
+<$endloop$>
+<$wcmListEnd("GlobalServices")$>
+<$endif$>
+	 
+</div>
+</div>		
+</div>	
+		  </nav>  
+</div>
+		</div>
+</header>
+	<style>
+	.toggleChild {display:none;}
+	.toggleChild{
+		background: #009ed9;
+	  border-top: 3px solid #002776;
+	  position: absolute;
+	  left: -20px;
+	  top: 39px;
+	  z-index: 1000;
+	  width: 1220px;
+	  padding: 15px 0 22px 120px;
+	  
+	}
+	.toggleChild a {color: #fff;}
+	
+}
+	
+	</style>
+	
+	<script>
+	$(".toggleParent").hover(function() 
+					{
+						$(".toggleChild").hide();
+						var parentId = $(this).attr("id");
+						console.info("parentId"+parentId);
+						var childId = parentId.replace("toggle","hays");
+						console.info("childId"+childId);
+						$("#"+childId).toggle();
+					});
+					
+					  $(".toggleChild").bind('mouseleave', 
+						function()
+						{
+							$(".toggleChild").hide();
+						});
+						
+						 $('body, .overlay').click(function(e) {
+        
+        $('.toggleChild').removeClass('active').slideUp(300);
+        $('.overlay').remove()
+    });
+	</script>
+<$endif$>		 
+ 
+
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Footer *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_footer_inc@>
+ 
+	<div id="footer">
+		<ul>
+		<li id="rss"><$wcmElement("RSS")$></li>
+		<$wcmListStart("Links")$>
+			<$wcmListIndex = 0$>
+			<$wcmListNumRows = wcmListRowCount()$>
+			<$loopwhile wcmListIndex < wcmListNumRows$>
+				<li><$wcmListElement("Link", wcmListIndex)$></li>
+				<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>		 
+		</ul>
+	</div>
+    
+    <div id="disclaimer">
+		<p><$wcmElement("Text")$></p>
+	</div>
+<$if (strEqualsIgnoreCase(siteId,'enHC')) and (not strEquals(#active.nodeId,'331')) $>
+
+		<!-- Google Code for Remarketing tag -->
+
+		<!-- Remarketing tags may not be associated with personally identifiable information or placed on pages related to sensitive categories. For instructions on adding this tag and more information on the above requirements, read the setup guide: google.com/ads/remarketingsetup -->
+
+		<script type="text/javascript">
+
+		/* <![CDATA[ */
+
+		var google_conversion_id = 989251894;
+
+		var google_conversion_label = "dcW6CKrO9QYQtpLb1wM";
+
+		var google_custom_params = window.google_tag_params;
+
+		var google_remarketing_only = true;
+
+		/* ]]> */
+
+		</script>
+
+		<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+
+		</script>
+
+		<noscript>
+
+		<div style="display:inline;">
+
+		<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/989251894/?value=0&amp;label=dcW6CKrO9QYQtpLb1wM&amp;guid=ON&amp;script=0"/>
+
+		</div>
+
+		</noscript>
+
+
+<$endif$>
+
+
+<@end@>
+
+<!--added 0n 18 Jul 2011-->
+<!--***********************************************************
+	****** HAYS WorldWide : Main Region Content Board *********
+	************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_content_board_main_rgn_inc@>
+
+<$if (strLength(wcmElement("Title")) != 0)$>
+	<h1><$wcmElement("Title")$></h1>
+<$endif$>
+
+<$if wcmListRowCount("ContentBoardList") > 0 $>
+	<$wcmListStart("ContentBoardList")$>
+	<$wcmListIndex = 0 $>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<ul id="anchour-id" class="anchour-links">
+		<$loopwhile wcmListIndex < wcmListNumRows $>
+			<$var='#' & 'board-' & (wcmListIndex+1)$>
+			<$if ( (strLength(wcmListElement("Name", wcmListIndex)) != 0) or (strLength(wcmListElement("Designation", wcmListIndex)) != 0 ) )$>
+				<li><a href="<$var$>"><strong><$wcmListElement("Name", wcmListIndex)$></strong>, <$wcmListElement("Designation", wcmListIndex)$></a></li>
+			<$endif$>
+			<$wcmListIndex = wcmListIndex + 1 $>
+		<$endloop$>
+		<$wcmListEnd("ContentBoardList")$>
+	</ul>
+
+
+	<$wcmListStart("ContentBoardList")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$loopwhile wcmListIndex < wcmListNumRows $>
+		<$var='board-' & (wcmListIndex+1)$>	
+		
+		<$if ( (strLength(wcmListElement("Name", wcmListIndex)) != 0) or (strLength(wcmListElement("Designation", wcmListIndex)) != 0 ) or (strLength(wcmListElement("Age", wcmListIndex)) != 0 ) or  (strLength(wcmListElement("Image", wcmListIndex)) != 0) or (strLength(wcmListElement("Description", wcmListIndex)) != 0))$>
+			<$if (strLength(wcmListElement("Name", wcmListIndex)) != 0)$>
+				<h2 id="<$var$>" class="board-head">
+					<$wcmListElement("Name", wcmListIndex)$>
+				</h2>
+			<$endif$>
+			<$if ( (strLength(wcmListElement("Designation", wcmListIndex)) != 0 ) or (strLength(wcmListElement("Age", wcmListIndex))) != 0 )$>
+				<h3 class="board-subhead"><$wcmListElement("Designation", wcmListIndex)$> <$wcmListElement("Age", wcmListIndex)$></h3>
+			<$endif$>
+			<$if (strLength(wcmListElement("Image", wcmListIndex)) != 0)$>
+				<div class="board-pic">
+					<$wcmListElement("Image", wcmListIndex)$>
+				</div>
+			<$endif$>
+			<$if (strLength(wcmListElement("Description", wcmListIndex)) != 0)$>
+				<p><$wcmListElement("Description", wcmListIndex)$></p>
+			<$endif$>
+			<div class="backtotop">
+				<a href="#top"><$lc('wwGCBackToTop')$></a>
+			</div>
+			<hr/>
+		<$endif$>
+	<$wcmListIndex = wcmListIndex + 1 $>
+	<$endloop$>
+	<$wcmListEnd("ContentBoardList")$> 
+<$endif$>
+
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WorldWide : Main Region Content Standard 1*********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_main_region_contnt_stndrd_Linkedin_inc@>
+ 
+<$if (strLength(wcmElement("Title")) != 0)$>
+	<h1><$wcmElement("Title")$></h1>
+<$endif$>
+ 
+<$originalVideoURL =wcmElement("VideoURL")$>
+<$if strEquals(originalVideoURL,'') $>
+	<$if (strLength(wcmElement("MainImage")) != 0)$>
+		<div class="banner">
+			<$wcmElement("MainImage")$>
+		</div>
+	<$endif$>
+<$endif$>
+
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WorldWide : Main Region Content Standard 1*********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_main_region_contnt_stndrd_inc@>
+
+ 
+<$if (strLength(wcmElement("Title")) != 0)$>
+	<h1><$wcmElement("Title")$></h1>
+<$endif$>
+ 
+<$originalVideoURL =wcmElement("VideoURL")$>
+<$if strEquals(originalVideoURL,'') $>
+	<$if (strLength(wcmElement("MainImage")) != 0)$>
+		<div class="banner">
+			<$wcmElement("MainImage")$>
+		</div>
+	<$endif$>
+<$endif$>
+
+
+<$if (strLength(wcmElement("SubTitle")) != 0)$>
+	<h2 class="subhead"><$wcmElement("SubTitle")$></h2>
+<$endif$>
+
+<$if (strLength(wcmElement("Introduction")) != 0)$>
+	<h3 class="standfirst"><$wcmElement("Introduction")$></h3>
+<$endif$>
+
+<$if (strLength(wcmElement("BodyTitle")) != 0)$>
+	<h4><$wcmElement("BodyTitle")$></h4>
+<$endif$>
+
+<$if (strLength(wcmElement("BodySubTitle")) != 0)$>
+	<h5><$wcmElement("BodySubTitle")$></h5>
+<$endif$>
+
+<$if (strLength(wcmElement("BodyCopy")) != 0)$>
+	<p><$wcmElement("BodyCopy")$></p>
+<$endif$>
+
+<$if (strLength(wcmElement("UL_OL")) != 0)$>
+	<$wcmElement("UL_OL")$>
+<$endif$>
+<!-- List of Links -->
+<$wcmListStart("ListOfLinks")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$if wcmListNumRows > 0$>
+	<ul class="link-list">
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<li>
+				<$wcmListElement("Link", wcmListIndex)$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$>		
+		<$endloop$>
+		<$wcmListEnd("ListOfLinks")$>
+	</ul>
+<$endif$>
+
+<!-- List of PDF Links -->
+
+<$wcmListStart("ListOfPDFLinks")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$if wcmListNumRows > 0$>
+	<ul class="link-list">	
+		<$loopwhile wcmListIndex < wcmListNumRows$>		
+			<li class="pdf-link">
+				<$wcmListElement("Link", wcmListIndex)$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		<$wcmListEnd("ListOfPDFLinks")$>
+	</ul>	
+<$endif$>
+
+
+
+
+
+<$if not strEquals(originalVideoURL,'') $>
+<hr>
+	<$if strIndexOf(originalVideoURL,"http") >=0 $>
+		<$finalVdoURL= originalVideoURL$>
+	<$else$>
+		<$dDocName = originalVideoURL$>
+		<$executeService("DOC_INFO_BY_NAME")$>
+		<$finalVdoURL =computeDocUrl(dDocName)$> 
+	<$endif$>
+		<div class="video-preview">
+			<iframe width="460" height="349" src="<$finalVdoURL$>" frameborder="0" allowfullscreen=""></iframe>
+		</div>
+<$endif$>
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WorldWide : Main Region Content Standard 3*********
+	************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_main_region_contnt_stndrd_3_inc@>
+<$if (strLength(wcmElement("Title")) != 0)$>
+	<h1><$wcmElement("Title")$></h1>
+<$endif$>
+<$if (strLength(wcmElement("MainImage")) != 0)$>
+    <div class="banner">
+		<$wcmElement("MainImage")$>
+	</div>
+<$endif$>
+
+<$totalRows=wcmListRowCount("TabItem")$>
+<$if totalRows > 0$>
+<div class="std-tabs">
+	<$wcmListStart("TabItem")$>
+	<$wcmListIndex = 0 $>
+	<$wcmListNumRows = wcmListRowCount() $>
+	<ul class="tabs">
+	<$loopwhile wcmListIndex < wcmListNumRows $>	
+		<$var1 = '#' & 'tab' & (wcmListIndex+1)$>
+			<$if (wcmListIndex == 0)$>		
+				<$var_class="activetab"$>
+			<$else$>
+				<$var_class=""$>
+			<$endif$>
+			<li>
+				<h2>
+					<a class="<$var_class$>" href="<$var1$>"><$wcmListElement("TabName", wcmListIndex) $></a>
+				</h2>
+			</li>
+		<$wcmListIndex = wcmListIndex + 1 $>			
+	<$endloop$>
+	<$wcmListEnd("TabItem")$>
+	</ul>
+	
+	<$wcmListStart("TabItem")$>
+	<$wcmListIndex = 0 $>
+	<$wcmListNumRows = wcmListRowCount() $>
+	<ul class="tab-content-wrap">
+	<$loopwhile wcmListIndex < wcmListNumRows $>						
+				<$var2 = 'tab' & (wcmListIndex+1)$>
+				<li id="<$var2$>" class="tab-content">
+					<p><$wcmListElement("Description", wcmListIndex) $></p>		
+				</li>
+				<$wcmListIndex = wcmListIndex + 1 $>	
+	<$endloop$>
+	<$wcmListEnd("TabItem")$>
+	</ul>
+</div>
+<$endif$>
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WorldWide : Main Region Content Standard 4*********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_main_region_contnt_stndrd_4_inc@>
+	<$if (strLength(wcmElement("Title")) != 0)$>
+		<h1><$wcmElement("Title")$></h1>
+	<$endif$>
+	<$if (strLength(wcmElement("MainImage")) != 0)$>
+    <div class="banner">
+		<$wcmElement("MainImage")$>
+	</div>
+	<$endif$>
+	
+	<$wcmListStart("FAQ")$>
+	<$wcmListIndex = 0 $>
+	<$wcmListNumRows = wcmListRowCount() $>
+	<$if wcmListNumRows > 0$>
+		<ul id="anchour-id" class="anchour-links">
+			<$loopwhile wcmListIndex < wcmListNumRows $>			
+			<$var3 = '#' & 'anchour-' & (wcmListIndex+1)$>
+				<li>
+					<a href="<$var3$>"><$wcmListElement("Question", wcmListIndex)$></a>
+				</li>
+			<$wcmListIndex = wcmListIndex + 1 $>		
+			<$endloop$>
+			<$wcmListEnd("FAQ")$>
+		</ul>
+	<$endif$>
+	
+		<$wcmListStart("FAQ")$>
+		<$wcmListIndex = 0 $>
+		<$wcmListNumRows = wcmListRowCount() $>
+		<$if wcmListNumRows > 0$>	
+			<$loopwhile wcmListIndex < wcmListNumRows $>
+				<$var4 = 'anchour-' & (wcmListIndex+1)$>
+				<h2 class="anchour-head" id="<$var4$>"><$wcmListElement("Question", wcmListIndex)$></h2>
+				<p><$wcmListElement("Answer", wcmListIndex)$></p>
+				<div class="backtotop">
+					<a href="#anchour-id"><$lc('wwGCBackToQuestions')$></a>
+				</div>
+				<hr>
+				<$wcmListIndex = wcmListIndex + 1 $>
+			<$endloop$>
+			<$wcmListEnd("FAQ")$>
+		<$endif$>
+	
+
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS WorldWide : Main Region Content Standard 2*********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_main_region_contnt_stndrd_2_inc@>
+	<div class="columns">
+		<div class="left-col">
+			<div class="content-pic">
+				<$wcmElement("Image1")$>
+			</div>
+			<p><$wcmElement("Content1")$></p>
+			<p><$wcmElement("Content2")$></p>
+			
+		</div>
+		
+		<div class="right-col">
+			<div class="content-pic">
+				<$wcmElement("Image2")$>
+			</div>
+			<p><$wcmElement("Content3")$></p>
+			<p><$wcmElement("Content4")$></p>
+		</div>
+		<div class="clear"></div>
+	
+	</div>
+<@end@>
+
+
+<!-- end -->
+
+
+<@dynamichtml rgtmp_worldwide_title_linkedin_inc@>
+	<$if strEquals(ssGetNodeProperty("LinkedInSpecialism"),"")$>
+	<div class="landing-mod-wrap">
+		<div class="module-x3-exp height_127">
+			<div class="mod-bottom">
+			<h2 class="mod-head">
+				
+					Search Article	
+				
+				</h2>
+				<$include subtmp_worldwide_specialism_site_search_inc$>	
+	<$else$>
+	
+	<div class="landing-mod-wrap search_box">
+		<div class="module-x2 height_150">
+			<div class="module-top">
+			<h2 class="mod-head">
+				
+					Search Article	
+				
+				</h2>
+				<$include subtmp_worldwide_specialism_site_search_section_inc$>	
+	<$endif$>
+	
+					
+			</div>
+		</div>
+	</div>
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WORLDWIDE : Main Region Landing Investment *********
+	************************************************************-->
+<@dynamichtml rgtmp_worldwide_main_region_investment_inc@>
+	<div class="landing-mod-wrap">
+		<div class="module-x3-exp">
+			<div class="mod-bottom">
+				<h2 class="mod-head">
+					<$wcmElement("Title")$>
+				</h2>
+				<$groupstr = "group" $>
+				<div class="tabs-wide">
+					<$wcmListStart("Regions")$>
+					<$wcmListIndex = 0$>
+					<$wcmListNumRows = wcmListRowCount()$>
+					<ul class="tabs">
+						<$count = 0$>
+						<$loopwhile wcmListIndex < wcmListNumRows$>
+						<$count = wcmListIndex $>
+						<$if count == 0$>
+							<li><h2><a class="activetab" href="#group<$wcmListIndex$>"><$wcmListElement("Title", wcmListIndex)$></a></h2></li>
+						<$else$>
+							<li><h2><a  href="#group<$wcmListIndex$>"><$wcmListElement("Title", wcmListIndex)$></a></h2></li>
+						<$endif$>
+						<$wcmListIndex = wcmListIndex + 1$>	
+						<$endloop$>
+					</ul>
+					<$wcmListEnd("Regions")$>
+					<$wcmListStart("Regions")$>
+					<$wcmListIndex = 0$>
+					<$wcmListNumRows = wcmListRowCount()$>
+					<ul class="tab-content-wrap">
+						<$loopwhile wcmListIndex < wcmListNumRows$>
+						<li id="group<$wcmListIndex$>" class="tab-content" style="display: list-item;"><$wcmListElement("Image", wcmListIndex)$></li>
+						<$wcmListIndex = wcmListIndex + 1$>
+						<$endloop$>
+					</ul>
+					<$wcmListEnd("Regions")$>
+				</div>
+				<div class="mod-content">
+					<ul class="mod-links">
+						<li><$wcmElement("Link")$></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WORLDWIDE : Main Region for Careers *********
+	************************************************************-->
+	<@dynamichtml rgtmp_worldwide_careers_main_inc@>
+		<div id="banner-landing-signpost">
+			<div class="banner-text-white">
+				<h1>
+				<span class="leader"><$wcmElement("Title")$></span>
+				<span class="hilite"><$wcmElement("Subtitle")$></span>
+				</h1>
+					<div class="banner-link">
+					<$wcmElement("Link")$>
+					</div>
+			</div>
+			
+			<!--changes for MR Sprint 22 -->
+			
+				<$image=''$>
+				<div id="slideshow">
+					<$wcmListStart("Images")$>
+						
+						<$wcmListIndex = 0$>
+						<$wcmListNumRows = wcmListRowCount()$>
+					
+						<$if wcmListNumRows ge 0 $>
+						<$loopwhile wcmListIndex LT wcmListNumRows$>
+					
+							<$image=wcmListElement("Images",wcmListIndex)$>		
+
+						<$if not strEquals(image,'')$>
+						<$index=strIndexOf(image,"src=")$>
+					
+					<$if index gt -1$> 
+					<$src1=strIndexOf(image,"src=")$>
+					<$imageUrl=strSubstring(image,src1+5)$>
+					<$src2=strIndexOf(imageUrl,'"')$>
+					<$imageUrl=strSubstring(imageUrl,0,src2)$>
+					<$endif$>
+					<$if wcmListIndex eq 0$>
+					<img src="<$imageUrl$>" alt="HAYS" class="active" />
+					<$else$>
+					<img src="<$imageUrl$>" alt="HAYS" />
+					<$endif$>
+					
+				<$endif$>
+					
+				<$wcmListIndex = wcmListIndex + 1$>
+				<$endloop$>
+				<$endif$>
+				<$wcmListEnd("Images")$>	
+				</div>		
+			
+			<!-- end-->
+			
+			<!--<$wcmElement("Image")$>-->
+		</div>
+	
+	<@end@>
+
+	
+<!--***********************************************************
+    ****** HAYS WORLDWIDE : Main Region for Home *********
+	************************************************************-->
+	<@dynamichtml rgtmp_worldwide_main_region_home_inc@>
+		<div id="banner-home">
+			<div class="banner-text-white">
+				<h1>
+				<span class="leader"><$wcmElement("Title")$></span>
+				<span class="hilite"><$wcmElement("Subtitle")$></span>
+				</h1>
+					<div class="banner-link">
+					<$wcmElement("Link")$>
+					</div>
+			</div>
+			
+			<!--changes for MR Sprint 22 -->
+			
+				<$image=''$>
+				<div id="slideshow">
+					<$wcmListStart("Images")$>
+						
+						<$wcmListIndex = 0$>
+						<$wcmListNumRows = wcmListRowCount()$>
+					
+						<$if wcmListNumRows ge 0 $>
+						<$loopwhile wcmListIndex LT wcmListNumRows$>
+					
+							<$image=wcmListElement("Images",wcmListIndex)$>		
+
+						<$if not strEquals(image,'')$>
+						<$index=strIndexOf(image,"src=")$>
+					
+					<$if index gt -1$> 
+					<$src1=strIndexOf(image,"src=")$>
+					<$imageUrl=strSubstring(image,src1+5)$>
+					<$src2=strIndexOf(imageUrl,'"')$>
+					<$imageUrl=strSubstring(imageUrl,0,src2)$>
+					<$endif$>
+					<$if wcmListIndex eq 0$>
+					<img src="<$imageUrl$>" alt="HAYS" class="active" />
+					<$else$>
+					<img src="<$imageUrl$>" alt="HAYS" />
+					<$endif$>
+					
+				<$endif$>
+					
+				<$wcmListIndex = wcmListIndex + 1$>
+				<$endloop$>
+				<$endif$>
+				<$wcmListEnd("Images")$>	
+				</div>		
+			
+			<!-- end-->
+			
+			<!--<$wcmElement("Image")$>-->
+		</div>
+	
+	<@end@>
+	
+
+<!--***********************************************************
+    ****** HAYS WORLDWIDE : Main Region for Landing Contact *********
+	************************************************************-->
+	<@dynamichtml rgtmp_worldwide_landing_contact_main_inc@>
+	
+		<div id="banner-landing-contact">
+			<div class="banner-text-white">
+				<h1>
+				<span class="leader"><$wcmElement("Title")$></span>
+				<span class="hilite"><$wcmElement("Subtitle")$></span>
+				</h1>
+					<div class="banner-link">
+					<$wcmElement("Link")$>
+					</div>
+			</div>	
+			
+			<!--changes for MR Sprint 22 -->
+			
+				<$image=''$>
+				<div id="slideshow">
+					<$wcmListStart("Images")$>
+						
+						<$wcmListIndex = 0$>
+						<$wcmListNumRows = wcmListRowCount()$>
+					
+						<$if wcmListNumRows ge 0 $>
+						<$loopwhile wcmListIndex LT wcmListNumRows$>
+					
+							<$image=wcmListElement("Images",wcmListIndex)$>		
+
+						<$if not strEquals(image,'')$>
+						<$index=strIndexOf(image,"src=")$>
+					
+					<$if index gt -1$> 
+					<$src1=strIndexOf(image,"src=")$>
+					<$imageUrl=strSubstring(image,src1+5)$>
+					<$src2=strIndexOf(imageUrl,'"')$>
+					<$imageUrl=strSubstring(imageUrl,0,src2)$>
+					<$endif$>
+					<$if wcmListIndex eq 0$>
+					<img src="<$imageUrl$>" alt="HAYS" class="active" />
+					<$else$>
+					<img src="<$imageUrl$>" alt="HAYS" />
+					<$endif$>
+					
+				<$endif$>
+					
+				<$wcmListIndex = wcmListIndex + 1$>
+				<$endloop$>
+				<$endif$>
+				<$wcmListEnd("Images")$>	
+				</div>		
+			
+			<!-- end-->
+			
+			<!--<$wcmElement("Image")$>-->
+		</div>
+	
+	<@end@>
+
+	<!--***********************************************************
+    ****** HAYS WORLDWIDE : Main Region for Landing *********
+	************************************************************-->
+	<@dynamichtml rgtmp_worldwide_main_region_landing_inc@>
+		<div id="banner">
+			<div class="banner-text-white">
+				<h1>
+				<span class="leader"><$wcmElement("Title")$></span>
+				<span class="hilite"><$wcmElement("SubTitle")$></span>
+				</h1>
+					<div class="banner-link">
+					<$wcmElement("Link")$>
+					</div>
+			</div>
+			
+			
+			<!--changes for MR Sprint 22 -->
+			
+				<$image=''$>
+				<div id="slideshow">
+					<$wcmListStart("Images")$>
+						
+						<$wcmListIndex = 0$>
+						<$wcmListNumRows = wcmListRowCount()$>
+					
+						<$if wcmListNumRows ge 0 $>
+						<$loopwhile wcmListIndex LT wcmListNumRows$>
+					
+							<$image=wcmListElement("Images",wcmListIndex)$>		
+
+						<$if not strEquals(image,'')$>
+						<$index=strIndexOf(image,"src=")$>
+					
+					<$if index gt -1$> 
+					<$src1=strIndexOf(image,"src=")$>
+					<$imageUrl=strSubstring(image,src1+5)$>
+					<$src2=strIndexOf(imageUrl,'"')$>
+					<$imageUrl=strSubstring(imageUrl,0,src2)$>
+					<$endif$>
+					<$if wcmListIndex eq 0$>
+					<img src="<$imageUrl$>" alt="HAYS" class="active" />
+					<$else$>
+					<img src="<$imageUrl$>" alt="HAYS" />
+					<$endif$>
+					
+				<$endif$>
+					
+				<$wcmListIndex = wcmListIndex + 1$>
+				<$endloop$>
+				<$endif$>
+				<$wcmListEnd("Images")$>	
+				</div>		
+			
+			<!-- end-->
+			
+			<!--<$wcmElement("Image")$>-->
+		</div>
+	
+	<@end@>
+
+
+	
+<!--******************************************************************
+***************** HAYSWORLDWIDE - RIGHT HAND SIDE Generic ****************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_MainRegion_Content_RHS_Generic_inc@>
+
+<$if (strLength(wcmElement("Title")) != 0)  or 
+                       (strLength(wcmElement("Image")) != 0) or (strLength(wcmElement("Links")) != 0) or (strLength(wcmElement("Description")) != 0)$>
+	<div class="module">
+		<div class="module-top">
+		<h2 class="mod-head-grey"><$wcmElement("Title")$></h2>
+		<div class="mod-feature-keyline"><$wcmElement("Image")$></div>
+			<div class="mod-content">
+				<p><$wcmElement("Description")$></p>
+				<$link2 = wcmElement("Links")$>
+				<$link2 =  strReplace(link2, '<ul', '<ul class="mod-links"') $>
+				<$link2$>	
+			</div>
+		</div>
+	</div>
+<$endif$>
+
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - RIGHT HAND SIDE Widget  *******************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_MainRegion_Content_RHS_Widget_inc@>
+
+<$if (strLength(wcmElement("Title")) != 0) or 
+                       (strLength(wcmElement("Widget")) != 0) or (strLength(wcmElement("Link1")) != 0) $>
+	<div class="module">
+		<div class="module-top">
+			<h2 class="mod-head"> <$wcmElement("Title")$> </h2>
+			<div class="mod-feature-keyline">
+				<$include worldwide_widgets_template$>
+			</div>
+			<div class="mod-content">
+				<$link1 = wcmElement("Link1")$>
+				<$link1 =  strReplace(link1, '<ul', '<ul class="mod-links"') $>
+				<$link1$>			
+			</div>
+		</div>
+	</div>
+						
+<$endif$>	
+
+
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - RIGHT HAND SIDE Pullout  ***************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_MainRegion_Content_RHS_Pullout_inc@>
+
+<$if (strLength(wcmElement("AnnualReport")) != 0) or 
+                       (strLength(wcmElement("Link")) != 0) $>
+					   
+	<$if domainId == 1005$>
+	<div class="pullout be_hc_height">
+	<$else$>
+	<div class="pullout">
+	<$endif$>
+		<h2 class="mod-head-white"><$wcmElement("AnnualReport")$></h2>
+		<p class="link"><$wcmElement("Link")$></p>
+	</div>	
+	
+<$endif$>	
+
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - RIGHT HAND SIDE Investment  ************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_MainRegion_Content_RHS_Investment_inc@>
+
+<$if (strLength(wcmElement("Title")) != 0) or 
+                       (strLength(wcmElement("ListForTitleAndImage")) != 0) or (strLength(wcmElement("Link")) != 0) $>
+	<$ title = strReplace(wcmElement("Title"), '<a', '<a class="selected"') $>
+	<div class="module">
+		<div class="accordion-top">
+			<h2 class="mod-head">
+				
+			 <$title$> </h2>	
+	
+			<$wcmListStart("ListForTitleAndImage")$>
+			<$wcmListIndex = 0$>
+			<$wcmListNumRows = wcmListRowCount()$>
+			 
+			<$count = 0 $>
+			<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$count = wcmListIndex $>
+			<$if count == 0$>
+				<h3 class="accordion-head accordion-first"><a href="#accordion<$count+1$>" class="activeaccordion"><$wcmListElement("Title", wcmListIndex)$></a></h3>
+
+			<$elseif  count == wcmListNumRows-1$>
+				<h3 class="accordion-head doublehead"><a href="#accordion<$count+1$>"><$wcmListElement("Title", wcmListIndex)$></a></h3>
+			<$else$>
+				<h3 class="accordion-head"><a href="#accordion<$count+1$>"><$wcmListElement("Title", wcmListIndex)$></a></h3>
+			<$endif$>
+			<div class="accordion-content" id="accordion<$count+1$>">
+			<$wcmListElement("Image", wcmListIndex)$>
+			</div>
+			 
+			<$count = count+1$>
+			<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>
+			<$wcmListEnd("ListForTitleAndImage")$> 
+		</div>
+	</div>
+<$endif$>
+	
+<@end@>
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - RIGHT HAND SIDE Links  **************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_MainRegion_Content_RHS_links_inc@>
+
+	<$if (strLength(wcmElement("Title")) != 0) or 
+						   (strLength(wcmElement("SubTitle")) != 0) or (strLength(wcmElement("Link")) != 0) $>
+		<div class="module-linklist">
+			<h2 class="mod-head-grey"><$wcmElement("Title")$></h2>
+			<div class="mod-content">
+				<p><$wcmElement("SubTitle")$></p>
+					<$link3 = wcmElement("Link")$>
+					<$link3 =  strReplace(link3, '<ul', '<ul class="mod-links"') $>
+					<$link3$>
+			</div>
+		</div>
+	<$endif$>	
+	
+<@end@>
+
+<!-- region template include for main block elements display in investment centre page-->
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Investment Content Table Centre **************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_investment_content_tables_inc@>
+  <$wcmListStart("ContentTablesList")$>
+  <$wcmListIndex = 0$>
+  <$wcmListNumRows = wcmListRowCount()$>
+
+
+    <$loopwhile wcmListIndex < wcmListNumRows$>
+		<$if strLength(wcmListElement("Title", wcmListIndex)) != 0$>
+			<h1><$wcmListElement("Title", wcmListIndex)$></h1>
+		<$endif$>
+		<$if strLength(wcmListElement("subtitle", wcmListIndex)) != 0$>
+			<h2 class="table-head"> <$wcmListElement("subtitle", wcmListIndex)$></h2>
+		<$endif$>
+		<$if strLength(wcmListElement("shortDescription", wcmListIndex)) != 0$>
+			<h3 class="table-subhead"><$wcmListElement("shortDescription", wcmListIndex)$></h3>
+        <$endif$>
+		<$if strLength(wcmListElement("image", wcmListIndex)) != 0$>
+			<div class="table-img">
+				<$wcmListElement("image", wcmListIndex)$>
+			</div>
+		<$endif$>
+		<$if strLength(wcmListElement("Description", wcmListIndex)) != 0$>
+			
+			<$ aLink1 = wcmListElement("Description", wcmListIndex)$>
+					<$ aLink1 = strReplace(aLink1, '<ul', '<ul class="footnote"') $>
+					<$aLink1$>
+		<$endif$>
+		
+		<$WidgetName = wcmListElement("Widget", wcmListIndex)$>
+		<$if strIndexOf(WidgetName,"detailed_share_price") > 0 $>	
+			<$include worldwide_widgets_template$>
+		<$endif$>
+		
+		<$if strIndexOf(WidgetName,"share_price_chart") > 0 $>	
+			<$include worldwide_widgets_template$>
+		<$endif$>
+		
+		<$if strIndexOf(WidgetName,"TSR_chart") > 0 $>	
+			<$include worldwide_widgets_template$>
+		<$endif$>
+		
+		<$if strIndexOf(WidgetName,"share_price_download") > 0 $>	
+			<$include worldwide_widgets_template$>
+		<$endif$>
+		
+		<$if strIndexOf(WidgetName,"share_price_calculator") > 0 $>	
+			<$include worldwide_widgets_template$>
+		<$endif$>
+		
+		<$if strIndexOf(WidgetName,"intraday_share_price") > 0 $>	
+			<$include worldwide_widgets_template$>
+		<$endif$>
+		
+		
+      <$wcmListIndex = wcmListIndex + 1$>
+	  <$endloop$>
+  <$wcmListEnd("ContentTablesList")$>
+<@end@>
+
+<!-- region template include for share price chart in investment centre page-->
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Investment Share Price Chart **************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_investment_share_price_display_inc@>
+<!--h2 class="table-head"><$wcmElement("plainText")$></h2-->
+<!--ul class="tab-content-wrap"-->
+	<$wcmListStart("Investment_detailedSharePrice_list")$>
+		<$wcmListIndex = 0$>
+		<$tab=0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+		<!--if wcmListIndex==0>
+			<li id="tab_<$tab$>" class="tab-content" style="display: list-item;">
+		<else>
+			<li id="tab_<$tab$>" class="tab-content" style="display: none;">
+		<endif-->
+		<!--li class="tab-content"-->
+			<h2 class="table-head"><$wcmListElement("Title", wcmListIndex)$></h2>
+			<$wcmListElement("Image", wcmListIndex)$>
+		<!--/li-->
+		<$wcmListIndex = wcmListIndex + 1$>
+		<$tab=tab+1$>
+		<$endloop$>
+	<$wcmListEnd("Investment_detailedSharePrice_list")$>
+<!--/ul-->
+<!--div class="price-period-tabs">
+	<ul class="tabs">
+		<$wcmListStart("Investment_detailedSharePrice_list")$>
+		<$wcmListIndex = 0$>
+		<$tab1=0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$if wcmListIndex == 0$>
+				<li class="first current">
+			<$else$>
+				<li>
+			<$endif$>
+					<a href="#tab_<$tab1$>"><$wcmListElement("Title", wcmListIndex)$></a>
+				</li>
+			<$wcmListIndex = wcmListIndex + 1$>
+			<$tab1=tab1+1$>
+		<$endloop$>
+		<$wcmListEnd("Investment_detailedSharePrice_list")$>
+	</ul>
+</div-->
+
+<@end@>
+
+<!-- region template include for reult centre in investment centre page-->
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Investment Result Centre **************
+***********************************************************************-->
+<@dynamichtml rgtmp_worldwide_list_results_investment_inc@>
+<h2 class="table-head"><$wcmElement("Title")$></h2>
+<h3 class="table-subhead"><$wcmElement("subText")$></h3>
+<table class="ruleall">
+	<colgroup>
+		<col width="*">
+		<col width="60">
+		<col width="90">
+		<col width="65">
+		<col width="75">
+	</colgroup>
+	<thead>
+		<tr>
+			<th class="first" scope="col">Title</th>
+			<th scope="col">
+			Press<br/>release
+			</th>
+			<th scope="col">Presentation</th>
+			<th scope="col">Webcast</th>
+			<th scope="col">Interviews</th>
+		</tr>
+	</thead>
+	<$ backURL = ssNodeLink('Flash', #active.siteId)$>
+	<$wcmListStart("ResultCentre")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$loopwhile wcmListIndex < wcmListNumRows$>
+	<tbody>
+		<tr>
+			<th scope="row">
+				<span class="first"> 
+					<$wcmListElement("Title", wcmListIndex)$>
+				</span>
+			</th>
+		
+			<td> 
+			<$ dDocNamePDF1= ''$>
+			<$ dDocNamePDF1=wcmListElement("PressRelease", wcmListIndex)$>
+			<$if not strEquals(dDocNamePDF1,'')$>
+			<a href="<$dDocNamePDF1$>" target="_blank">
+				<img width="16" height="16" alt="PDF: document title" src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/icon-pdf.gif">
+			</a>
+			<$endif$>
+			</td>
+			<td>
+			<$ dDocNamePDF2= ''$>
+			<$ dDocNamePDF2=wcmListElement("Presentation", wcmListIndex)$>
+			<$if not strEquals(dDocNamePDF2,'')$>
+			<a href="<$dDocNamePDF2$>" target="_blank">
+					<img width="16" height="16" alt="PDF: document title" src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/icon-pdf.gif">
+				</a>
+			<$endif$>
+			</td>
+			<td>
+			
+			
+		<$ dDocNameFlash1= ''$>
+		<$ dDocNameFlash1=wcmListElement("Webcast", wcmListIndex)$>
+		<$if not strEquals(dDocNameFlash1,'')$>
+			<$if strIndexOf(dDocNameFlash1,"http") >= 0 $>
+					 
+					<a href="<$dDocNameFlash1$>" target="_blank">
+						<img width="16" height="16" alt="Video: document title" src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/icon-video.gif">
+					</a>
+			<$else$>
+				<a href="<$backURL$>?dDocNameFlash=<$dDocNameFlash1$>" target="_blank">
+						<img width="16" height="16" alt="Video: document title" src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/icon-video.gif">
+					</a>
+			<$endif$>
+		<$endif$>
+  
+			</td>
+			<td>
+			<$ InterviewsFlash= ''$>
+		<$ InterviewsFlash=wcmListElement("Interviews", wcmListIndex)$>
+		<$if not strEquals(InterviewsFlash,'')$>
+		
+			<$if strIndexOf(InterviewsFlash,"http") >= 0 $>
+				<a href="<$InterviewsFlash$>" target="_blank">
+						<img width="16" height="16" alt="Video: document title" 
+						src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/icon-video.gif">
+					</a>	
+			<$else$>
+					<a href="<$backURL$>?dDocNameFlash=<$InterviewsFlash$>" target="_blank">
+						<img width="16" height="16" alt="Video: document title" 
+						src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/icon-video.gif">
+					</a>
+			<$endif$>
+		<$endif$>
+		</tr>
+	</tbody>
+	<$wcmListIndex = wcmListIndex + 1$>
+	<$endloop$>
+	<$wcmListEnd("ResultCentre")$>
+</table>
+<@end@>
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower Region Business Overview Widget Display*******************************
+***********************************************************************-->
+	
+	
+<@dynamichtml rgtmp_worldwide_business_overview_widget_inc@>
+
+	<$wcmListStart("BusinessOverview")$>
+	<$wcmListIndex_overview = 0 $>
+	<$wcmListNumRows1 = wcmListRowCount() $>
+	<ul class="grid-list-x6">	
+		<$loopwhile wcmListIndex_overview < wcmListNumRows1 $>
+			<$vClass='g' & (wcmListIndex_overview+1)$>
+			<li class="<$vClass$>">
+				<h3><$wcmListElement("SubTitle", wcmListIndex_overview) $></h3>
+				<p> <$wcmListElement("Description", wcmListIndex_overview) $></p>
+			</li>
+			<$wcmListIndex_overview = wcmListIndex_overview + 1 $>
+		<$endloop$>
+		<$wcmListEnd("BusinessOverview")$>
+	</ul>
+	
+<@end@>
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing Module Display *******************************
+***********************************************************************-->
+<@dynamichtml rgtmp_haysworldwide_landing_contact_listdisplay@>
+
+<li>
+	<$if strLength(wcmListElement("Title", wcmListIndex)) != 0$>
+		<h2 class="contact-head"><$wcmListElement("Title", wcmListIndex)$></h2>
+	<$endif$>
+	
+	<$if strLength(wcmListElement("Address", wcmListIndex)) != 0$>
+		<p><$wcmListElement("Address", wcmListIndex)$></p>
+	<$endif$>
+	<p> 
+		<$if strLength(wcmListElement("TELPHONE", wcmListIndex)) != 0$>
+			Tel: +<$wcmListElement("TELPHONE", wcmListIndex)$><br>
+		<$endif$>
+		
+		<$if strLength(wcmListElement("FAX", wcmListIndex)) != 0$>
+			Fax: +<$wcmListElement("FAX", wcmListIndex)$> <br>
+		<$endif$>
+		  
+		 
+		<$if strLength(wcmListElement("EMAIL", wcmListIndex)) != 0$>
+		<$strEmail =   strReplace(wcmListElement("EMAIL", wcmListIndex),"<br>",",")$>  		  
+		Email:
+		<$rsMakeFromString("rsStrEmailList", strEmail )$>
+			<$loop rsStrEmailList$>	
+				 
+					<a href="mailto:<$row$>">  <$row$></a>
+			<$endloop$>		 							
+		<$endif$>
+	</p>
+</li>
+
+<@end@>
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing for LinkedIn   *******************************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_landing_linkedin_inc@>	
+ 
+<div class="landing-mod-wrap">
+	<$wcmListStart("ContentList")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>	
+ 
+	<$loopwhile wcmListIndex < wcmListNumRows$>	
+		<!-- include module display-->	
+		<$include rgtmp_haysworldwide_landing_module_display_linkedin$>	
+		<$wcmListIndex = wcmListIndex + 1$>		 
+	<$endloop$>
+<$wcmListEnd("ContentList")$>
+</div>
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing Module Display for LinkedIn *******************************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_haysworldwide_landing_module_display_linkedin@>
+
+		<div class="module-top">
+			
+		<$if (strLength(wcmListElement("Title", wcmListIndex)) != 0)$>
+			<h2 class="mod-head">
+				<$wcmListElement("Title", wcmListIndex)$>				
+			</h2>
+		<$endif$>
+		
+			
+		<$if (strLength(wcmListElement("Description", wcmListIndex)) != 0)  or (strLength(wcmListElement("Link1", wcmListIndex)) != 0) $>
+				<div class="mod-content">
+					<$if strLength(wcmListElement("Description", wcmListIndex)) != 0 $>
+					 	<p>
+							<$wcmListElement("Description", wcmListIndex)$>
+						</p>
+					<$endif$>
+					<$if strLength(wcmListElement("Link1", wcmListIndex)) != 0 $>
+					<$ aLink1 = wcmListElement("Link1", wcmListIndex)$>
+					<$ aLink1 = strReplace(aLink1, '<ul', '<ul class="mod-links"') $>
+						<$aLink1$>
+					<$endif$>
+						
+				</div>
+		<$endif$>
+		</div>	
+<@end@>
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing    *******************************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_landingCR_inc@>	
+ 
+<div class="landing-mod-wrap">
+	<$wcmListStart("ContentList")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>	
+ 
+	<$loopwhile wcmListIndex < wcmListNumRows$>	
+		<!-- include module display-->	
+		<$include rgtmp_haysworldwide_landing_module_display$>	
+		<$wcmListIndex = wcmListIndex + 1$>		 
+	<$endloop$>
+<$wcmListEnd("ContentList")$>
+</div>
+<@end@>
+
+
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region Landing Module Display *******************************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_haysworldwide_landing_module_display@>
+
+ 	<$WidgetName = wcmListElement("Widget", wcmListIndex)$> 
+ 
+	<$showData = "false"$>	 
+	<$if strLength(WidgetName) ==0$>
+		<$showData = "true"$>
+	<$endif$>	 
+	<$if strIndexOf(WidgetName,"business_overview") > 0 $>	
+	
+		<div class="module-x2">		
+			<div class="module-top">
+				<h2 class="mod-head">
+					<$wcmListElement("Title", wcmListIndex)$>				
+				</h2>
+				<$include worldwide_widgets_template$>
+				<div class="mod-content">
+					<$ aLink1 = wcmListElement("Link1", wcmListIndex)$>
+					<$ aLink1 = strReplace(aLink1, '<ul', '<ul class="mod-links"') $>
+					<$aLink1$>
+				</div>	
+			</div>
+		</div>	
+
+		
+			
+		
+	<$else$>
+		<$if  strIndexOf(WidgetName,"latest_video") > 0$>
+			<div class="module-x2 mod-2col-sep"> 
+		<$else$>
+			<div class="module"> 
+		<$endif$>
+			
+			
+		<div class="module-top">
+		
+
+	
+	
+		<$if (strLength(wcmListElement("Title", wcmListIndex)) != 0)$>
+			<h2 class="mod-head">
+				<$wcmListElement("Title", wcmListIndex)$>				
+			</h2>
+		<$endif$>
+		
+		
+		<$if (strLength(wcmListElement("Image", wcmListIndex)) != 0) or (strLength(wcmListElement("Widget", wcmListIndex)) != 0) $>
+				
+				<$include worldwide_widgets_template$>
+				
+				
+				<$if strEquals(showData ,"true")$>  
+					<div class="mod-feature-keyline">
+						<$wcmListElement("Image", wcmListIndex)$>
+						<!--<$wcmListElement("Flash", wcmListIndex)$>-->
+					</div>
+				<$endif$>
+		<$endif$>
+
+		
+			
+			<$if strEquals(WidgetName ,"latest_video")$>
+				they are equal
+			<$endif$>
+			
+			
+			
+		<!--the below if condition has been added to avoid the display of few fields like links , description etc in case of widgets-->
+		<$if ((strIndexOf(WidgetName,"latest_video") > 0) or (strIndexOf(WidgetName,"press_releases") > 0) or (strIndexOf(WidgetName,"media_contacts") > 0) or  (strIndexOf(WidgetName,"news") > 0)) or (strIndexOf(WidgetName,"highlights") > 0) or (strIndexOf(WidgetName,"cr_report") > 0) or (strIndexOf(WidgetName,"recent_initiative") > 0)  $>
+			<$showLinks = "false"$>
+		<$else$>
+			<$showLinks = "true"$>
+		<$endif$>
+		
+		<$if strEquals(showLinks ,"true")$>
+			<$if (strLength(wcmListElement("Description", wcmListIndex)) != 0)  or 
+			(strLength(wcmListElement("Link1", wcmListIndex)) != 0) or (strLength(wcmListElement("Link2", wcmListIndex)) != 0) 
+			or (strLength(wcmListElement("Link1", wcmListIndex)) != 0)$>
+				<div class="mod-content">
+					<$if strLength(wcmListElement("Description", wcmListIndex)) != 0 and strEquals(showData,"true") $>
+					 	<p>
+							<$wcmListElement("Description", wcmListIndex)$>
+						</p>
+					<$endif$>
+					
+					<$ aLink1 = wcmListElement("Link1", wcmListIndex)$>
+					<$ aLink1 = strReplace(aLink1, '<ul', '<ul class="mod-links"') $>
+						<$aLink1$>
+						
+					<$ aLink2 = wcmListElement("Link2", wcmListIndex)$>
+					<$ aLink2 = strReplace(aLink2, '<ul', '<ul class="mod-links"') $>
+						<$aLink2$>
+				</div>
+			<$endif$>	
+		<$endif$>
+		</div>
+		</div>
+	<$endif$>	
+	
+	
+<@end@>
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - Lower region  Contact List    *******************************
+***********************************************************************-->
+
+<@dynamichtml  rgtmp_worldwide_contactlanding_inc@>
+<script type="text/javascript">
+
+ </script>
+	<$wcmListStart("ContactList")$>
+		<$if wcmListRowCount() >0 $>
+			<div class="contact-list-wrap">
+			<div class="contact-cols">
+					<$wcmListIndex = 0$>
+					<$wcmListNumRows = wcmListRowCount()$>
+					<$rowcount=1$>	
+					<ul class="contact-list">
+						<$loopwhile wcmListIndex < wcmListNumRows$>	 	
+						<!-- include to display contact list -->
+							<$include rgtmp_haysworldwide_landing_contact_listdisplay$>
+							
+							<$if rowcount ==2 $>					 
+								</ul><ul class="contact-list">
+							<$rowcount = 1$>
+							<$else$>
+								<$rowcount = rowcount+1$>
+							<$endif$>
+							<$wcmListIndex = wcmListIndex + 1$>
+						<$endloop$> 
+					</ul> 
+
+			<div class="clear"></div>
+			</div><!-- /contact-cols -->
+			</div>
+		<$endif$>
+	<$wcmListEnd("ContactList")$>
+<@end@>
+
+<!--******************************************************************
+*****************    HAYSWORLDWIDE - main block for displaying the static list of
+ content/widget in the lower region of many pages like media centre, careers etc *******************************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_home_main_lower_rgn_display_inc@>
+<div class="signpost-mod-wrap">
+	<$wcmListStart("ContentList")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	
+	<$loopwhile wcmListIndex < wcmListNumRows$>
+	
+		<$include rgtmp_haysworldwide_landing_module_display$>
+	
+		<$wcmListIndex = wcmListIndex + 1$>
+	<$endloop$>	
+	
+	<$wcmListEnd("ContentList")$>
+</div>
+<@end@>
+
+<!--******************************************************************
+*****************  HAYSWORLDWIDE - Media Centre Contacts  **************************
+***********************************************************************-->
+
+<@dynamichtml rgtmp_worldwide_media_centre_contacts_inc@>
+	<ul class="mod-list">
+	<$wcmListStart("MediaContactsList")$>
+	<$wcmListIndexMedia = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$loopwhile wcmListIndexMedia < wcmListNumRows$>
+	<$if wcmListIndexMedia == 0$>
+		<li class="first">
+	<$else$>
+		<li>
+	<$endif$>
+			<h5><$wcmListElement("Title", wcmListIndexMedia)$></h5>
+			<ul class="mod-links">
+				<li><$wcmListElement("Contact", wcmListIndexMedia)$></li>
+				<li>
+					<a href="mailto:<$wcmListElement("Email", wcmListIndexMedia)$>">Email</a>
+				</li>
+				<li>
+					<$wcmListElement("FindOnMap", wcmListIndexMedia)$></a>
+				</li>
+			</ul>
+		</li>
+	<$wcmListIndexMedia = wcmListIndexMedia + 1$>
+	<$endloop$>
+	<$wcmListEnd("MediaContactsList")$>
+	</ul>
+<@end@>
+
+<@dynamichtml rgtmp_haysworldwide_google_analytics_inc@>
+	<$googleHeadTag=wcmElement("GA-HEAD")$>	
+	<$googleBodyTag=wcmElement("GA-BODY")$>	
+<@end@>
+
+<@dynamichtml google_tag_manager_worldwide@>
+<!-- Google Tag Manager -->
+
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P7LC3S$>"
+
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+
+})(window,document,'script','dataLayer','GTM-P7LC3S');</script>
+
+<!-- End Google Tag Manager -->
+<@end@> 
+</body></html>

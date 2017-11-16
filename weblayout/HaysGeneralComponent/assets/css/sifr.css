@@ -1,0 +1,181 @@
+/*****************************************************************************
+scalable Inman Flash Replacement (sIFR) version 3.
+
+Copyright 2006 – 2008 Mark Wubben, <http://novemberborn.net/>
+
+Older versions:
+* IFR by Shaun Inman
+* sIFR 1.0 by Mike Davidson, Shaun Inman and Tomas Jogin
+* sIFR 2.0 by Mike Davidson, Shaun Inman, Tomas Jogin and Mark Wubben
+
+See also <http://novemberborn.net/sifr3> and <http://wiki.novemberborn.net/sifr3>.
+
+This software is licensed and provided under the CC-GNU LGPL.
+See <http://creativecommons.org/licenses/LGPL/2.1/>
+*****************************************************************************/
+
+@media screen {
+  .sIFR-flash {
+    visibility: visible !important;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .sIFR-replaced, .sIFR-ignore {
+    visibility: visible !important;
+  }
+  
+  .sIFR-alternate {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    display: block;
+    overflow: hidden;
+  }
+  
+  .sIFR-replaced div.sIFR-fixfocus {
+    margin: 0pt; 
+    padding: 0pt; 
+    overflow: auto; 
+    letter-spacing: 0px; 
+    float: none;
+  }
+}
+
+@media print {
+  .sIFR-flash {
+    display    : none !important;
+    height     : 0;
+    width      : 0;
+    position   : absolute;
+    overflow   : hidden;
+  }
+  
+  .sIFR-alternate {
+    visibility : visible !important;
+    display    : block   !important;
+    position   : static  !important;
+    left       : auto    !important;
+    top        : auto    !important;
+    width      : auto    !important;
+    height     : auto    !important;
+  }
+}
+
+/*
+Place CSS rules for to-be-replaced elements here. Prefix by .sIFR-active
+so they only apply if sIFR is active. Make sure to limit the CSS to the screen
+media type, in order not to have the printed text come out weird.
+*/
+@media screen {
+/* Headers ------------------------------------------- */
+
+	.sIFR-active #content h1 {
+		visibility: hidden;
+		font-size: 34px;
+		margin: 0 0 21px 0;
+	}
+
+	.sIFR-active .banner-text-white h1 .leader,
+	.sIFR-active .banner-text-darkblue h1 .leader,
+	.sIFR-active .banner-text-liteblue h1 .leader,
+	.sIFR-active .banner-text-white h1 .hilite,
+	.sIFR-active .banner-text-darkblue h1 .hilite,
+	.sIFR-active .banner-text-liteblue h1 .hilite {
+		visibility: hidden;
+		font-size: 34px;
+		margin: 0;
+	}
+
+
+	.sIFR-active h2.mod-head-white,
+	.sIFR-active h2.mod-head-grey,
+	.sIFR-active h2.mod-head {
+		visibility: hidden;
+		font-size: 18px;
+	}
+	.sIFR-active #content h2.subhead,
+	.sIFR-active h2.table-head,
+	.sIFR-active h2.contact-head,
+	.sIFR-active #content h2.board-head,
+	.sIFR-active #content h2.press-head,
+	.sIFR-active #content h2.search-head,
+	.sIFR-active #content h2.anchour-head,
+	.sIFR-active #content h3.standfirst {
+		visibility: hidden;
+		font-size: 18px;
+	}
+	.sIFR-active h2.sitemap-head {
+		visibility: hidden;
+		font-size: 18px;
+		margin: 0 0 4px 0;
+	}
+	.sIFR-active #content h2.anchour-head {
+		visibility: hidden;
+		font-size: 18px;
+		margin: 0 0 12px 0;
+	}
+
+	.sIFR-active h3.board-subhead,
+	.sIFR-active h3.table-subhead {
+		visibility: hidden;
+		font-size: 16px;
+	}
+	.sIFR-active ul#nav .dropmenu h3.menuhead {
+		visibility: hidden;
+		font-size: 18px;
+		margin: 0 90px 5px 0;
+	}
+	.sIFR-active ul.grid-list-x4 h3,
+	.sIFR-active ul.grid-list-x6 h3 {
+		visibility: hidden;
+		font-size: 18px;
+	}
+	.sIFR-active ul.grid-list-x4 h4 {
+		visibility: hidden;
+		font-size: 15px;
+	}
+	
+	/* Removes ghost spacing below element if FF */
+	.sIFR-active object {
+		display: block;
+	}
+/* OLD
+	.sIFR-active h1 object,
+	.sIFR-active h2.contact-head object,
+	.sIFR-active #content h2.press-head object,
+	.sIFR-active #content h2.search-head object,
+	.sIFR-active #content h2.board-head object,
+	.sIFR-active #content h2.anchour-head object,
+	.sIFR-active h2.mod-head-white object,
+	.sIFR-active h2.mod-head-grey object,
+	.sIFR-active h2.mod-head object,
+	.sIFR-active h3.table-subhead object,
+	.sIFR-active ul.hilight-list h3 object {
+		display: block;
+	}
+*/
+	.sIFR-active .tabs-narrow ul.hilight-list strong object {
+		display: inline;
+	}
+
+	.sIFR-active .tabs-narrow ul.hilight-list strong object {
+		vertical-align: top;
+	}
+/*	
+	.sIFR-active .tabs-narrow ul.hilight-list strong {
+		visibility: hidden;
+		font-size: 15px;
+	}
+
+	.sIFR-active ul.hilight-list h3 {
+		visibility: hidden;
+		font-size: 24px;
+	}
+	
+
+*/	
+
+}

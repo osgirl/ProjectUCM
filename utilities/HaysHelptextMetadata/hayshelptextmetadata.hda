@@ -1,0 +1,45 @@
+﻿<?hda version="10.1.3.5.1 (100623)" jcharset=UTF8 encoding=utf-8?>
+@Properties LocalData
+version=2010_11_16 (PROD Release 1.1)
+classpath=$COMPONENT_DIR/classes
+blFieldTypes=
+ComponentName=hayshelptextmetadata
+hasPreferenceData=false
+blDateFormat=dd/MM/yyyy {H:mm[:ss] [zzz]}!tEurope/London
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/hayshelptextmetadata_resource.htm
+null
+150
+environment
+hayshelptextmetadata_environment.cfg
+null
+10
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+

@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysSearchComponent staticResTable
+</title>
+</head>
+<body>
+
+<@table HaysSearchComponent_Search@>
+<table border=1><caption><strong>
+
+<tr>
+<td>SearchEngineName</td><td>SearchImplementor</td><td>SearchConfigCompanion</td><td>SearchQueryValueModifier</td>
+</tr>
+<tr>
+	<td>ORACLETEXTSEARCH</td><td>oracletextsearch.search.HaysOracleTextSearchImplementor</td><td>hays.co.uk.search.HaysOracleTextSearchConfigurationCompanion</td><td>intradoc.search.CommonQueryValueModifier</td>
+</tr>
+</table>
+
+<@end@>
+<@table HaysSearchComponent_SearchQueryDefinition@>
+<table border=1><caption><strong>
+<tr>
+<td>SearchEngineName</td><td>QueryAssembly</td><td>QuerySelection</td><td>QueryCollection</td><td>WhereClause</td><td>SortFieldDefault</td><td>SortOrderDefault</td><td>SortSpec</td><td>ZoneSearchQueryLabel</td><td>EmptyValue</td><td>EscapeChars</td><td>SupportCombinedNotOp</td>
+</tr>
+
+	<tr>
+		<td>ORACLETEXTSEARCH</td>
+		<td></td>
+		<td><ctx_result_set_descriptor><count exact="false"/><group sdata="sdxJobType"><count exact="true"/></group><group sdata="sdxHaysLocation6"><count exact="true"/></group>
+		    <group sdata="sdxHaysLocation2"><count exact="true"/></group><group sdata="sdxHaysLocation3"><count exact="true"/></group><group sdata="sdxHaysLocation4"><count exact="true"/></group>
+			<group sdata="sdxHaysLocation5"><count exact="true"/></group><group sdata="sdxIndustry"><count exact="true"/></group><group sdata="sdxSpecialismId"><count exact="true"/></group><hitlist start_hit_num="<$StartRow$>" end_hit_num="<$EndRow$>" order="<$SortSpec$>">
+			<sdata name="dID"/><sdata name="sddDocName"/><score />
+			</hitlist></ctx_result_set_descriptor></td>
+		<td><$ActiveIndex$></td>
+		<td><$if hasFullTextTerm$>(<$endif$><$QueryText$><$if hasFullTextTerm$>) * 10.0 * 10.0<$endif$></td>
+		<td>SCORE</td>
+		<td>Desc</td>
+		<td><$if isOptimizedField(SortField)$>sd<$endif$><$SortField$> <$SortOrder$></td>
+		<td></td>
+		<td>idcnull</td>
+		<td>':''</td>
+		<td>true</td>
+	</tr>
+</table>
+<@end@>
+
+
+
+<@table HaysSearchComponent_ServiceHandler@>
+<table border=1><caption><strong>
+<tr>
+<td>serviceName</td><td>handler</td><td>searchOrder</td>
+</tr>
+</table>
+<@end@>
+<@table HaysOracleTextSearch_IndexerRules@>
+<table border=1><caption><string>
+
+<tr>
+<td>Name</td><td>Values</td><td>ComputeAtInit</td>
+</tr>
+<tr>
+	<td>(ORACLETEXTSEARCH)IndexerExecutionHandler</td>
+	<td>oracletextsearch.indexer.HaysOracleTextHandler</td>
+	<td></td>
+</tr>
+</table>
+<@end@>
+
+
+</body></html>

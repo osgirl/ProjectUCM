@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="<$PageCharset$>" ?>
+<opml version="1.1" xmlns:fd="http://www.bradsoft.com/feeddemon/xmlns/1.0/">
+<head>
+   <title><$lc("wwContentServerOPML")$></title>
+</head>
+<body>
+<$exec inc("std_rss_feed_variables")$>
+<$if utLoadResultSet("pne_portal", "SavedQueries") and rsFirst("SavedQueries")$>
+	<outline text="<$lc("wwMySavedQueries")$>">
+	<$loop SavedQueries$><$exec inc("map_saved_query_params")$>
+		<outline title="<$getValue('SavedQueries','queryTitle')$>" type="rss" version="RSS" xmlUrl="<$xml(strRemoveWs(inc("rss_feed_search_url")))$>&amp;<$authString$>" />
+	<$endloop$>
+	</outline>
+<$endif$>
+
+<$include opml_rss_links$>
+
+</body>
+</opml>
+<$setContentType("application/opml")$>
+<$setHttpHeader("Content-Disposition", "attachment;filename=content-server-feeds.opml")$>

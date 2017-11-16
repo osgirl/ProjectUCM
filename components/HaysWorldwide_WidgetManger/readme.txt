@@ -1,0 +1,1 @@
+HaysWorldwide_WidgetManger Component

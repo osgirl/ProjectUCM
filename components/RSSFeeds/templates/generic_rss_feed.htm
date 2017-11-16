@@ -1,0 +1,30 @@
+<$if rawXmlData$><$rawXmlData$><$else$><?xml version="1.0" encoding="<$PageCharset$>" ?>
+<$isAbsoluteWeb=1, isAbsoluteCgi=1$>
+<rss version="2.0" xmlns:media="<$xml(HttpWebRoot)$>">
+<channel>
+<$if channelTitle$><title><$xml(channelTitle)$></title><$endif$>
+<$if channelLink$><link><$xml(channelLink)$></link><$endif$>
+<$if channelDescription$><description><$xml(channelDescription)$></description><$endif$>
+<$if channelLanguage$><language><$xml(channelLanguage)$></language><$endif$>
+<$if channelPublishedDate$><publishedDate><$xml(channelPublishedDate)$></publishedDate><$endif$>
+<$if channelImage$>
+<image>
+<$if channelImageTitle$><title><$channelImageTitle$></title><$endif$>
+<$if channelImageDescription$><description><$channelImageDescription$></description><$endif$>
+<$if channelImageLink$><link><$channelImageLink$></link><$endif$>
+<$if channelImageUrl$><url><$channelImageUrl$></url><$endif$>
+</image>
+<$endif$>
+<$loop RSS_ENTRIES$>
+<item>
+	<$if title$><title><$xml(title)$></title><$endif$>
+	<$if link$><link><$xml(link)$></link><$endif$>
+	<$if pubDate$><pubDate><$xml(pubDate)$></pubDate><$endif$>
+	<$if author$><author><$xml(author)$></author><$endif$>
+	<$if description$><description><$xml(description)$></description><$endif$>
+</item>
+<$endloop$>
+</channel>
+</rss>
+<$endif$>
+<$setContentType("text/xml")$>

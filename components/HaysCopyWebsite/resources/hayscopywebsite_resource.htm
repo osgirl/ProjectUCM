@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysCopyWebsite htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml custom_finish_layout_init@>
+	<$include super.custom_finish_layout_init$>
+    <$if IsLoggedIn and userHasRole(#env.OntologyAdminRole) $>
+			<$include WebAdministratorCopySiteMenu$>
+			<$include WebAdministratorCopySite$>
+    <$endif$>
+<@end@>
+
+<@dynamichtml WebAdministratorCopySiteMenu@>
+    <$if not WebAdministratorCopySiteMenu_included$>
+        // add a drop-down menu, or a tray to the UI
+        navBuilder.addChildNodeTo('NAVTREE', 'collection', 'id==WebAdministratorCopySiteMenu', 'label==Copy Site');
+        if (navBuilder.menuB)
+            navBuilder.menuB.addTopLevelNode("WebAdministratorCopySiteMenu");
+        else if (navBuilder.trayA)
+            navBuilder.trayA.addTopLevelNode("WebAdministratorCopySiteMenu");
+        <$WebAdministratorCopySiteMenu_included=1$>
+    <$endif$>
+<@end@>
+
+<@dynamichtml WebAdministratorCopySite@>
+      navBuilder.addChildNodeTo('WebAdministratorCopySiteMenu', 'item', 'id==CopyForm',
+  'label==Copy Old Site', 'url==<$HttpCgiPath$>?IdcService=COPY_WEBSITE_DISPLAY_FORM');
+<@end@>
+
+</body></html>

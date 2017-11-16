@@ -1,0 +1,273 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+FacetedBrowsing htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml ont_javascript_dhtmlx_tree_inc@>
+		<link rel="STYLESHEET" type="text/css" href="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/dhtmlxtree.css">
+		<link rel="stylesheet" type="text/css" href="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/skins/dhtmlxmenu_standard.css">
+		<link rel='STYLESHEET' type='text/css' href='<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/common/style.css'>
+
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/dhtmlxcommon.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/dhtmlxtree.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/ext/dhtmlxtree_kn.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/ext/dhtmlxtree_xw.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/ext/dhtmlxtree_li.js"></script>
+		<script type="text/javascript"  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/ext/dhtmlxtree_sb.js"></script>
+
+<@end@>
+
+
+<@dynamichtml search_header_demo@>
+	<link rel="stylesheet" type="text/css" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/eumetsat_css/reset.css"/>
+	<link rel="stylesheet" type="text/css" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/eumetsat_css/960.css"/>
+	<link rel="stylesheet" type="text/css" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/eumetsat_css/eumetsat.css"/>
+	<!--[if IE 6]>
+		<link href="eumetsat_css/eumetsat_ie6.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js" type="text/javascript"></script>
+	<script src="<$HttpRelativeWebRoot$>FacetedBrowsing/javascript/eumetsat_js/jquery.truncate-2.3.js" type="text/javascript"></script>
+
+
+<script>
+
+	function doFacetedSearch(field, value) {
+		var urlStr = document.URL;
+		regex = new RegExp(field + "=([^&]+)");
+		arr = regex.exec(urlStr);
+		if( arr != null ) {
+			oldValue = arr[1];
+		//	alert(oldValue);
+			urlStr = urlStr.replace(oldValue, value);
+		} else {
+			if( urlStr.indexOf('?') < 0 ) {
+				urlStr = urlStr + '?'  + field + "=" + value;
+			} else
+				urlStr += "&" + field + "=" + value;
+		}
+		window.location = urlStr;
+	}
+
+
+	var queryFilter = '<$#active.QueryFilter$>';
+	var filterFields = '<$#active.FilterFields$>';
+	function addQueryFilter(field, value)
+	{
+		if (queryFilter != null && queryFilter.length > 0)
+		{
+			queryFilter += " <AND> ";
+		}
+		queryFilter += field + ' <Contains> `' + value + '`';
+		if (filterFields != null && filterFields.length > 0)
+		{
+			filterFields += ",";
+		}
+		filterFields += field;
+
+		window.location = resetQueryFilter(queryFilter, filterFields);
+	}
+
+	function resetQueryFilter(filter, fields)
+	{
+		var urlStr = document.URL;
+		if( urlStr.indexOf('?') < 0 ) {
+			urlStr = urlStr + '?';
+		}
+		urlStr = updateUrlStr(urlStr, "QueryFilter", filter);
+		return updateUrlStr(urlStr, "FilterFields", fields);
+	}
+	
+	function updateUrlStr(urlStr, key, value)
+	{
+		beginIndex = urlStr.indexOf("&" + key + "=");
+		if (beginIndex >= 0)
+		{
+			endIndex = urlStr.indexOf("&", beginIndex + 1);
+			var tmp = urlStr.substr(0, beginIndex);
+			if (endIndex < urlStr.length && endIndex > 0)
+			{
+				tmp += urlStr.substr(endIndex);
+			}
+			urlStr = tmp;
+		}
+		return urlStr + '&' + key + '=' + value;
+	}
+</script>
+<@end@>
+
+
+
+<@dynamichtml search_inc_demo@>
+	<$QueryText = "dSecurityGroup <CONTAINS> `Public`" $>
+	<$if #active.jobTitle $>
+		<$ QueryText = QueryText & " <AND> xHaysJobTitle <CONTAINS> `" & jobTitle & "`" $>
+	<$endif$>	
+	<$if #active.xHaysSpec $>
+		<$ QueryText = QueryText & " <AND> xHaysSpec <CONTAINS> `" & xHaysSpec & "`" $>
+	<$endif$>
+	<$ Q = QueryText$>
+	<$SearchQueryFormat='UNIVERSAL', ftx='', AdvSearch='True', ResultCount=8, SortField='dInDate', SortOrder='Desc'$>
+	<$executeService('ONT_GET_SEARCH_RESULTS')$>
+
+	<$loadDocMetaDefinition()$>
+<@end@>
+
+
+<@dynamichtml facet_demo@>
+	<$ className = '' $>
+	<$ searchResName = 'FacetResultSet_' & metadataName, metadataCaption = '' $>
+	<$if rsExists(searchResName)$>
+		
+		<$loop DocMetaDefinition$>
+			<$if strEquals(DocMetaDefinition.dName, metadataName) $>
+				<$ metadataCaption = DocMetaDefinition.dCaption $>
+				<$break$>
+			<$endif$>
+		<$endloop$>
+
+			<div class="box">
+			<h3><span><$metadataCaption$></span></h3>
+			<ul>
+		<$ prevLevel = 1, count = 0$>
+		<$exec rsFirst(searchResName)$>
+		<$loopwhile getValue(searchResName, "#isRowPresent")$>
+			<$level = toInteger(getValue(searchResName, 'level')) $>
+			<$if level GT prevLevel $>
+				<ul>
+			<$elseif level LT prevLevel $>
+				</li></ul>
+			<$elseif count GT 0 $>
+				</li>
+			<$endif$>
+			<$ filter = getValue(searchResName, 'children') $>
+			<$if strLength(filter) GT 0 $>
+				<$ filter = getValue(searchResName, 'nodeId') & '|' & strReplace(filter, ',', '|') $>
+			<$else$>
+				<$ filter = getValue(searchResName, 'nodeId') $>
+			<$endif$>
+			<li <$className$>><a href="javascript:doFacetedSearch('<$metadataName$>', '<$filter$>')"><span><$getValue(searchResName, 'label')$> [<$getValue(searchResName, 'count')$>]</span></a>
+			<$ prevLevel = level $>
+			<$ count = count +1  $>
+			<$if count GT 5 $>
+				<$ className = ' class="hide"' $>
+			<$endif$>
+		<$exec rsNext(searchResName)$>
+		<$endloop$>
+				</li></ul>
+				</li>
+			</ul>
+			</div>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml search_related_result_demo@>
+	<$exec rsRemove('SearchResults')$>
+	<$if strLength(metadataValue) LE 0 $>
+		<$ searchResName = 'FacetResultSet_' & metadataName $>
+		<$if rsFirst(searchResName)$>
+			<$loopwhile getValue(searchResName, "#isRowPresent")$>
+				<$ metadataValue = metadataValue & ',' & getValue(searchResName, 'nodeId')$>
+				<$exec rsNext(searchResName)$>
+			<$endloop$>
+			<$ metadataValue = strSubstring(metadataValue, 1) $>
+		<$endif$>
+	<$endif$><!--metadataValue=<$metadataValue$>-->
+		<$ metadataValue = strReplace(metadataValue, '|', ',') $>
+		<$ relatedTerms =  ontGetRelatedTerms(metadataValue, metadataName & #env.IsRelatedTo) $>
+		<$if strLength(relatedTerms) GT 0 $>
+				<$relatedTerms = strReplace("hays:AFAudit,hays:AOIC", ",", "|") $><!--relatedTerms=<$relatedTerms$>-->
+				<$if strLength(Q) GT 0$>
+					<$ QueryText = Q & ' <AND> '$>
+				<$else$>
+					<$QueryText = Q$>
+				<$endif$>
+				<$QueryText = QueryText & metadataName & ' <CONTAINS> `' & relatedTerms & '`'$>
+				
+				<$ResultCount=3 $>
+				<$executeService('GET_SEARCH_RESULTS')$>
+				<$if rsFirst('SearchResults') $>
+					<div class="box first">
+						<h3><span>Related Content</span></h3>
+					<$loop SearchResults$>
+						<ul>
+							<li><a href=""><$SearchResults.dDocTitle$></a></li>
+						</ul>
+					<$endloop$>
+					</div>		
+				<$endif$>
+				<$exec rsRemove('SearchResults')$>
+		<$endif$>
+<@end@>
+
+
+<@dynamichtml search_result_demo@>
+	<div class="hasLayout">
+		<$if rsExists('SearchResults') AND rsFirst('SearchResults') $>
+			<ul class="results">
+				<$loop SearchResults $>
+				<li class="result">
+					<div class="wrap">
+						<h3><$SearchResults.dDocTitle$></h3>
+						<div class="right-col">
+							<dl>
+								<dt>Author</dt>
+								<dd><$SearchResults.dDocAuthor$></dd>
+								<dt>Date</dt>
+								<dd><$SearchResults.dInDate$></dd>			
+							</dl>
+						</div>
+					</div>
+				</li>
+				<$endloop$>
+			</ul>
+		<$endif$>
+	</div>
+<@end@>
+
+
+<@dynamichtml ont_based_navigation@>
+	<$ontLoadSiteNavResultSet('xHaysSpec', 'ONT_NAV_RS')$>
+
+	 <!-- expertise nav -->
+        <div class="border-box">
+            <div class="box-header">
+                <div class="box-content">
+                	<h3><strong>Hays Expertise</strong></h3>
+                </div>
+            </div>
+            <div class="box-body">
+        		<ul id="expertise-nav">
+				<$prevLevel = 0$>
+				<$loop ONT_NAV_RS$>
+					<$if strEquals(ONT_NAV_RS.level, '1') $>
+						<$if strEquals( prevLevel, '2') $>
+							</ul>
+							</li>
+						<$elseif strEquals( prevLevel, '1') $>
+							</li>
+						<$endif$>
+                    <li><span class="en-title"><$ONT_NAV_RS.label$></span>
+					<$else$>
+						<$if NOT strEquals(ONT_NAV_RS.level, prevLevel) $>
+							<ul>
+							<li class="first"><a href=""><$ONT_NAV_RS.label$></a></li>
+						<$else$>
+							<li><a href=""><$ONT_NAV_RS.label$></a></li>
+						<$endif$>
+					<$endif$>
+					<$prevLevel = ONT_NAV_RS.level$>
+				<$endloop$>
+                </ul>
+				</li>
+				</ul>
+            </div>
+        </div>
+        <!-- /expertise nav -->
+<@end@>
+
+</body></html>

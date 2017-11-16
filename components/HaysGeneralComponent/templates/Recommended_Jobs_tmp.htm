@@ -1,0 +1,31 @@
+<html>
+<body>
+<div class="side_box">
+				<div class="rc_blue">
+					<div class="cnr"></div>
+					<h2>Recommended jobs!!</h2>
+				</div>
+				<div class="rc_grey sb_inner pull block_list even">
+				<ul>
+  <$rsMakeFromString("ContentIDList",contentids)$>
+  <$if rsExists("ContentIDList")$>
+    <$exec rsFirst("ContentIDList")$>
+	
+	 <$loopwhile getValue("ContentIDList", '#isRowPresent') $>
+	   <!--<$dDocName = getValue("ContentIDList", 'row')$>-->
+	   <$dDocName = 879505$>
+	     <$executeService("DOC_INFO_BY_NAME")$>
+		   <$if strEquals(DOC_INFO.dDocName , dDocName)$>
+		     <li>
+			  <h3><a href="<$ssLink(DOC_INFO.dDocName)$>"><$DOC_INFO.dDocTitle$></a></h3>
+						<p><$DOC_INFO.xLocationDescription$></p>
+			 </li>
+		   <$endif$>
+	<$exec rsNext("ContentIDList")$>
+    <$endloop$>
+  <$endif$>
+      </ul>
+  </div>
+</div>
+
+</body></html>

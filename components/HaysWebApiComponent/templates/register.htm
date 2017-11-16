@@ -1,0 +1,82 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt=
+				"Hays logo" width="300" height="81" />
+                </TD>
+				<TR>
+                <TD vAlign=top width="auto" height=0>		   
+	       <$siteLabel="",websiteURL=""$>					
+		   <$executeService("SS_GET_ALL_SITE_DOMAINS")$>
+			 <$loop DomainMap$>				
+				<$if strEqualsIgnoreCase(siteId,DomainMap.ssSiteId)$>				 
+						<$siteLabel=DomainMap.ssKey$>
+						<$websiteURL=DomainMap.ssKey$>									
+				<$endif$>
+			 <$endloop$>
+			 <$siteLabel=strReplace(siteLabel,"www.","")$>
+			 <$websiteURL="http://"&websiteURL$>	
+		   <strong><font size="3" face="Arial" color="#009FDA"><a href="<$websiteURL$>" style="text-decoration:none"><$siteLabel$>
+		   </a></font></strong>
+		  </TD>
+              </TR>
+              </TR>             
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+		       <p style="FONT-SIZE: 12px; FONT-FAMILY: Arial;">			    
+                <$lc("wwEmailRegisterTitle")$><br/><br/><br/>
+				<$lc("wwEmailRegisterText")$><br/><br/>
+				
+				<img src="http://www9.hays.com/eshots/EMAILMAKER/H_Corporate.jpg" alt="H" width="165" height="166" align="right" />
+			<br/><br/><br/><br/>
+			<$lc("wwEmailSignatureText")$>
+			</p>
+			<br/><br/>
+			<span style="FONT-SIZE: 12px; FONT-FAMILY: Arial;">
+			<$siteLabel$><br/><br/>
+			<$lc("wwEmailPortalLabel")$> - <$#env.WC_CREATE_ACCOUNT_JOBSEEKER$>?siteLocale=<$locale$>&domainId=<$domainId$></span>
+			<p style="FONT-SIZE: 10; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+	        </TD></TR>
+			<TR>
+			<TD COLSPAN="2">
+			<$lc("wwHaysMailFooterMessage","@")$>
+			</TD>
+			</TR>
+			</TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>	
+			

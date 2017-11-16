@@ -1,0 +1,218 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>CONTENT WIDGET CREATOR</title>
+		<$defaultPageTitle = "HAYS_CONTENT_WIDGET_PROP_FORM"$>
+		<$include std_html_head_declarations$>
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<!--BAU REL-14 26829-->
+				<$include include_jquery_js$>
+		<!--BAU REL-14 26829-->
+		<style>
+			
+			.on {}
+			.off {display:none;}		
+			#test{ width:500px;}
+		</style>
+	</head>
+	<body id="pg_3col" >
+	<$executeService('SS_GET_ALL_SITES_EX2')$>
+	
+	<script src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+	<script type="text/javascript">
+	
+		function onloadCopyForm()
+		{
+			document.getElementById("Country").selectedIndex = 0;	
+			document.getElementById("widgetName").value = "";
+			document.getElementById("title").value = "";
+			document.getElementById("content").value = "";
+			document.getElementById("link").value = "";
+			document.getElementById("buttonName").value = "";
+		}
+		function validateCopyForm() 
+		{
+			var regex = /[~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g;
+			var message="";
+			var widget_name = document.getElementById("widgetName").value.trim();
+			document.getElementById("widgetName").value=widget_name;
+			var title = document.getElementById("title").value.trim();
+			document.getElementById("title").value=title;
+			var content = document.getElementById("content").value.trim();
+			document.getElementById("content").value=content;
+			var link = document.getElementById("link").value.trim();
+			document.getElementById("link").value=link;
+			var button_name = document.getElementById("buttonName").value.trim();
+			document.getElementById("buttonName").value=button_name;
+			if(document.getElementById("Country").value=="")
+		   {
+				message=message+"Please select a Country.\n";
+				
+			} 
+			if(widget_name=="")
+		   {
+				message=message+"Please enter Widget Name.\n";
+				
+			}          
+			if(title=="")
+		   {
+				message=message+"Please enter Title.\n";
+				
+			}
+			if(content=="")
+		   {
+				message=message+"Please enter Content.\n";
+				
+			}
+			if(link=="")
+		   {
+				message=message+"Please enter Link.\n";
+				
+			}
+			if(link!="")
+			{
+				var link = document.getElementById("link").value;
+				 var re = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+					if (!re.test(link)) {
+						message=message+"Please enter a valid Link. Link should consist of Protocol identifier (ex. http) and Resource name (_www.example.com).\n";
+					 }
+			 }
+			 if(button_name=="")
+			{
+				message=message+"Please enter Button Name.\n";
+				
+			}
+			if(button_name!="")
+			{
+				if(regex.test(button_name) == true) {
+					message=message+"Please remove any special characters from the button name field to proceed.";
+				}
+			}	
+			if(message!="")
+		   {
+				alert(message);
+				return false;
+			}
+			else
+			{
+				setProperty();
+				return true;
+			}
+  
+		}
+		
+		function setProperty()
+		{ 
+			var countryLocale=document.getElementById("Country").value;
+			var widget_name = document.getElementById("widgetName").value;
+			var title = document.getElementById("title").value;
+			var content = document.getElementById("content").value;
+			var link = document.getElementById("link").value;
+			var button_name = document.getElementById("buttonName").value
+			
+			if(countryLocale != "" & widget_name != "" & title != "" & content != "" & link != "" & button_name != "")
+			{
+			var url = "?IdcService=SET_CONTENT_WIDGET_DATA&widget_name="+widget_name+"&locale="+countryLocale+"&title="+title+"&content="+content+"&link="+link+"&button_name="+button_name+"&IsSoap=1&idcToken=<$idcToken$>";
+			
+			var loader = dhtmlxAjax.getSync(url);
+			var message = "Content widget data inserted successfully."	
+				
+				var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				if( list != null) 
+				{
+					for(var i=0;i<list.length;i++) 
+					{
+					if(list[i].attributes[0].value == "StatusMessage")
+						{
+						if(list[i].textContent == "The revision no longer exists in the system."){
+							message = "A widget with name '"+widget_name+"' is already present. Please enter unique widget name.";
+						} else{
+							message= "Some error occured. Please try again.";
+						}
+						}
+					}
+					
+				}
+				alert(message);
+				if(message == "Content widget data inserted successfully."){
+				document.getElementById("widgetName").value = "";
+				document.getElementById("title").value = "";
+				document.getElementById("content").value = "";
+				document.getElementById("link").value = "";
+				document.getElementById("buttonName").value = "";
+				}
+			}
+		}
+
+		
+	</script>
+		<$include std_page_begin$>
+		<div id="ont"  style="width:700px;">
+			<h2>CONTENT WIDGET CREATOR</h2>
+	
+				
+				<table style="width:95%;">
+					<$schViewName = "OfficeCountryView"$>
+         <$if NOT rsExists('HAYSWEBSITES')$>
+        
+		<$executeService("GET_SCHEMA_VIEW_VALUES_CUSTOM")$>
+         <$endif$>
+         
+            <thead>
+               <$if rsExists('HAYSWEBSITES') AND rsFirst('HAYSWEBSITES') $>
+               <th><label for="Country">* Country/Website:</label></th>
+               <th>
+                  <select id="Country" name="Country">
+                     <option name="Country" value="" selected>Select...</option>
+                     <$loop HAYSWEBSITES$>
+                     <option name="Country" value="<$HAYSWEBSITES.SITELOCALEDUP$>"><$HAYSWEBSITES.COUNTRY$> <$HAYSWEBSITES.LANGUAGELABEL$></option>
+                     <$endloop$>
+                  </select>
+               </th>
+               </tr>
+               <$endif$>
+            
+				<tr>
+					<th><label for="widgetName"><em>* </em>Widget Name:</label></th>
+					<th><input type="text" value=""  class="mandatory" id="widgetName" name="widgetName" STYLE="width: 330px" maxlength="100"/></th>
+				</tr>						
+				<tr>
+					<th><label for="title"><em>* </em>Title:</label></th>
+					<th><input type="text"  value="" class="mandatory" id="title" name="title" STYLE="width: 330px" maxlength="100"/></th>
+				</tr>
+				<tr>
+					<th><label for="content"><em>* </em>Content:</label></th>
+					<th><textarea rows="5" value="" class="mandatory" id="content" name="content" STYLE="width: 330px" maxlength="200"></textarea></th>
+				</tr>						
+				<tr>
+					<th><label for="link"><em>* </em>Link:</label></th>
+					<th><input type="text"  value="" class="mandatory" id="link" name="link" STYLE="width: 330px" maxlength="100"/></th>
+				</tr>
+				<tr>
+					<th><label for="buttonName"><em>* </em>Button Name:</label></th>
+					<th><input type="text" value=""  class="mandatory" id="buttonName" name="buttonName" STYLE="width: 330px" maxlength="25"/></th>
+				</tr>	
+						
+			</thead>
+				</table>
+				
+				 <table class="no_border">
+					<tfoot>
+						<tr>
+							<td></td>
+							<td>	
+							<$if  isTrue(#env.DisableSiteStudioContribution)$>
+							<button disabled="true" onclick="onloadCopyForm()">Clear</button><button disabled="true" onclick="validateCopyForm()">Submit</button>
+							<$else$>
+							<button onclick="onloadCopyForm()">Clear</button><button onclick="validateCopyForm()">Submit</button>
+							<$endif$>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				
+				</div>
+		<$include std_page_end$>
+	</body>
+</html>

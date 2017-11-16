@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>
+OutputFormatter htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<!--
+	Clear menus and paint a print button if outputFormat=printable.  Otherwise, add our options to the menus
+-->
+<@dynamichtml page_menus_js_object_setup@>
+<$if outputFormat and (outputFormat like "printable|Printable") $>
+	<$exec rsCreateResultSet("PageMenusData", "nodeId,parentId,label,type,href,loadOrder")$>
+	<$exec rsMakeFromString("PageMenusIds", "HEADER_MENU")$>
+	<$include output_formatter_print_button$>
+	<$include super.page_menus_js_object_setup$>
+<$else$>
+	<$exec inc("output_formatter_add_all_menus")$>
+	<$include super.page_menus_js_object_setup$>
+<$endif$>
+<@end@>
+
+<!--
+	Add a print button to the current point in the page.  The button closes the window after being clicked.
+-->
+<@dynamichtml output_formatter_print_button@>
+<script language="Javascript1.2">
+	var message = '<$lc("wwPrint")$>';
+	document.write("<form><input type=button " +"value=\""+message+"\" onClick=\"window.print();window.close()\"></form>");
+</script>
+<@end@>
+
+<!--
+	Add menus to the "VIEWS" collection of the header menu bar. We only do this if we have a query string.
+	Otherwise, we have no way to know what services the menu items should execute.
+-->
+<@dynamichtml output_formatter_add_all_menus@>
+  <$if QUERY_STRING$>
+	<$include super.custom_searchapi_result_menus_setup$>
+	<$outputFormatterParentNode="VIEWS"$>
+	<$include output_formatter_add_views_menu$>
+	<$include output_formatter_add_menus$>
+  <$endif$>
+<@end@>
+
+<!--
+	Add our menu butons.
+-->
+<@dynamichtml output_formatter_add_menus@>
+	<$include output_formatter_add_printable$>
+	<$if OutputFormatterShowApiMenus and isTrue(OutputFormatterShowApiMenus)$>
+
+		<$exec rsAppendNewRow("PageMenusData")$>
+		<$PageMenusData.nodeId = "API_VIEWS"$>
+		<$PageMenusData.parentId = outputFormatterParentNode$>
+		<$PageMenusData.label = lc("wwApiViews")$>
+		<$PageMenusData.type = "collection"$>
+		<$PageMenusData.loadOrder = 3000$>
+
+
+		<$OutputFormatQueryString=QUERY_STRING$>
+		<$OutputFormatNames="Debug,Source,Soap,Hda,Json,Xml,<hr>,Json_scripted,Xml_scripted"$>
+		<$OutputFormatQueryString=strReplace(OutputFormatQueryString,"IdcService=GET_DOC_PAGE", "IdcService=EXTENDED_GET_DOC_PAGE")$>
+
+		<$rsMakeFromString("OutputFormatList",OutputFormatNames,"formatname")$>
+
+		<$if OutputFormatterMenusGetAllIdocData and isTrue(OutputFormatterMenusGetAllIdocData)$>
+			<$OutputFormatterGetAllIdocDataString="&isGetAllIdocData=1"$>
+		<$else$>
+			<$OutputFormatterGetAllIdocDataString=""$>
+		<$endif$>
+
+		<$loop OutputFormatList$>
+			<$exec rsAppendNewRow("PageMenusData")$>
+			<$PageMenusData.nodeId = "CUSTOMIZE_VIEWS"$>
+			<$PageMenusData.parentId = "API_VIEWS"$>
+			<$PageMenusData.label = formatname$>
+			<$PageMenusData.type = "item"$>
+			<$PageMenusData.loadOrder = 3001$>
+		  <$if not (formatname like "<hr>") $>
+			<$PageMenusData.target = "_blank"$>
+			<$PageMenusData.href =   HttpCgiPath & "?" & OutputFormatQueryString & OutputFormatterGetAllIdocDataString & "&coreContentOnly=1&outputFormat="&formatname  $>
+		  <$endif$>
+		<$endloop$>
+	<$endif$>
+<@end@>
+
+<!--
+	Add printable menu.
+-->
+<@dynamichtml output_formatter_add_printable@>
+	<$exec rsAppendNewRow("PageMenusData")$>
+	<$PageMenusData.nodeId = "CUSTOMIZE_VIEWS"$>
+	<$PageMenusData.parentId = outputFormatterParentNode$>
+	<$PageMenusData.label = lc("wwPrintable")$>
+	<$PageMenusData.type = "item"$>
+	<$PageMenusData.loadOrder = 2999$>
+	<$PageMenusData.target = "_blank"$>
+	<$PageMenusData.href =   HttpCgiPath & "?" & QUERY_STRING & "&coreContentOnly=1&outputFormat=printable" $>
+
+<@end@>
+
+<!--
+	Add views menu if needed.  If the menu already exists, add a separator.
+-->
+<@dynamichtml output_formatter_add_views_menu@>
+  <$if not (IdcService like "GET_SEARCH_RESULTS")$>
+	<$exec rsAppendNewRow("PageMenusData")$>
+	<$PageMenusData.nodeId = "VIEWS"$>
+	<$PageMenusData.parentId = "HEADER_MENU"$>
+	<$PageMenusData.label = lc("wwView")$>
+	<$PageMenusData.type = "collection"$>
+	<$PageMenusData.loadOrder = 50$>
+  <$else$>
+  	<$exec rsAppendNewRow("PageMenusData")$>
+	<$PageMenusData.nodeId = "OUTPUT_FORMAT_TOP_SEPARATOR"$>
+	<$PageMenusData.parentId = outputFormatterParentNode$>
+	<$PageMenusData.label = "<hr>" $>
+	<$PageMenusData.type = "item"$>
+	<$PageMenusData.loadOrder = 2000$>
+  <$endif$>
+<@end@>
+
+
+</body></html>

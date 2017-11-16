@@ -1,0 +1,518 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>HaysCopyWebsite COPY_WEBSITE_FORM</title>
+		<$defaultPageTitle = "COPY_WEBSITE_FORM"$>
+		<$include std_html_head_declarations$>
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<!--BAU REL-4 21118-->
+				<$include include_jquery_js$>
+		<!--BAU REL-4 21118-->
+		<style>
+			
+			.on {}
+			.off {display:none;}		
+			
+		</style>
+	</head>
+	<body id="pg_3col" onload="onloadCopyForm()">
+	<$executeService('SS_GET_ALL_SITES_EX2')$>
+	<script src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+	<script type="text/javascript">
+
+		function onloadCopyForm()
+		{
+			document.getElementById("sitetype").selectedIndex = 0;
+			document.getElementById("oldsite").selectedIndex = 0;
+			document.getElementById("oldSiteLabel").value = "";
+			document.getElementById("oldlocale").value = "";
+			document.getElementById("oldaccount").selectedIndex = 0;
+			document.getElementById("newsite").value = "";
+			document.getElementById("newSiteLabel").value = "";
+			document.getElementById("newlocale").value = "";
+			document.getElementById("microlocale").selectedIndex = 0;
+			document.getElementById("newaccount").value = "";
+			document.getElementById("newmicrocode").value = "";
+		}
+		function validateCopyForm() 
+		{
+			var message="";
+			if(document.getElementById("sitetype").value=="")
+		   {
+				message=message+"Please select Site Type.\n";
+				
+			}
+           if(document.getElementById("oldsite").value=="")
+		   {
+				message=message+"Please select Old Site Id.\n";
+				
+			}
+			/*if(document.getElementById("oldSiteLabel").value=="")
+		   {
+				message=message+"Please enter Old Site Label.\n";
+	
+			}
+			if(document.getElementById("sitetype").value!="3")
+			{
+				if(document.getElementById("oldlocale").value=="")
+			   {
+					message=message+"Please enter Old Site Locale.\n";
+					
+				}
+			}*/
+			if(document.getElementById("oldaccount").value=="")
+		   {
+				message=message+"Please select Old Account.\n";
+				
+			}
+			if(document.getElementById("newsite").value=="")
+		   {
+				message=message+"Please enter New Site Id.\n";
+				
+			}
+			if(document.getElementById("newsite").value!="" && document.getElementById("newsite").value.length>30)
+			{
+				message=message+"New Site Id should be less than 30 characters.\n";
+			}
+			if(document.getElementById("newSiteLabel").value=="")
+		   {
+				message=message+"Please enter New Site Label.\n";
+				
+			}
+			if(document.getElementById("sitetype").value!="3" && document.getElementById("newlocale").value=="")
+			{
+				message=message+"Please enter New Site Locale.\n";
+				
+			}
+			if(document.getElementById("newlocale").value!="" && document.getElementById("newlocale").value.indexOf("-")==-1)
+			{
+				message=message+"New Site Locale value should be in 'xx-xxx' or 'xxx-xx' format.\n";
+			}
+			else if(document.getElementById("newlocale").value.indexOf("-")!=-1)
+			{
+			    if(document.getElementById("newlocale").value.indexOf("-")==0 || document.getElementById("newlocale").value.indexOf("-")==1 || document.getElementById("newlocale").value.indexOf("-")==4 || document.getElementById("newlocale").value.indexOf("-")==5)
+				{
+					message=message+"New Locale value should be in 'xx-xxx' or 'xxx-xx' format.\n";
+				}
+			}
+			if(document.getElementById("sitetype").value=="3" && document.getElementById("microlocale").value=="")
+		   {
+				message=message+"Please select New Site Locale.\n";
+				
+			}
+			if(document.getElementById("newaccount").value=="")
+		   {
+				message=message+"Please enter New Account.\n";
+				
+			}
+			if(document.getElementById("newaccount").value!="" && document.getElementById("newaccount").value.length>80)
+			{
+				message=message+"New Account should be less than 80 characters.\n";
+			}
+			if(document.getElementById("sitetype").value=="3" && document.getElementById("newmicrocode").value=="")
+		   {
+				message=message+"Please enter Microsite Code.\n";
+				
+			}
+			if(message!="")
+		   {
+				alert(message);
+				return false;
+			}
+			var newAccount = document.getElementById("newaccount").value;
+			var dropdownList = document.getElementById("oldaccount");
+			document.getElementById("createAccount").value = "Yes";
+			for(i=0;i<dropdownList.length;i++)
+			{
+				if(dropdownList.options[i].value == newAccount)
+				{
+					document.getElementById("createAccount").value = "No";
+				}
+			}
+			return true;
+  
+		}
+	
+		$('#show').hide();
+		$('#ontGroup_exist').click(function() {
+			$('#show').show();
+		});
+		$('#ontGroup_new').click(function() {
+			$('#show').hide();
+		});
+		
+
+		function getLocaleFromSite(siteId)
+		{
+	
+			document.getElementById("oldlocale").value="";
+		
+			var url = "?IdcService=GET_LOCALE_FOR_WEBSITE&IsSoap=1&oldsite="+siteId;
+			var loader = dhtmlxAjax.getSync(url);
+			var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			if( list != null) 
+			{
+				for(var i=0;i<list.length;i++)
+				{
+					if(list[i].attributes[0].value == "sitelocale")
+					{
+						
+						document.getElementById("oldlocale").value=list[i].firstChild.nodeValue;
+					}
+					
+				}
+			}
+			//getSiteInfo(siteId);
+		}
+		
+		function getSiteLabel(siteId)
+		{
+			document.getElementById("oldSiteLabel").value="";
+			document.getElementById("oldsitelocale").value="";
+			document.getElementById("oldsitedomain").value="";
+			document.getElementById("micrositecode").value="";
+			var url = "?IdcService=SS_GET_ALL_SITE_PROPERTIES&IsSoap=1&siteId="+siteId;
+			var loader = dhtmlxAjax.getSync(url);
+			var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			if( list != null) 
+			{
+				for(var i=0;i<list.length;i++)
+				{
+					
+					if(list[i].attributes[0].value == "siteLabel")
+					{
+						
+						document.getElementById("oldSiteLabel").value=list[i].firstChild.nodeValue;
+					}
+					if(list[i].attributes[0].value == "siteLocale")
+					{
+						
+						document.getElementById("oldsitelocale").value=list[i].firstChild.nodeValue;
+					}
+					if(list[i].attributes[0].value == "domainId")
+					{
+						
+						document.getElementById("oldsitedomain").value=list[i].firstChild.nodeValue;
+					}
+					if(list[i].attributes[0].value == "micrositeCode")
+					{
+						
+						document.getElementById("micrositecode").value=list[i].firstChild.nodeValue;
+					}
+				}
+			}
+			
+			getSiteInfo(siteId);
+			getLocaleFromSite(siteId)
+		}
+
+		function getDBSiteIds(sitetype)
+		{    
+		    document.getElementById("oldsite").options.length = 0;
+			document.getElementById("oldSiteLabel").value="";
+			document.getElementById("oldsitelocale").value="";
+			if(document.getElementById("sitetype").value=="3")
+			{
+				document.getElementById("oldl").className='off';
+				document.getElementById("newlocaletext").className='off';
+				document.getElementById("newlocaledropdown").className='on';			
+				document.getElementById("microcode").className='on';
+			}
+			else
+			{
+				document.getElementById("oldl").className='on';
+				document.getElementById("newlocaletext").className='on';
+				document.getElementById("newlocaledropdown").className='off';			
+				document.getElementById("microcode").className='off';
+			}
+			var lSiteType="";
+		    if(sitetype==1)
+			{
+				lSiteType="UK";
+			}
+			else if(sitetype==2)
+			{
+				lSiteType="hays.com";
+			}
+			else
+			{
+				lSiteType="microsite";
+			}
+			var serviceUrl="";
+			var serviceLoader="";
+			var serviceList="";
+			var lOldSite = document.getElementById("oldsite");
+			var selectOptn = document.createElement("OPTION");
+				selectOptn.text = 'Please Select...';
+				selectOptn.value = '';
+				lOldSite.options.add(selectOptn);
+			if(sitetype==1 || sitetype==2)
+			{
+				serviceUrl = "?IdcService=GET_SITEID&IsSoap=1&sitetype="+lSiteType;
+				serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+				serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				
+				if( serviceList != null) 
+				{
+					for(var i=0;i<serviceList.length;i++)
+					{
+						if (serviceList[i].firstChild){
+							var lSiteId=serviceList[i].firstChild.nodeValue;
+							<$loop SiteIds$>
+								if(lSiteId == '<$SiteIds.siteId$>')
+								{
+									var optn = document.createElement("OPTION");
+									optn.text = '<$SiteIds.label$>';
+									optn.value = '<$SiteIds.siteId$>';
+									lOldSite.options.add(optn);
+								}
+							
+							<$endloop$>
+						}
+					}
+				}
+			}
+			if(sitetype==3)
+			{
+				serviceUrl = "?IdcService=GET_SITEID_UK_HAYS&IsSoap=1";
+				serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+				serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				var lCount=0;
+				var strArray=[];
+				var strArrayDB=[];
+				var strArrayDiff=[];
+				var lSiteId="";
+				<$loop SiteIds$>
+					lSiteId='<$SiteIds.siteId$>';
+					strArray[lCount]=lSiteId;
+				    lCount++;
+				<$endloop$>
+				if( serviceList != null) 
+				{ 
+					for(var i=0;i<serviceList.length;i++)
+					{
+						if (serviceList[i].firstChild){
+							strArrayDB[i]=serviceList[i].firstChild.nodeValue;
+						}
+					}
+				}
+				strArrayDiff=arr_diff(strArrayDB,strArray);
+				if(strArrayDiff.length>0)
+				{				
+					for(var j=0;j<strArrayDiff.length;j++)
+					{
+						var lSiteIdd=strArrayDiff[j];
+						<$loop SiteIds$>
+						 if(lSiteIdd == '<$SiteIds.siteId$>')
+							{
+								var optn = document.createElement("OPTION");
+								optn.text = '<$SiteIds.label$>';
+								optn.value = '<$SiteIds.siteId$>';
+								lOldSite.options.add(optn);
+							}
+							
+						<$endloop$>
+					}
+				}
+				getAllLocalesForMicrosite();
+			}
+			
+		}
+		function getAllLocalesForMicrosite()
+		{
+			document.getElementById("microlocale").options.length = 0;
+			var serviceUrl="";
+			var serviceLoader="";
+			var serviceList="";
+			var lLocales=document.getElementById("microlocale");
+			var selectOptn = document.createElement("OPTION");
+				selectOptn.text = 'Please Select...';
+				selectOptn.value = '';
+				lLocales.options.add(selectOptn);
+			serviceUrl = "?IdcService=GET_ALL_LOCALES&IsSoap=1";
+			serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+			serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				
+			if( serviceList != null) 
+			{
+				for(var i=0;i<serviceList.length;i++)
+				{
+					if(serviceList[i].attributes[0].value == "SITELOCALE")
+					{
+						var optn = document.createElement("OPTION");
+						optn.text = serviceList[i].firstChild.nodeValue;
+						optn.value = serviceList[i].firstChild.nodeValue;
+						lLocales.options.add(optn);
+					}
+				}
+			}
+		}
+		function arr_diff(a1, a2)
+		{
+		  var a=[], diff=[];
+		  for(var i=0;i<a1.length;i++)
+			a[a1[i]]=true;
+		  for(var i=0;i<a2.length;i++)
+			if(a[a2[i]]) delete a[a2[i]];
+			else a[a2[i]]=true;
+		  for(var k in a)
+			diff.push(k);
+		  return diff;
+		}
+		function getSiteInfo(siteId)
+		{
+		    document.getElementById("ProjectdDocName").value="";
+			document.getElementById("ProjectdDocId").value="";
+			var url = "?IdcService=SS_GET_SITE_INFO&IsSoap=1&siteId="+siteId;
+			var loader = dhtmlxAjax.getSync(url);
+			var Attrlist = loader.xmlDoc.responseXML.getElementsByTagName("idc:row")[0].attributes;
+			if( Attrlist != null) 
+			{
+				for(var j=0;j<Attrlist.length;j++)
+				{
+		
+					if(Attrlist[j].nodeName == "dID")
+					{
+						
+						document.getElementById("ProjectdDocId").value=Attrlist[j].nodeValue;
+					}
+					if(Attrlist[j].nodeName == "dDocName")
+					{
+						
+						document.getElementById("ProjectdDocName").value=Attrlist[j].nodeValue;
+					}
+				}
+				
+			}					
+		}
+		function getDomainForLocale(lLocale)
+		{
+			document.getElementById("newsitedomain").value="";
+			var url = "?IdcService=GET_DOMAIN_FOR_LOCALE&IsSoap=1&siteLocale="+lLocale;
+			var loader = dhtmlxAjax.getSync(url);
+			var Attrlist = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			if( Attrlist != null) 
+			{
+				for(var j=0;j<Attrlist.length;j++)
+				{
+					if(Attrlist[j].attributes[0].value == "DOMAINID")
+					{
+						document.getElementById("newsitedomain").value=Attrlist[j].firstChild.nodeValue;
+					}
+				}
+			}
+		}
+		function extractValue(element) 
+		{
+			var value =  element.firstChild;
+			if( value != null)
+				value = value.nodeValue;
+			else value = "";
+			return value;
+		}
+			  
+	</script>
+		<$include std_page_begin$>
+		<div id="ont">
+			<h2>COPY WEBSITE</h2>
+	<form name="CopyForm" id="copyform" enctype="multipart/form-data" method="post" action="<$HttpCgiPath$>"  onsubmit="return validateCopyForm()" >
+				<input type="hidden" name="IdcService" value="COPY_WEBSITE_ACTION" />
+				<input type="hidden" name="ProjectdDocId" id="ProjectdDocId" value="" />
+				<input type="hidden" name="ProjectdDocName" id="ProjectdDocName" value="" />
+				<input type="hidden" name="createAccount" id="createAccount" value="" />
+				<input type="hidden" name="oldsitelocale" id="oldsitelocale" value="" />
+				<input type="hidden" name="oldsitedomain" id="oldsitedomain" value="" />
+				<input type="hidden" name="micrositecode" id="micrositecode" value="" />
+				<input type="hidden" name="newsitedomain" id="newsitedomain" value="" />
+				<input type="hidden" name="idcToken" id="idcToken" value="<$idcToken$>" />
+				<table>
+					<thead>
+						<tr>
+						<th >* All fields are mandatory.</th>
+						</tr>
+						<tr>
+							<th><label for="sitetype"><em>* </em>Site Type:</label></th>
+							<th>
+								<select id="sitetype" name="sitetype" onChange="getDBSiteIds(this.options[this.selectedIndex].value);" STYLE="width: 230px"/>
+								<option value="" name="sitetype">Please Select...</option>
+								<option name="sitetype" value="1">UK</option>
+								<option name="sitetype" value="2">hays.com</option>
+								<option name="sitetype" value="3">Microsites</option>
+						</tr>
+						
+						<tr>
+							<th><label for="oldsite"><em>* </em>Old Site Id:</label></th>
+							<th>
+								<select id="oldsite"  name="oldsite" onChange="getSiteLabel(this.options[this.selectedIndex].value);" STYLE="width: 230px"/>
+								<option value="" name="oldsite">Please Select...</option>
+								
+							</th>
+						</tr>
+						<tr>
+							<th><label for="oldSiteLabel"><em>* </em>Old Site Label:</label></th>
+							<th><input type="text" value="" readonly="true"  class="mandatory" id="oldSiteLabel" name="oldSiteLabel" STYLE="width: 230px"/></th>
+						</tr>
+						<tr id="oldl" class="on">
+							<th><label for="oldlocale"><em>* </em>Old Site Locale:</label></th>
+							<th>							
+							<input type="text" value="" readonly="true"class="mandatory" id="oldlocale" name="oldlocale" STYLE="width: 230px"/>					
+							</th>
+						</tr>
+						<tr>
+							<th><label for="oldaccount"><em>* </em>Old Account:</label></th>
+							<th>
+								<select id="oldaccount" name="oldaccount" STYLE="width: 230px"/>
+								<option value="" name="oldaccount">Please Select...</option>
+								<$loop RSET_ACCOUNTS$>
+								<option name="oldaccount" value="<$RSET_ACCOUNTS.dDocAccount$>"><$RSET_ACCOUNTS.dDocAccount$></option>
+								<$endloop$>
+							</th>
+						</tr>
+					
+						<tr>
+							<th><label for="newsiteid"><em>* </em>New Site Id:</label></th>
+							<th><input type="text" class="mandatory" id="newsite" name="newsite" STYLE="width: 230px"/></th>
+						</tr>
+						<tr>
+							<th><label for="newSiteLabel"><em>* </em>New Site Label:</label></th>
+							<th><input type="text" class="mandatory" id="newSiteLabel" name="newSiteLabel" STYLE="width: 230px"/></th>
+						</tr>
+						<tr id="newlocaletext" class="on">
+							<th><label for="newlocale"><em>* </em>New Site Locale:</label></th>
+							<th><input type="text" maxlength="6" class="mandatory" id="newlocale" name="newlocale" STYLE="width: 230px"/></th>
+						</tr>
+						<tr id="newlocaledropdown" class="off">
+							<th><label for="microlocale"><em>* </em>New Site Locale:</label></th>
+							<th>
+								<select id="microlocale"  name="microlocale" onChange="getDomainForLocale(this.options[this.selectedIndex].value);" STYLE="width: 230px" />
+								<option value="" name="microlocale">Please Select...</option>
+								
+							</th>
+						</tr>
+						<tr>
+							<th><label for="newaccount"><em>* </em>New Account:</label></th>
+							<th><input type="text" class="mandatory" id="newaccount" name="newaccount" STYLE="width: 230px"/></th>
+						</tr>
+						
+						<tr id="microcode" class="off">
+							<th><label for="newmicrocode"><em>* </em>Microsite Code:</label></th>
+							<th><input type="text" class="mandatory" id="newmicrocode" name="newmicrocode" STYLE="width: 230px"/></th>
+						</tr>
+						
+					</thead>
+				</table>
+				<table class="no_border">
+					<tfoot>
+						<tr>
+							<td></td>
+							<td><input type="submit" name="Next" value="Copy Site" class="button"/></td>
+						</tr>
+					</tfoot>
+				</table>
+				
+			</form>
+		</div>
+		<$include std_page_end$>
+	</body>
+</html>

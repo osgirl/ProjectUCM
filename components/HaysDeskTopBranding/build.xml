@@ -1,0 +1,35 @@
+<project name="HaysDeskTopBranding" default="dist" basedir=".">
+  <description>
+  	HaysDeskTopBranding component build
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="classes"/>
+  <property name="projectName" value="HaysDeskTopBranding"/>
+	<property name="configName" value="haysdesktopbranding_environment"/>
+		<target name="clean" description="clean up">
+			<!-- Delete the ${build} and ${dist} directory trees -->
+			<delete dir="${src}/../manifest_${projectName}"/>
+			<delete file="${src}/../${projectName}.zip"/>
+		 </target>
+
+	  <target name="fileSetup" depends="clean" description="arrange files to put in components besides the source/class files">
+	 	<echo>************ Create new directory ************</echo>
+		<mkdir dir="${src}/../manifest_${projectName}/component/${projectName}"/>
+	 	<!--copy file="${src}/../manifest.hda" todir="${src}/../manifest_${projectName}"/-->
+	 	<copy  todir="${src}/../manifest_${projectName}/component/${projectName}">
+	 	    <fileset dir="${src}/.." excludes="*.classpath,*.project,build.xml,*.cfg"/>
+	 	  </copy>
+		  
+	 	<!--copydir dest="${src}/../manifest_${projectName}/component" src="${src}/.."/-->
+	 	<delete verbose="true" dir="${src}/../manifest_${projectName}/component/${projectName}/config"/>
+		<copy verbose="true" file="${src}/../manifest.hda" todir="${src}/../manifest_${projectName}/"/>
+	 	<delete verbose="true" dir="${src}/../manifest_${projectName}/component/${projectName}/manifest_${projectName}"/>
+	 	
+	  </target>
+	  
+	  <target name="dist" depends="fileSetup" description="generate the distribution">
+		<zip destfile="${src}/../${projectName}.zip" basedir="${src}/../manifest_${projectName}"/>
+	  </target>
+
+  
+</project>

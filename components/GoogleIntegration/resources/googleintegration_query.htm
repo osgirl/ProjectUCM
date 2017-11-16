@@ -1,0 +1,102 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+GoogleIntegration query
+</title>
+</head>
+<body>
+
+<@table GoogleIntegration_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>QSelectHaysGeocodesTable</td>
+	<td>select latitude,longitude  from HAYSGEOCODES where (town=? and (lower(town)!='null'  or town!=''))  or
+(postcode=? and (lower(postcode)!='null'  or postcode!=''))</td>
+	<td>town varchar
+	    postcode varchar</td>
+</tr>
+<tr>
+	<td>IPopulateHaysGeocodesTable</td>
+	<td>insert into HAYSGEOCODES (geocode_id,latitude,longitude,postcode,town)
+values (?,?,?,?,?)</td>
+	<td>geocode_id int
+	    latitude varchar
+	    longitude varchar
+	    postcode varchar
+	    town varchar</td>
+</tr>
+<tr>
+	<td>qgethayslocations</td>
+	<td>SELECT *
+FROM HAYSLOCATIONDETAILS</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HAYS_GEOCODES_TABLE_PARENT_QUERY</td>
+	<td>select l.location_id, l.level_no from hays_locations l
+where l.level_no = (select max(l.level_no) from rdfusr.hays_locations l
+where sdo_contains(l.geo_viewport, SDO_GEOMETRY(2001, 8307, SDO_POINT_TYPE (?,?,NULL), NULL, NULL)) =  'TRUE')
+and sdo_contains(l.geo_viewport, SDO_GEOMETRY(2001, 8307, SDO_POINT_TYPE (?,?,NULL), NULL, NULL)) =  'TRUE'</td>
+	<td>lng varchar
+	    lat varchar
+	    lng varchar
+	    lat varchar</td>
+</tr>
+
+
+<tr>
+	<td>QHaysGeocodesGetNearestLocationId</td>
+	<td>SELECT /*+ ORDERED */
+		location_id, level_no
+		from hays_locations
+		where
+		sdo_nn(geo_location,MDSYS.SDO_GEOMETRY(2001,8307,MDSYS.SDO_POINT_TYPE(?,?,null),null,null),
+		'sdo_num_res=1 unit=mile', 1) = 'TRUE';</td>
+	<td>lng varchar
+	    lat varchar</td>
+</tr>
+
+<tr>
+	<td>IPopulateSynonymsTable</td>
+	<td>insert into rdfuser.hays_location_synonyms (synonym_id, synonym_desc, location_id, create_date) values (?,?,?,?)</td>
+	<td>synonym_id varchar
+	    synonym_desc varchar
+	    location_id varchar
+	    create_date date</td>
+</tr>
+
+
+<tr>
+	<td>HAYS_GEOCODES_CHECK_DUPLICATE_QUERY</td>
+	<td>select l.location_id,  l.geo_location.SDO_POINT.x NE_LONGITUDE,
+l.geo_location.SDO_POINT.y NE_LATITUDE,l.level_no, L.DEFAULT_DESCRIPTION Location_desc
+from hays_locations l
+where l.lat = ? and l."LONG" =?  and l.level_no = ?</td>
+	<td>lat varchar
+	    lng varchar
+	    level varchar</td>
+</tr>
+<tr>
+	<td>HAYS_GEOCODES_TABLE_POPULATE_STMT</td>
+	<td>Insert into HAYS_LOCATIONS (LOCATION_ID,PARENT_LOCATION_ID,DEFAULT_DESCRIPTION,CREATE_DATE,MODIFY_DATE,DISPLAY_ORDER,AREA_ID,GEO_LOCATION,GEO_NOTES,LEVEL_NO,POLYGON_ID,LAT,LONG,ISPOSTCODE)
+values(?,?,?,?,?,null,null,
+MDSYS.SDO_GEOMETRY(2001,8307,MDSYS.SDO_POINT_TYPE(?,?,null),null,null),null,?,null,?,?,?)</td>
+	<td>geocode_id varchar
+	    parentLocation varchar
+	    desc varchar
+	    currentDate date
+	    currentDate date
+	    longitude varchar
+	    latitude varchar
+	    level varchar
+	    latitude varchar
+	    longitude varchar
+	    isPostCode varchar</td>
+</tr>
+</table>
+<@end@>
+</body></html>

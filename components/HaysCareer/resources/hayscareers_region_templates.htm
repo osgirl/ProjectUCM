@@ -1,0 +1,519 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysCareer htmlIncludeOrString
+</title>
+</head>
+<body>
+	<!--***********************************************************
+	****** HAYS CAREER : SELECT COUNTRY LIST *********
+	************************************************************-->
+	<@dynamichtml rgtmp_haycareer_selectcountrylist@>
+
+	<$CareerCountryList=#env.HaysCareerCountryList$>
+	<$country_link =  #env.United_Kingdom$>
+	<$rsMakeFromString("rsCareerCountryList", CareerCountryList, "countryList")$>
+
+	<$TotalRows=0$>
+	<$loop rsCareerCountryList$>
+ 
+	<$TotalRows=TotalRows+1$>
+			 
+	<$endloop$>
+	<$if (TotalRows%4)==0$>
+		<$maxcount=TotalRows/4$>
+	<$else$>
+		<$maxcount=(TotalRows/4)+1$>
+	<$endif$>
+
+ 
+	
+	<$rowcount=0$>	
+	<$countryCount=1$>
+		<ul>
+
+			<$loop rsCareerCountryList$>
+				 
+				<$if maxcount==rowcount$>
+					<$rowcount=0$>
+					</ul>
+					<ul>
+				<$endif$> 
+			
+				<li>		
+				
+				<$exec setResourceInclude("countryURLStr","<$#env.countryURL"&countryCount&"$>")$>
+				<a href="<$include countryURLStr$>" title="<$countryList$>" ><span> <$countryList$> </span></a>	
+				</li>
+				<$countryCount=countryCount+1$>	
+				<$rowcount=rowcount+1$>	
+			<$endloop$>
+		</ul> 
+	 
+	<@end@>
+
+
+	<!--***********************************************************
+	****** HAYS CAREER : Header *********
+	************************************************************-->
+	<@dynamichtml rgtmp_hayscareer_header_home_inc@>
+	<header>
+		<div class="logo">
+			<$wcmElement("HaysLogo")$>
+		</div>
+
+		<nav class="header_menu"> 
+			<ul>
+				<$wcmListStart("Links")$>
+					<$if wcmListRowCount() gt 0$>
+			    	
+						<$nNumRecords=wcmListRowCount()$>
+						<$nPos=0$>
+						<$loopwhile nPos lt nNumRecords$>
+							<li><$wcmListElement('Link', nPos)$></li>			
+			    			<$nPos=nPos+1$>
+						<$endloop$> 
+					<$endif$>	
+				
+				<$wcmListEnd("Links")$>
+					
+			</ul>
+		</nav>
+	</header> 	<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Background Image Career *********
+	************************************************************-->
+<@dynamichtml rgtmp_hayscareer_background_career_image_inc@>
+<$image=''$>
+
+<$wcmListStart("BackgroundImage")$>
+
+  <$wcmListNumRows = wcmListRowCount()$>
+  
+    <$if wcmListNumRows ge 0 $>
+    <$randomNo = randomNumber(wcmListNumRows) $>
+	<$if randomNo lt 0$>
+			<$randomNo = 0$>
+		<$endif$>
+		 
+		<$wcmListElement("BackgroundImage", randomNo)$>
+	<$endif$>	
+<$wcmListEnd("BackgroundImage")$>
+ 
+
+	
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Main Region Career Home *********
+	************************************************************-->
+	
+	<@dynamichtml rgtmp_hayscareer_main_region_career_home_inc@>
+
+<div class="quote">
+
+	<h1>
+	<$wcmElement("Title")$> 
+	<br>
+	<span><$wcmElement("SubTitle")$></span>
+	<br>
+	</h1>
+</div>
+
+
+<@end@>
+
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Left Block Lower *********
+	************************************************************-->
+
+<@dynamichtml rgtmp_hayscareer_left_block_lower_inc@>
+
+<div class="find_the_career_inner">
+
+<h3><$wcmElement("Title")$></h3>
+
+<$wcmElement("SubTitle")$>
+
+
+
+<$wcmListStart("LeftBlock")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$loopwhile wcmListIndex < wcmListNumRows$>
+
+ 
+
+<strong><$wcmListElement("Title", wcmListIndex)$></strong>
+
+<$wcmListElement("Body", wcmListIndex)$>
+    <div class="explore">
+  <$wcmListElement("Link",  wcmListIndex)$>
+    </div>
+<$wcmListIndex = wcmListIndex + 1$>
+<$endloop$>
+<$wcmListEnd("LeftBlock")$>
+</div>
+<div class="ftc_bottom"></div>
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Main Image Career *********
+	************************************************************-->
+<@dynamichtml rgtmp_hayscareer_main_career_image_inc@>
+
+<$wcmElement("MainImage")$>
+
+
+
+<@end@>
+
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Main Region Career Generic *********
+	************************************************************-->
+	
+	<@dynamichtml rgtmp_haycareer_main_region_generic_inc@>
+ 
+<div class = "rendering_info">
+
+<div class="inner">
+<h1>
+         <$wcmElement("Title")$>
+            <span><$wcmElement("SubTitle")$></span>
+</h1>
+		<$ aBody = ''$>
+		<$ aBody = wcmElement("Body")$>
+		<$if not strEquals(aBody,'')$>
+			<q>
+			<span> <$ aBody $></span>
+			</q>  
+		<$endif$>	
+<small>
+               <strong><$wcmElement("Name")$></strong>
+                      <$wcmElement("Content")$>
+</small>
+</div>
+</div>	
+		
+		<$ backURL = ssNodeLink('watch-her-video', #active.siteId)$>
+		<$ dDocNameFlash= ''$>
+		<$ dDocNameFlash=wcmElement("SelectContentFlash")$>
+		<$if not strEquals(dDocNameFlash,'')$>
+				<div class = "video"> 
+				<a target="_blank" href="<$backURL$>?dDocNameFlash=<$dDocNameFlash$>">Watch Her Video</a>
+				</div>
+		<$endif$>
+  
+
+
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Main Region Centre Content *********
+	************************************************************-->
+
+	<@dynamichtml rgtmp_hayscareers_main_region_content_inc@>
+
+		<$wcmElement("Title")$>
+		<$wcmElement("SubTitle")$> 
+		<$wcmElement("Body")$>
+
+<@end@>
+
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Right Block Upper *********
+	************************************************************-->
+
+<@dynamichtml rgtmp_haycareer_right_region_upper_inc@>
+
+<div class="inner">
+ 
+
+<h3><$wcmElement("Title")$></h3>
+
+<$wcmElement("Body")$>
+<$wcmElement("Image")$>
+  <div class="challenge"> 
+<$wcmElement("Link")$>
+  </div>
+
+</div>
+
+<div class="recruitment_bottom"></div>
+<@end@>
+
+
+
+
+
+	<!--***********************************************************
+	****** HAYS CAREER : Footer *********
+	************************************************************-->
+
+		<@dynamichtml rgtmp_hayscareer_footer_career_inc@>
+				<footer>
+					<nav class="footer_menu">
+						<ul>
+							<$wcmListStart("Links")$>
+								<$if wcmListRowCount() gt 0$>
+
+
+								<$nNumRecords=wcmListRowCount()$>
+							    <$nPos=0$>
+
+
+							    <$loopwhile nPos lt nNumRecords$>
+							<li>
+									<$wcmListElement("Link", nPos)$>
+							</li>
+								       <$nPos=nPos+1$>
+						        	<$endloop$>
+						        <$endif$>
+				        	    <$wcmListEnd("Links")$>
+							
+						</ul> 
+								<p><$wcmElement("SubTitle")$></p>
+
+									</nav>	
+				</footer>
+
+													 
+				
+	<@end@>
+
+ 
+<!--***********************************************************
+	****** HAYS CAREER : Lower Region Generic *********
+	************************************************************-->
+<@dynamichtml rgtmp_haycareer_lower_region_generic_inc@>
+
+
+	
+	<$rowcount=0$>
+	<$maxcount=3$>
+	<div class="section">
+		
+		<$wcmListStart("Content")$>
+				 
+		
+		 
+			<$if wcmListRowCount() gt 0$>	 
+				
+
+				<$nNumRecords=wcmListRowCount()$>
+				<$nPos=0$>
+				<$loopwhile nPos lt nNumRecords$> 
+			 
+						<$if maxcount==rowcount$>
+					<$rowcount=0$>
+					</div>
+					<div class="section">
+					<$endif$>
+
+					<div class="mod">
+						<div class="mod_top"></div>								
+						<div class="mod_content">
+						
+							<div class="inner">
+							<h2 class="title">
+
+						 
+							
+								<$wcmListElement("Title", nPos)$>
+						
+								</h2>
+							<$wcmListElement("Image", nPos)$>
+								<$wcmListElement("Body", nPos)$>
+								
+								     <div class="find_more">
+
+									<$wcmListElement("Link", nPos)$>
+									 </div>
+							</div>
+
+						</div>
+						<div class="mod_bottom"></div>
+					</div>
+					<$rowcount=rowcount+1$>	
+					  <$nPos=nPos+1$>	
+					 
+				<$endloop$>
+				
+				
+			<$endif$>	
+			<$rowcount=rowcount+1$>	
+		<$wcmListEnd("Content")$>
+
+	</div>
+
+<@end@>
+
+<!--***********************************************************
+	****** HAYS CAREER : Lower Region Home *********
+	************************************************************-->
+
+<@dynamichtml rgtmp_hayscareers_lower_region_home_inc@>
+	<section class="option">
+<div class="boxes">
+		<$wcmListStart("Content")$>
+		<$if wcmListRowCount() gt 0$>
+		<$nNumRecords=wcmListRowCount()$>
+			<$nPos=0$>
+			<$loopwhile nPos lt nNumRecords$>
+				
+	 
+
+					
+						<div class="box_layout">
+							<div class="box_top"></div>
+								<div class="box_content">
+									<div class="inner">
+										<div class="title">	
+
+					 
+					<span>
+						<$wcmListElement("Title", nPos)$>
+					</span>
+										 </div>
+						<$wcmListElement("Body", nPos)$>
+
+											 <div class = "view_more">
+						<$wcmListElement("Link", nPos)$>
+											</div>	
+									</div>
+								</div>
+								<div class="box_bottom"></div>
+						</div>				   
+					<$nPos=nPos+1$>
+			<$endloop$> 
+		<$endif$>	
+		<$wcmListEnd("Content")$>
+	 </div>
+	</section>
+<@end@>
+
+
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: assigning data file to header
+	and Footer place holders is only allowed on the home page.
+	The choice is then propogated to the rest of the pages.
+	PL_NAME - is the placeholder name
+*******************************************************-->
+<@dynamichtml extract_datafile_haysCareers_header_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_haysCareers_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME, datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_haysCareers_footer_inc@>
+	<$ PL_NAME = 'Footer' $>
+	<$include extract_datafile_haysCareers_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME, datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_sec_header_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_haysCareers_from_top_node_inc$>
+	<$wcmPlaceholder('Header_Secondary_Navigation', 'templateDocName=RGTMP_HEADER_SUB', datafileInclude)$>
+<@end@>
+
+
+
+<@dynamichtml extract_datafile_haysCareers_from_top_node_inc@>
+	<$ datafile = '', datafileInclude = 'dataFileDocName=' $>
+	<$ navTopNodeId = ssGetFirstNodeId(siteId) $>
+	<$ primaryUrlProp = ssGetNodeProperty(navTopNodeId, 'primaryUrl') $>
+	<$ index = strIndexOf(primaryUrlProp, PL_NAME) $>
+	<$if index GE 0 $>
+		<$ datafile = strSubstring(primaryUrlProp, index + strLength(PL_NAME) + 1) $>
+		<$ index = strIndexOf(datafile, '&') $>
+		<$if index GT 0 $>
+			<$ datafile = strSubstring(datafile, 0, index) $>
+		<$endif$>
+	<$endif$>
+	<$ datafileInclude = datafileInclude & datafile $>
+<@end@>
+
+
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: end
+*******************************************************-->
+
+
+
+	
+<!--***********************************************************
+	****** HAYS CAREER : Breadcrumbs *********
+	************************************************************-->
+
+
+<@dynamichtml rgtmp_haycareer_breadcrumbs@>
+ <nav class="breadcrumbs">
+
+	<$if NOT rsExists('SiteStudioNavNodes') $>
+		<$ssLoadSiteNavResultSet(siteId)$> 
+	<$endif$>
+
+	<$rsAddFields('ssNavNodeList', 'label,href')$>
+	<$rsMergeReplaceOnly('ssNavNodeList', 'SiteStudioNavNodes', 'nodeId') $>
+	<$ length = ssNavNodeList.#numRows -1 $>
+	<ul class="breadcrumb">
+	<$loop ssNavNodeList$>
+		<$if ssNavNodeList.#row == length $>
+			<$if #active.ssDocName $>
+				<$dDocName = ssDocName $>
+				<$ executeService( 'DOC_INFO_BY_NAME_SIMPLE' ) $>
+				<li><a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;</li>
+				<li><$ DOC_INFO.dDocTitle $></li>
+			<$else$>
+				<li><$ ssGetNodeProperty('label')$></li>
+			<$endif$>
+		<$else$>
+			<li><a href="<$ ssNavNodeList.href $>"><$ ssNavNodeList.label $></a> &gt;</li>
+		<$endif$>
+	<$endloop$>
+	</ul>
+ </nav>
+<@end@>
+	
+<@dynamichtml google_analytics_for_HaysCareers@>
+<$if isTrue(#env.SwitchOnGoogleAnalytics)$>
+	<script type="text/javascript">
+			var _gaq = _gaq || [];
+			var HAYS_ww_gacode1="UA-7391736-27";
+			_gaq.push(['_setAccount', HAYS_ww_gacode1]);
+			_gaq.push(['_trackPageview']);
+			_gaq.push(['_setDomainName','none']);
+			_gaq.push(['_setAllowLinker',true]);
+
+			(function() {
+
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+
+			})();
+		</script> 
+					
+<$endif$>
+
+
+<@end@>
+
+</body>
+</html>
+

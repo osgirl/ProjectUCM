@@ -1,0 +1,76 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml widget_CookiesSettings_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function CookiesSettingsWidgetObject(name) {
+					this.name = name;
+				};
+
+				CookiesSettingsWidgetObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					CookiesSettingsWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var quotationStr = "<Widget><Name>CookiesSettings</Name></Widget>";
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				CookiesSettingsWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+					};
+
+			//*****************************************************************************
+
+
+				CookiesSettingsWidgetObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new CookiesSettingsWidgetObject("CookiesSettings")); 
+
+		</script>
+<@end@>
+
+
+
+<@dynamichtml widget_CookiesSettings_form@>
+	
+	<$include widget_CookiesSettings_javascript$>
+<@end@>
+
+
+
+
+<@dynamichtml widget_CookiesSettings_display@>
+<$include subtmp_cookie_settings$>
+<@end@>
+
+
+</body>
+
+</html>

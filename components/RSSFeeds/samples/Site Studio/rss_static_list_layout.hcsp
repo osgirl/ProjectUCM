@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="<!--$PageCharset-->" ?>
+<!--$setContentType("text/xml") -->
+<!--$exec inc("std_rss_feed_variables") -->
+
+<!--$guidXPath = "officelocations/officelocations/location"-->
+<!--$titleXPath = "officelocations/officelocations/location"-->
+<!--$pubDateXPath = "" -->
+<!--$authorXPath = "" -->
+<!--$linkXPath = "" -->
+<!--$descriptionXPath = "officelocations/officelocations/address"-->
+
+<!--$if not xmlDocName -->
+	<!--$xmlDocName = ssGetNodeProperty(nodeId, "xmlDocName") -->
+	<!--$if not xmlDocName-->
+		<!--$xmlDocName = ssGetNodeProperty(sourceId, "xmlDocName") -->
+	<!--$endif-->
+<!--$endif-->
+
+<rss version="2.0">
+<channel>
+	<title><!--$if CaptionText --><!--$CaptionText--><!--$else--><!--$dDocTitle--><!--$endif--></title>
+	<link><!--$HttpAbsoluteCgiPath-->?IdcService=SS_GET_PAGE&amp;nodeId=<!--$if sourceId--><!--$sourceId--><!--$else--><!--$nodeId--><!--$endif--></link>
+<!--$strNumRecords=ssGetXmlNodeCount(xmlDocName, titleXPath)-->
+<!--$nNumRecords=toInteger(strTrimWs(strNumRecords))-->
+<!--$nPos=1-->
+<!--$loopwhile nPos <= nNumRecords -->
+	<item>
+	<!--$if guidXPath-->
+		<guid isPermaLink="false"><!--$xml(ssIncludeXml(xmlDocName, guidXPath & "[" & nPos & "]/node()"))--></guid>
+	<!--$endif-->
+	<!--$if titleXPath-->
+		<title><!--$xml(ssIncludeXml(xmlDocName, titleXPath & "[" & nPos & "]/node()"))--></title>
+	<!--$endif-->
+	<!--$if pubDateXPath-->
+		<pubDate><!--$ssIncludeXml(xmlDocName, pubDateXPath & "[" & nPos & "]/node()")--></pubDate>
+	<!--$endif-->
+	<!--$if authorXPath-->
+		<author><![CDATA[<!--$ssIncludeXml(xmlDocName, authorXPath & "[" & nPos & "]/node()")-->]]></author>
+	<!--$endif-->
+	<!--$if linkXPath-->
+		<link><!--$ssIncludeXml(xmlDocName, linkXPath & "[" & nPos & "]/node()")-->]]></link>
+	<!--$endif-->
+	<!--$if descriptionXPath-->
+		<description><![CDATA[<!--$ssIncludeXml(xmlDocName, descriptionXPath & "[" & nPos & "]/node()")-->]]></description>
+	<!--$endif-->
+	</item>
+	<!--$ nPos = nPos + 1-->
+<!--$endloop-->
+</channel>
+</rss>
+<!-- the HEAD element is required by SiteStudio
+	<head><!--$include ss_layout_head_info-->
+	</head>
+-->

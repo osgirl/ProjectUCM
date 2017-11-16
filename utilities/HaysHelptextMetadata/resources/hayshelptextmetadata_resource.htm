@@ -1,0 +1,43 @@
+﻿<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>
+SymbianHelpText htmlIncludeOrString
+</title>
+
+</head>
+
+<body>
+
+
+
+
+
+<@dynamichtml helper_field_caption_include@>
+	<$if (fieldLongDescription AND (strLength(fieldLongDescription) > 0)) OR (fieldDescription AND (strLength(fieldDescription) > 0))$>
+		<$link=inc("helper_long_description_link")$>
+	<$else$>
+		<$link=""$>
+	<$endif$>
+	<$if link$>
+		<$if not (HelperUseIconLongDescription AND isTrue(HelperUseIconLongDescription))$>
+			<$link$><span class='<$fieldCaptionStyle$>' title="<$xml(eval(fieldDescription))$>"><$if not isFormSubmit$><$lcCaption(fieldCaption)$><$else$><$fieldCaption$><$endif$></span></a>
+		<$else$>
+			<table cellspacing="0" cellpadding="0"><tr><td>
+				<span class='<$fieldCaptionStyle$>' title="<$xml(eval(fieldDescription))$>"><$if not isFormSubmit$><$lcCaption(fieldCaption)$><$else$><$fieldCaption$><$endif$></span>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<$link$><img src="<$HttpSkinRoot$>InfoIcon_sm.gif" border="0"></a>
+			</td>
+			</tr></table>
+		<$endif$>
+	<$else$>
+		<span<$if fieldCaptionStyle$> class='<$fieldCaptionStyle$>'<$endif$><$if getValue("#active",fieldName&":description")$> title="<$xml(eval(getValue("#active",fieldName&":description")))$>"<$endif$>><$if not isFormSubmit$><$lcCaption(fieldCaption)$><$else$><$fieldCaption$><$endif$>&nbsp;<img src="<$HttpSkinRoot$>InfoIcon_sm.gif" border="0"></span>
+	<$endif$>
+<@end@>	
+	
+	</body></html>

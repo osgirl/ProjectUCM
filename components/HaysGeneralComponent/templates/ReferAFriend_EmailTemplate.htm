@@ -1,0 +1,178 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+			  <$siteLabel="",websiteURL=""$>	
+				<$dSiteId = siteId$>
+				<$executeService("SS_GET_ALL_SITE_DOMAINS")$>
+				<$loop DomainMap$>			
+					<$if strEqualsIgnoreCase(siteId,DomainMap.ssSiteId)$>				
+						<$if DomainMap.ssIsDefault == 1$>
+							<$siteLabel=DomainMap.ssKey$>
+							<$websiteURL=DomainMap.ssKey$>
+						<$endif$>				
+					<$endif$>
+				<$endloop$>
+				<$siteLabel=strReplace(siteLabel,"testsg.","")$>
+				<$siteLabel=strReplace(siteLabel,"www.","")$>
+				<$websiteURL="http://"&websiteURL$> 
+                <!-- Release 7 [Home page logo]-->
+				<$inThisConfig=#env.HAYS_RESPONSE_LOGO_HOME$>
+				<$checkThisValue=siteId$>
+				<$include checkFlagValue$>
+				<$if checkFlag==1$>
+				<!-- end -->		
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="<$websiteURL & ssWeblayoutUrl('IMG_LOGO_HAYSRESPONSE')$>" alt="Hays logo" width="183" height="50"/>
+					</TD>	
+				<$elseif siteId like 'enVUS'$>	
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="<$websiteURL & ssWeblayoutUrl('VEREDUS_LOGO')$>" alt="Veredus A Hays Company" width="183" height="50"/>
+					</TD>
+				<$else$>
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81"/>
+					</TD>
+				<$endif$>
+              </TR>
+              <TR>
+                <TD vAlign=top width="auto" height=0>	          
+				<$if siteId like 'frHRBE' OR  siteId like 'nlHRBE' OR  siteId like 
+				'enHRBE'$>
+					<a href="<$websiteURL$>" style="text-decoration:none"><strong>
+					<font size="3" face="Arial" color="#052B79"><$siteLabel$>
+					</font></strong></a>
+				<$elseif siteId like 'enVUS'$>
+					<span style="font-size: 12pt;"><br><strong><span style="font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><a href="http://www.vereduscorp.com/"><span style="text-decoration: none; color: rgb(0, 39, 118);">vereduscorp.com</span></a></span></strong></span>
+				<$else$>
+					<a href="<$websiteURL$>" style="text-decoration:none"><strong>
+					<font size="3" face="Arial" color="#009FDA"><$siteLabel$>
+					</font></strong></a>
+				<$endif$>
+				</TD>
+              </TR>
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+		    <p>
+			<$lc("wwReferAFriendEmailText1")$><br/> <br/><br/><br/>
+          	<b><$lc("wwReferAFriendEmailText10")$></b><br/><br/>
+			<$lc("wwReferAFriendEmailText11")$>: <$sanitizeHtml(name)$><br/><br/>
+			<$lc("wwReferAFriendEmailText12")$>: <$sanitizeHtml(youraddress)$><br/><br/>
+			<$lc("wwReferAFriendEmailText13")$>: <$sanitizeHtml(postcode)$><br/><br/>
+			<$lc("wwReferAFriendEmailText14")$>: <$sanitizeHtml(emailaddress)$><br/><br/>
+			<$if siteId like 'frBE'$>
+				<$lc("wwReferAFriendEmailText151")$>: <$sanitizeHtml(phoneno)$><br/><br/>
+			<$else$>
+				<$lc("wwReferAFriendEmailText15")$>: <$sanitizeHtml(phoneno)$><br/><br/>
+			<$endif$>
+			<$if siteId like 'nlBE'$>
+				<$lc("wwReferAFriendEmailText161")$>: <$sanitizeHtml(haysconsultant_name)$><br/><br/>
+			<$else$>
+				<$lc("wwReferAFriendEmailText16")$>: <$sanitizeHtml(haysconsultant_name)$><br/><br/>
+			<$endif$>
+			<$lc("wwReferAFriendEmailText17")$>: <$sanitizeHtml(referralscheme_source)$><br/><br/>
+			<$if siteId like 'frBE'$>
+			<$lc("wwReferAFriendEmailText181")$>: <$sanitizeHtml(friendsdetails_permission)$><br/><br/>
+			<$else$>
+			<$lc("wwReferAFriendEmailText18")$>: <$sanitizeHtml(friendsdetails_permission)$><br/><br/>
+			<$endif$>			
+			<$if domainId eq 3$>
+				<$if siteId like 'frBE'$>
+					<$lc("wwReferAFriendEmailText221")$>: <$sanitizeHtml(your_gift)$><br/><br/><br/><br/>
+				<$else$>
+					<$lc("wwReferAFriendEmailText22")$>: <$sanitizeHtml(your_gift)$><br/><br/><br/><br/>
+				<$endif$>
+			<$endif$>
+			<b><$lc("wwReferAFriendEmailText3")$></b><br/><br/><br/>
+			<$lc("wwReferAFriendEmailText4")$>: <$sanitizeHtml(friends_name)$><br/><br/>
+			<$lc("wwReferAFriendEmailText5")$>: <$sanitizeHtml(friends_location)$><br/><br/>
+			<$lc("wwReferAFriendEmailText6")$>: <$sanitizeHtml(friends_email)$><br/><br/>
+			<$if siteId like 'frBE'$>
+					<$lc("wwReferAFriendEmailText71")$>: <$sanitizeHtml(friends_phoneno)$><br/><br/>
+			<$else$>
+				<$lc("wwReferAFriendEmailText7")$>: <$sanitizeHtml(friends_phoneno)$><br/><br/>
+			<$endif$>
+			<$lc("wwReferAFriendEmailText8")$>: <$sanitizeHtml(friends_jobtitle)$><br/><br/>
+			<$if siteId like 'frBE'$>
+				<$lc("wwReferAFriendEmailText91")$>: <$sanitizeHtml(friends_town)$>
+			<$else$>
+				<$lc("wwReferAFriendEmailText9")$>: <$sanitizeHtml(friends_town)$>
+			<$endif$>
+						<img src="http://www9.hays.com/eshots/EMAILMAKER/H_Corporate.jpg" alt="H" width="165" height="166" align="right" />
+			<br/><br/><br/><br/>
+			<$lc("wwHaysMailSignatureText1")$><br/>
+			<$lc("wwHaysMailSignatureText2")$>
+			</p>
+			<$if strEquals(CountryCode,"PL")==1$>
+				<$lc("wwHaysMailSignatureText3")$>
+				<br/><br/>
+			<$endif$>
+			<$if strEquals(CountryCode,"BEL")==1$>
+				<br/>
+				<$lc("wwReferAFriendEmailTextCareerFooter")$>
+			<$endif$>
+			<$if strEquals(CountryCode,"BEL")==1 OR siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE' or domainId==1005$>	
+				<br/><!-- Add This at Button BEGIN -->
+				<table>
+					<tr><td>
+						<a href="http://www.addthis.com/bookmark.php?source=tbx32nj-1.0&amp;=300&amp;pubid=ra-5087e205763e66b1&amp;url=http%3A%2F%2Fhays.be " target="_blank"  ><img src="http://cache.addthiscdn.com/icons/v1/thumbs/32x32/more.png" border="0" alt="More..." /></a></td>
+						<td><span style="width: 0px; border: 1px solid gray; height: 0px;"></span></td>
+						<td><a href="http://api.addthis.com/oexchange/0.8/forward/email/offer?pco=tbxnj-1.0&amp;url=http%3A%2F%2Fwww.addthis.com%2F&amp;pubid=xa-1234a5b6c7d8e9f0" target="_blank" ><img src="http://cache.addthiscdn.com/icons/v1/thumbs/32x32/email.png" border="0" alt="Email" width="32" height="32"/></a></td>
+						<td><a href="https://www.facebook.com/haysbelgium" target="_blank" ><img src="http://cache.addthiscdn.com/icons/v1/thumbs/32x32/facebook.png" border="0" alt="Facebook" /></a></td>
+						<td><a href="https://twitter.com/haysbelgium" target="_blank" ><img src="http://cache.addthiscdn.com/icons/v1/thumbs/32x32/twitter.png" border="0" alt="Twitter" /></a></td>
+						<td><a href="http://be.linkedin.com/in/haysbelgium" target="_blank" ><img src="http://cache.addthiscdn.com/icons/v1/thumbs/32x32/linkedin.png" border="0" alt="LinkedIn" /></a></td>		
+					</tr>
+				</table>
+				<!-- Add This at Button END --> 
+			<$endif$>
+			<p style="FONT-SIZE: 8pt; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+			</TD></TR>
+			<TR>
+			<TD COLSPAN="2">
+			<$if strEquals(CountryCode,"BEL")==1 OR siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE' or domainId==1005$>
+				<$lc("wwHaysMailFooterMessage1","@")$>
+			<$else$>
+				<$lc("wwHaysMailFooterMessage","@")$>
+			<$endif$>	
+			</TD>
+			</TR>
+			</TBODY>
+			</TABLE>
+			</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>
+				
+			
+
+                     
+

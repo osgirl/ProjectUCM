@@ -1,0 +1,37 @@
+<script type="text/javascript">
+
+function gup(param){
+  param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+param+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+
+	var gaCode1 = gup('gacode1');
+	var gaCode2 = gup('gacode2');
+
+
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	
+
+	try {
+		var firstTracker = _gat._getTracker(gaCode1); 
+		firstTracker._setDomainName("none");
+		firstTracker._setAllowLinker(true);   
+		firstTracker._trackPageview();
+		
+		var secondTracker = _gat._getTracker(gaCode2); // for catch all
+		secondTracker._setDomainName("none");
+		secondTracker._setAllowLinker(true);  
+		secondTracker._trackPageview();
+		
+	} catch(err) {
+	
+	}
+</script>

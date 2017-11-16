@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy>
+	<movement from="UK_OAT_CONTRIB" to="LOCAL_DIR_FOR_UK_OAT_CONTRIB">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="UK_OAT_CONSUMP" to="LOCAL_DIR_FOR_UK_OAT">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="DEV" to="LOCAL_DIR_FOR_DEV">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="UK_PROD_CONSUMP" to="LOCAL_DIR_FOR_UK_PROD">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_PROD_CONSUMP" to="LOCAL_DIR_FOR_APAC_PROD">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_OAT_CONSUMP" to="LOCAL_DIR_FOR_APAC_OAT">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_OAT_CONTRIB" to="LOCAL_DIR_FOR_APAC_OAT_CONTRIB">
+		<file name="HaysEmailHandler.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysEmailHandler.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.class" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="HaysWebsiteList.java" sourcelocation="HaysGeneralComponent/classes/hays/custom" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.class" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="OntologyClassifierHandler.java" sourcelocation="FacetedBrowsing/classes/infomentum/ontology/loader" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbr-HRBR" destination="" locationtype="relative"/>
+		<file name="hays_general_environment.cfg" sourcelocation="HaysGeneralComponent" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_web_api_component_environment.cfg" sourcelocation="HaysWebApiComponent" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_handlers.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_service.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_templates.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_region_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+	</movement>
+</deploy>

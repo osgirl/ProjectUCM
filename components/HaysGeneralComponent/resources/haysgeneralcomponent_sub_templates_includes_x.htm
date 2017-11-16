@@ -1,0 +1,2600 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>HaysGeneralComponent htmlIncludeOrString</title>
+</head>
+<body>
+<!-------------------------------------------------------------------------------------------------------------------------------->
+<!-- SUBTEMPLATE USED TO DISPLAY RHS SAVE ALERTS BOX
+<!-------------------------------------------------------------------------------------------------------------------------------->
+	<@dynamichtml subtmp_save_alerts_inc@>
+		<$include check_login$>
+		<$if not strEquals(loggedIn,"Y")$>
+		<script type="text/javascript">
+			function abc() 
+			{
+				if (window.jQuery && jQuery.ui && jQuery.isReady) 
+				{
+					$("#liForStatus").hide(1000);
+					$("#haysSaveAlertForm").validate
+					(
+						{
+							rules: 
+							{
+							  email:
+							  {
+								required:true,
+								email:true
+							  }
+							}
+						}
+					);
+					$('#haysSaveAlertButton').click
+					(
+						function(event)
+						{
+						   event.preventDefault();
+						   if ($("#haysSaveAlertForm").valid())
+						   {
+							   $("#liForStatus").show();
+							   $('#statusMessage').html("<$lc('wwSaveAlerts_StatusProcessing')$>");
+							   $.ajax
+							   (
+								{
+									type:'POST',
+									dataType: "json",
+									url: '<$HttpRelativeWebRoot$>idcplg', 
+									data:$('#haysSaveAlertForm').serialize(), 
+									success: function(response) 
+									{
+									  var statusMessage = response.result.localdata.statusmsg;
+									  if(statusMessage == "Success")
+											$('#statusMessage').html('<$lc('wwSaveAlerts_StatusSuccess')$>');
+									  else
+											$('#statusMessage').html("<$lc('wwSaveAlerts_StatusError')$>");
+									},
+									error: function(xhr, ajaxOptions, thrownError)
+									{
+										 $('#statusMessage').html("<$lc('wwSaveAlerts_StatusError')$>");
+									}
+								});
+							}
+						}
+					);
+				} 
+				else 
+				{
+					window.setTimeout(abc, 100);
+				}
+			}
+			abc();
+		</script>
+		<div class="side_box" >
+		   <div class="rc_blue" style="height:auto;padding-bottom: 4px;">
+			  <div class="cnr"></div>
+			  <h2 style="padding:12px 12px 5px"><$lc('wwSaveAlerts_Heading')$></h2>
+			  <div style="padding:0px 12px 5px;color:#666"><$lc('wwSaveAlerts_Info')$></div>
+			  <div class="rc_white" style="margin: 2px 5px 2px;padding:5px 1px 0px 5px">
+				 <form action="" id="haysSaveAlertForm" class="hays_form" method="post" style="margin-bottom:0px;">
+					<fieldset>
+					   <div style="float:left;margin:4px">
+						  <label style="text-align:left"><em><font color="red">* </font> </em><$lc('wwSaveAlerts_LabelEmail')$></label>
+					   </div>
+					   <div style="float:left;margin:4px;width:100%;">
+						  <input style="width:93%;" type="text" name="email" id="email" value="" class="mandatory" />
+					   </div>
+					   <div style="float:right;margin:4px">
+						  <button id="haysSaveAlertButton" class="button"><$lc('wwSaveAlerts_ButtonSave')$></button>
+					   </div>
+					   <div id="statusMessage" style="float:left;margin:4px">
+					   </div>
+					</fieldset>
+					<div class="access">
+					   <input type="hidden" name="IdcService" value="HAYS_SAVE_ALERTS" />
+					   <input type="hidden" name="outputFormat" value="json" />
+					   <input type="hidden" name="alertname" value="ANONYMALRT" />
+					   <input type="hidden" name="domainid" value="<$#active.domainId$>" />
+					   <input type="hidden" name="frequency" id="frequency" value="1" />
+					   <input type="hidden" name="isonlyjobtitle" value="<$#active.isOnlyJobTitle$>" />
+					   <input type="hidden" name="jobtitle" value="<$#active.job_title$>" />
+					   <input type="hidden" name="keywords" value="<$#active.job_keywords$>" /> 
+					   <input type="hidden" name="languageid" value="<$#active.languageId$>" />
+					   <input type="hidden" name="latitude" value="<$#active.ne_latitude$>" /> 
+					   <input type="hidden" name="levelno" value="<$#active.level$>" />
+					   <input type="hidden" name="locale" value="<$#active.SiteLocale$>" />
+					   <input type="hidden" name="location" value="<$#active.job_location$>" />
+					   <input type="hidden" name="locationid" value="<$#active.location_id$>" />
+					   <input type="hidden" name="longitude" value="<$#active.ne_longitude$>" /> 
+					   <input type="hidden" name="postcode" value="<$#active.job_postcode$>" /> 
+					   <input type="hidden" name="sectorids" value="<$#active.sectorIds$>" />
+					   <input type="hidden" name="specialism" value="<$#active.job_category$>" />
+					   <input type="hidden" name="jobtypes" value="<$#active.job_type$>" />
+					   <input type="hidden" name="minSalary_t" value="<$#active.job_min_temporary$>" />
+					   <input type="hidden" name="maxSalary_t" value="<$#active.job_max_temporary$>" />
+					   <input type="hidden" name="salaryType_t" value="<$#active.job_select_temporary$>" />
+					   <input type="hidden" name="salaryCurrency_t" value="" />
+					   <input type="hidden" name="minSalary_p" value="<$#active.job_min_permanent$>" /> 
+					   <input type="hidden" name="maxSalary_p" value="<$#active.job_max_permanent$>" />
+					   <input type="hidden" name="salaryType_p" value="<$#active.job_select_permanent$>" />
+					   <input type="hidden" name="salaryCurrency_p" value="" />
+					   <input type="hidden" name="minSalary_c" value="<$#active.job_min_contract$>" />
+					   <input type="hidden" name="maxSalary_c" value="<$#active.job_max_contract$>" />
+					   <input type="hidden" name="salaryType_c" value="<$#active.job_select_contract$>" />
+					   <input type="hidden" name="salaryType_c" value="" />
+					</div>
+				 </form>
+			  </div>
+		   </div>
+		   
+		</div>		
+		<$endif$>
+	<@end@>
+<!-------------------------------------------------------------------------------------------------------------------------------->
+<!-- SUBTEMPLATE USED TO DISPLAY RHS SAVE SEARCHES BOX
+<!-------------------------------------------------------------------------------------------------------------------------------->
+	<@dynamichtml subtmp_save_searches_inc@>		
+		<script type="text/javascript">
+			var ss_prefix = 'sscookie_';
+			var contentType = '<$#active.contentType$>';
+			var ss_array;
+			var cData = {};
+			if (contentType == 'Candidates')
+			{
+				ss_prefix += 'can_';
+			}
+			else
+			{
+				ss_prefix += 'job_';
+			}
+			var currentCookieCount = 0;
+
+			function countCookies()
+			{
+				ss_array = document.cookie.split(';');
+				currentCookieCount = 0;
+				cData = {};
+				for (var i=0;i<ss_array.length;i++)
+				{ 
+					if(ss_array[i].indexOf(ss_prefix)>=0)
+					{
+						currentCookieCount+=1;
+						cData[ss_array[i].split('=')[0].replace(ss_prefix,"")] = ss_array[i].split('=')[1];
+					}
+				}
+				if(currentCookieCount >= 3)
+				{
+					$('.save_search_side').hide();
+				}
+				else
+				{
+					$('.save_search_side').show();
+				}
+			}
+
+			function deleteSearch(cKey)
+			{
+				$.cookie(cKey,null,{path:'/'});
+				renderSaveSearchBlock();
+				return false;
+			}
+			var entityMap = {
+				"&": "&amp;",
+				"<": "&lt;",
+				">": "&gt;",
+				'"': '&quot;',
+				"'": '&#39;',
+				"/": '&#x2F;'
+			  };
+
+			  function escapeHtml(string) {
+				return String(string).replace(/[&<>"'\/]/g, function (s) {
+				  return entityMap[s];
+				});
+			  }
+			function renderSaveSearchBlock()
+			{
+				countCookies();				
+				$('#linklist').html('');
+				$.each(cData, function (key, value) {
+					$('<h3 style="font-size:12px;margin-bottom:5px;"/>')
+						.append('<div style="float:left; "><a href=\"' + value + '\" >' + key + '</a></div>')
+						.append(" ")
+						.append('<div style="float: right; padding-right: 10px;"><a href="#" onClick=\'deleteSearch(&quot;'+ss_prefix+escapeHtml($.trim(key))+'&quot;)\'><img src="/haysassets/HaysGeneralComponent/assets/img/delete.gif"/></a></div><div class="clear"/>')
+						.appendTo('#linklist');
+				});
+				
+			}
+			function initializeSaveSearch() 
+			{
+				if (window.jQuery && jQuery.ui && jQuery.isReady) 
+				{
+					renderSaveSearchBlock();
+					$("#dialog_save_searches").dialog
+					(
+						{
+							autoOpen:false,
+							draggable:false,
+							modal:true,
+							resizable:false,
+							buttons: 
+							{
+								<$lc('wwDialogCancelButton')$>:function()
+								{
+								   $(this).dialog('close');
+								},							
+								"<$lc('wwSaveSearches_ButtonSave')$>":function() 
+								{
+									if ($("#formSaveSearches").valid()) 
+									{
+										var pathname = $(location).attr('search');
+										//alert(pathname);
+										var ss_searchString= pathname;
+										var ss_date = new Date();
+										ss_date.setMonth(ss_date.getMonth() + 12);
+										$.cookie(ss_prefix + $('#textSaveSearches').val(),
+											ss_searchString,
+											{path:'/',expires:ss_date});
+										showMessage('Search saved successfully.');
+										
+										$(this).dialog('close');
+										renderSaveSearchBlock();
+									}
+								}
+							},
+							title: '<$lc('wwSaveSearches_Popup')$>',
+							open: function()
+							{
+								$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+								$('.ui-dialog-buttonpane').find('button:contains("<$lc('wwSaveSearches_ButtonSave')$>")').css('max-width','150px');
+							}
+						}
+					);
+					$('.save_search_side').click
+					(
+						function() 
+						{
+							$("#formSaveSearches").validate({
+								rules: {
+								  textSaveSearches: "required"
+								}
+							  });
+							$("#dialog_save_searches").dialog('open');
+							return false;
+						}
+					);
+					$('#textSaveSearches').keypress(function(e){
+					if ( e.which == 13 ) 
+					{
+							e.preventDefault();
+							return false;
+					}
+					
+				});
+
+				} 
+				else 
+				{
+					window.setTimeout(initializeSaveSearch, 100);
+				}
+			}
+			initializeSaveSearch();
+		</script>
+		<div class="side_box" >
+		   <div class="rc_blue" style="height:auto;padding-bottom: 4px;">
+			  <div class="cnr"></div>
+			  <h2 style="padding:12px 12px 5px"><$lc('wwSaveSearches_Heading')$></h2>
+			  
+			  <div class="rc_white" style="margin: 2px 5px 2px;padding:5px 1px 0px 5px">
+				<div id="linklist">
+				
+				</div>
+				<div style="float:right;margin:4px">
+					<a class="button save_search_side" href="">Save this search</a>
+				</div>
+			  </div>
+		   </div>		   
+		</div>		
+	<@end@>
+	
+	
+<!--- Advanced Search Forms for Google Search - MR6 **Kanika**--->
+
+
+<!---********* Google Advanced Search Forms - IRELAND ************--->
+<@dynamichtml subtmp_advanced_job_google_search_ie@>
+	<$formName = 'Main_Job_Search_KeyRefLoc'$>	
+	<$include check_login$>	
+	<$if strEquals(loggedIn,"Y")$>
+		<$usertypeid="1"$>
+		<$executeService("SavedSearch")$>
+	<$endif$>	
+	<$metadata = "xIndustry" $>
+	<$locale = #active.SiteLocale$>	
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+		<$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+    <$endif$>	
+	<$metadata = "xCategory" , language = Language , country = isoCountryCode , ontClass = "hays:Specialism"$>
+	<$if NOT rsExists('IndividualsList')$>
+		<$executeService('ONT_GET_INDIVIDUALS')$>
+	<$endif$>
+	<$if #active.RadiusOptions $>
+		<$ rsCreateResultSet("distanceListRS", "id,label") $>
+		<$ rsAppendRowValues("distanceListRS", #env.RadiusOptions)$>
+	<$endif$>	
+	<$include advanced_job_google_search_js$>		
+	<div class="content_main">
+		<h1><$strUpper(lc('wwSearchTitle'))$></h1>
+		<$lc('wwSearchFormJobIntro1')$>
+		<$lc('wwSearchFormJobIntro2')$>
+		<$if #active.submitted $>
+			<$if strLength(#active.STATUS) gt 0$>
+				<p class="strong error"><$lc('wwMissingFieldsError')$></p>
+				<ol>
+					<li><$lc(STATUS)$></li>
+				</ol>
+			<$endif$>
+		<$endif $>
+	</div>
+	
+	<form action="<$lc('wwGoogleSearchAction')$>" class="hays_form" id="<$formName$>">
+		<fieldset class="rc_grey">
+			<input type="hidden" name="contentType" value="Jobs" />
+				<$if #active.debug$>
+					STATUS = <$#active.STATUS$>
+				<$endif$>
+				<h2><$lc('wwCompleteFields')$></h2>
+				<ol>
+					<li>
+						<div class="grid_5 alpha">
+							<label for="<$formName$>job_keywords"><$lc('wwKeywordsOrJobRefNo')$></label>
+						</div>
+						<div class="grid_9 omega">
+							<input type="text" name="job_keywords" id="<$formName$>job_keywords"  autocomplete="off" class="require_group" value="<$#active.job_keywords$>" />
+							<div class="search_title_only">
+								[[%<input type="checkbox" name="isOnlyJobTitle" id="<$formName$>isOnlyJobTitle" class="require_group" value="<$#active.isOnlyJobTitle$>"/>%]]
+								<input type="checkbox" name="isOnlyJobTitle" id="<$formName$>isOnlyJobTitle" name="isOnlyJobTitle" class="checkbox" value="<$#active.isOnlyJobTitle$>"/>
+								<label for="<$formName$>isOnlyJobTitle"><$lc('wwOnlySearchJobTitle')$></label>
+							</div>
+						</div>
+					</li>
+					
+					<$if rsExists('IndividualsList') AND rsFirst('IndividualsList') $>
+						<$industryParam= "xSpecialism"$>
+						
+						<li>
+							<div class="grid_5 alpha">
+								<span class="label"><$lc('wwAreasOfExpertise')$></span>
+							</div>
+							<div class="grid_8 suffix_1 omega">
+								<fieldset>
+									<legend class="access"><$lc('wwAreasOfExpertise')$></legend>
+									<div class="multiselect google" >
+										<ol>
+											<$loop IndividualsList$>
+												<li class="checkbox_row">
+													<input type="checkbox" name="cg" id="<$formName$>job_category<$IndividualsList.#row$>" value="<$industryParam & ':' & IndividualsList.id$>" />
+													<label for="<$formName$>job_category<$IndividualsList.#row$>" id="<$formName$>job_category<$IndividualsList.#row$><$IndividualsList.#row$><$IndividualsList.#row$>"><$IndividualsList.label$></label>
+												</li>
+											<$endloop$>
+										</ol>
+										<input name="job_category" id="<$formName$>job_category" type="hidden" value="" class="require_group "  />
+									</div>
+								</fieldset>
+							</div>
+						</li>
+					<$endif$>
+					<li>
+						<div class="grid_5 alpha">
+							<label for="<$formName$>locationToSearch"><$lc('wwLocation')$></label>
+						</div>
+						<div class="grid_3">
+							<input type="text" name="locationToSearch" id="<$formName$>locationToSearch" class="require_group" value="<$#active.locationToSearch$>" />
+						</div>
+						<div class="grid_2 no_pad">
+							<label for="<$formName$>radius"><$lc('wwDistance')$></label>
+						</div>
+						<div class="grid_3 omega suffix_1">
+							<select name="radius" id="<$formName$>radius">
+								<$defaultRadius=#env.DefaultCerowRadius$>
+								<$if rsExists("distanceListRS")$>
+									<$loop distanceListRS$>
+										<option value="<$distanceListRS.id$>" <$if strEquals(distanceListRS.id,defaultRadius)$>selected<$endif$>> <$if strEquals(distanceListRS.id,300)$><$lc('wwMorethan50')$><$else$><$distanceListRS.label$><$endif$> <$if strEquals(#active.distance_unit,"km")$><$lc("wwKiloMeters")$><$else$><$lc('wwMiles')$><$endif$></option>
+									<$endloop$>
+								<$endif$>
+							</select>
+						</div>
+						<div id="dialog"></div>
+						<div class="group_error grid_8 prefix_5 alpha omega suffix_1"></div>
+					</li>
+					<li class="multi_row">
+						<div class="grid_5 prefix_4 checkbox_row">
+							<input type="checkbox" id="<$formName$>job_international" class="require_group" name="job_international" class="require_group" value="<$#active.job_international$>"/>
+							<label for="<$formName$>job_international"><$lc('wwJobInternational')$></label>
+						</div>
+					</li>
+					<li class="multi_row">
+						<div class="grid_5 prefix_4 checkbox_row">
+							<input type="checkbox" id="<$formName$>job_nonEU" class="require_group" name="job_nonEU" class="require_group" value="<$#active.job_nonEU$>"/>
+							<label for="<$formName$>job_nonEU"><$lc('wwJobForNonEU')$></label>
+						</div>
+					</li>
+						<input type="hidden" name="q" id="<$formName$>q" value=""/>
+						<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+						<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+						<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+						<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+						<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+						<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+						<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+						<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+						<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+						<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+						<input type="hidden" name="entsp" id="<$formName$>entsp" value="a__hays_policy"/>
+						<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+						<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+						<input type="hidden" name="sort" id="<$formName$>sort" value="date:D:L:d1"/>
+						<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+						<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+						<input type="hidden" name="partialfields" id="<$formName$>partialfields" value="" />
+						<$include cross_country_enabled_countries$>
+						<$if isCrossCountry ne 1$>
+						<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+						<$endif$>
+						<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+						<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+						<$endif$>
+						<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					
+				</ol>
+		</fieldset>
+
+
+		<$if strEquals(loggedIn,"Y")$>
+			<fieldset class="rc_grey">
+				<legend><$lc('wwUsedSavedSearch')$></legend>
+				<h2><$lc('wwUsedSavedSearch')$></h2>
+				<ol>
+					<li>
+						<div class="grid_4 alpha">
+							<label for="field_7"><$lc('wwSavedSearches')$></label>
+						</div>
+						<div class="grid_6 suffix_4 omega">
+							<select name="savedsearch" id="savedsearch" onchange="changelist()">
+								<$if HAYS_RESULT_SET and HAYS_RESULT_SET.#numRows GT 0$>
+								<option value=""><$lc('wwSelect')$></option>
+								<$loop HAYS_RESULT_SET$>
+									<option value="<$KEYWORDS$>!<$DISTANCE$>!<$POSTCODE$>!<$JOBTITLE$>!<$LOCATION$>!<$SECTORIDS$>!<$PERM$>!<$TEMP$>!<$CONT$>!<$JOB_TITLE_FULL$>!<$JOB_TITLE_REF$>!<$LONGITUDE$>!<$LATITUDE$>!<$LEVELNO$>!<$ISONLYJOBTITLE$>!<$ISFUZZYSEARCH$>"><$SEARCHNAME$></option>
+								<$endloop$>
+								<$endif$>
+							</select>
+						</div>
+					</li>
+				</ol>
+			</fieldset>		
+		<$endif$>
+
+		<div>
+			<input type="submit" value="<$lc('wwSearch')$>" class="button" />
+			<input type="button" id="formreset" value="<$lc('wwClear')$>" class="button_1" />
+		</div>
+		<div class="clear"></div>
+	</form>
+<@end@>
+
+
+<@dynamichtml advanced_job_google_search_js@>
+	<script type="text/javascript">
+		<!--//--><![CDATA[//><!--
+		function HAYSsearchjobs<$formName$>() 
+		{	   	   
+			if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) 
+			{
+		 
+				<$include test_autocomplete_inc1$>
+					<!-- Release 7 [Hide Search only in job title]-->
+					<$if not (siteId like 'mxMXHR' OR siteId like 'brPTHR' or siteId like 'ptPTHR')$>
+						$('input[name="job_keywords"]').watermark('<$lc('wwMainJobSearchKeywordWatermark')$>');
+					<$endif$>
+				
+				$('input[name="locationToSearch"]').watermark('<$lc('wwGeneralSpecialismSearchLocationWatermark')$>');
+				$('input[name="job_title_ref"]').watermark('<$lc('wwSearchJobReferenceWatermark')$>');
+				var locationObject = null;				  
+
+				$("#<$formName$>").validate({
+					onkeyup: false,
+					groups: {
+							searchGroup : "job_keywords locationToSearch job_title_ref job_category"
+							},
+					submitHandler: function(form) 
+					{
+					
+						$.watermark.hideAll();
+						if ((<$formName$>locationMap != 'bypass' && <$formName$>locationMap != null)) 
+						{					
+							if (<$formName$>locationMap != null) 
+							{
+									var locationObject = <$formName$>locationMap;
+									var locationValue = $("#<$formName$>locationToSearch").attr('value');
+							}
+							var locationDescr = "LOCATION_DESC";
+							jQuery.each(locationObject,
+							function(i, val) 
+							{
+								if (locationValue.toLowerCase() == val[locationDescr].toLowerCase() && locationValue.length == val[locationDescr].length) 
+								{
+									$('#<$formName$>level').attr('value', val.LEVEL_NO);
+									$('#<$formName$>ne_longitude').attr('value', val.NE_LONGITUDE);
+									$('#<$formName$>ne_latitude').attr('value', val.NE_LATITUDE);
+									$('#<$formName$>location_id').attr('value', val.LOCATION_ID);
+								}
+							});
+						
+						}
+											
+						<$include job_location_autosuggest_googlesearch_inc$>
+						<$include cross_country_enabled_countries$>
+						else 
+						{					
+							$.watermark.hideAll();
+							if ($('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 4) 
+							{
+								$('#<$formName$>radius').val('0');
+							}
+					
+							if(($('input[name=locationToSearch]',form).val() === "" || $('input[name=locationToSearch]').is('.watermark'))) 
+							{
+								$('input[name=ne_longitude]', form).val("");
+								$('input[name=ne_latitude]', form).val("");
+							}
+							var isOnlyJobTitleValue = $("#<$formName$>isOnlyJobTitle").attr('checked');
+							if(isOnlyJobTitleValue)
+							{
+				   				$('input[name=isOnlyJobTitle]').attr('value','Y');	
+							}
+							else
+							{
+								$('input[name=isOnlyJobTitle]').attr('value','N');	
+								$('input[name=job_keywords]').attr('value',document.getElementById("<$formName$>job_keywords").value);	
+								$('input[name=job_title_ref]').attr('value',document.getElementById("<$formName$>job_keywords").value);
+							}
+							var jLocale = "<$locale$>";
+							/***partialfilelds**/
+							if(($('input[name=locationToSearch]',form).val() === "" || $('input[name=locationToSearch]').is('.watermark')) && ($('input[name=job_postcode]',form).val() === "" || $('input[name=job_postcode]').is('.watermark'))) 
+							{
+								$('input[name=ne_longitude]', form).val("");
+								$('input[name=ne_latitude]', form).val("");
+							}
+							if($('input[name=job_category]').val() != '')
+							{
+								$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.'+$('input[name=job_category]').val());
+							}					
+							if($('input[name=location_id]').val() != '')
+							{
+								$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.(xHayslocation'+$('input[name=level]').val()+':'+$('input[name=location_id]').val()+')');
+							}
+							<$if isTrue(isGoogleSearch)$>
+								var CrossCheck = <$isCrossCountry$>
+								//alert("Cross Country = "+CrossCheck);
+								if (CrossCheck == 1){
+							//alert("Locale = "+ jLocale);
+							$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.(CrossCountry:'+escape(jLocale)+')');
+								}
+							<$endif$>
+							if($("#Main_Job_Search_KeyRefLocisOnlyJobTitle").attr('checked'))
+							{
+								$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.(JobTitle:'+escape($('input[name=job_keywords]').val())+')');
+							}						
+							if($('input[name=partialfields]').val().charAt(0) == '.')
+							{
+								$('input[name=partialfields]').val($('input[name=partialfields]').val().substring(1));
+							}
+							$('input[name=partialfields]').val($('input[name=partialfields]').val().replace(/hays:/g,''));
+						
+							if($('input[name=job_keywords]').val() != '')
+							{
+								$('input[name=q]').val($('input[name=q]').val()+$('input[name=job_keywords]').val());
+							}
+							<$if domainId eq 6$>
+								if($('input[name=job_international]').val() != '')
+								{
+									$('input[name=q]').val($('input[name=q]').val()+' inmeta:xInternational='+$('input[name=job_international]').val());
+									$('input[name=q]').val($('input[name=q]').val().replace(/,/g,' OR inmeta:xInternational='));
+								}
+								if($('input[name=job_nonEU]').val() != '')
+								{
+									$('input[name=q]').val($('input[name=q]').val()+' inmeta:xNonNational='+$('input[name=job_nonEU]').val());
+									$('input[name=q]').val($('input[name=q]').val().replace(/,/g,' OR inmeta:xNonNational='));
+								}
+								$('input[name=job_international]').remove();
+								$('input[name=job_nonEU]').remove();						
+							<$endif$>
+						
+							$('input[name=job_keywords]').remove();
+							$('input[name=cg]').remove();
+							$('input[name=job_category]').remove();
+							$("#<$formName$>radius").remove();
+												
+							/***partialfilelds**/
+							form.submit();
+						}					
+					},
+					rules: {
+								job_keywords: {
+									require_from_group: [1,'.require_group']
+								},
+								job_category: {
+									require_from_group: [1,'.require_group']
+								},
+								job_title_ref: {
+									require_from_group: [1,'.require_group']
+								},
+								locationToSearch: {
+									require_from_group: [1,'.require_group']
+								}
+							},
+					messages : {
+									job_keywords : '<$lc('wwSearchFormRequiredMessage')$>',
+									job_title_ref : '<$lc('wwSearchFormRequiredMessage')$>',
+									locationToSearch : '<$lc('wwSearchFormRequiredMessage')$>'
+								},
+					errorPlacement: function(error, element) 
+					{
+						if (('<$formName$>'== "Main_Job_Search_KeyRefLoc" || '<$formName$>'== "Candidate_Search_KeyRefLoc") && (
+						element.attr('name') == "job_keywords" ||
+						element.attr('name') == "job_title_ref" ||
+						element.attr('name') == "locationToSearch" || 
+						element.attr('name') == "job_category")) 
+						{
+							error.appendTo("#<$formName$> fieldset:first .group_error");
+							$("#<$formName$>job_industry").prevAll(".multitoggle").addClass("error");
+							$("#<$formName$>job_category").prevAll(".multitoggle").addClass("error");
+						}
+						else 
+						{
+							error.insertAfter(element);
+						}
+					}
+				});
+			
+				<$include job_location_autocomplete_googlesearch_inc$>			
+
+				$("input[name=job_international]").change(function() 
+				{
+					if ($(this).attr("checked")) 
+					{
+						$('input[name=locationToSearch]').attr('value','');
+						$('input[name=locationToSearch]').attr('disabled','disabled');
+						$('#<$formName$>radius').attr('disabled','disabled');
+						//$('input[name=radius]').attr('disabled','disabled');
+						$('input[name=job_international]').attr('value','Y');
+					}
+					else 
+					{
+						$('input[name=locationToSearch]').removeAttr('disabled');
+						$('#<$formName$>radius').removeAttr('disabled');
+					}
+				});
+				
+				$("input[name=job_nonEU]").change(function() 
+				{
+					if ($(this).attr("checked")) 
+					{
+						$('input[name=job_nonEU]').attr('value','Y');						
+					}					
+				});
+				
+				$('#formreset').click(function() 
+				{
+					var validator = $("#<$formName$>").validate();
+					validator.resetForm();
+					$(':input','#<$formName$>').not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+					$('.multitoggle').html('');
+					HAYSsearchjobs<$formName$>();
+				});
+				
+			}
+			else 
+			{
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+
+		var <$formName$>locationMap = null;
+		var <$formName$>postcodeMap = null;
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+<script type="text/javascript">
+
+		function changelist() {
+		if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+		    var savedSearchID=document.getElementById("savedsearch");
+           	var savedSearchString=savedSearchID.options[savedSearchID.selectedIndex].value;
+
+		   if(savedSearchString!="")
+		   {
+             $.watermark.hideAll();
+		     savedSearchArray =savedSearchString.split("!");
+
+             //Populating Keywords, Distance, PostCode, Job Title and Location
+             document.getElementById("<$formName$>job_keywords").value=savedSearchArray[0];
+		     document.getElementById("<$formName$>radius").value=savedSearchArray[1];
+		     //document.getElementById("<$formName$>job_postcode").value=savedSearchArray[2];
+		     //document.getElementById("<$formName$>job_title").value=savedSearchArray[3];
+		     document.getElementById("<$formName$>locationToSearch").value=savedSearchArray[4];
+		     var industryString=savedSearchArray[5];
+		     var permSalaryString=savedSearchArray[6];
+		     var tempSalaryString=savedSearchArray[7];
+		     var contSalaryString=savedSearchArray[8];
+
+		     //Assigning values for hidden fields
+		     //document.getElementById("<$formName$>job_job_title").value=savedSearchArray[9];
+		     document.getElementById("<$formName$>job_title_ref").value=savedSearchArray[10];
+		     document.getElementById("<$formName$>ne_longitude").value=savedSearchArray[11];
+		     document.getElementById("<$formName$>ne_latitude").value=savedSearchArray[12];
+	         document.getElementById("<$formName$>level").value=savedSearchArray[13];
+			 var interNational=savedSearchArray[14];
+			 var nonNational=savedSearchArray[15];
+		     //alert("1="+document.getElementById("<$formName$>ne_latitude").value);
+
+		     if(!(document.getElementById("<$formName$>ne_longitude").value=="") && !(document.getElementById("<$formName$>ne_latitude").value==""))
+  			{
+				<$formName$>locationMap="bypass";
+
+  			}
+			
+			if(interNational && interNational=='Y')
+  			{
+				$('input[name=job_international]').attr('value','Y');
+				$('input[name=job_international]').attr('checked','checked');
+				$('input[name=locationToSearch]').attr('value','');
+				$('input[name=locationToSearch]').attr('disabled','disabled');
+				$('#<$formName$>radius').attr('disabled','disabled');
+  			}
+			
+			else
+			{
+				$('input[name=job_international]').attr('value','');
+				$('input[name=job_international]').attr('checked','');
+				$('input[name=locationToSearch]').removeAttr('disabled');
+				$('#<$formName$>radius').removeAttr('disabled');
+			}
+			
+			if(nonNational && nonNational=='Y')
+  			{
+				$('input[name=job_nonEU]').attr('value','Y');
+				$('input[name=job_nonEU]').attr('checked','checked');
+  			}
+			
+			else
+			{
+				$('input[name=job_nonEU]').attr('value','');
+				$('input[name=job_nonEU]').attr('checked','');
+			}
+			
+           }
+		   
+		   }
+		   
+		   else {
+				window.setTimeout(changelist, 100);
+			}
+
+          }
+		  //changelist();
+</script>
+<@end@>
+
+
+
+<@dynamichtml job_location_autosuggest_googlesearch_inc@> 
+if (<$formName$>locationMap == null && $('input[name=locationToSearch]').val() != '' && !$('input[name=locationToSearch]').hasClass('.watermark')) {
+	//alert("inside 1st if...");
+						//alert('inside after autosugest 2');		
+						<$formName$>locationMap = 'bypass';
+						//alert("after bypass");
+						$("#dialog").dialog({
+							draggable: false,
+							modal: true,
+							resizable: false,
+							buttons: {
+								<$lc('wwDialogCloseButton')$> : function() {
+										$("#dialog").dialog("destroy");
+								},
+								<$lc('wwDialogSearchButton')$>: function() { //alert("inside function ....");
+									$.watermark.hideAll();
+									//alert("after hiding");
+									var geoCords = $('input:checked[name=google_location]').attr('value');
+									geoCords = geoCords.split(",");
+									$('#<$formName$>ne_longitude').attr('value', geoCords[0]);
+									$('#<$formName$>ne_latitude').attr('value', geoCords[1]);
+									$('#<$formName$>level').attr('value', geoCords[2]);
+									$('#<$formName$>location_id').attr('value', geoCords[3]);
+									$('#<$formName$>').submit();
+								}
+							},
+							title: '<$lc('wwLocationDialogTitle')$>',
+							minHeight: 200,
+							open: function() {
+								$("#dialog").html('<img src="/haysassets/HaysGeneralComponent/assets/css/img/loader.gif" class="loader" alt="Content is loading" />');
+								$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+									$.ajax({
+										url: "<$HttpRelativeWebRoot$>idcplg",
+										dataType: "jsonp",
+										data: {
+											outputFormat: "json",
+											IdcService: "HAYS_GET_GEOCODES",
+											Town: $("#<$formName$>locationToSearch").attr('value'),
+											countryName: "<$countryNameISO$>",
+											LanguageCode: "<$LanguageCode$>"    //Item 78 MR 4.1
+										},
+										success: function(data) {
+											var start = "<$lc('wwLocationFromGoogle')$><ul class='google'>";
+											var google_result = "";
+											jQuery.each(data.result.resultsets.LocationResults, function(i, val) {
+												google_result = google_result + "<li><div class='select_row'><input type='radio' ";
+												if (i == 0) {
+													google_result = google_result + "checked='checked'";
+												}
+												google_result = google_result + "value='"+val.NE_LONGITUDE+","+val.NE_LATITUDE+","+val.LEVEL_NO+","+val.LOCATION_ID+"' id='" +val.LOCATION_ID+i+"' name='google_location' \/><label for='"+val.LOCATION_ID+i+"'>"+val.LOCATION_DESC+"<\/label><\/div><\/li>";
+											});
+											var end = "<\/ul><\/fieldset>";
+											if (google_result.length < 5) {
+												$("#dialog").html('<$lc('wwLocationNotFoundFromGoogle')$>');
+											}
+											else {
+												$("#dialog").html(start + google_result + end);
+											}
+										}
+									});
+							}
+						});
+						return false;
+				   }
+                   if ($('input[name=ne_longitude]', form).val() === '' && !$('input[name=locationToSearch]').is(':not.watermark')  && $('input[name=locationToSearch]', form).val()
+				   != '') {
+				   //alert("inside 2st if...");
+					 $("#dialog").dialog({
+                           draggable: false,
+                           modal: true,
+                           resizable: false,
+                           buttons: {
+							<$lc('wwDialogCloseButton')$> : function() {
+							<$include show_watermarks_js_inc$>  //MR2 Item 21
+							 $("#dialog").dialog("destroy");
+							},
+							<$lc('wwDialogSearchButton')$>: function() {
+								 $.watermark.hideAll();
+								 var geoCords = $('input:checked[name=google_location]').attr('value');
+								 geoCords = geoCords.split(",");
+								 $(form).find('#<$formName$>ne_longitude').attr('value', geoCords[0]);
+								 $(form).find('#<$formName$>ne_latitude').attr('value', geoCords[1]);
+								 $(form).find('#<$formName$>level').attr('value', geoCords[2]);
+								 $(form).find('#<$formName$>location_id').attr('value', geoCords[3]);
+								 $(form).submit();
+							}
+                           },
+                           title: '<$lc('wwLocationDialogTitle')$>',
+                           minHeight: 200,
+                           open: function() {
+								$("#dialog").html('<img src="/haysassets/HaysGeneralComponent/assets/css/img/loader.gif" class="loader" alt="<$lc('wwLocationGoogleLoadingText')$>" />');
+								$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+								 $('.ui-dialog-buttonpane button:contains(<$lc('wwDialogSearchButton')$>)').hide();   //Item 21 of MR2
+                              $.ajax({
+                                   url: "<$HttpRelativeWebRoot$>idcplg",
+                                   dataType: "jsonp",
+                                   data: {
+                                       outputFormat: "json",
+                                       IdcService: "HAYS_GET_GEOCODES",
+                                       Town: $("#<$formName$>locationToSearch").attr('value'),
+                                       countryName: "<$countryNameISO$>",
+									   LanguageCode: "<$LanguageCode$>"    //Item 78 MR 4.1
+                                   },
+                                   success: function(data) {
+                                       var start = "<$lc('wwLocationFromGoogle')$><ul class='google'>";
+                                       var google_result = "";
+                                       jQuery.each(data.result.resultsets.LocationResults,
+                                       function(i, val) {
+                                           google_result = google_result + "<li><div class='select_row'><input type='radio' ";
+                                           if (i == 0) {
+                                               google_result = google_result + "checked='checked'";
+                                           }
+                                           google_result = google_result + "value='"+val.NE_LONGITUDE+","+val.NE_LATITUDE+","+val.LEVEL_NO+","+val.LOCATION_ID+"' id='" +val.LOCATION_ID+i+"' name='google_location' \/><label for='"+val.LOCATION_ID+i+"'>"+val.LOCATION_DESC+"<\/label><\/div><\/li>";
+                                       });
+                                       var end = "<\/ul><\/fieldset>";
+										if (google_result.length < 5) {
+											$("#dialog").html('<$lc('wwLocationNotFoundFromGoogle')$>');
+										}
+										else {
+											$("#dialog").html(start + google_result + end);
+											 $('.ui-dialog-buttonpane button:contains(<$lc('wwDialogSearchButton')$>)').show();   //Item 21 of MR2
+										}
+                                   }
+                               });
+                           }
+                       });
+                   }
+				   
+<@end@>
+                   
+<@dynamichtml job_location_autocomplete_googlesearch_inc@>
+$("#<$formName$>locationToSearch").autocomplete({
+					/*source: ['london1','london2','london3'],*/
+					source: function(request, response) {
+						$.ajax({
+							url: "<$HttpRelativeWebRoot$>idcplg",
+							dataType: "json",
+							data: {
+								outputFormat: "json",
+								ResultCount: 12,
+								IdcService: "SEARCH_LOCATIONS",
+								location: request.term,
+								domainId: "<$#active.domainId$>",
+								locationColumn :"<$#active.locationColumn$>"
+							},
+							success: function(data) {
+								<$formName$>locationMap = data.result.resultsets.LOCATION_RESULT_LIST;
+								response($.map(data.result.resultsets.LOCATION_RESULT_LIST, function(item) {
+									return {
+										label: item.LOCATION_DESC,
+										value: item.LOCATION_DESC,
+										id: item.LOCATION_ID,
+										longitude: item.NE_LONGITUDE,
+										latitude: item.NE_LATITUDE,
+										level: item.LEVEL_NO
+									}
+								}))
+							}
+						})
+					},
+					minLength: 2,
+					select: function(event, ui) {
+						$('#<$formName$>level').attr('value', ui.item.level );
+						$('#<$formName$>ne_longitude').attr('value', ui.item.longitude );
+						$('#<$formName$>ne_latitude').attr('value', ui.item.latitude);
+						$('#<$formName$>location_id').attr('value', ui.item.id);
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				});
+<@end@>				
+				
+
+
+<!--- ************ Advanced Job Search Form - CEROW ************** --->
+<@dynamichtml subtmp_advanced_job_google_search_cerow@>
+
+	<$metadata = "xIndustry" , formName = 'Main_Job_Search_KeyRefLoc'$>
+	
+	<$include check_login$> 
+	
+	<$if strEquals(loggedIn,"Y")$>
+		<$usertypeid="1"$>
+		<$executeService("SavedSearch")$>
+	<$endif$>	 
+	
+	<$locale = #active.SiteLocale$>
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+		<$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+    <$endif$>
+	
+	<$metadata = "xCategory" , language = Language , country = isoCountryCode , ontClass = "hays:Specialism"$>
+	
+    <$if NOT rsExists('IndividualsList')$>
+		<$executeService('ONT_GET_INDIVIDUALS')$>		 
+    <$endif$>
+	
+	<$if #active.RadiusOptions $>
+		<$ rsCreateResultSet("distanceListRS", "id,label") $>
+		<$ rsAppendRowValues("distanceListRS", #env.RadiusOptions)$>
+	<$endif$>
+
+	<$include advanced_job_google_search_js$>
+
+	<div class="content_main">
+		<h1><$strUpper(lc('wwSearchTitle'))$></h1>
+		<$lc('wwSearchFormJobIntro1')$>
+		<$lc('wwSearchFormJobIntro2')$>
+	[[%Form validation and redirect is in hays_subnav_resource.htm/hays_common_inc%]] 
+		<$if #active.submitted $>
+			<$if strLength(#active.STATUS) gt 0$>		
+				<p class="strong error"><$lc('wwMissingFieldsError')$></p>
+				<ol>
+					<li><$lc(STATUS)$></li>
+				</ol>
+			<$endif$>
+		<$endif $>
+	</div>
+
+	<form  action="<$lc('wwGoogleSearchAction')$>" class="hays_form" id="<$formName$>">
+		<fieldset class="rc_grey">
+		
+			<input type="hidden" name="contentType" value="Jobs" />
+			<$if #active.debug$>STATUS = <$#active.STATUS$><$endif$>
+				<h2><$lc('wwCompleteFields')$></h2> 
+				<ol>
+					<li >
+						<div class="grid_5 alpha">
+							<label for="<$formName$>job_keywords"><$lc('wwKeywordsOrJobRefNo')$></label>
+						</div>
+						<div class="grid_9 omega">
+							<input type="text" name="job_keywords" id="<$formName$>job_keywords"  autocomplete="off" class="require_group" value="<$#active.job_keywords$>" />
+									
+									<!-- Release 7 [Hide Search only in job title]-->
+									<$if not (siteId like 'mxMXHR' OR siteId like 'brPTHR' or siteId like 'ptPTHR')$>
+										<div class="search_title_only">
+											<input type="checkbox" name="isOnlyJobTitle" id="<$formName$>isOnlyJobTitle" name="isOnlyJobTitle" class="checkbox" value="<$#active.isOnlyJobTitle$>"/>
+											<label for="<$formName$>isOnlyJobTitle"><$lc('wwOnlySearchJobTitle')$></label>
+										</div>
+									<$endif$>			
+						</div>
+					</li>
+						
+					<$if rsExists('IndividualsList') AND rsFirst('IndividualsList') $>	
+					<$industryParam= "xSpecialism"$>
+					<li>
+					  <div class="grid_5 alpha">
+						<span class="label"><$lc('wwAreasOfExpertise')$></span>
+					  </div>
+					 <div class="grid_8 suffix_1 omega">
+						<fieldset>
+							<legend class="access"><$lc('wwAreasOfExpertise')$></legend>
+														
+							<div class="multiselect google" >
+
+							<ol>
+								<$loop IndividualsList$>
+								<li class="checkbox_row">
+									<input type="checkbox" name="cg" id="<$formName$>job_category<$IndividualsList.#row$>" value="<$industryParam & ':' & IndividualsList.id$>" />
+									<label for="<$formName$>job_category<$IndividualsList.#row$>" id="<$formName$>job_category<$IndividualsList.#row$><$IndividualsList.#row$><$IndividualsList.#row$>"><$IndividualsList.label$></label>
+								</li>
+								<$endloop$>
+							</ol>
+
+							<input name="job_category" id="<$formName$>job_category" type="hidden" value="" class="require_group "  />
+						</div>
+						</fieldset>
+					</div>
+				  </li>
+				 <$endif$>
+				
+					<li>
+						<div class="grid_5 alpha">
+							<label for="<$formName$>locationToSearch"><$lc('wwLocation')$></label>
+						</div>
+						<div class="grid_3">
+							<input type="text" name="locationToSearch" id="<$formName$>locationToSearch" class="require_group" value="<$#active.locationToSearch$>" />
+							
+						</div>
+						<div class="grid_2 no_pad">
+							<label for="<$formName$>radius"><$lc('wwDistance')$></label>
+						</div>
+						<div class="grid_3 omega suffix_1">
+							<select name="radius" id="<$formName$>radius">
+								<$defaultRadius=#env.DefaultCerowRadius$>
+								<$if rsExists("distanceListRS")$>
+									<$loop distanceListRS$>
+										<option value="<$distanceListRS.id$>" <$if strEquals(distanceListRS.id,defaultRadius)$>selected<$endif$>> <$if strEquals(distanceListRS.id,300)$><$lc('wwMorethan50')$><$else$><$distanceListRS.label$><$endif$> <$if strEquals(#active.distance_unit,"km")$><$lc("wwKiloMeters")$><$else$><$lc('wwMiles')$><$endif$></option>
+									<$endloop$>
+								<$endif$>
+							</select>
+						</div>
+						<div id="dialog"></div>	
+						<div class="group_error grid_8 prefix_5 alpha omega suffix_1"></div>					
+					</li>
+					
+						<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+						<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+						<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+						<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+						<$endif$>
+						<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					
+						<input type="hidden" name="q" id="<$formName$>q" value=""/>
+						<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+						<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+						<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+						<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+						<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+						<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+						<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+						<input type="hidden" name="entsp" id="<$formName$>entsp" value="a__hays_policy"/>
+						<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+						<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+						<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+						<input type="hidden" name="sort" id="<$formName$>sort" value="date:D:L:d1"/>
+						<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+						<input type="hidden" name="partialfields" id="<$formName$>partialfields" value="" />
+						<$include cross_country_enabled_countries$>
+						<$if isCrossCountry ne 1$>
+						<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+						<$endif$>
+						<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+					
+						
+				</ol>
+		</fieldset>
+		
+		
+		<$if strEquals(loggedIn,"Y")$>
+		<fieldset class="rc_grey">
+			<legend><$lc('wwUsedSavedSearch')$></legend>
+			<h2><$lc('wwUsedSavedSearch')$></h2>
+			<ol>
+				<li>
+					<div class="grid_4 alpha">
+						<label for="field_7"><$lc('wwSavedSearches')$></label>
+					</div>
+					<div class="grid_6 suffix_4 omega">
+						<select name="savedsearch" id="savedsearch" onchange="changelist()">
+							<$if HAYS_RESULT_SET and HAYS_RESULT_SET.#numRows GT 0$>
+							<option value=""><$lc('wwSelect')$></option>
+							<$loop HAYS_RESULT_SET$>
+								<option value="<$KEYWORDS$>!<$DISTANCE$>!<$POSTCODE$>!<$JOBTITLE$>!<$LOCATION$>!<$SECTORIDS$>!<$PERM$>!<$TEMP$>!<$CONT$>!<$JOB_TITLE_FULL$>!<$JOB_TITLE_REF$>!<$LONGITUDE$>!<$LATITUDE$>!<$LEVELNO$>!<$ISONLYJOBTITLE$>!<$ISFUZZYSEARCH$>"><$SEARCHNAME$></option>
+							<$endloop$>
+							<$endif$>
+						</select>
+					</div>
+				</li>
+			</ol>
+		</fieldset>
+		
+		<$endif$>
+		
+		<div>
+			<input type="submit" value="<$lc('wwSearch')$>" class="button" />
+			<input type="button" id="formreset" value="<$lc('wwClear')$>" class="button_1" />
+			
+		</div>
+		<div class="clear"></div>
+	</form>
+
+<@end@>
+
+
+<!---------******************Advanced Search form - BELGIUM ****************--------->
+<@dynamichtml subtmp_advanced_job_google_search_response_be@>
+	<$metadata = "xIndustry" , formName = 'ABC'$>
+	
+  	<$include check_login$> 
+	<$if strEquals(loggedIn,"Y")$>
+	<$usertypeid="1"$>
+	<$executeService("SavedSearch")$>
+	<$endif$>
+	 
+	
+	<$locale = #active.SiteLocale$>
+	<$if NOT rsExists('SchemaData')$>
+		<$ executeService('GET_META_OPTION_LIST')$>
+		<$ rsSort('SchemaData', 'dDescription', 'string', 'asc') $>
+	<$endif$>
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+	   <$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+     <$endif$>		
+	<$metadata = "xCategory" , language = Language , country = isoCountryCode , ontClass = "hays:Specialism"$>    
+	 <$if NOT rsExists('IndividualsList')$>
+	 <$executeService('ONT_GET_INDIVIDUALS')$>		 
+    <$endif$>   	
+	<$if #active.RadiusOptions $>
+		<$ rsCreateResultSet("distanceListRS", "id,label") $>
+		<$ rsAppendRowValues("distanceListRS", #env.RadiusOptions_be)$>
+	<$endif$>
+
+<script type="text/javascript">
+	function SetDisable(formName)
+			{			
+			var ABCjob_location_length = document.getElementById('ABC').ABCjob_location.value.length;
+				if ( formName == "ABCjob_location" ) {
+					if ( ABCjob_location_length != 0 )
+					{
+						document.getElementById('ABC').ABCjob_postcode.disabled = true;					
+					}
+					else
+					{
+						document.getElementById('ABC').ABCjob_postcode.disabled = false;
+					}
+				}
+			}
+
+             
+			function SetDisable2(formName)
+			{
+			var ABCjob_postcode_length = document.getElementById('ABC').ABCjob_postcode.value.length;
+				if ( formName == "ABCjob_postcode" ) {
+					if ( ABCjob_postcode_length != 0 )
+					{
+						document.getElementById('ABC').ABCjob_location.disabled = true;						
+					}
+					else
+					{
+						document.getElementById('ABC').ABCjob_location.disabled = false;
+					}
+				}
+			}
+ </script>
+	<$include google_search_form_be_js$>
+
+	<div class="content_main">
+		<h1><$strUpper(lc('wwSearchTitle'))$></h1>
+		<$lc('wwSearchFormJobIntro1')$>
+		<$lc('wwSearchFormJobIntro2')$>	
+		<$if strLength(#active.STATUS) gt 0$>		
+			<p class="strong error"><$lc('wwMissingFieldsError')$></p>
+			<ol>
+				<li><$lc(STATUS)$></li>
+			</ol>		
+		<$endif $>
+		</div>
+	
+
+	<form action="<$lc('wwGoogleSearchAction')$>" class="hays_form" id="<$formName$>">
+		<fieldset class="rc_grey">
+		<input type="hidden" name="contentType" value="Jobs" />
+		<$if #active.debug$>STATUS = <$#active.STATUS$><$endif$>
+			<h2><$lc('wwCompleteFields')$></h2>
+			<ol>		    
+				<$if rsExists('IndividualsList') AND rsFirst('IndividualsList') $>	
+					<$industryParam= "xSpecialism"$>
+					<li>
+						<div class="grid_5 alpha">
+							<span class="label"><$lc('wwAreasOfExpertise')$></span>
+						</div>
+						<div class="grid_8 suffix_1 omega">
+							<fieldset>
+								<legend class="access"><$lc('wwAreasOfExpertise')$></legend>												
+									<select class="selectbox_be require_group" name="job_category" id= "<$formName$>job_category">
+					    				<option  value="" ></option>
+										<$loop IndividualsList$>											
+											<option name="<$formName$>job_category<$IndividualsList.#row$>" id="<$formName$>job_category<$IndividualsList.#row$>" value="<$industryParam & ':' & IndividualsList.id$>" > 
+											<label for="<$formName$>job_category<$IndividualsList.#row$>" 
+											id="<$formName$>job_category<$IndividualsList.#row$><$IndividualsList.#row$><$IndividualsList.#row$>"><$IndividualsList.label$></label>
+											</option>										
+										<$endloop$>					
+									</select>							
+						
+							</fieldset>
+						</div>
+						<div class="group_error grid_8 prefix_5 alpha omega suffix_1"></div>
+					</li>
+				<$endif$>			
+		    </ol> 
+			<h2><$lc('wwOptSearchCriteria')$></h2>
+			<ol>
+				 <li>
+					<div class="grid_5 alpha">						
+						<label for="<$formName$>job_keywords"><$lc('wwKeywordsOrJobRefNo')$>
+						</label>				
+					</div>
+					<div class="grid_9 omega">
+						<input type="text" name="job_keywords" autocomplete="off" id="<$formName$>job_keywords" 
+						value="<$#active.job_keywords$>" />				
+					</div>
+				</li>				
+							
+				<$if rsExists('SchemaData') AND rsFirst('SchemaData') $>
+					<$industryParam= "xIndustryId"$>
+				<li>
+					<div class="grid_5 alpha">
+						<span class="label"><$lc('wwIndustry')$></span>
+					</div>
+					<div class="grid_8 suffix_1 omega">
+						<fieldset>
+							<legend class="access"><$lc('wwIndustry')$></legend>
+							<div class="multiselect google">
+												
+								<ol>
+									<$loop SchemaData$>
+										<li class="checkbox_row">
+											<input type="checkbox" name="industry_group" id="<$formName$>job_industry<$SchemaData.#row$>" value="<$industryParam & ':' & SchemaData.dKey$>" />
+											<label for="<$formName$>job_industry<$SchemaData.#row$>" id="<$formName$>job_industry<$SchemaData.#row$><$SchemaData.#row$><$SchemaData.#row$>"><$SchemaData.dDescription$></label>
+										</li>
+									<$endloop$>					
+								</ol>
+								
+							<input name="job_industry" id="<$formName$>job_industry" type="hidden" value="" />
+							</div>
+						</fieldset>
+					</div>
+				</li>
+				<$endif$>
+
+				<li>
+					<div class="grid_5 alpha">
+						<label for="<$formName$>locationToSearch"><$lc('wwLocation')$></label>
+					</div>
+					<div class="grid_3">
+						<input type="text" name="locationToSearch" onchange="SetDisable('ABCjob_location');" id="<$formName$>locationToSearch" value="<$#active.locationToSearch$>" />
+					</div>
+					<div class="grid_2 no_pad">
+						<label for="<$formName$>job_postcode"><$lc('wwPostcode')$></label>
+					</div>
+					<div class="grid_3 omega">
+						<input type="text" name="job_postcode" onchange="SetDisable2('ABCjob_postcode');" id="<$formName$>job_postcode" <$#active.job_postcode$>/>
+					</div>
+					<div id="dialog"></div>				
+				</li>
+				<li>
+					<div class="grid_5 alpha">
+						<label for="<$formName$>radius"><$lc('wwDistance')$></label>
+					</div>
+					<div class="grid_be omega">
+						<select name="radius" id="<$formName$>radius">
+							<$defaultRadius=#env.DefaultRadius$>
+							<$if rsExists("distanceListRS")$>
+								<$loop distanceListRS$>
+									<option value="<$distanceListRS.id$>" <$if strEquals(distanceListRS.id,defaultRadius)$>selected<$endif$>> <$if strEquals(distanceListRS.id,300)$><$lc('wwMorethan50_be')$><$else$><$distanceListRS.label$><$endif$> <$if strEquals(#active.distance_unit,"km")$><$lc("wwKiloMeters")$><$else$><$lc('wwMiles')$><$endif$></option>
+								<$endloop$>
+							<$endif$>
+						</select>
+					</div>
+				
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+					<$endif$>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+				
+					<input type="hidden" name="q" id="<$formName$>q" value=""/>
+					<input type="hidden" name="sort" id="<$formName$>sort" value="date:D:L:d1"/>
+						<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+						<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+						<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+						<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+						<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+						<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+						<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+						<input type="hidden" name="entsp" id="<$formName$>entsp" value="a__hays_policy"/>
+						<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+						<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+						<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+						<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+						<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+						<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+						<$if not #active.level or (#active.level and #active.level lt 3)$>
+							<$level=3$>
+						<$endif$>
+								<input type="hidden" name="partialfields" id="partialfields" value=""/>
+				</li>
+				
+				<$if siteId like "enHRBE" OR siteId like "frHRBE" OR siteId like "nlHRBE"$>
+					<li>
+					<div class="grid_5 alpha"><span class="label"><$lc('wwJobType')$></span></div>
+					<div class="grid_3 checkbox_row be_row">
+							<input type="checkbox" onchange="changejob(id);" id="<$formName$>job_permanent" name="job_permanent" <$if #active.job_permanent$>checked<$endif$>/>
+							<label for="<$formName$>job_permanent" class="permtemp_jobtype"><$lc('wwJobType_Permanent')$></label>
+					</div>					
+					<div class="grid_3 checkbox_row be_row">
+						<input type="checkbox" onchange="changejob(id);" id="<$formName$>job_temporary" name="job_temporary" <$if #active.job_temporary$>checked<$endif$> />
+						<label for="<$formName$>job_temporary" class="permtemp_jobtype"><$lc('wwJobType_Temporary')$></label>
+					</div>
+					<div class="grid_3 checkbox_row" style="margin-left: 0px;">
+						<input type="checkbox" onchange="changejob(id);" id="<$formName$>job_contract" name="job_contract" <$if #active.job_contract$>checked<$endif$>/>
+						<label for="<$formName$>job_contract" class="contract_jobtype"><$lc('wwJobType_Contract')$></label>
+					</div>	
+					</li>			
+				<$else$>				
+
+				<li class="multi_row permanent">
+					<div class="grid_5 alpha"><span class="label"><$lc('wwJobType')$></span></div>
+					<div class="grid_3 checkbox_row">
+						<input type="checkbox" onchange="changejob();" id="<$formName$>job_permanent" name="job_permanent" <$if #active.job_permanent$>checked<$endif$>/>
+						<label for="<$formName$>job_permanent"><$lc('wwPermanent')$></label>
+					</div>
+					
+				</li>
+				<li class="multi_row temporary">
+					<div class="grid_3 prefix_5 alpha checkbox_row">
+						<input type="checkbox" onchange="changejob(id);" id="<$formName$>job_temporary" name="job_temporary" <$if #active.job_temporary$>checked<$endif$> />
+						<label for="<$formName$>job_temporary"><$lc('wwTemporary')$></label>
+					</div>
+					
+				</li>
+				<li class="multi_row contract">
+					<div class="grid_3 prefix_5 alpha checkbox_row">
+						<input type="checkbox" onchange="changejob(id);" id="<$formName$>job_contract" name="job_contract" <$if #active.job_contract$>checked<$endif$>/>
+						<label for="<$formName$>job_contract"><$lc('wwContractInterim')$></label>
+					</div>
+					
+				</li>
+				<$endif$>
+				<script type="text/javascript">
+					function changejob(){
+							var JobType = "";
+							//alert(id);
+		
+							var multi_object_p = $("#ABCjob_permanent").get();
+							if ($(multi_object_p).is(':checked')) {
+									JobType = JobType + "P,";
+							}
+					
+							var multi_object_t = $("#ABCjob_temporary").get();
+							if ($(multi_object_t).is(':checked')) {
+								JobType = JobType + "T,";
+							}
+					
+						var multi_object_c = $("#ABCjob_contract").get();
+							if ($(multi_object_c).is(':checked')) {
+								JobType = JobType + "C,";
+							}
+							if (JobType.length >0) {
+								JobType = JobType.substring(0,(JobType.length - 1));
+							}
+			
+							$("#ABCjob_type").val(JobType);
+			
+    					}
+				</script>
+			
+				<input name="job_type" type="hidden" id="<$formName$>job_type" value="<$#active.JobType$>" />				
+
+			</ol>
+		</fieldset>
+		
+			<$if strEquals(loggedIn,"Y")$>
+		<fieldset class="rc_grey">
+			<legend><$lc('wwUsedSavedSearch')$></legend>
+			<h2><$lc('wwUsedSavedSearch')$></h2>
+			<ol>
+				<li>
+					<div class="grid_5 alpha">
+						<label for="field_7"><$lc('wwSavedSearches')$></label>
+					</div>
+					<div class="grid_8 suffix_1 omega">
+						<select name="savedsearch" id="savedsearch" onchange="changelist()">
+						<$if HAYS_RESULT_SET and HAYS_RESULT_SET.#numRows GT 0$>
+							<option value=""><$lc('wwSelect')$></option>
+							<$loop HAYS_RESULT_SET$>
+								<option value="<$KEYWORDS$>!<$DISTANCE$>!<$POSTCODE$>!<$JOBTITLE$>!<$LOCATION$>!<$SECTORIDS$>!<$PERM$>!<$TEMP$>!<$CONT$>!<$JOB_TITLE_FULL$>!<$JOB_TITLE_REF$>!<$LONGITUDE$>!<$LATITUDE$>!<$LEVELNO$>!<$ISONLYJOBTITLE$>!<$ISFUZZYSEARCH$>!<$SPECIALISM$>!<$SUBSPECIALISM$>!<$JOBTYPES$>"><$SEARCHNAME$></option>
+							<$endloop$>
+						<$endif$>
+						</select>
+					</div>
+				</li>
+			</ol>
+		</fieldset>
+		
+		<$endif$>
+		
+		<div>
+			<input type="submit" value="<$lc('wwSearch')$>" class="button" />
+			<input type="button" id="formreset" value="<$lc('wwClear')$>" class="button_1 " />
+			
+		</div>
+		<div class="clear"></div>
+	</form>
+
+<@end@>
+
+<@dynamichtml google_search_form_be_js@>
+	<script type="text/javascript">
+		<!--//--><![CDATA[//><!--
+       function HAYSsearchjobs<$formName$>() {
+		   
+           if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+		   			<$include test_autocomplete_inc1$>	
+					$('input[name="job_reference"]').watermark('<$lc('wwGeneralSpecialismSearchReferenceWatermark')$>');
+					$('input[name="locationToSearch"]').watermark('<$lc('wwGeneralSpecialismSearchLocationWatermark')$>');
+					$('input[name="job_postcode"]').watermark('<$lc('wwGeneralSpecialismSearchPostCodeWatermark')$>');
+					
+					$('input[name="job_keywords"]').watermark('<$lc('wwMainJobSearchKeywordWatermark')$>');
+					$('input[name="job_title"]').watermark('<$lc('wwMainJobSearchJobTitleWatermark')$>');
+					$('input[name="job_title_ref"]').watermark('<$lc('wwSearchJobReferenceWatermark')$>');
+
+			var locationObject = null;
+
+           $("#<$formName$>").validate({
+			
+				onkeyup: false,
+
+               groups: {
+			        searchGroup : "job_category_be job_category"
+					
+
+               },
+               submitHandler: function(form) {
+					$.watermark.hideAll();
+					
+				<!--POC Changes for Search Start -->
+				var isOnlyJobTitleValue = $("#<$formName$>isOnlyJobTitle").attr('checked');
+				  
+				   if(isOnlyJobTitleValue){
+						$('input[name=isOnlyJobTitle]').attr('value','Y');	
+																
+				   }else{
+						$('input[name=isOnlyJobTitle]').attr('value','N');	
+						$('input[name=job_keywords]').attr('value',document.getElementById("<$formName$>job_keywords").value);	// added by devendra for r7
+						$('input[name=job_title_ref]').attr('value',document.getElementById("<$formName$>job_keywords").value);// added by devendra for r7	
+				  }
+
+				<!--POC Changes for Search End -->
+                    		if ((<$formName$>locationMap != 'bypass' && <$formName$>locationMap != null) || <$formName$>postcodeMap != null) {
+					if (<$formName$>locationMap != null) {
+	                           		var locationObject = <$formName$>locationMap;
+		                      	var locationValue = $("#<$formName$>locationToSearch").attr('value');
+					    }
+					else {
+                           			var locationObject = <$formName$>postcodeMap;
+                           			var locationValue = $("#<$formName$>job_postcode").attr('value');
+					     }
+			           	    var locationDescr = "LOCATION_DESC";
+					   jQuery.each(locationObject,
+						   function(i, val) {
+								   if (locationValue.toLowerCase() == val[locationDescr].toLowerCase() && locationValue.length == val[locationDescr].length) {
+									   $('#<$formName$>level').attr('value', val.LEVEL_NO);
+									   $('#<$formName$>ne_longitude').attr('value', val.NE_LONGITUDE);
+									   $('#<$formName$>ne_latitude').attr('value', val.NE_LATITUDE);
+									   $('#<$formName$>location_id').attr('value', val.LOCATION_ID);
+									   
+								   }
+						   }
+					   );
+                  		    }
+
+				/*Release 1.3*/
+				   if (<$formName$>jobtitleResultSet != null) {
+				   //alert("enter12");
+				   
+	                           var jobtitleObject = <$formName$>jobtitleResultSet;
+		                       var jobtitleValue = $("#<$formName$>job_title").attr('value');
+							   
+					   var jobtitleLabel = "label";
+					   jQuery.each(jobtitleObject,
+						   function(i, val) {
+								   if (jobtitleValue.toLowerCase() == val[jobtitleLabel].toLowerCase() && jobtitleValue.length == val[jobtitleLabel].length) {
+									   $('#<$formName$>job_job_title').attr('value', val.id);
+									}
+						   }
+					   );
+					}
+					
+					 
+					 				
+				   /*endRelease 1.3*/
+
+				<$include job_location_autosuggest_googlesearch_inc$>
+                    else if ($('input[name=ne_longitude]', form).val() === '' && !$('input[name=job_postcode]').is(':not.watermark') && $('input[name=job_postcode]').val() != '') {
+						$("#dialog").dialog({
+                                     draggable: false,
+                                     modal: true,
+                                     resizable: false,
+                                     buttons: {
+									Close : function() {
+									 <$include show_watermarks_js_inc$>  //MR2 Item 21
+										$("#dialog").dialog("destroy");
+									},
+									Search: function() {
+														$.watermark.hideAll();
+														var geoCords = $('#dialog input:checked[name=google_location]').attr('value');
+														geoCords = geoCords.split(",");
+														$(form).find('#<$formName$>ne_longitude').attr('value', geoCords[0]);
+														$(form).find('#<$formName$>ne_latitude').attr('value', geoCords[1]);
+														$(form).find('#<$formName$>level').attr('value', geoCords[2]);
+														$(form).submit();
+									}
+								},
+								 title: '<$lc('wwPostcodeDialogTitle')$>',
+								 minHeight: 200,
+								open: function() {
+										$("#dialog").html('<img src="/haysassets/HaysGeneralComponent/assets/css/img/loader.gif" class="loader" alt="<$lc('wwLocationGoogleLoadingText')$>" />');
+										$('.ui-dialog-buttonpane button:contains(Search)').hide();  //MR2 Item 21
+										$('.ui-dialog-buttonpane button:first-child').addClass('button_1');
+										/* MR Item 40.2 Start*/	
+										if(<$formName$>postcodeMap == null  || <$formName$>postcodeMap == ''){
+										//alert("inside if");
+										$("#dialog").html('<$lc('wwPostcodeNotFoundFromGoogle')$>');
+										}
+										else{ 
+									    /* MR Item 40.2 End*/		
+										var start = "<$lc('wwPostcodeFromGoogle')$><ul class='google'>";
+										var google_result = "";
+										jQuery.each(<$formName$>postcodeMap, function(i, val) {
+												google_result = google_result + "<li><div class='select_row'><input type='radio' ";
+												i == 0 ? google_result = google_result + "checked='checked'" : 0;
+												google_result = google_result + "value='"+val.NE_LONGITUDE+","+val.NE_LATITUDE+","+val.LEVEL_NO+"' id='"+val.LOCATION_ID+i+"' name='google_location' \/><label for='"+val.LOCATION_ID+i+"'>" + val.LOCATION_DESC + "<\/label><\/div><\/li>";
+										});
+										var end = "<\/ul><\/fieldset>";
+										$("#dialog").html(start + google_result + end);
+										if (google_result.length < 5) {
+											$("#dialog").html('<$lc('wwPostcodeNotFoundFromGoogle')$>');
+										}
+										else {
+											$("#dialog").html(start + google_result + end);
+											$('.ui-dialog-buttonpane button:contains(Search)').show();  //MR2 Item 21
+										}
+										} /* MR Item 40.2 End - Closing Bracket*/
+								}
+						});
+						
+						//code commented for MR2 item number 4
+						/*if ($('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 5) {
+							$('#<$formName$>radius').val('0');
+						}*/
+					}
+					else {
+						$.watermark.hideAll();
+						//if ($('#<$formName$>level').val() > 0 && $('#<$formName$>level').val() <= 5) {
+						//	$('#<$formName$>radius').val('0');
+						//}
+
+						if(($('input[name=locationToSearch]',form).val() === "" || $('input[name=locationToSearch]').is('.watermark')) && ($('input[name=job_postcode]',form).val() === "" || $('input[name=job_postcode]').is('.watermark'))) {
+							$('input[name=ne_longitude]', form).val("");
+							$('input[name=ne_latitude]', form).val("");
+						}
+						
+						if($('input[name=job_category]').val() != ''){
+						var xspecialism = document.getElementById("<$formName$>job_category").value;
+						
+						$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.'+xspecialism);
+						}
+						if($('input[name=job_industry]').val() != ''){
+							$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.'+$('input[name=job_industry]').val());
+						}
+						if($('input[name=location_id]').val() != ''){
+							$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.(xHayslocation'+$('input[name=level]').val()+':'+$('input[name=location_id]').val()+')');
+						}
+						if($("#Main_Job_SearchisOnlyJobTitle").attr('checked')){
+							$('input[name=partialfields]').val($('input[name=partialfields]').val()+'.(JobTitle:'+escape($('input[name=job_keywords]').val())+')');
+						}
+						
+						if($('input[name=partialfields]').val().charAt(0) == '.'){
+								$('input[name=partialfields]').val($('input[name=partialfields]').val().substring(1));
+						}
+						$('input[name=partialfields]').val($('input[name=partialfields]').val().replace(/hays:/g,''));
+							
+						if($('input[name=job_keywords]').val() != '')
+							$('input[name=q]').val($('input[name=q]').val()+$('input[name=job_keywords]').val());
+							
+						if($('input[name=job_type]').val() != ''){
+							$('input[name=q]').val($('input[name=q]').val()+' inmeta:xjobType='+$('input[name=job_type]').val());
+							$('input[name=q]').val($('input[name=q]').val().replace(/,/g,' OR inmeta:xjobType='));
+						}
+						$('input[name=job_type]').remove();						
+						$('input[name=cg]').remove();						
+						$('input[name=industry_group]').remove();
+						$('input[name=job_industry]').remove();
+						$('input[name=job_keywords]').remove();
+						$("#<$formName$>radius").remove();
+						$("#<$formName$>job_category").remove();
+						
+						form.submit();
+					}
+				},
+				rules: {
+					/*Added if condition for Release 1.3*/	
+					<$if strLength(subTerms) <= 0 $>
+						job_category: {
+							require_from_group: [1,'.require_group']
+						}						
+					<$endif$>
+					/*end Release 1.3*/ 
+				},
+				messages : {
+					
+					job_category_be : '<$lc('wwSearchFormRequiredMessage')$>',
+					job_category : '<$lc('wwSearchFormRequiredMessage')$>'
+				},
+				errorPlacement: function(error, element) {
+
+				 if ('<$formName$>'== "ABC" && (element.attr('name') == "job_category" || element.attr('name') == "job_category_be") ) {
+						//alert("inside error condition");
+						//error.appendTo("#<$formName$> fieldset:first .group_error");
+						$("#<$formName$>job_category_be").addClass("error_be");
+						$("#<$formName$>job_category").prevAll(".multitoggle").addClass("error");
+						error.insertAfter('#<$formName$>job_category');
+					}
+
+				else {
+						error.insertAfter(element);
+					}
+				}
+			});
+						
+     <$include job_location_autocomplete_googlesearch_inc$>
+
+				$("#<$formName$>job_postcode").autocomplete({
+					source: function(request, response) {
+						$.ajax({
+							url: "<$HttpRelativeWebRoot$>idcplg",
+							dataType: "jsonp",
+							data: {
+								outputFormat: "json",
+								ResultCount: 12,
+								IdcService: "SEARCH_LOCATIONS",
+								searchPostcode: "1",
+								location: request.term,
+								domainId: "<$#active.domainId$>",
+								locationColumn :"<$#active.locationColumn$>"
+							},
+							success: function(data) {
+								<$formName$>postcodeMap = data.result.resultsets.LOCATION_RESULT_LIST;
+								response($.map(data.result.resultsets.LOCATION_RESULT_LIST, function(item) {
+									return {
+										label: item.LOCATION_DESC,
+										value: item.LOCATION_DESC,
+										id: item.LOCATION_ID,
+										longitude: item.NE_LONGITUDE,
+										latitude: item.NE_LATITUDE,
+										level: item.LEVEL_NO
+									}
+								}))
+							}
+						})
+					},
+					minLength: 2,
+					select: function(event, ui) {
+						$('#<$formName$>level').attr('value', ui.item.level );
+						$('#<$formName$>ne_longitude').attr('value', ui.item.longitude );
+						$('#<$formName$>ne_latitude').attr('value', ui.item.latitude);
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				});
+				$("#<$formName$>job_title").autocomplete({
+					source: function(request, response) {
+						$.ajax({
+							url: "<$HttpRelativeWebRoot$>idcplg",
+							dataType: "jsonp",
+							data: {
+								outputFormat: "json",
+								ResultCount: 12,
+								metadata: "xAutomatedTitle",
+								ontClass: "hays:JobFunction",
+								IdcService: "ONT_GET_INDIVIDUALS",
+								ontValue: request.term,
+								language: "<$LanguageCode$>",
+								country: "<$CountryCode$>",
+								parentTerm: $("#parentCatTerm").attr('value')
+							},
+							success: function(data) {
+								/*Added for Release 1.3*/
+								<$formName$>jobtitleResultSet=data.result.resultsets.IndividualsList;
+								/*end Release 1.3*/
+								response($.map(data.result.resultsets.IndividualsList, function(item) {
+									return {
+										label: item.label,
+										value: item.label,
+										id: item.id
+									}
+								}))
+							}
+						})
+					},
+					minLength: 2,
+					select: function(event, ui) {
+						$('#<$formName$>job_job_title').attr('value', ui.item.id );
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+				});
+
+				//for quick job search
+				if ('<$formName$>'== "Job_Search" || '<$formName$>'== "Candidate_Search") {
+
+
+					var eleJob = $('#<$formName$>job_min_permanant, #<$formName$>job_max_permanant');
+
+
+					if (!$('#<$formName$> input[type=radio]').is(':checked')){
+						eleJob.attr('disabled', 'disabled');
+					}
+
+					$('#<$formName$> input[type=radio]').change(function(){
+						if ($(this).attr('value') != '') {
+							eleJob.removeAttr('disabled');
+						}
+						else {
+							eleJob.attr({disabled : 'disabled', value : ''}).removeClass('error');
+							$('#table_error .error').hide();
+						}
+					});
+				}
+				//for main job/candidate search form
+				/*if ('<$formName$>'=="Main_Job_Search") {
+					$('.multi_row').each(function(){
+						if (!$(this).find('input[type=checkbox]').is(':checked')){
+							$(this).find('input[type=text], select').attr('disabled', 'disabled');
+						}
+					});
+
+				}*/
+				
+				$('#formreset').click(function() {
+					var validator = $("#<$formName$>").validate();
+					validator.resetForm();
+					$(':input','#<$formName$>').not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+					$('.multitoggle').html('');
+					HAYSsearchjobs<$formName$>();
+				});
+				
+			}
+			else {
+				window.setTimeout(HAYSsearchjobs<$formName$>, 100);
+			}
+		}
+
+		var <$formName$>locationMap = null;
+		var <$formName$>postcodeMap = null;
+		/*Added for Release 1.3*/
+		var <$formName$>jobtitleResultSet = null;
+		/*end Release 1.3*/
+		HAYSsearchjobs<$formName$>();
+
+		//--><!]]>
+</script>
+
+<script type="text/javascript">
+
+		function changelist() {
+		if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+		    var savedSearchID=document.getElementById("savedsearch");
+           	    var savedSearchString=savedSearchID.options[savedSearchID.selectedIndex].value;
+
+		   if(savedSearchString!="")
+		   {
+		     document.getElementById("<$formName$>job_permanent").checked=false;
+		     document.getElementById("<$formName$>job_temporary").checked=false;
+		     document.getElementById("<$formName$>job_contract").checked=false;
+		     document.getElementById("<$formName$>isOnlyJobTitle").checked=false;
+             $.watermark.hideAll();
+		     savedSearchArray =savedSearchString.split("!");
+
+             //Populating Keywords, Distance, PostCode, Job Title and Location
+             document.getElementById("<$formName$>job_keywords").value=savedSearchArray[0];
+	      document.getElementById("<$formName$>radius").value=savedSearchArray[1];
+	      //alert("Radius = " + document.getElementById("<$formName$>radius").value);
+		     document.getElementById("<$formName$>job_postcode").value=savedSearchArray[2];
+		     //document.getElementById("<$formName$>job_title").value=savedSearchArray[3];
+		     document.getElementById("<$formName$>locationToSearch").value=savedSearchArray[4];
+		     var industryString=savedSearchArray[5];
+		     		
+		     //Assigning values for hidden fields
+		    
+		     document.getElementById("<$formName$>ne_longitude").value=savedSearchArray[11];
+		     document.getElementById("<$formName$>ne_latitude").value=savedSearchArray[12];
+	         document.getElementById("<$formName$>level").value=savedSearchArray[13];
+	         document.getElementById("isFuzzy").value=savedSearchArray[15];
+			//alert("Specialism value = " + savedSearchArray[16]);
+		  document.getElementById("<$formName$>job_category_be").value=savedSearchArray[16];
+		  changespecialism(savedSearchArray[16],1,savedSearchArray[17]);
+	
+		  //var subSpecialismString = savedSearchArray[16];
+		  var jobTypesString = savedSearchArray[18];
+		
+		     if(!(document.getElementById("<$formName$>ne_longitude").value=="") && !(document.getElementById("<$formName$>ne_latitude").value==""))
+  			{
+				<$formName$>locationMap="bypass";
+  			}
+
+	  			//SSO change
+	  			if((savedSearchArray[14] !="") && (savedSearchArray[14]=="Y"))
+		        {
+				 document.getElementById("<$formName$>isOnlyJobTitle").checked=true;
+		        }
+		     
+			var industryval="";
+		     	var industrytext="";
+		     	var industry_rows='<$SchemaData.#numRows$>';
+			
+			
+             industryArray=industryString.split(",");
+			
+		    //loop for unchecking checkbox in industry dropdownlist
+              for(i=0;i < industry_rows;i++)
+              {
+			    document.getElementById("<$formName$>job_industry"+i).checked=false;
+		      }
+
+                   //loop for populating Industry
+				  
+		     for(i=0;i < industry_rows;i++)
+                    {
+		        for(j=0;j < industryArray.length;j++)
+		         {
+			    if(document.getElementById("<$formName$>job_industry"+i).value==$.trim(industryArray[j]))
+			     {
+			       industryval = industryval + industryArray[j]+",";
+			       industrytext = industrytext + document.getElementById("<$formName$>job_industry"+i+i+i).innerHTML+",";
+				 
+                   document.getElementById("<$formName$>job_industry"+i).checked=true;
+			     }
+                        }
+                      }
+
+              industryval=industryval.substr(0,industryval.length-1);
+		industrytext=industrytext.substr(0,industrytext.length-1);
+
+              document.getElementById("<$formName$>job_industry").value=industryval;
+		$("#ABCjob_industry").prevAll(".multitoggle").text(industrytext);
+
+		//$(".multitoggle").text(industrytext);
+
+		      //permSalaryArray=permSalaryString.split("*");
+		      //tempSalaryArray=tempSalaryString.split("*");
+		      //contSalaryArray=contSalaryString.split("*");
+		      jobTypeArray = jobTypesString.split(",");
+
+		      //var tempSalaryType=tempSalaryArray[3];
+		      //var contSalaryType=contSalaryArray[3];
+
+              	//alert(<$formName$>locationMap);
+
+			for (i=0;i<jobTypeArray.length;i++) {
+			//alert(jobTypeArray[i]);
+				if (jobTypeArray[i] == 'P') {
+					document.getElementById("<$formName$>job_permanent").checked=true;
+					//alert("Inside Permamnent check");
+				}
+				if (jobTypeArray[i] == 'T') {
+					document.getElementById("<$formName$>job_temporary").checked=true;
+					//alert("Inside Temporary check");
+				}
+
+				if (jobTypeArray[i] == 'C') {
+					document.getElementById("<$formName$>job_contract").checked=true;
+					//alert("Inside Contract check");
+				}
+
+			}
+		      
+             
+                }
+				
+			}
+		   
+		   else {
+				window.setTimeout(changelist, 100);
+			}
+          }
+		  //changelist();
+</script>
+<@end@>
+
+<@dynamichtml google_search_enabled_countries@>
+	<$countrylist=#env.GoogleSearchForm$>
+	<$countrylist=","&GoogleSearchForm&","$>	
+	<$CountryCodeGoogle = #active.isoCountryCode$>
+	<$CountryCodeGoogle=","&CountryCode&","$>	
+	<$if strIndexOf(countrylist,CountryCodeGoogle) >=0$> 
+		<$isGoogleSearch=1$>	
+	<$else$>
+		<$isGoogleSearch=0$>
+	<$endif$>
+
+<@end@>
+
+<@dynamichtml is_international_website@>
+	<$isInternationalWebsite=ssGetSiteProperty(siteId,"isInternationalWebsite")$>
+<@end@>
+
+<@dynamichtml test_autocomplete_inc1@>
+$("#<$formName$>job_keywords").autocomplete({
+
+					/*source: ['london1','london2','london3'],*/
+					source: function(request, response) {
+						$.ajax({
+							url: "/suggest",
+							dataType: "jsonp",
+							data: {
+									outputFormat: "json",
+									q: request.term,
+									max: 10,
+									site: "<$#env.GoogleSite$>",
+									client: "<$lc('GoogleClient')$>",
+									access: "p",
+									format: "rich"
+							},
+							success: function(data) {
+							response($.map(data.results, function(item) {
+									item.name=item.name.replace("%20", " ");
+									item.name=item.name.replace(/\+/g, ' ');
+									return {
+										label: item.name,
+										value: item.name
+									}
+								}))
+							}
+							})
+					},
+								
+						select: function(event, ui) {
+						$('#<$formName$>job_keywords').attr('value', ui.item.value );
+						$(".jaccess.multitoggle").get(0).focus();
+						
+					},
+					open: function() {
+						$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+					},
+					close: function() {
+						$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+					}
+					
+				});
+
+<@end@>
+
+<@dynamichtml subtmp_main_region_job_desc_inc@> 
+ <$if strEquals(nodeId,'jobs-search')$>
+	<$event = "browse"$>
+	<$include fire_events$>
+ <$endif$> 	
+	<$styleClass="job_apply"$>	
+	<$exec rsRename("OilAndGas_DOC_INFO","DOC_INFO")$>	
+	<$redirectCreateAccount=#env.WC_CREATE_ACCOUNT_JOBSEEKER$>
+	<$jobSourceConstant=#env.WC_JOBSOURCE_CONSTANT_INTERNATIONAL$>
+	<$if strEquals(#active.urlToPick,'uk') or strEquals(#active.urlToPick,'cerow')$>
+		<$redirectURLBase=#env.WC_SAVE_SEARCH$>
+		<$redirectCanInfo=#env.WC_CANTIDATE_INFO_REQUEST$>		
+		<$redirectJobApply=#env.WC_JOB_APPLY$>
+		<$redirectCreateAccount=#env.WC_CREATE_ACCOUNT_JOBSEEKER_UK$>
+	<$else$>
+		<$redirectURLBase=#env.WC_SAVE_SEARCH_APAC$>
+		<$redirectCanInfo=#env.WC_CANTIDATE_INFO_REQUEST_APAC$>
+		<$jobSourceConstant=#env.WC_JOBSOURCE_CONSTANT_APAC$>
+		<$redirectJobApply=#env.WC_JOB_APPLY_APAC$>
+		<$redirectCreateAccount=#env.WC_CREATE_ACCOUNT_JOBSEEKER_APAC$>
+	<$endif$>
+	
+	
+	<$if strEquals(strTrimWs(DOC_INFO.dID),'')$>
+		<$redirectToUrl(ssGetServerRelativeUrl(siteId,"job-not-available"))$>
+	<$endif$>
+	<$xPostingType = DOC_INFO.xPostingType$>
+	
+	
+	<$if strEquals(DOC_INFO.dDocType,"Candidates")$>
+		<$applied="," & getCookie("candRqsd")& ","$>
+	<$else $>
+		<$applied="," & getCookie("jobapd")& ","$>
+	<$endif$>
+
+
+	<$disabledText=""$>
+	<$if strIndexOf(#active.applied,  "," & dDocName & ",") ge 0$>
+		<$disabledText="disabled"$>
+	<$endif$>
+	<h1 class="jobtitle"><$DOC_INFO.dDocTitle$></h1>	
+	<h2 class="location"><$DOC_INFO.xLocationDescription$></h2>	
+
+	<$candidateInfoRequestUrl=redirectURLBase&"?jobIdList="&DOC_INFO.dDocName&"&amp;refID="&DOC_INFO.xRecordId&"&amp;jobTitle="&DOC_INFO.dDocTitle&"&amp;location="&DOC_INFO.xLocation&"&amp;haysConsultant="&DOC_INFO.xContactId&"&amp;action=redirect&amp;redirect="&redirectCanInfo$>
+	<$if DOC_INFO.xPostingType AND strEquals(DOC_INFO.xPostingType,"dashmgdmp")$> 
+		<$c = "Build URL external applicaton functionality"$>
+		<$if DOC_INFO.xApplicationURL AND strLength(DOC_INFO.xApplicationURL) GT 0$>
+			<$jobApplyUrl=DOC_INFO.xApplicationURL$>
+			<$styleClass="job_applyExternal"$>
+		<$else$>
+			<$jobApplyUrl="#"$>	
+		<$endif$>
+		<$else$>
+	<!-- Change for Sprint 24 on 19 April 2012-->
+		<$if not #active.jobSource$>
+			
+			<$if strLength(getCookie("utm_campaign")) GT 0 $>
+				<$jobSource=getCookie("utm_campaign")$>
+			<$elseif strLength(#active.utm_campaign) GT 0$>		
+				<$jobSource=#active.utm_campaign $>					
+			<$else$>
+		<!--Change for MR Sprint 23 on 16 March 2012 -->
+				<$include apac_country_check_inc$>
+				<$if ((isAPACCountry EQ 1)  OR (strEquals(siteId,'uk')))$>
+					<$jobSource=jobSourceConstant$>		
+				<$else$>	
+		<!-- end -->		
+					<$jobSource=GetDomainName(HTTP_REFERER)$>
+						<$if (strLength(jobSource) EQ 0) OR (strIndexOf(jobSource,'hays') ge 0 )$>
+							<$jobSource=jobSourceConstant$>
+						<$endif$>
+				<$endif$>
+			<$endif$>	
+		<$endif$>
+		
+		<$jobApplyUrl=redirectURLBase&"?jobIdList="&DOC_INFO.dDocName&"&amp;jobsource="&jobSource&"&amp;action=redirect&amp;redirect="&redirectJobApply&"&amp;subDomain="&DOC_INFO.xSubDomain$>
+		<$if DOC_INFO.xRefJobId AND strLength(DOC_INFO.xRefJobId) GT 0$>			
+			<$jobApplyUrl = jobApplyUrl&"&amp;referingJobId=JOB_"&DOC_INFO.xRefJobId&"&amp;referingJobDomainId="&DOC_INFO.xRefDomainId$>
+		<$endif$>
+	<$endif$>
+
+	<$if strEquals(DOC_INFO.dDocType,"Candidates")$>
+		<$applyButtonLabel=lc("wwCandidateDescRequestInfoButtonLabel")$>
+	<$else $>
+		<$applyButtonLabel=lc("wwJobDescApplyButtonLabel")$>
+	<$endif$>
+
+	<$include job_search_navigation_elements$>
+
+	<div class="short_descr">
+		<div class="grid_10 alpha">
+			
+			<dl>
+				<$if not strEquals(DOC_INFO.xJobType,'')$>
+					<dt><$lc("wwJobT")$></dt>
+					<dd>
+					<$addComma="false"$>
+					<$if strIndexOf(DOC_INFO.xJobType, 'P') GE 0 $><$addComma="true"$><$lc('wwPermanent')$><$endif$>
+					<$if strIndexOf(DOC_INFO.xJobType, 'C') GE 0 $><$if isTrue(addComma)$>, <$endif$><$addComma="true"$><$lc('wwContract')$><$endif$>
+					<$if strIndexOf(DOC_INFO.xJobType, 'T') GE 0 $><$if isTrue(addComma)$>, <$endif$><$lc('wwTemporary')$><$endif$>
+					</dd>
+				<$endif$>
+				<$if siteId like 'frHRBE' OR siteId like 'nlHRBE' OR siteId like 'enHRBE'$>
+					<$if strEquals(DOC_INFO.dDocType,"Jobs") and not strEquals(DOC_INFO.dInDate,'')$>
+						<dt><$lc("wwPostingDate")$></dt>				
+						<dd><$formatDateWithPattern(DOC_INFO.dInDate,#active.websiteDateFormat)$></dd>
+					<$endif$>
+				<$endif$>
+				
+			[[%	<$if strEquals(DOC_INFO.dDocType,"Candidates") and not strEquals(DOC_INFO.xAvailableFrom,'')$>
+					<dt><$lc("wwAvailableFrom")$></dt>				
+					<dd><$formatDateWithPattern(DOC_INFO.xAvailableFrom,#active.websiteDateFormat)$></dd>
+				<$endif$>%]]
+				
+				<$if isTrue(#active.display_salary_rate)$>
+						<$if strLength(DOC_INFO.xSalaryDescription) GT 0 $>
+						<dt><$lc("wwPay")$></dt>
+						
+						<dd>
+								
+						<$DOC_INFO.xSalaryDescription$>				
+						</dd>
+						<$else$>
+						<dd>&nbsp;&nbsp;</dd>
+					<$endif$>
+				<$endif$>
+			
+				<$if not strEquals(DOC_INFO.xRecordId,'')$>
+					<dt><$lc("wwReference")$></dt>
+					<dd><$DOC_INFO.xRecordId$></dd>
+				<$endif$>
+				<$if strEquals(DOC_INFO.dDocType,"Jobs") and  strEquals(DOC_INFO.xDisplayClosingDate,'Y')$>
+				 <dt><$lc("wwClosingDate")$></dt>				
+					<dd><$formatDateWithPattern(DOC_INFO.dOutDate,#active.websiteDateFormat)$></dd>
+				<$endif$>			
+			</dl>
+		</div>
+		<div class="grid_4 omega">
+			<ul class="jaccess">
+				<!--Added for Release 1.2-->
+				<$sponsoredEmployer=DOC_INFO.xSponsored$>
+				<$sponsoredEmpImagePath=''$>
+				<$sponsoredEmpLink=''$>
+				<$sponsoredEmpTitle=''$>
+				<$if strLength(sponsoredEmployer) GT 0$>
+					<$sponsoredEmpImagePath=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Image']/text()")$>
+					<$sponsoredEmpLink=haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+					<$sponsoredEmpTitle = haysIncludeXML(sponsoredEmployer,"wcm:root/wcm:element[@name='Title']/text()")$>
+				<$endif$>
+				<$if strLength(sponsoredEmpImagePath) GT 0$>
+				<li><$sponsoredEmpImagePath$></li>
+				<$endif$>
+				
+				<!--end Release 1.2-->
+				
+				
+			[[% Added for release 8.0 start%]]
+			
+			<$trace("Value of DomainID --> " & domainId, "#console", "OilandGas")$>	
+			<!-----------------MR8 9984 changes start--------------->
+					
+					<$if domainId==97 and strEquals(DOC_INFO.dDocType,"Jobs")$>
+					<$trace("Inside Domain check --> " & domainId, "#console", "OilandGas")$>	
+					<$SiteLocale=DOC_INFO.xLocale$>
+					<$trace("Value of SiteLocale --> " & SiteLocale, "#console", "OilandGas")$>	
+					<$executeService("GET_DOMAIN_ID")$>	
+					<$trace("Value of Domain ID from Service  --> " & DOMAINIDTEMP, "#console", "OilandGas")$>	
+					<$gSearchUrl=lc('wwGoogleSearchAction')$>
+					<$trace("Value of gSearchUrl  --> " & gSearchUrl, "#console", "OilandGas")$>
+					<$searchurl = "http://"&HTTP_HOST&gSearchUrl$>
+					<$trace("Value of searchurl  --> " & searchurl, "#console", "OilandGas")$>
+					<$searchurl3= searchurl&"?"&builtQuery$>
+					<$trace("Value of searchurl3 1st  --> " & searchurl3, "#console", "OilandGas")$>
+					<$searchurl3= strReplace(searchurl3,"&amp;","&")$>
+					<$trace("Value of searchurl3 2nd --> " & searchurl3, "#console", "OilandGas")$>
+					<$searchurl3= url(searchurl3)$>
+					<$trace("Value of searchurl3 3rd  --> " & searchurl3, "#console", "OilandGas")$>
+					
+					
+					<$jobApplyUrl1=jobApplyUrl&"&reqCandInfo=true&domainId="&DOMAINIDTEMP&"&siteLocale="&SiteLocale&"&searchUrl="&searchurl3$>
+					<$trace("Value of jobApplyUrl1 3rd  --> " & jobApplyUrl1, "#console", "OilandGas")$>
+					
+					
+						<li><a target="_blank" href="<$jobApplyUrl1$>" class="button  <$disabledText$>" 
+				onClick="return Hays_gaq_push_jobseeker_app()" ><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+					<$else$>
+						<li><a class="button <$styleClass$> <$disabledText$>" onClick="return Hays_gaq_push_jobseeker_app()" href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+					<$endif$>
+					
+				 <!-----------------MR8 9984 changes end--------------->
+				
+			[[% Added for release 8.0 end%]]
+				
+				
+				<$extraCssClass=" msg"$>
+				
+			</ul>
+		</div>
+
+	</div>	
+
+
+
+	<div class="content_main">
+		<div class="cm_inner">
+			<$HAYS_DATA.Summary$>
+			<div class="toggle">
+				
+				<$wcmListStart("Content")$>
+				<$wcmListIndex = 0$>
+				<$wcmListNumRows = wcmListRowCount()$>
+					<$loopwhile wcmListIndex < wcmListNumRows$>
+				<div class="thead">
+					<h2><$wcmListElement("Title", wcmListIndex)$></h2>
+				</div>
+				<div class="tpane">
+								
+				<$wcmListElement("Body", wcmListIndex)$>
+								
+								
+				</div><$wcmListIndex = wcmListIndex + 1$>
+					<$endloop$>
+				<$wcmListEnd("Content")$>
+				
+			</div>
+		</div>
+	</div>
+	<div class="short_descr">
+		   <!--Added for Release 1.2-->
+			<$if strLength(sponsoredEmpLink) GT 0$>
+			
+			 <!--Added for Release 4.1 MR item 37.5-->
+			<$firstCharOfSponsoredEmpLink = strSubstring(sponsoredEmpLink,0,1)$>
+				
+			<$if firstCharOfSponsoredEmpLink like '/'$>
+			
+				<p><$lc('wwMicroSiteWebsiteText')$>&nbsp;&nbsp;<a target="_blank" href="<$sponsoredEmpLink$>"><$SS_SERVER_NAME$><$sponsoredEmpLink$></a></p>
+			<$else$>
+				<p><$lc('wwMicroSiteWebsiteText')$>&nbsp;&nbsp;<a target="_blank" href="<$sponsoredEmpLink$>"><$sponsoredEmpLink$></a></p>
+			<$endif$>
+			
+			 <!--Added for Release 4.1 MR item 37.5-->
+			<$endif$>
+		   <!--end Release 1.2-->
+		   
+			<!--Added for MR item 72.1-->
+			 <$if domainId EQ 1$>
+				
+				<$if xPromoteLocation EQ 2$>
+				<p>For further information to assist you in your job search visit&nbsp;&nbsp;<a target="_blank" href="http://www.hays.co.uk/scotland/index.htm">www.hays.co.uk/Scotland</a></p>
+				<$endif$>
+				
+				<$if xPromoteLocation EQ 3$>
+				<p>For further information to assist you in your job search visit&nbsp;&nbsp;<a target="_blank" href="http://www.hays.co.uk/northern-ireland/index.htm">www.hays.co.uk/Northern-Ireland</a></p>
+				<$endif$>
+			 
+			 <$endif$>
+			 <!--end MR item 72.1-->
+		   
+
+		<!-- added for Release 3.0-->
+		<$if DOC_INFO.dDocType like 'Jobs'$>	
+		<div class="grid_10 alpha">
+		<script type="text/javascript">
+		var addthis_config = {
+				 
+				  
+				  ui_language: "<$LanguageCode$>"
+
+				  
+				}
+
+		var addthis_share = {
+		url_transforms : {
+		add: {
+		jobSource : 'HAYS',
+		redirect : 'y'
+			 }
+		}
+		}
+		function emailFrnd()
+		{	  
+		  var jobcand_url=window.location.href;
+		  if(jobcand_url.indexOf("?")>-1)
+		  {	   
+		   jobcand_url=jobcand_url.substring(0,jobcand_url.indexOf("?"));
+		  }
+		  var link = "mailto:"
+				 + "?subject= "
+				 + "&body=" + jobcand_url;			
+			  location.href=link;
+		}
+		</script>
+		
+		<$if domainId eq 27 or  domainId eq 24$>
+		<a class="" href="javascript:emailFrnd();">	<font color="#009FDA" face="Arial">
+		<$lc('wwEmailThisToFriend')$></font>
+		</a>
+		<$else$>
+		<a class="addthis_button_email">	<font color="#009FDA" face="Arial" >
+		<$lc('wwEmailThisToFriend')$>	  
+		</font>
+		</a>
+		<$endif$>	
+
+			
+			
+		</div>	
+		<$endif$>
+		<!--end Release 3.0-->
+		
+		<div class="grid_4 prefix_10 alpha">
+			<ul class="jaccess">	
+			[[% Added for release 8.0 start%]]
+			
+					<!-----------------MR8 9984 changes start--------------->
+					
+					<$if domainId==97 and strEquals(DOC_INFO.dDocType,"Jobs")$>
+					
+					
+					<$jobApplyUrl2=jobApplyUrl&"&reqCandInfo=true&domainId="&domainIdtemp&"&siteLocale="&SiteLocale&"&searchUrl="&searchurl3$>
+ 
+					
+						 <li><a target="_blank" href="<$jobApplyUrl2$>" class="button  <$disabledText$>" 
+				onClick="return Hays_gaq_push_jobseeker_app()" ><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+					<$else$>
+						<li><a class="button <$styleClass$> <$disabledText$>" onClick="return Hays_gaq_push_jobseeker_app()" href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$applyButtonLabel$><span class="access"> for <$DOC_INFO.dDocTitle$></span></a></li>
+					<$endif$>
+					
+				 <!-----------------MR8 9984 changes end--------------->
+				
+		[[% Added for release 8.0 end%]]
+				
+				<!--li><a class="button_1" href="#">Add<span class="access"> Commercial manager</span> to job basket</a></li-->
+				
+			</ul>
+		</div>
+	</div>
+
+	<$if DOC_INFO.dDocType like 'Jobs' and domainId == 2$>
+	 <div class="job_logo clearfix">
+	 <img alt="MissionHandicap logo" src="/haysassets/HaysGeneralComponent/assets/img/logos/MissionHandicap-C.png"/>
+	 <p><$lc("wwDisabilityLogoDescription")$></p>
+	 </div>
+	<$endif$>
+	<$if strLength(#active.contentType) EQ 0 $>
+		<$contentType = DOC_INFO.dDocType$>	
+	<$endif$>
+	 
+	<$include job_search_navigation_elements$>
+
+
+	<!-- variables for related job search RHS modules-->
+	<$yLocation = DOC_INFO.xLocation$>
+	<$yMinSalary = DOC_INFO.xMinSalary$>
+	<$yDocTitle = DOC_INFO.dDocTitle$>
+	<$yDocName = DOC_INFO.dDocName$>
+
+	<$if isTrue(#env.DisableSiteStudioContribution)$>
+	<form id="job_candidate_hits" class="access" action="http://<$HttpServerAddress$><$HttpRelativeWebRoot$><$CgiFileName$>">
+		<$PortalProfileId = #env.OAM_REMOTE_UID$>
+		<$if not PortalProfileId OR srtLength(PortalProfileId) LT 0$>
+			<$PortalProfileId = "-1"$>
+		<$endif$>
+		<div>
+		<input type="hidden" name="IdcService" value="HAYS_CANDIDATE_VIEW_STATS" />
+		<input type="hidden" name="PortalProfileId" value="<$PortalProfileId$>" />
+		<input type="hidden" name="domainId" value="<$#active.domainId$>" />
+		<input type="hidden" name="languageId" value="<$#active.languageId$>" />
+		<input type="hidden" name="ContentId" value="<$DOC_INFO.dDocName$>" />
+		<input type="hidden" name="contentType" value="<$contentType$>" />
+		<input type="hidden" name="IsJava" value="1" />
+		</div>
+	</form>
+	<$include candidate_job_view_stats_javascript_inc$>
+	<$endif$>
+
+	<$include handle_wcm_call_inc$>
+
+<@end@>
+
+<@dynamichtml subtmp_socialmediablogs_inc@>
+
+<$executeService('GET_SOCIALMEDIA_BLOGS')$>
+
+<$if rsFirst('BLOGS_RESULT_SET') $>
+<div class="side_box" id="pg_home" style="width:300px;margin: 0pt 5px;margin-bottom:20px;">
+	<div class="rc_blue">
+		<div class="cnr"></div>
+		<h2><$lc('wwSocialBlogsHeading')$></h2>
+	</div>	
+	<div class="rc_grey sb_inner pull">
+		<ul class="rc_white link_list">	
+			<$loop BLOGS_RESULT_SET$>
+				<li  style="clear:both;padding-top:5px;">					
+					<h3 style="float:left;width:50%;"><a href="<$BLOGS_RESULT_SET.Url$>"><$BLOGS_RESULT_SET.Title$></a></h3>	
+					<img style="float:right;width:100px;height:66px;" src="<$BLOGS_RESULT_SET.Thumbnail$>"/>								
+				</li>
+			<$endloop$>	
+		</ul>
+		<div class="msg">			
+			<a href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+		</div>	
+	</div>
+</div>	
+<$endif$>
+<@end@>
+
+<@dynamichtml subtmp_socialmediablogs_bytagname_inc@>
+<$SocialMediaTags=ssGetNodeProperty("SocialMediaTags")$>
+<$executeService('GET_SOCIALMEDIA_BLOGS_BY_TAGNAME')$>
+
+<$if rsFirst('BLOGS_RESULTSET_BYTAGNAME') $>
+<div class="side_box" id="pg_home" style="width:300px;margin: 0pt 5px;margin-bottom:20px;">
+	<div class="rc_blue">
+		<div class="cnr"></div>
+		<h2><$lc('wwSocialBlogsByTagNameHeading')$></h2>
+	</div>	
+	<div class="rc_grey sb_inner pull">
+		<ul class="rc_white link_list">	
+			<$loop BLOGS_RESULTSET_BYTAGNAME$>
+				<li  style="clear:both;padding-top:5px;">					
+					<h3 style="float:left;width:50%;"><a href="<$BLOGS_RESULTSET_BYTAGNAME.Url$>"><$BLOGS_RESULTSET_BYTAGNAME.Title$></a></h3>
+					<img style="float:right;width:100px;height:66px;" src="<$BLOGS_RESULTSET_BYTAGNAME.Thumbnail$>"/>				
+				</li>
+			<$endloop$>	
+		</ul>
+		<div class="msg">			
+			<a href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+		</div>	
+	</div>
+</div>	
+<$endif$>
+	
+<@end@>
+
+<@dynamichtml subtmp_socialmediablogs_narrow_inc@>
+
+<$executeService('GET_SOCIALMEDIA_BLOGS')$>
+
+<$if rsFirst('BLOGS_RESULT_SET') $>
+<div class="side_box" id="pg_home">
+	<div class="rc_blue">
+		<div class="cnr"></div>
+		<h2><$lc('wwSocialBlogsHeading')$></h2>
+	</div>	
+	<div class="rc_grey sb_inner pull">
+		<ul class="rc_white link_list">	
+			<$loop BLOGS_RESULT_SET$>
+				<li  style="clear:both;padding-top:5px;">					
+					<h3 style="float:left;width:95%;"><a href="<$BLOGS_RESULT_SET.Url$>"><$BLOGS_RESULT_SET.Title$>
+					</a></h3>								
+				</li>
+			<$endloop$>	
+		</ul>
+		<div class="msg">			
+			<a href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+		</div>	
+	</div>
+</div>	
+<$endif$>
+<@end@>
+
+<@dynamichtml subtmp_socialmediablogs_bytagname_narrow_inc@>
+<$SocialMediaTags=ssGetNodeProperty("SocialMediaTags")$>
+<$executeService('GET_SOCIALMEDIA_BLOGS_BY_TAGNAME')$>
+
+<$if rsFirst('BLOGS_RESULTSET_BYTAGNAME') $>
+<div class="side_box" id="pg_home">
+	<div class="rc_blue">
+		<div class="cnr"></div>
+		<h2><$lc('wwSocialBlogsByTagNameHeading')$></h2>
+	</div>	
+	<div class="rc_grey sb_inner pull">
+		<ul class="rc_white link_list">	
+			<$loop BLOGS_RESULTSET_BYTAGNAME$>
+				<li  style="clear:both;padding-top:5px;">					
+					<h3 style="float:left;width:95%;"><a href="<$BLOGS_RESULTSET_BYTAGNAME.Url$>"><$BLOGS_RESULTSET_BYTAGNAME.Title$></a></h3>								
+				</li>
+			<$endloop$>	
+		</ul>
+		<div class="msg">			
+			<a href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>				
+		</div>	
+	</div>
+</div>	
+<$endif$>	
+<@end@>
+
+<@dynamichtml cross_country_enabled_countries@>
+	<$countrylistCross=#env.CrossCountryEnabledCountries$>
+	<$countrylistCross=","&CrossCountryEnabledCountries&","$>
+	
+	<$CountryCodeCross = #active.isoCountryCode$>
+	<$CountryCodeCross=","&CountryCode&","$>
+	
+	<$if strIndexOf(countrylistCross,CountryCodeCross) >=0$> 
+		<$isCrossCountry=1$>	
+	<$else$>
+		<$isCrossCountry=0$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml hays_rss_veredus_feed@> 
+		
+	<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+	<$executeService("CR_GET_SITE_HTTP")$>
+	<$if NOT strEquals(serverRelativeSiteRoot,'/')$>
+		<$siteURL=strReplace(HttpSiteAddress, serverRelativeSiteRoot,'')$>
+	<$else$>
+		<$siteURL=HttpSiteAddress$>
+	<$endif$>
+	<$if strEquals(strSubstring(siteURL,strLength(siteURL)-1,strLength(siteURL)),'/')$>
+		<$siteURL=strSubstring(siteURL,0,strLength(siteURL)-1)$>
+	<$endif$>
+	<$QueryText = "dDocType <matches> `Jobs` <AND> xLocale <matches> `en-VUS` <AND> xOffice <matches> `" & #active.haysoffice & "`"$>
+	<rss version="2.0">			
+	<channel>
+		<title><$lc('wwWidgetRSSFeedTitle')$></title>
+		<link>http://www.vereduscorp.com</link>			
+		<language>en-US</language>
+					
+		<$SortField="dInDate",SortOrder = "Desc"$>
+			
+		<$if QueryText and strLength(QueryText) GT 0$>			
+			<$ executeService("GET_SEARCH_RESULTS")$>		
+		<$endif$>
+
+		<$loop SearchResults$>
+			<$Description=ssIncludeXml(SearchResults.dDocName, "wcm:root/wcm:element\[@name='Summary'\]/text()")$>
+			<$if strLength(SearchResults.xUrlPageName) GT 0 $>
+				<$ url = ssLink(SearchResults.xUrlPageName)$>
+			<$else$>
+				<$ url = ssLink(SearchResults.dDocName)$>
+			<$endif$>
+				
+			<$if strIndexOf(url,'http') LT 0$>
+					<$url=siteURL&url$>
+			<$endif$>
+			<item>
+				<title><$ xml(SearchResults.dDocTitle) $></title>
+				<link><$  url $></link>		
+				<$sponsoredEmpImagePath=""$>
+				<description>
+				  <![CDATA[	<$Description$>	]]>
+				</description>
+				<$dDocName=SearchResults.dDocName$>
+				<$executeService("DOC_INFO_BY_NAME")$>					
+				<category><$xml(DOC_INFO.xVeredusCategory)$></category>
+				<pubDate><$rssFormatTimeZone(formatDateWithPattern(SearchResults.dInDate, RssDateFormat),RssDateFormat)$></pubDate>
+				<guid><$url$></guid>
+			</item>
+		<$endloop$>			
+	</channel>
+<@end@>
+
+</body>
+</html>

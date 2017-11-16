@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysMicroSites htmlIncludeOrString
+</title>
+</head>
+<body>
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: assigning data file to header
+	and Footer place holders is only allowed on the home page.
+	The choice is then propogated to the rest of the pages.
+	PL_NAME - is the placeholder name
+*******************************************************-->
+<@dynamichtml extract_datafile_favicon_html5_inc@>
+<$ PL_NAME = 'Favicon' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICROSITE_FAVICON_HTML5',datafileInclude)$>
+<@end@>
+<@dynamichtml extract_datafile_typography_css_html5_inc@>
+<$ PL_NAME = 'TypographyCSS' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICROSITE_TYPOGRAPHY_CSS',datafileInclude)$>
+<@end@>
+<@dynamichtml extract_header_nav_inc_html5@>
+	<$ PL_NAME = 'HeaderNav' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICRSITE_HDR_NAV_HTML5',datafileInclude)$>   
+<@end@>
+
+<@dynamichtml extract_middle_nav_html5_inc@>
+	<$ PL_NAME = 'MainNav' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICSITE_MIDLE_NAV_HTML5',datafileInclude)$>   
+<@end@>
+
+<@dynamichtml extract_datafile_background_html5_inc@>
+	<$ PL_NAME = 'Slideshow' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICRO_SLIDSHOW_IMG_HTML5',datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_bottom_nav_html5_inc@>
+	<$ PL_NAME = 'BottomNav' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICRSITE_BOTOM_NAV_HTML5',datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_client_footer_html5_inc@>
+	<$ PL_NAME = 'ClientFooter' $>
+	<$include extract_datafile_from_client_footer_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICSITE_CLENT_FTER_HTML5',datafileInclude)$>		
+<@end@>
+
+<@dynamichtml extract_datafile_hays_footer_html5_inc@>
+	<$ PL_NAME = 'HaysFooter' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICSITE_HAYS_FOTER_HTML5', datafileInclude)$>	 
+<@end@>
+
+<@dynamichtml extract_datafile_from_top_node_inc_html5@> 
+ <$ datafile = '', datafileInclude = 'dataFileDocName=' $>
+ <$ navTopNodeId = ssGetFirstNodeId(siteId) $>
+ <$primaryUrlProp = ssGetNodeProperty(navTopNodeId, 'primaryUrl') $>
+    <$ index = strIndexOf(primaryUrlProp, PL_NAME) $> 
+ <$if index GE 0 $>
+  <$ datafile = strSubstring(primaryUrlProp, index + strLength(PL_NAME) + 1) $>  
+  <$ index = strIndexOf(datafile, '&') $>
+  <$if index GT 0 $>
+   <$ datafile = strSubstring(datafile, 0, index) $>   
+  <$endif$>
+ <$endif$>  
+ <$ datafileInclude = datafileInclude & datafile $> 
+<@end@>
+
+<@dynamichtml extract_microsite_mobile_navigation_html5@>
+	 <$ datafile = '',datafileInclude = 'dataFileDocName=',PL_NAME='MobileNav' $>
+	 <$ navTopNodeId = ssGetFirstNodeId(siteId) $>
+	 <$rsMakeFromString("rsNavigationPL", "TopNav,MainNav,BottomNav,HeaderNav", "PL_NAME")$>
+	 <$loop rsNavigationPL$>
+		<$ primaryUrlProp = ssGetNodeProperty(navTopNodeId, 'primaryUrl') $>
+		<$ index = strIndexOf(primaryUrlProp, rsNavigationPL.PL_NAME) $>
+		<$if index GE 0 $>
+			<$ datafile = strSubstring(primaryUrlProp, index + strLength(rsNavigationPL.PL_NAME) + 1) $>
+			<$ index = strIndexOf(datafile, '&') $>
+			<$if index GT 0 $>
+				<$datafile = strSubstring(datafile, 0, index) $>				
+				<$NavLink=ssIncludeXml(datafile,"wcm:root/wcm:list[@name='NavigationLinks']/wcm:row/wcm:element/text()")$>
+			<$endif$>			
+		<$endif$>
+		<$if strLength(NavLink) GT 0$>	
+		<$break$>
+		<$endif$>	
+	 <$endloop$>
+	 <$datafileInclude = datafileInclude & datafile $>	
+	 <$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICRSITE_MOBILENAV_HTML5',datafileInclude)$>
+	 
+<@end@>
+
+<@dynamichtml extract_top_nav_html5_inc@>
+	<$ PL_NAME = 'TopNav' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICRSITE_NAV_HTML5', datafileInclude)$>
+<@end@>
+<@dynamichtml extract_header_nav_html5_inc@>
+	<$ PL_NAME = 'HeaderNav' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MCRSITE_HEADER_NAV_HTML5',datafileInclude)$>   
+<@end@>
+<@dynamichtml extract_sub_sections_html5@>
+<$strSubLinks=wcmListElement("SubLinks", nPos)$>			
+			<$if strLength(strSubLinks) GT 0$>
+				<$if strIndexOf(strSubLinks,'<p>') >=0 and strIndexOf(strSubLinks,'</p>') >=0$>
+				<$strSubLinks = strSubstring(strSubLinks,3, strLength(strSubLinks)-4)$>
+				<$endif$>
+				<$rsMakeFromString("rsSubLinks", strSubLinks, "subLink")$>					
+				<$if rsSubLinks.#numRows>0$>
+					<ul class="subnav" style="display:none">
+					<$loop rsSubLinks$>
+						<li><$strTrimWs(subLink)$></li>						
+					<$endloop$>
+					</ul>
+				<$endif$>
+			<$endif$>
+<@end@>
+<@dynamichtml extract_microsite_datafile_header_html5_inc@>
+	<$ PL_NAME = 'Header=' $>
+	<$include extract_datafile_from_top_node_inc_header$>	
+	<$PL_NAME = 'Header'$>	
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICROSITE_HEADER_HTML5',datafileInclude)$> 
+<@end@>
+<@dynamichtml extract_left_navigation_html5_inc@>
+	<$ PL_NAME = 'LeftNav' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICROSITE_LEFT_NAV_HTML5',datafileInclude)$>
+<@end@>
+<@dynamichtml extract_opengraph_tags_html5_inc@>
+	<$ PL_NAME = 'OGTags' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME,'templateDocName=RGTMP_MICROSITE_OG_TAGS','placeholderDefinitionDocName=PLDEF_MICROSITE_HEADER',datafileInclude)$>
+<@end@>
+</body>

@@ -1,0 +1,1 @@
+java -cp LogFileScannerApp.jar LogFileScannerApp

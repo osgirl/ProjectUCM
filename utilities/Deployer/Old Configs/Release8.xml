@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy>
+	<!--movement from="DEV" to="LOCAL_DIR_FOR_DEV">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="UK_OAT_CONSUMP" to="LOCAL_DIR_FOR_UK_OAT">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_OAT_CONSUMP" to="LOCAL_DIR_FOR_APAC_OAT">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="UK_OAT_CONTRIB" to="LOCAL_DIR_FOR_UK_OAT_CONTRIB">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_OAT_CONTRIB" to="LOCAL_DIR_FOR_APAC_OAT_CONTRIB">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement-->
+	<movement from="UK_PROD_CONSUMP" to="LOCAL_DIR_FOR_UK_PROD">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement>
+	<movement from="APAC_PROD_CONSUMP" to="LOCAL_DIR_FOR_APAC_PROD">
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+	</movement>
+</deploy>

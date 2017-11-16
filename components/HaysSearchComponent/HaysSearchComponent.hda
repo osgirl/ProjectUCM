@@ -1,0 +1,100 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysSearchComponent
+blDateFormat=dd/MM/yyyy {H:mm[:ss] [zzz]}!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_01_08(11G Build1)
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/hayssearchcomponent_handlers.htm
+null
+10
+service
+resources/hayssearchcomponent_service.htm
+HaysSearchComponent_Services
+10
+resource
+resources/hayssearchcomponent_searchengine.htm
+null
+20
+resource
+resources/hayssearchcomponent_searchresults.htm
+null
+10
+resource
+resources/hayssearchcomponent_resource.htm
+null
+10
+query
+resources/hayssearchcomponent_query.htm
+HaysSearchComponent_Queries
+50
+environment
+hayssearchcomponent_environment.cfg
+null
+10
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+prepareQuery
+hays.co.uk.search.HaysSearchFilter
+prepareQuery
+50
+prepareSearchRequestBinder
+hays.co.uk.search.HaysSearchFilter
+prepareSearchRequestBinder
+50
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+HaysSearchComponent_Handlers
+ServiceHandlers
+null
+10
+HaysSearchComponent_Search
+SearchEngineClasses
+SearchEngineName
+10
+HaysSearchComponent_SearchQueryDefinition
+SearchQueryDefinition
+SearchEngineName
+10
+HaysSearchComponent_ServiceHandler
+ServiceHandlers
+null
+10
+HaysOracleTextSearch_IndexerRules
+IndexerRules
+Name
+10
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet StateCfgExportedVars
+2
+name
+value
+LanguageSource_HaysSearchComponent
+$COMPONENT_DIR/resources/lang
+@end

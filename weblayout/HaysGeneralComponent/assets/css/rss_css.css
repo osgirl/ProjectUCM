@@ -1,0 +1,57 @@
+body {
+	font: normal 75%/1.33 "Arial", "Helvetica", sans-serif;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+#w {width:760px; TEXT-ALIGN: left;}
+
+#globalmasthead {
+	text-align:left;
+	height: 5em;
+	overflow: hidden;
+	color: #003399;
+	background: #cad3e4;
+}
+#globalmasthead img {
+	vertical-align:middle;
+}
+#globalmasthead a{
+	font-weight:bold;
+	color: #003399;
+}
+#feed
+{
+	text-align:left;
+	width:65%;
+	float:left;
+}
+#help
+{
+	text-align:left;
+	width:35%;
+	float:left;
+}
+a:link, a:visited, a:hover{
+	color: #003399;
+	text-decoration:underline;
+}
+a:hover {
+	color: #003399;
+	text-decoration:none;
+}
+
+#feed ul{
+	list-style: none;
+	padding: 10px;
+	margin: 0;
+}
+#feed ul li a{
+	color: #003399;
+	font-size:1.2em;
+	font-weight:bold;
+}
+#feed ul li p{
+	margin-top:3px;
+}

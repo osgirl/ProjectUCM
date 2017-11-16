@@ -1,0 +1,109 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_bookmark_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function BookmarkingWidgetObject(name) {
+					this.name = name;
+				};
+
+				BookmarkingWidgetObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					BookmarkingWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var quotationStr = "<Widget><Name>bookmark</Name></Widget>";
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				BookmarkingWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+					};
+
+			//*****************************************************************************
+
+
+				BookmarkingWidgetObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new BookmarkingWidgetObject("bookmark") ); 
+
+		</script>
+
+
+
+<@end@>
+
+
+
+<@dynamichtml widget_bookmark_form@>
+	<h2>Social bookmarks</h2>
+
+	<$include widget_bookmark_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_bookmark_display@>
+		<div class="outline-box">		
+			<$if #active.widgetTitle $>
+                <div class="box-header">
+                    <div class="box-content">
+                    	<h3><strong><$widgetTitle$></strong></h3>
+                    </div>
+                </div>
+			<$endif$>
+            <div class="box-body">
+                <div class="box-content">
+		<$include is_output_social_analytics$>
+		<$if isTrue(doOutput)$>
+		<!-- AddThis Button BEGIN -->
+		<div class="addthis_toolbox addthis_default_style">
+			<a class="addthis_button_email"></a>
+			<a class="addthis_button_print"></a>
+			<a class="addthis_button_twitter"></a>
+			<a class="addthis_button_facebook"></a>
+			<a class="addthis_button_myspace"></a>
+			<span class="addthis_separator">|</span>
+			<a class="addthis_button_expanded">More</a>
+		</div>
+		<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#username=xa-4be97cfe5d7a04b6"></script>
+		<!-- AddThis Button END -->
+		<$endif$>
+		
+				</div>
+			</div>
+		</div>
+<@end@>
+
+
+
+
+
+</body></html>

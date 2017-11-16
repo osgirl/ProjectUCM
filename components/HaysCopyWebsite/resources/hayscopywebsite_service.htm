@@ -1,0 +1,141 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysCopyWebsite service
+</title>
+</head>
+<body>
+
+<@table HaysCopyWebsite_Services@>
+<table border=1><caption><strong>Scripts For Custom Services</strong></caption>
+<tr>
+	<td>Name</td><td>Attributes</td><td>Actions</td>
+</tr>
+<tr>
+	<td>COPY_WEBSITE_DISPLAY_FORM</td>
+	<td>DocService
+		33
+		COPY_WEBSITE_FORM
+		null
+		null<br>
+		null</td>
+	<td>3:getAllAccounts:SystemDatabase,RSET_ACCOUNTS,QgetAccounts::null</td>
+</tr>
+<tr>
+	<td>COPY_WEBSITE_ACTION</td>
+	<td>DocService
+		2
+		COPY_RESULTS
+		null
+		null<br>
+		null</td>
+	<td>3:getBinderValues:::null
+		3:createAccount:::null
+		3:insertHayswebsiteDBValues:SystemDatabase,QgetExistingWebsites::null
+		3:getAllWebsiteContents:SystemDatabase,CONTENT_RESULT_LIST,QGetWebsiteContents,QgetDATAPREFIX::null</td>
+</tr>
+<tr>
+	<td>COPY_WEBSITE_CONTENTS</td>
+	<td>DocService
+		33
+		Copy_Contents
+		null
+		null<br>
+		null</td>		
+	<td>3:getAllWebsiteContents:SystemDatabase,CONTENT_RESULT_LIST,QGetWebsiteContents::null</td>
+</tr>
+
+<tr>
+	<td>GET_LOCALE_FOR_WEBSITE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:getLocale:SystemDatabase,LOCALE_RESULT_LIST,QgetLocale::null</td>
+</tr>
+
+<tr>
+	<td>GET_SITEID</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:getResultSetValueFromDB:SystemDatabase,RS_SITEID,QgetSiteId::null</td>
+</tr>
+<tr>
+	<td>GET_SITEID_FULL</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:getResultSetValueFromDB:SystemDatabase,SiteIds,QgetSiteIdFullUKHays::null</td>
+</tr>
+<tr>
+	<td>GET_ALL_LOCALES</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:getResultSetValueFromDB:SystemDatabase,RS_All_Locales,QgetAllLocales::null</td>
+</tr>
+<tr>
+	<td>GET_DOMAIN_FOR_LOCALE</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:getResultSetValueFromDB:SystemDatabase,RS_DOMAIN,QgetDomainForLocale::null</td>
+</tr>
+<tr>
+	<td>GET_SITEID_UK_HAYS</td>
+	<td>DocService
+		33
+		null
+		null
+		null<br>
+		null</td>		
+	<td>3:getResultSetValueFromDB:SystemDatabase,SITEID_UK_HAYS,QgetSiteIdUKHays::null</td>
+</tr>
+
+<tr>
+	<td>CHECKIN_NEW_ITEM</td>
+	<td>DocService
+		3
+		REDIRECT_TEMPLATE
+		null
+		documents<br>
+		!csUnableToCheckIn(dDocName)</td>
+	<td>5:QdocInfo:DOC_INFO:mustExist:null
+		3:checkSecurity:DOC_INFO:0:!csUnableToGetRevInfo2(dDocName)
+		3:doCheckinOfNewItem:DOC_INFO::null
+		3:prepareRedirect:IdcService=CHECKIN_CONFIRM_FORM&dID=<$dID$>&dDocTitle=<$url(dDocTitle)$>&dDocName=<$url(dDocName)$>&dDocAuthor=<$url(dDocAuthor)$>:0:null</td>
+</tr>
+<tr>
+	<td>CHECKIN_NEW_ITEM_BY_NAME</td>
+	<td>DocService
+		35
+		null
+		null
+		documents<br>
+		!csUnableToCheckIn(dDocName)</td>
+	<td>3:mapResultSet:QlatestIDByName,dID,dID:2:!csNewCheckinFailedItemNoLongerInSystem(dDocName)
+		5:QdocInfo:DOC_INFO:mustExist:null
+		3:checkSecurity:DOC_INFO:0:!csUnableToGetRevInfo2(dDocName)
+		3:doNewItemCheckin:DOC_INFO,CHECKIN_NEW_SUB:12:null</td>
+</tr>
+
+
+</table>
+<@end@>
+</body></html>

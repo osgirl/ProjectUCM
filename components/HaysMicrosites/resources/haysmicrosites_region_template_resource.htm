@@ -1,0 +1,1768 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysMicroSites htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml rgtmp_microsite_client_footer@>
+  <!-- Client footer -->
+     <div id="outer-clientfooter">
+          <div id="inner-clientfooter">
+              <h1><$wcmElement("FooterText")$></h1>
+          </div>
+     </div>
+  <!-- /Client footer -->
+<@end@>
+
+<@dynamichtml rgtmp_microsite_menu_navigation@>		
+		<$currentUrl=wcmUrl('nodelink',#active.nodeId)$>	    
+		<$wcmListStart("NavigationLinks")$>
+		<$if wcmListRowCount() gt 0$>
+			
+			<div id="<$divId$>"> 
+				<ul id="<$ulId$>">
+			<$nNumRecords=wcmListRowCount()$>
+			<$nPos=0,isSet = '0', className = '',count=1 $>
+			<$loopwhile nPos lt nNumRecords$>			   
+				<$if nPos==0$>
+					<$ className = 'first' $>
+				<$elseif nPos == nNumRecords-1$>
+					<$ className = 'last' $>
+				<$else$>
+					<$ className = '' $>
+				<$endif$>
+				<$ aLink = wcmListElement("Link", nPos) $>		
+				
+				<$if strIndexOf(aLink,'<p>') >=0 and strIndexOf(aLink,'</p>') >=0$>
+				<$aLink = strSubstring(aLink,3, strLength(aLink)-4)$>
+				<$endif$>				
+				
+				<$if not strEquals(aLink,'')$>
+					<$linkIndex=strIndexOf(aLink,"href=")$>
+					<$if linkIndex gt -1$>					
+						<$href1=strIndexOf(aLink,"href=")$>					
+						<$linkUrl=strSubstring(aLink,href1+6)$>					
+						<$href2=strIndexOf(linkUrl,'"')$>
+						<$linkUrl=strSubstring(linkUrl,0,href2)$>
+					<$endif$>
+				<$endif$>
+				
+				<$if ( strIndexOf(aLink,ssGetNodeProperty(#active.nodeId, 'urlDirName')) GT 0)$>				
+						<$ className = className & ' active' $>
+						<li id="l<$count$>" class="<$className$>"><$ aLink $>
+						<$include extract_sub_sections$>
+						</li>
+						<$ isSet = '1' $>
+				<$elseif strEqualsIgnoreCase(linkUrl,currentUrl)$>				
+						<$ className = className & ' active' $>
+						<li id="l<$count$>" class="<$className$>"><$ aLink $>
+						<$include extract_sub_sections$>
+						</li>
+						<$ isSet = '1' $>
+				<$endif$>
+							
+			
+						
+			<$if isFalse(isSet) $>			
+				<li id="l<$count$>" class="<$className$>"><$ aLink $>
+				<$include extract_sub_sections$>
+				</li>
+			<$endif$>
+    			<$nPos=nPos+1, isSet = '0', count=count+1$>
+			<$endloop$>
+			</ul>
+		</div>
+		<$endif$>	
+		<$wcmListEnd("NavigationLinks")$>	   	
+<@end@>
+
+<@dynamichtml rgtmp_microsite_mobile_navigation@>  		
+		<!-- Side slideout navigation -->
+		<$count=1$>
+		<$wcmListStart("NavigationLinks")$>
+		<$if wcmListRowCount() gt 0$>  
+			<ul id="mobilenavigation">
+				<h5>Navigation</h5>
+			<$nNumRecords=wcmListRowCount()$>
+			<$nPos=0,isSet = '0', className = '' $>
+			<$loopwhile nPos lt nNumRecords$>
+				<$if nPos==0$>
+					<$ className = 'first' $>
+				<$elseif nPos == nNumRecords-1$>
+					<$ className = 'last' $>
+				<$else$>
+					<$ className = '' $>
+				<$endif$>
+				<$ aLink = wcmListElement("Link", nPos) $>
+				<$if strIndexOf(aLink,'<p>') >=0 and strIndexOf(aLink,'</p>') >=0$>
+				<$aLink = strSubstring(aLink,3, strLength(aLink)-4)$>
+				<$endif$>
+				
+				<$loop ssNavNodeList$>
+					<$if (strIndexOf(aLink, '/' & ssNavNodeList.nodeId & '/') GT 0) OR ( strIndexOf(aLink, 
+						ssGetNodeProperty(ssNavNodeList.nodeId, 'urlDirName')) GT 0)$>
+						<$ className = className & ' active' $>
+						<li id="l<$count$>" class="<$className$>"><$ aLink $>						
+						</li>
+						<$ isSet = '1' $>
+						<$break$>
+					<$endif$>					
+				<$endloop$>
+				
+			
+			<$if isFalse(isSet) $>
+				<li id="l<$count$>" class="<$className$>"><$ aLink $>				
+				</li>
+			<$endif$>
+    			<$nPos=nPos+1, isSet = '0', count=count+1$>
+			<$endloop$>
+			</ul>		
+		<$endif$>	
+		<$wcmListEnd("NavigationLinks")$>
+		<!-- /Side slideout navigation -->
+        	
+		<!--  /Mobile top -->
+        <div id="topbar">
+            <div class="Menu"></div>
+        </div>
+		<!-- /Mobile top navigation bar -->	
+<@end@>
+
+<@dynamichtml rgtm_microsite_main_region_links@>                       
+	<$wcmListStart("Links")$>
+	  <$if wcmListRowCount() gt 0$>
+		<ul id="sub-navigation"> 
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>		
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			 <$main_nav_link=wcmListElement('Link', wcmListIndex)$>
+				<$if wcmListIndex==0$>
+					<$ main_nav_class = 'first' $>
+				<$elseif wcmListIndex == wcmListNumRows-1$>
+					<$ main_nav_class = 'last' $>
+				<$else$>
+					<$ main_nav_class = '' $>
+				<$endif$>
+			 <$if strIndexOf(main_nav_link,'<p>') >=0 and strIndexOf(main_nav_link,'</p>') >=0$>
+				<$main_nav_link = strSubstring(main_nav_link,3, strLength(main_nav_link)-4)$>
+			<$endif$>
+			 <li class="<$main_nav_class$>"><$main_nav_link$></li>								
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		</ul>
+	  <$endif$>	
+	<$wcmListEnd("Links")$> 	
+<@end@>
+
+
+<@dynamichtml rgtmp_microsite_profiles@>
+	<div id="text">
+		<h1><$wcmElement("Title")$></h1>
+			<$wcmListStart("ProfileList")$>
+			<$wcmListIndex = 0$>
+			<$wcmListNumRows = wcmListRowCount()$>
+			<$loopwhile wcmListIndex < wcmListNumRows$>
+				<div class="boxgrid captionfull">
+                     <$profileImage=wcmListElement("ProfileImage", wcmListIndex)$>
+					 <$if strLength(profileImage)>0$>
+					 <$profileImage = strReplace(profileImage, '<img', '<img class="profile-img" border="0"')$>
+					 <$profileImage$> 
+					 <$endif$>
+                     <div class="cover boxcaption">
+                          <h2><$wcmListElement("ProfileTitle", wcmListIndex)$></h2>
+                     </div>		
+                </div>                            
+               
+                <$wcmListElement("ProfileDescription", wcmListIndex)$>
+                
+                <$if wcmListIndex<wcmListNumRows-1$>            
+                <div class="clear"></div>	
+				<$endif$>
+				<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>
+			<$wcmListEnd("ProfileList")$>			
+	</div>		
+<@end@> 
+
+<@dynamichtml rgtmp_microsite_meta_tags@>	
+	<$pageTitle=wcmElement("Title")$>
+	<$metaTagDescription=wcmElement("Description")$>
+	<$metaTagKeywords=wcmElement("Keywords")$>
+	<$metaNoRobot=wcmElement("NoRobots")$>
+	<$metaAddAttribs=wcmElement("AddAttribs")$>
+	<$if strLength(ssDocName)>0$>
+		<link rel="canonical" href="http://<$HTTP_HOST$><$ssLink(ssDocName,#active.nodeId)$>" />
+		<$else$>
+		<link rel="canonical" href="http://<$HTTP_HOST$><$ssNodeLink(nodeId, siteId)$>" />
+		<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_latest_jobs@>
+	
+	<$HideSalary=wcmElement("HideSalary")$>	
+	<$HideLocation=wcmElement("HideLocation")$>		
+		<script type="text/javascript">
+			function HAYSform() {		
+				if (window.jQuery && jQuery.isReady) {				
+					$(document).ready(function() {					
+						<$if strLength(HideSalary) GT 0 AND isTrue(HideSalary)$>				
+							$('#latestJobs td:nth-child(3),#latestJobs th:nth-child(3)').hide();
+						<$endif$>
+						<$if strLength(HideLocation) GT 0 AND isTrue(HideLocation)$>
+							$('#latestJobs td:nth-child(2),#latestJobs th:nth-child(2)').hide();
+						<$endif$>
+					});
+				}
+				else
+				{
+					window.setTimeout(HAYSform, 100);
+				}
+			}
+			HAYSform();
+		</script>	
+	<$include microsite_module_classes$>
+	<$rssLink  = 'rss_'&siteId $>
+	<$siteLocale=ssGetSiteProperty(siteId,"siteLocale")$>
+	<$micrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>
+	<$SortField=ssGetNodeProperty("jobListOrderBy")$>
+	<$SortOrder=ssGetNodeProperty("jobListOrder")$>	
+	<$ResultCount=wcmElement("JobsCount")$>
+	<$jobCount=1$>
+	<$jobClass=""$>
+	<$QueryText= "dDocType <matches> `Jobs` <AND> xMicroSiteCode <matches> `"& micrositeCode & "` <AND> xLocale <matches> `"
+				 & siteLocale& "`"$>
+	<$count=1$>
+	<$jobNodeLink="jobs_"&#active.siteId$>
+	<$jobNodeUrl=ssNodeLink(jobNodeLink,siteId)$>
+	<$jobNodeUrl=strSubstring(jobNodeUrl,0,strLength(jobNodeUrl)-9)$>
+	<$latestJobsTitle=wcmElement("Title")$>	
+	<$jobTitle=wcmElement("JobTitle")$>	
+	<$jobLocation=wcmElement("JobLocationTitle")$>	
+	<$jobSalary=wcmElement("JobSalaryTitle")$>	
+		
+	<$executeService("GET_SEARCH_RESULTS")$>
+	<div class="<$moduleClass$>">
+		<h1><$if strLength(latestJobsTitle) GT 0$><$latestJobsTitle$><$else$><$lc('wwMSLatestJobsHeading')$><$endif$></h1>
+		<table id="latestJobs" class="jobTable" width="567" border="0" cellpadding="0" cellspacing="0">	
+		  
+	<$if rsFirst('SearchResults') $>			
+			<tr>
+				<td align="left">
+					<a class="rsslink" href="<$ssNodeLink(rssLink, 
+		siteId)$>?QueryText=<$QueryText$>&SortField=<$SortField$>"><img alt="RSS Feed" src=	
+		"/haysassets/HaysGeneralComponent/assets/img/icons/feed-icon-14x14.png" align="texttop"/><$lc('wwRssFeed')$>
+					</a>
+				</td>
+			</tr>
+			<tr class="jobListHeader">
+				<th scope="col"><$if strLength(jobTitle) GT 0$><$jobTitle$><$else$><$lc('wwMSJobTitle')$><$endif$></th>
+				<th scope="col"><$if strLength(jobLocation) GT 0$><$jobLocation$><$else$><$lc('wwMSLocationTitle')$><$endif$></th>
+				<th scope="col"><$if strLength(jobSalary) GT 0$><$jobSalary$><$else$><$lc('wwMSSalaryDescTitle')$><$endif$></th>	
+			</tr>
+			<$viewAllLink = wcmUrl('nodelink',"jobs_"&#active.siteId)$>
+			
+	<$loop SearchResults$>	
+		<$dDocName=SearchResults.dDocName$>
+		<$executeService("DOC_INFO_BY_NAME")$>
+		<$if jobCount%2==0$>
+		 <$jobClass="jobListItemAlt"$>
+		<$else$>
+		 <$jobClass="jobListItem"$>
+		<$endif$>
+				<tr class="<$jobClass$>">
+					<td class="jobTitle">
+						<a href="<$jobNodeUrl$><$SearchResults.dDocName$>" id="s">
+						<$SearchResults.dDocTitle$></a>
+					</td>
+					<td class="jobLocation"><$SearchResults.xLocationDescription$></td>
+					<td class="jobRate"><$DOC_INFO.xSalaryDescription$></td>
+				</tr>
+		<$jobCount=jobCount+1$>		
+	<$endloop$>			
+	
+	<$else$>
+				<tr class="MicroItem">
+					<td colspan="3"><$wcmElement("NoJobsMessage")$></td>
+				</tr>
+	<$endif$>
+			</tbody>
+		</table>
+		<$if (SearchResults) $>
+		<$if strEquals(micrositeCode,'HAYSITTEST') or strEquals(micrositeCode,'HAYSITC')$>
+		<a class="Viewall" href="<$viewAllLink$>">Guarda tutti i progetti</a>
+		<$else$>
+		<a class="Viewall" href="<$viewAllLink$>"><$lc('wwMSViewAllJobs')$></a>
+		<$endif$>
+		<$endif$>
+	</div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_siteassets_inc@>
+	<$wcmListStart("Links")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$linkValue = wcmListElement("Link", wcmListIndex)$>
+			<$linkValue = js(linkValue)$>
+			<$startIndex=strIndexOf(linkValue, "href=")$>
+			
+			<$index = strIndexOf(linkValue,".css")$>
+			<$if index gt -1$>
+				<$endIndex = strIndexOf(linkValue, ".css")$>
+				<$linkValue=strSubstring(linkValue,startIndex+7,endIndex+4)$>
+				<link rel="stylesheet" type="text/css" href="<$linkValue$>" media="screen" />
+			<$endif$>
+
+			<$index = strIndexOf(linkValue,".js")$>
+			<$if index gt -1$>
+				<$endIndex = strIndexOf(linkValue, ".js")$>
+				<$linkValue=strSubstring(linkValue,startIndex+7,endIndex+3)$>
+				<script type="text/javascript" src="<$linkValue$>"></script>
+			<$endif$>
+
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$wcmListEnd("Links")$>
+	<$wcmElement("WysiwygHeader")$>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_header_inc@>
+	
+		<$include inc_cookie_law_banner_javascript_microsite_hdb$>
+	<$homeNodeId=ssGetFirstNodeId(#active.siteId)$>
+	<$if strLength(js(wcmElement("HeaderImage"))) GT 0$>
+		<a href="<$wcmUrl('nodelink',homeNodeId)$>" class="logo"><$wcmElement("HeaderImage")$></a>
+	<$endif$>
+	<$if strLength(js(wcmElement("HeaderSecondaryImage"))) GT 0$>
+		<a href="<$wcmUrl('nodelink',homeNodeId)$>" class="secondarylogo"><$wcmElement("HeaderSecondaryImage")$></a>
+	<$endif$>
+	<$if strLength(wcmElement("HeaderImageText")) GT 0$>
+		<h1><$wcmElement("HeaderImageText")$></h1>	
+	<$endif$>	
+<@end@>
+
+
+<@dynamichtml inc_cookie_law_banner_javascript_microsite_hdb@>
+
+<$isCookieBannerMicro = 0$>
+<!--Read value from config for site id-->
+		<$if strLength(wcmElement("CookieBannerText")) GT 0$>
+		<$isCookieBannerMicro = 1$>
+		<$endif$>
+
+	<$if isCookieBannerMicro eq 1$>
+		<$include cookie_law_banner_javascript_microsite_hdb$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml cookie_law_banner_javascript_microsite_hdb@>
+		
+		<div class="row" id="header-msg" onload = "javasrcipt:HAYSCookieBannerHideonLoadMicro()">
+		<$wcmElement("CookieBannerText")$>
+		</div>
+		
+	<script type="text/javascript">
+		var options = { path: '/', expires: 10,domain:'<$hostname$>' };
+		
+		$('#header-msg .btn-close-micro').click(function(e) {
+        $(this).hide().parent('#header-msg').slideUp(300);
+        e.preventDefault()
+		});
+		
+		function HAYSCookieBannerHideonLoadMicro() 
+		{ 
+			if	(window.jQuery && jQuery.isReady) 
+			{
+				var banner_micro_display = $.cookie('bannercookie_<$siteId$>');
+				
+				if(banner_micro_display == null || banner_micro_display === '') 
+				{
+					$("#header-msg").show();	
+					$.cookie('bannercookie_<$siteId$>', 'Y',options);
+				}
+				else
+				{
+					$("#header-msg").hide();
+				}
+			}
+			else 
+			{
+				window.setTimeout(HAYSCookieBannerHideonLoadMicro, 100);
+			}
+		};
+		HAYSCookieBannerHideonLoadMicro();
+	</script>		
+<@end@>
+
+<@dynamichtml rgtmp_microsite_background_imagelist_inc@>	
+	<div id="outer-slideshow">
+		<div id="inner-slideshow">
+			<$wcmListStart("BackgroundImageList")$>
+			<$wcmListIndex = 0$>
+			<$wcmListNumRows = wcmListRowCount()$>
+			<$loopwhile wcmListIndex < wcmListNumRows$>
+				<$wcmListElement("Image", wcmListIndex)$>
+				<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>
+			<$wcmListEnd("BackgroundImageList")$>
+			<div class="strapline">
+				<h1>
+					<$wcm_element=wcmElement("HeadingText")$>
+					<$include remove_paragraph_tags$>
+					<$wcm_element$>
+					<$wcm_element=""$>
+				</h1>
+				<h2>
+					<$wcm_element=wcmElement("SubHeadingText")$>
+					<$include remove_paragraph_tags$>
+					<$wcm_element$>
+					<$wcm_element=""$>
+				</h2>
+				<p>
+					<$wcm_element=wcmElement("NormalText")$>
+					<$include remove_paragraph_tags$>
+					<$wcm_element$>
+					<$wcm_element=""$>
+				</p>
+			</div>						
+		</div>
+	</div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_hays_footer@>
+<!-- Hays footer -->
+            <div id="outer-footer">
+                <div id="inner-footer">
+                  
+					<$if not strEqualsIgnoreCase(siteId,'haysittest')$>
+						<a href="http://www.hays.co.uk">
+							<img src="/haysassets/HaysMicroSites/assets/img/hayslogo.gif" id="hayslogo" alt="Hays 
+							footer logo" />
+						</a> 
+						<div class="copyright">
+					<$else$>
+						<div class="copyright" style="margin-left:20px">
+					<$endif$>  
+							<$wcmListStart("Links")$>
+							<$wcmListIndex = 0$>
+							<$wcmListNumRows = wcmListRowCount()$>
+							<$loopwhile wcmListIndex < wcmListNumRows$>
+							<$footerLink=wcmListElement('Link', wcmListIndex)$>
+							<$if strIndexOf(footerLink,'<p>') >=0 and strIndexOf(footerLink,'</p>') >=0$>
+								<$footerLink = strSubstring(footerLink,3, strLength(footerLink)-4)$>
+							<$endif$>
+							<$footerLink$>
+							<$if wcmListIndex < wcmListNumRows-1$>
+							<span>|</span> 
+							<$endif$>						
+							<$wcmListIndex = wcmListIndex + 1$>
+							<$endloop$>
+							<$wcmListEnd("Links")$>                       
+						</div>
+                    
+                    <!--Footer Bookmark-->
+                    <$include hays_bookmarks_footer$>
+                    <!--/Footer Bookmark-->              
+                    
+                    <div id="disclaimer">
+                        <$footerDesc=wcmElement("Text")$>
+						<$if strIndexOf(footerDesc,'<p>') >=0 and strIndexOf(footerDesc,'</p>') >=0$>
+							<$footerDesc = strSubstring(footerDesc,3, strLength(footerDesc)-4)$>
+						<$endif$>
+						<$footerDesc$>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <!-- /Hays footer -->
+<@end@>
+
+<@dynamichtml rgtmp_microsite_faq_inc@>
+	
+    <h1><$wcmElement("FaqTitle")$></h1>
+		<$wcmListStart("FaqList")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<div class="expand"><$wcmListElement("Title", wcmListIndex)$></div>
+			<div class="collapse"><$wcmListElement("Desc", wcmListIndex)$></div>
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$wcmListEnd("FaqList")$>
+	
+<@end@>
+
+
+<@dynamichtml rgtmp_microsite_videoslist_inc@>
+	
+    <h1><$wcmElement("Heading")$></h1>
+		<$wcmListStart("List")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<h2><$wcmListElement("Title", wcmListIndex)$></h2>
+			<p><$wcmListElement("Text", wcmListIndex)$></p>
+			<$wcmListElement("URL", wcmListIndex)$>
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$wcmListEnd("List")$>
+	
+<@end@>
+
+<@dynamichtml rgtmp_microsite_tablist_inc@>
+	
+		<h1><$wcmElement("Summary")$></h1>
+		<$wcmListStart("TabList")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		<ul id="tabnav">
+			<$loopwhile wcmListIndex < wcmListNumRows$>
+				<$tabName = wcmListElement("TabTitle", wcmListIndex)$>
+				<li><a href="<$tabName$>" onclick="return false;" title="<$tabName$>"><$tabName$></a></li>
+				<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>
+		</ul>
+		<$wcmListEnd("TabList")$>
+
+		<div class="clear"></div>
+
+		<div id="tabs">
+			<$wcmListStart("TabList")$>
+			<$wcmListIndex = 0$>
+			<$wcmListNumRows = wcmListRowCount()$>
+			
+				<$loopwhile wcmListIndex < wcmListNumRows$>
+					<$tabName = wcmListElement("TabTitle", wcmListIndex)$>
+					<$if wcmListIndex == 0$>
+						<p id="<$tabName$>" class="default">
+					<$else$>
+						<p id="<$tabName$>">
+					<$endif$>
+					<span class="sub-title"><$wcmListElement("TabSubTitle", wcmListIndex)$></span>
+					<$tabValue = wcmListElement("TabData", wcmListIndex)$>
+					
+					<$tabValue = strReplace(tabValue, '<p>', '')$>
+					<$tabValue$>
+					</p>
+					<$wcmListIndex = wcmListIndex + 1$>
+				<$endloop$>
+			
+			<$wcmListEnd("TabList")$>
+		</div>
+	
+	<div class="clear"></div>
+    <p><$wcmElement("Text")$></p>
+
+<@end@>
+
+<@dynamichtml rgtmp_microsite_mainpage_map_inc@>
+	
+		<h1><$wcmElement("Title")$></h1>
+		<p><$wcmElement("Content")$></p>
+	
+	<$googleMapDataXMLPath = wcmElement("Google_Map_Data_File_Link")$>
+	<$googleMapDataXMLPath = js(googleMapDataXMLPath)$>
+	<$startIndex=strIndexOf(googleMapDataXMLPath, "href=")$>
+	<$endIndex = strIndexOf(googleMapDataXMLPath, ".xml")$>
+	<$googleMapDataXMLPath=strSubstring(googleMapDataXMLPath,startIndex+7,endIndex+4)$>
+	
+	<script type="text/javascript">
+		var googlemapURL = "<$googleMapDataXMLPath$>";
+	</script>
+	
+	<div id="map_canvas"></div>
+    <div id="buttons"></div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_additional_links@>
+	<$include microsite_module_classes$>
+	<div class="<$moduleClass$>">
+		<h1><$wcmElement("Content1")$></h1>
+		<$wcmElement("Content2")$>
+	</div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_client_text@>
+	<$include microsite_module_classes$>
+	<div class="<$moduleClass$>">
+	<$wcmElement("Text")$>
+	</div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_static_image@>
+	<$include microsite_module_classes$>
+	<div class="<$moduleClass$>">
+	<h1><$wcmElement("ImageTitle")$></h1>
+	<$wcmElement("Image")$>
+	</div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_FetchImage@>
+<$include microsite_module_classes$>
+<div class="<$moduleClass$>">
+	<h1><$wcmElement("Text")$></h1>
+<$image=''$>
+<$wcmListStart("ImageList")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$if wcmListNumRows ge 0 $>
+		<$loopwhile wcmListIndex LT wcmListNumRows$>
+			<$image=wcmListElement("Image",wcmListIndex)$>		
+			<$if not strEquals(image,'')$>
+				<$index=strIndexOf(image,"src=")$>
+					<$if index gt -1$> 
+						<$src1=strIndexOf(image,"src=")$>
+						<$imageUrl=strSubstring(image,src1+5)$>
+						<$src2=strIndexOf(imageUrl,'"')$>
+						<$imageUrl=strSubstring(imageUrl,0,src2)$>
+					<$endif$>
+				<$if wcmListIndex eq 0$>
+					<img src="<$imageUrl$>"/>
+				<$else$>
+					<img src="<$imageUrl$>" />
+				<$endif$>
+			<$endif$>
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$endif$>
+<$wcmListEnd("ImageList")$>	
+</div>
+<@end@>
+
+
+
+<@dynamichtml rgtmp_show_left_Map@> 
+<$include microsite_module_classes$>
+<div class="<$moduleClass$>">
+<h1><$wcmElement("MapTitle")$></h1>
+    <$mapUrl=wcmElement("MapUrl")$> 
+	<$if strIndexOf(mapUrl,'<p>') >=0 and strIndexOf(mapUrl,'</p>') >=0$>
+	<$mapUrl = strSubstring(mapUrl,3, strLength(mapUrl)-4)$>
+	<$endif$>
+	<$mapUrl$>
+<br/>
+    <$viewMapLink=wcmElement("MapViewLink")$>
+    <$viewMapLink = strReplace(viewMapLink, '<a', '<a class="location_btn"')$>
+	<$if strIndexOf(viewMapLink,'<p>') >=0 and strIndexOf(viewMapLink,'</p>') >=0$>
+		<$viewMapLink = strSubstring(viewMapLink,3, strLength(viewMapLink)-4)$>
+	<$endif$>	
+	<$viewMapLink$>
+     <div class="clear"></div>
+</div>
+<@end@>
+
+
+
+<@dynamichtml rgtmp_microsite_bookmarks@>
+<$include microsite_module_classes$>
+<div class="<$moduleClass$>">
+	<h1><$wcmElement("Text")$></h1>
+    <div class="share">
+	<$include is_output_social_analytics$>
+	<$if isTrue(doOutput)$>
+	  <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+		   <a id="s" class="addthis_button_facebook at300b" title="Send to Facebook" href="#"></a>
+		   <a id="s" class="addthis_button_linkedin at300b" href=	   	
+			"http://www.addthis.com/bookmark.php?v=250&winname=addthis&pub=xa-4fe981d02acbc789&source=tbx32-250&lng=en-US&s=linkedin&url=http%3A%2F%2Fwww1.hays.co.uk%2Fjobs%2Fmaster_template%2Findex.html&title=Sangam%20template%20-%20Master&ate=AT-xa-4fe981d02acbc789/-/-/500f7b65aa20c429/1&frommenu=1&uid=500f7b65310bf48d&ct=1&pre=http%3A%2F%2Fwww1.hays.co.uk%2Fjobs%2Fmaster_template%2Fvideo.html&tt=0" target="_blank" title="Send to Linkedin"></a>
+		   <a id="s" class="addthis_button_twitter at300b" title="Tweet This" href="#"></a>
+		   <a id="s" class="addthis_button_compact at300m" href="#"></a>
+           <a id="s" class="addthis_counter addthis_bubble_style" style="display: block;" href="#" tabindex="1000"></a>
+       <div class="atclear"></div>
+	 </div>
+	  <script src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5267f953247fb89c" type="text/javascript"></script>
+	<$endif$>
+	</div>
+  </div>	 
+<@end@>
+
+<@dynamichtml rgtmp_microsite_mainbookmarks_inc@>
+    <div class="share">
+    <$include is_output_social_analytics$>
+	<$if isTrue(doOutput)$>
+	  <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+		   <a id="s" class="addthis_button_facebook at300b" title="Send to Facebook" href="#"></a>
+		   <a id="s" class="addthis_button_linkedin at300b" href=	   	
+			"http://www.addthis.com/bookmark.php?v=250&winname=addthis&pub=xa-4fe981d02acbc789&source=tbx32-250&lng=en-US&s=linkedin&url=http%3A%2F%2Fwww1.hays.co.uk%2Fjobs%2Fmaster_template%2Findex.html&title=Sangam%20template%20-%20Master&ate=AT-xa-4fe981d02acbc789/-/-/500f7b65aa20c429/1&frommenu=1&uid=500f7b65310bf48d&ct=1&pre=http%3A%2F%2Fwww1.hays.co.uk%2Fjobs%2Fmaster_template%2Fvideo.html&tt=0" target="_blank" title="Send to Linkedin"></a>
+		   <a id="s" class="addthis_button_twitter at300b" title="Tweet This" href="#"></a>
+		   <a id="s" class="addthis_button_email at300b" title="Email" href="#"></a>
+		   <a id="s" class="addthis_button_compact at300m" href="#"></a>
+		   <a id="s" class="addthis_counter addthis_bubble_style" style="display: block;" href="#" tabindex="1000"></a>
+	 </div>
+	 <script src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5267f953247fb89c" type="text/javascript"></script>
+	 <$endif$>
+   </div>
+	 
+<@end@>
+ 
+<@dynamichtml rgtmp_microsite_navlinks@>                  
+	<$wcmListStart("Links")$>
+		<$wcmListIndex = 0,count=1$>
+		<$wcmListNumRows = wcmListRowCount()$>		
+		<$loopwhile wcmListIndex < wcmListNumRows$>			
+			<$if wcmListIndex==0$>
+					<$link_Class = 'first' $>
+			<$elseif wcmListIndex == wcmListNumRows-1$>
+					<$ link_Class = 'last' $>
+			<$else$>
+					<$ link_Class = '' $>
+			<$endif$>
+			<$linkName = wcmListElement("Link", wcmListIndex)$>
+			<$if strIndexOf(linkName,'<p>') >=0 and strIndexOf(linkName,'</p>') >=0$>
+				<$linkName = strSubstring(linkName,3,strLength(linkName)-4)$>
+			<$endif$>			
+			<li id="l<$count$>" class="<$link_Class$>"><$linkName$></li>			
+			<$wcmListIndex = wcmListIndex + 1, count=count+1$>			
+		<$endloop$>
+	<$wcmListEnd("Links")$> 
+<@end@>
+
+<@dynamichtml rgtmp_microsite_job_desc_inc@>
+
+<$if #active.ssDocName and strLength(ssDocName) gt 0$>
+	<$dDocName = ssDocName$>	
+<$endif$>
+<$executeService('DOC_INFO_BY_NAME')$>
+<$siteLocale=ssGetSiteProperty(siteId,"siteLocale")$>
+<div id="text">
+<$itJobTitle = "Descrizione"$>
+<$check_microsite = ssGetSiteProperty(siteId,"micrositeCode")$>
+<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+<h1><$itJobTitle$></h1>
+<$else$>
+<h1>Job details</h1>
+<$endif$>
+
+<form id="Form1" class="form_buttons" action="" target="_blank" method="post">
+<script type="text/javascript" language="javascript"> 
+function appForm()
+	{
+		window.open("about:blank","application_form",		
+		"width=630,height=750,toolbar=no,location=no,status=no,scrollbars=yes,menubar=no,resizable=no");
+		document.forms[0].action = 	
+"<$HttpBrowserFullCgiPath$>?IdcService=HAYS_MICROSITE_APPLY_FORM&job_id=<$DOC_INFO.dDocName$>&locale=<$siteLocale$>&micrositeId=<$#active.siteId$>";
+		document.forms[0].target = "application_form";
+		document.forms[0].submit();
+	}
+
+</script>
+<$if not (#active.siteId like "haysittest")$>
+<script type="text/javascript">
+    //javascript:Hays_gaq_push()
+    function Hays_gaq_push(link)
+    {
+      if ($.cookie('performz')!='N')
+     {
+      _gaq.push(['_link', link]); 
+      return false; 
+      
+     }
+    }
+    
+    function Hays_gaq_push_UK_eligible()
+    {
+     if ($.cookie('performz')!='N')
+     {
+      _gaq.push(['_trackEvent', 'Registration', 'UK_eligible', 'jobseeker eligible to work in UK']);
+     }
+    };
+    
+    function Hays_gaq_push_UK_eligible_submit(form)
+    {
+     if ($.cookie('performz')!='N')
+     {
+      _gaq.push(['_trackEvent', 'Registration', 'UK_eligible', 'jobseeker eligible to work in UK']);
+      form.submit();
+     }
+    };
+    
+    function Hays_gaq_push_jobseeker_app()
+    {
+     if ($.cookie('performz')!='N')
+     {
+      _gaq.push(['_trackEvent', 'Application', 'apply', 'jobseeker application']);
+      
+     }
+    };
+ </script>
+ <$include is_output_social_analytics$>
+ <$if isTrue(doOutput)$>
+ <script type="text/javascript">
+     
+     function getCookie(c_name)
+     {
+      var i,x,y,ARRcookies=document.cookie.split(";");
+      for (i=0;i<ARRcookies.length;i++)
+      {
+        x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+        y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+        x=x.replace(/^\s+|\s+$/g,"");
+        if (x==c_name)
+       {
+       return unescape(y);
+       }
+      }
+     }
+     
+     var performz=getCookie("performz");
+    
+     var _gaq = _gaq || [];
+     var HAYS_ww_gacode1="UA-17724395-1";
+     _gaq.push(['_setAccount', HAYS_ww_gacode1]);
+     
+	<$hostname=HTTP_HOST$>
+	<$hostname=strReplace(hostname, "www.", "")$>
+	<$hostname=strReplace(hostname, "testsg.", "")$>
+	<$if parentSiteId$>
+		<$subDomainIndex = strIndexOf(hostname,'.')$>
+		<$hostname = strSubstring(hostname,subDomainIndex+1)$>
+	<$endif$>
+	_gaq.push(['_setDomainName','<$hostname$>']);
+	
+     _gaq.push(['_setAllowLinker',true]);
+    _gaq.push(['_trackPageview']);
+     if(performz!='N')
+      {
+       (function() {
+ 
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ 
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ 
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ 
+       })();
+      }
+      
+     </script>
+     <$endif$>
+<$endif$>
+	<$itLocation = "Luogo"$>
+	<$itSalary = "Retribuzione"$>
+	<$itType = "Tipo"$>
+	<$itClosingDate = "Scadenza"$>
+	<$itJobReference = "Riferimento"$>
+	<$itContact = "Contatto"$>
+	<$itOffice = "Ufficio"$>
+	<$itPhone = "Telefono"$>
+	<$itEmail = "Email"$>
+	<$itApply = "Invia CV"$>
+	<$itBack = "Pagina precedente"$>
+	
+	
+	
+	
+	<$check_microsite = ssGetSiteProperty(siteId,"micrositeCode")$>
+	
+	<p class="detailedTitle"><$wcmElement("Title")$></p>
+	<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+	<p class="detailedLocation"><span><$itLocation$>:</span> <$DOC_INFO.xLocationDescription$></p>
+	<p class="detailedSalary"><span><$itSalary$>:</span> <$DOC_INFO.xSalaryDescription$></p>
+	<$else$>
+	<p class="detailedLocation"><span>Location:</span> <$DOC_INFO.xLocationDescription$></p>
+	<p class="detailedSalary"><span>Salary/Rate:</span> <$DOC_INFO.xSalaryDescription$></p>
+	<$endif$>
+	<$if not strEquals(DOC_INFO.xJobType,'')$>	
+		<$if strIndexOf(DOC_INFO.xJobType, 'P') GE 0 $>
+			<$xJobType = 'Permanent'$>
+		<$endif$>
+		<$if strIndexOf(DOC_INFO.xJobType, 'C') GE 0 $>
+			<$xJobType = 'Contract'$>
+		<$endif$>
+		<$if strIndexOf(DOC_INFO.xJobType, 'T') GE 0 $>
+			<$xJobType = 'Temporary'$>
+		<$endif$>	
+	<$endif$>
+	<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+	<p class="detailedType"><span><$itType$>:</span> <$xJobType$></p>
+	<$else$>
+	<p class="detailedType"><span>Type:</span> <$xJobType$></p>
+	<$endif$>
+	
+	<$closingDate = '' $>
+	<$if strEquals(DOC_INFO.dDocType,"Jobs") and  strEquals(DOC_INFO.xDisplayClosingDate,'Y')$>					
+		<$closingDate = formatDateWithPattern(DOC_INFO.dOutDate,#active.websiteDateFormat)$>
+	<$endif$>
+	<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+	<p class="detailedClosingDate"><span><$itClosingDate$>:</span> <$closingDate$></p>
+	<p class="detailedRef"><span><$itJobReference$>:</span> <$DOC_INFO.xRecordId$></p>
+	<$else$>
+	<p class="detailedClosingDate"><span>Closing Date:</span> <$closingDate$></p>
+	<p class="detailedRef"><span>Job Reference:</span> <$DOC_INFO.xRecordId$></p>
+	<$endif$>
+	<$if (strEqualsIgnoreCase(siteLocale,'en-GB') or strEqualsIgnoreCase(siteLocale,'en-IE')) and not strEquals(DOC_INFO.xDescription,'') and not strEquals(DOC_INFO.dDocType,"Candidates")$>
+				<p style="white-space:pre-line;"><$DOC_INFO.xDescription$></p>
+	<$endif$>
+	<div class="detailedDescription">
+		<$wcmElement("Summary")$>
+	</div>
+	<hr class="rule"></hr>
+
+	<$crXmlToResultSet(DOC_INFO.xJobOwner, "rstJobOwner")$>
+	<$if rsFirst("rstJobOwner") $>
+		<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+		<p class="detailedContact"><span><$itContact$>:</span> <$rstJobOwner.name$></p>
+		<p class="detailedOffice"><span><$itOffice$>:</span> <$rstJobOwner.address$></p>
+		<p class="detailedPhone"><span><$itPhone$>:</span> <$rstJobOwner.tel$></p>
+		<p class="detailedEmail"><span><$itEmail$>:</span> <$rstJobOwner.email$></p>
+		<$else$>
+		<p class="detailedContact"><span>Contact:</span> <$rstJobOwner.name$></p>
+		<p class="detailedOffice"><span>Office:</span> <$rstJobOwner.address$></p>
+		<p class="detailedPhone"><span>Phone:</span> <$rstJobOwner.tel$></p>
+		<p class="detailedEmail"><span>Email:</span> <$rstJobOwner.email$></p>
+		<$endif$>
+	<$endif$>	
+	[[%<script type="text/javascript" language="javascript">
+		document.write('<a href="javascript:history.go(-1);" class="detailedBack">Back to search</a>');
+	</script>%]]
+	<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+	<a href="javascript:history.go(-1);" class="detailedBack"><$itBack$></a>
+	<$else$>
+	<a href="javascript:history.go(-1);" class="detailedBack">Back</a>
+	<$endif$>
+	<$if strEquals(DOC_INFO.xApplicationMethod,"WebForm")$>
+		[[%<script type="text/javascript" language="javascript">
+		document.write('');
+		</script>%]]
+		<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+			<a href="#" onClick="appForm();" class="detailedApply"><$itApply$></a>
+		<$else$>
+			<a href="#" onClick="appForm();" class="detailedApply">Apply</a>
+		<$endif$>
+	<$elseif strEquals(DOC_INFO.xApplicationMethod,"Portal")$>
+		<$include portal_and_external_url_apply_button_inc$>
+	<$else$>
+		[[%<script type="text/javascript" language="javascript">
+		document.write('<a href="#" onClick="" class="detailedApply">Apply</a>');
+		</script>%]]
+		<$if strEquals(check_microsite,'HAYSITTEST') or strEquals(check_microsite,'HAYSITC')$>
+			<a href="<$DOC_INFO.xApplicationURL$>" class="detailedApply"><$itApply$></a>
+		<$else$>
+			<a href="<$DOC_INFO.xApplicationURL$>" class="detailedApply">Apply</a>
+		<$endif$>		
+	<$endif$>
+	</form>
+	<script type="text/javascript">
+		function HAYSform() {
+			if (window.jQuery && jQuery.isReady) {	
+				$(document).ready(function()
+				{	
+					var jobEmail = "<$rstJobOwner.email$>";					
+					jQuery("script[type*='IN/Apply']").each(function(){
+					var jobTitle = "<$wcmElement('Title')$>";
+					jQuery(this).attr('data-jobTitle', jobTitle);
+					jQuery(this).attr('data-email', jobEmail);
+					})
+				});
+			}
+			else
+			{
+			window.setTimeout(HAYSform, 100);
+			}
+		}
+		HAYSform();
+	</script>
+	<script type="text/javascript" src="http://platform.linkedin.com/in.js">
+		api_key: <$#env.MicrositeLinkedInKey$>
+	</script>
+	<br/>
+	<script type="IN/Apply" data-companyId="3486" data-jobTitle="" data-email=""></script>
+	
+</div>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_content@>
+<$include microsite_module_classes$>
+<div class="<$moduleClass$>">
+<h1><$wcmElement("Content1")$></h1>
+<$wcmElement("Content2")$>
+</div>
+<@end@>
+
+<@dynamichtml portal_and_external_url_apply_button_inc@>
+
+	<$event = "browse"$>
+	<$include fire_events$>
+	<$styleClass="job_apply"$>	
+	<$xPostingType = DOC_INFO.xPostingType$>
+	<$if strEquals(DOC_INFO.dDocType,"Candidates")$>
+		<$applied="," & getCookie("candRqsd")& ","$>
+	<$else $>
+		<$applied="," & getCookie("jobapd")& ","$>
+	<$endif$>
+	<$disabledText=""$>
+	<$if strIndexOf(#active.applied,  "," & dDocName & ",") ge 0$>
+		<$disabledText="disabled"$>
+	<$endif$>
+	
+	<$include check_cerow_domain_inc$>
+
+	<$candidateInfoRequestUrl=#env.WC_SAVE_SEARCH&"?jobIdList="&DOC_INFO.dDocName&"&amp;refID="&DOC_INFO.xRecordId&"&amp;jobTitle="&DOC_INFO.dDocTitle&"&amp;location="&DOC_INFO.xLocation&"&amp;haysConsultant="&DOC_INFO.xContactId&"&amp;action=redirect&amp;redirect="&#env.WC_CANTIDATE_INFO_REQUEST$>
+	<$if DOC_INFO.xPostingType AND strEquals(DOC_INFO.xPostingType,"dashmgdmp")$> 
+		<$c = "Build URL external applicaton functionality"$>
+		<$if DOC_INFO.xApplicationURL AND strLength(DOC_INFO.xApplicationURL) GT 0$>
+			<$jobApplyUrl=DOC_INFO.xApplicationURL$>
+			<$styleClass="job_applyExternal"$>
+		<$else$>
+			<$jobApplyUrl="#"$>	
+		<$endif$>
+		<$else$>
+	<!-- Change for Sprint 24 on 19 April 2012-->
+		<$if not #active.jobSource$>			
+			<$if strLength(getCookie("utm_campaign")) GT 0 $>			
+				<$jobSource=getCookie("utm_campaign")$>
+			<$elseif strLength(#active.utm_campaign) GT 0$>		
+				<$jobSource=#active.utm_campaign $>			
+			<$else$>
+		<!--Change for MR Sprint 23 on 16 March 2012 -->
+				<$include apac_country_check_inc$>
+				<$if ((isAPACCountry EQ 1)  OR (strEquals(siteId,'uk')))$>
+					<$jobSource=#env.WC_JOBSOURCE_CONSTANT_MICROSITE$>		
+				<$else$>	
+		<!-- end -->		
+					<$jobSource=GetDomainName(HTTP_REFERER)$>
+						<$if (strLength(jobSource) EQ 0) OR (strIndexOf(jobSource,'hays') ge 0 )$>
+							<$jobSource=#env.WC_JOBSOURCE_CONSTANT_MICROSITE$>
+						<$endif$>
+				<$endif$>
+			<$endif$>	
+		<$endif$>
+		<$domainId=ssGetSiteProperty(siteId,"domainId")$>
+		<$siteLocale=ssGetSiteProperty(siteId,"siteLocale")$>
+		<$micrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>
+		
+		<$if is_cerow EQ 0$>
+			<$if strIndexOf(HTTP_USER_AGENT,'MSIE') gt 0 $>
+					<!-- Release 8 [inside Redirect to new apply process for IE] -->
+					<$jobApplyUrl=#env.WC_JOB_APPLY_S_IE&"?jobIdList="&DOC_INFO.dDocName&"&amp;micrositeCode="&micrositeCode&"&amp;siteLocale="&siteLocale&"&amp;domainId="&domainId&"&amp;jobsource="&jobSource$>
+					<!-- Release 8 [End] -->
+			<$else$>
+					<$jobApplyUrl=#env.WC_JOB_APPLY_S&"?jobIdList="&DOC_INFO.dDocName&"&amp;micrositeCode="&micrositeCode&"&amp;siteLocale="&siteLocale&"&amp;domainId="&domainId&"&amp;jobsource="&jobSource$>					
+			<$endif$>
+			<$if DOC_INFO.xRefJobId AND strLength(DOC_INFO.xRefJobId) GT 0$>			
+				<$jobApplyUrl = jobApplyUrl&"&amp;referingJobId=JOB_"&DOC_INFO.xRefJobId&"&amp;referingJobDomainId="&DOC_INFO.xRefDomainId$>
+			<$endif$>
+		<$else$>
+				<$jobApplyUrl=#env.WC_SAVE_SEARCH&"?jobIdList="&DOC_INFO.dDocName&"&amp;micrositeCode="&micrositeCode&"&amp;siteLocale="&siteLocale&"&amp;domainId="&domainId&"&amp;jobsource="&jobSource&"&amp;action=redirect&amp;redirect="&#env.WC_JOB_APPLY$>
+				<$if DOC_INFO.xRefJobId AND strLength(DOC_INFO.xRefJobId) GT 0$>			
+					<$jobApplyUrl = jobApplyUrl&"&amp;referingJobId=JOB_"&DOC_INFO.xRefJobId&"&amp;referingJobDomainId="&DOC_INFO.xRefDomainId$>
+				<$endif$>
+		<$endif$>
+	<$endif$>
+	<$if strEquals(micrositeCode,'HAYSITTEST') or strEquals(micrositeCode,'HAYSITC')$>
+	<$applyButtonLabel="Invia CV"$>
+	<$else$>
+	<$applyButtonLabel="Apply"$>
+	<$endif$>
+	<a class="button <$styleClass$> <$disabledText$> detailedApply applylinks" 
+	 href="<$if strEquals(DOC_INFO.dDocType,"Candidates")$><$candidateInfoRequestUrl$><$elseif 
+	 strEquals(DOC_INFO.dDocType,"Jobs")$><$jobApplyUrl$><$endif$>"><$applyButtonLabel$></a>	
+	 
+	 		
+	<$include javascript_string_files_inc$>
+<@end@>
+
+<@dynamichtml microsite_pagination_inc@>
+	<$PaginationDisplay=ssGetNodeProperty("PaginationDisplay")$>
+		<$if strEquals(PaginationDisplay,"TRUE")$>
+			
+			<$ NumPages = TotalRows / ResultCount $>
+			<$if (TotalRows % ResultCount) GT 0 $>
+				<$ NumPages = NumPages + 1 $>
+			<$endif$>
+			<$if not encodeForHTML(#active.PageNumber) or encodeForHTML(#active.PageNumber) lt 1$>
+				<$PageNumber=1$>
+			<$endif$>
+			<$if (EndRow+encodeForHTML(StartRow)-1) lt TotalRows$>
+				<$endCount = EndRow+encodeForHTML(StartRow)-1$>
+			<$else$>
+				<$ endCount = TotalRows$>
+			<$endif$>
+			<$if encodeForHTML(#active.NumPages) AND NumPages GT 1 $>
+				<div class="pagination">
+				<ul>
+				<li  class="resultCount">
+				<$if encodeForHTML(PageNumber) gt encodeForHTML(NumPages)$>
+                   <$PageNumber = NumPages$>
+				<$endif$>
+				<$lc('wwMSShowSiteSearchResultCount', encodeForHTML(StartRow), endCount, TotalRows)$>
+				</li>
+				<li class="pageNumber">
+				<$lc('wwMSPagination', encodeForHTML(PageNumber), NumPages)$>
+				</li>
+				
+				
+				<$if encodeForHTML(PageNumber) gt 1$>
+					<li  class="prev"><a href="index.htm?PageNumber=<$PageNumber-1$>&amp;StartRow=<$(PageNumber-2)*ResultCount+1$>&amp;<$ initialQuery $>">&nbsp;</a></li>
+				<$endif$>
+				<$pageIndex=1$>
+				
+				<$loopwhile (pageIndex le NumPages) $>
+					<$if (pageIndex eq encodeForHTML(PageNumber))$>
+						<li class="active"><$pageIndex$></li>
+					<$else$>
+						<li><a href="index.htm?PageNumber=<$pageIndex$>&amp;StartRow=<$(pageIndex-1)*ResultCount+1$>&amp;<$ initialQuery $>"><$pageIndex$></a></li>
+					<$endif$>
+					<$pageIndex=pageIndex+1$>
+				<$endloop$>
+				<$if encodeForHTML(PageNumber) lt NumPages$>
+					<li class="next"><a href="index.htm?PageNumber=<$PageNumber+1$>&amp;StartRow=<$StartRow+ResultCount$>" >&nbsp;</a></li>
+				<$endif$>
+			</ul>
+		</div>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_joblist_inc@>
+	<$rssLink  = 'rss_'&siteId $>
+	<$siteLocale=ssGetSiteProperty(siteId,"siteLocale")$>
+	<$micrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>
+	<$SortField=ssGetNodeProperty("jobListOrderBy")$>
+	<$SortOrder=ssGetNodeProperty("jobListOrder")$>	
+	
+	<$numCountPages=ssGetNodeProperty("MicrositeResultCount")$>
+	<$if strEquals(numCountPages,"")$>
+	<$ResultCount=20$>
+	<$else$>
+	<$ResultCount=numCountPages$>
+	<$endif$>
+	
+	<$QueryText= "dDocType <matches> `Jobs` <AND> xMicroSiteCode <matches> `"& micrositeCode & "` <AND> xLocale <matches> `"
+				 & siteLocale& "`"$>
+	
+	<$executeService("GET_SEARCH_RESULTS")$>
+	<$rows= rsNumRows("SearchResults")$>
+	
+	
+	<$jobListTrClass=""$>
+	<$jobCount=1$>
+	<$jobNodeLink="jobs_"&#active.siteId$>	
+	<$jobNodeUrl=ssNodeLink(jobNodeLink,siteId)$>
+	<$jobNodeUrl=strSubstring(jobNodeUrl,0,strLength(jobNodeUrl)-9)$>
+	<$jobsListHeading=wcmElement("JobListHeading")$>	
+	<$jobTitle=wcmElement("JobTitle")$>	
+	<$jobLocation=wcmElement("JobLocationTitle")$>	
+	<$jobSalary=wcmElement("JobSalaryTitle")$>	
+	<$HideSalary=wcmElement("HideSalary")$>	
+	<$HideLocation=wcmElement("HideLocation")$>	
+		
+		<script type="text/javascript">
+			function HAYSform() {
+				if (window.jQuery && jQuery.isReady) {					
+					$(document).ready(function() {
+						<$if strLength(HideSalary) GT 0 AND isTrue(HideSalary)$>
+							$('#mainJobs td:nth-child(3),#mainJobs th:nth-child(3)').hide();
+						<$endif$>
+						<$if strLength(HideLocation) GT 0 AND isTrue(HideLocation)$>
+							$('#mainJobs td:nth-child(2),#mainJobs th:nth-child(2)').hide();
+						<$endif$>
+					});
+				}
+				else
+				{
+					window.setTimeout(HAYSform, 100);
+				}
+			}
+			HAYSform();
+		</script>
+	
+	<h1><$if strLength(jobsListHeading) GT 0$><$jobsListHeading$><$else$><$lc('wwMSJobsListHeading')$><$endif$></h1> 	   
+	<div>
+	<$if rsFirst('SearchResults') $>
+	<table class="jobTable" id="mainJobs" width="567" border="0" cellpadding="0" cellspacing="0">				
+				
+		<tr>
+			<td align="left">
+				<a class="rsslink" href="<$ssNodeLink(rssLink, 
+		siteId)$>?QueryText=<$QueryText$>&SortField=<$SortField$>"><img alt="RSS Feed" src=	
+		"/haysassets/HaysGeneralComponent/assets/img/icons/feed-icon-14x14.png" align="texttop"/><$lc('wwRssFeed')$>
+				</a>
+			</td>
+		</tr>
+			
+			<tr class="jobListHeader">
+				<th scope="col"><$if strLength(jobTitle) GT 0$><$jobTitle$><$else$><$lc('wwMSJobTitle')$><$endif$></th>
+				<th scope="col"><$if strLength(jobLocation) GT 0$><$jobLocation$><$else$><$lc('wwMSLocationTitle')$><$endif$></th>
+				<th scope="col"><$if strLength(jobSalary) GT 0$><$jobSalary$><$else$><$lc('wwMSSalaryDescTitle')$><$endif$></th>	
+			</tr>
+			
+				<$loop SearchResults$>
+				
+				
+				<$dDocName=SearchResults.dDocName$>
+				<$executeService("DOC_INFO_BY_NAME")$>
+				<$if jobCount%2==0$>
+					<$jobListTrClass="jobListItemAlt"$>
+				<$else$>
+					<$jobListTrClass="jobListItem"$>
+				<$endif$>
+			<tr class="<$jobListTrClass$>">
+				<td class="jobTitle">
+					<a href="<$jobNodeUrl$><$SearchResults.dDocName$>">			
+					<$SearchResults.dDocTitle$></a>
+				</td>
+				<td class="jobLocation"><$SearchResults.xLocationDescription$></td>
+				<td class="jobRate"><$DOC_INFO.xSalaryDescription $></td>
+			</tr>
+				<$jobCount=jobCount+1$>	
+				
+				
+				<$endloop$>
+				
+				
+			
+	</table>
+	
+	<$include microsite_pagination_inc$> 
+	<$else$>
+			<tr class="MicroItem">
+				<td colspan="3"><$wcmElement("NoJobsMessage")$></td>
+			</tr>
+	</table>
+	<$endif$>
+	</div>
+		
+<@end@>
+
+<@dynamichtml rgtmp_microsite_custom_form@>
+<$if #active.submitted$>
+<$executeService("HAYS_MICROSITE_FORMS")$>
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+<div id="contentText">       
+	<h1><$wcmElement("Heading")$></h1>
+	<div id="contentContent">
+		<$wcmElement("ConfirmationText")$>
+	</div>
+</div>
+
+<$else$>
+<script type="text/javascript">
+function HAYSform() {
+if (window.jQuery && jQuery.isReady) {	       
+    var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform, 100);
+}
+}
+HAYSform();
+</script>
+<$endif$>
+<$endif$>
+<div id="dialog"><p></p></div>
+
+
+<$if isFalse(strEqualsIgnoreCase(#active.submitted,"false")) AND isFalse(strEqualsIgnoreCase(mailResponse,"true"))$>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+   if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+    $.validator.addClassRules("mandatory", {
+        required: true,
+        nowatermark: true
+    });
+
+    jQuery.validator.addMethod("fileext", function(val, element) {
+        if ($('#AttachedDocument').val().length === 0) {
+            return true;
+        }
+        var ext = $('#AttachedDocument').val().split('.').pop().toLowerCase();
+        var allow = ['doc', 'docx', 'rtf', 'txt'];
+        if (jQuery.inArray(ext, allow) == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }, "Please select mentioned file type,selected file type is not supported.");
+
+    $("#microsite_speculative_form").validate({
+        focusInvalid: true,
+        onkeyup: false,
+        rules: {
+            AttachedDocument: {
+                fileext: true
+            },
+            formemail: {
+                email: true,
+                maxlength: 60
+            },
+            name: {
+                maxlength: 60
+            },
+            contact: {
+                maxlength: 60
+            },
+            location: {
+                maxlength: 60
+            },
+            language: {
+                maxlength: 60
+            },
+            coverletter: {
+                maxlength: 4000
+            }
+        },
+        messages: {
+            name: {
+                required: "This field is required.",
+                maxlength: "Please enter a maximum of 60 characters."
+            },
+            location: {
+                required: "This field is required.",
+                maxlength: "Please enter a maximum of 60 characters."
+            },
+            formemail: {
+                required: "This field is required.",
+                email: "Please enter valid email address",
+                maxlength: "Please enter a maximum of 60 characters."
+            },
+            contact: {
+                required: "This field is required.",
+                maxlength: "Please enter a maximum of 60 characters."
+            },
+            language: {
+                required: "This field is required.",
+                maxlength: "Please enter a maximum of 60 characters."
+            },
+            coverletter: {
+                maxlength: "Please enter a maximum of 4000 characters."
+            }
+        },
+
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);
+        }
+
+    });
+}
+else {
+    window.setTimeout(HAYSform, 100);
+}
+}
+	HAYSform()
+//--><!]]>
+</script>
+<$name=strTrimWs(wcmElement("NameField"))$>
+<$location=strTrimWs(wcmElement("LocationField"))$>
+<$contact=strTrimWs(wcmElement("ContactField"))$>
+<$email=strTrimWs(wcmElement("EmailField"))$>
+<$language=strTrimWs(wcmElement("LanguageField"))$>
+<$coverLetter=strTrimWs(wcmElement("CoverLetterField"))$>
+<$attachCV=strTrimWs(wcmElement("AttachCVField"))$>
+
+<div id="contentText">       
+ <h1><$wcmElement("Heading")$></h1>
+  <div id="contentContent">
+	<h1><$wcmElement("SubHeading")$></h1>	
+    <$wcmElement("Description")$>
+	
+	<form id="microsite_speculative_form" class="hays_form" method="POST" enctype="multipart/form-data">
+		<input type="hidden" id="DataFormName" value="CustomForm2" name="DataFormName"/>
+		[[%--<input type="hidden" id="Subject" value="<$wcmElement('Heading')$>" name="Subject"/>--%]]
+		<input type="hidden" id="emailTemplate" value="microsite_speculative_EmailTemplate" name="emailTemplate"/>
+		<input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+		[[%--<input type= "hidden" id="EmailID" value="<$wcmElement('ToEmailField')$>" name="EmailID"/>--%]]
+		<input type="hidden" id="DataId" name="DataId" value="<$SS_DATAFILE$>"/>
+		<input type="hidden" name="submitted" value="1" /> 
+		<input type="hidden" id="siteId" value="<$siteId$>" name="siteId"/>
+		<table width="420" id="applicationForm" cellspacing="3">
+			
+			<$if strLength(name) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$name$>*:</td>
+				<td><input type="text" class="mandatory" id="name" name="name" /></td>
+			<tr>
+			<$endif$>
+			
+			<$if strLength(location) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$location$>*:</td>
+				<td><input type="text" class="mandatory" id="location" name="location" /></td>
+			</tr>
+			<$endif$>
+			
+			<$if strLength(contact) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$contact$>*:</td>
+				<td><input type="text" class="mandatory" id="contact" name="contact" /></td>
+			</tr>
+			<$endif$>
+			
+			<$if strLength(email) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$email$>*:</td>
+				<td><input type="text" class="mandatory" id="formemail" name="formemail" /></td>
+			</tr>
+			<$endif$>
+			
+			<$if strLength(language) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$language$>*:</td>
+				<td><input type="text" class="mandatory" id="language" name="language" /></td>
+			</tr>
+			<$endif$>
+			
+			<$if strLength(coverLetter) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$coverLetter$>*:</td>
+				<td><textarea cols="" rows="6" class="mandatory" id="coverletter" name="coverletter"></textarea></td>
+			</tr>
+			<$endif$>
+			
+			<$if strLength(attachCV) GT 0$>
+			<tr>
+				<td align="right" valign="top"><$attachCV$>:</td>
+				<td><input type="file" name="AttachedDocument" id="AttachedDocument" />
+					<div><span class="input_info"><$lc('wwCS_file_type')$></span></div>
+				</td>
+			</tr>
+			<$endif$>
+			
+		</table>		
+		<input type="submit" name="Submit" value="<$lc('wwDataFormSendButtonLabel')$>" id="submitbutton">		
+	</form> 
+  </div>
+</div>
+<$endif$>
+<@end@>
+
+
+<@dynamichtml rgtmp_microsite_favicon@>	
+	[[%<$wcmListStart("FavIcon")$>
+	  <$if wcmListRowCount() gt 0$>		
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>		
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			 <$favicon_image_link=wcmListElement('Image', wcmListIndex)$>%]]
+			 <$favicon_image_link=wcmElement('FavIcon')$>
+				<$altIndex = strIndexOf(favicon_image_link,'alt')$>
+				<$if altIndex >=0$>
+					<$favicon_image_link = strSubstring(favicon_image_link,0, altIndex) & '/>'$>
+				<$endif$>
+				<$favicon_image_link = strReplace(favicon_image_link, 'src', 'href')$>
+				<$favicon_image = strReplace(favicon_image_link, '<img', '<link rel="shortcut icon" ')$>				
+				<$favicon_image$>
+				<$ifone_image = strReplace(favicon_image_link, '<img', '<link rel="apple-touch-icon" ')$>
+				<$ifone_image$>
+				<$ifone_image_pre = strReplace(favicon_image_link, '<img', '<link rel="apple-touch-icon-precomposed" ')$>
+				<$ifone_image_pre$>
+			[[%<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>		
+	  <$endif$>	
+	<$wcmListEnd("Links")$>%]]
+<@end@>
+
+<@dynamichtml rgtmp_microsite_jobsearch_inc@>
+	 <style>
+		#searchForm { font-family:Arial, Helvetica, sans-serif; }
+		#searchForm label { font-size:0.7em; }
+		.searchSpecialism {}
+		.searchBy {}	
+		.searchSpecialism {}	
+		#searchSend { background:#009fda; border:0; color:#fff; padding:10px 15px; }
+		#searchSend:hover { background:#15b9f6; cursor:pointer; }		
+	</style>		
+	<$searchResultSection="results_"&#active.siteId$>
+	<$formName = 'searchForm'$>
+	<$locale=ssGetSiteProperty(siteId,"siteLocale")$>
+	<$MicrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>	
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+	    <$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+    <$endif$>
+   
+	<$metadata = "xCategory" , language = Language , country = isoCountryCode , ontClass = 
+	"hays:Specialism"$>
+    <$if NOT rsExists('IndividualsList')$>
+		<$executeService('ONT_GET_INDIVIDUALS')$>		 
+    <$endif$>
+	
+	<$include microsite_search_form_js_inc$>	
+	<$wcm_element=wcmElement("Title")$>	
+	<$if strLength(wcm_element) GT 0$>
+	<h1><$wcm_element$></h1>
+	<$endif$>
+	
+	<$wcm_element=wcmElement("TopDescription")$>
+	<$include remove_paragraph_tags$>
+	<$if strLength(wcm_element) GT 0$>
+	<p><$wcm_element$></p>
+	<$endif$>
+	
+	<$if strLength(#active.STATUS) gt 0$>		
+		<p class="strong error"><$lc('wwMissingFieldsError')$></p>
+		<ol>
+			<li><$lc(STATUS)$></li>
+		</ol>		
+	<$endif $>
+	
+	
+	<form action="<$ssGetServerRelativeUrl(siteId, searchResultSection)$>" class="hays_form" 
+	id="<$formName$>">		
+		<input type="hidden" name="contentType" value="Jobs" />	
+		<input type="hidden" name="isFuzzy" id="isFuzzy" value="true"/>
+		<input type="hidden" name="SiteLocale" id="SiteLocale" value="<$locale$>"/>
+		<input type="hidden" name="locationColumn" id="locationColumn" value=	
+		"default_description"/>	
+		<input type="hidden" name="job_job_title" id="<$formName$>job_job_title" class=
+		"require_group" value="<$#active.job_job_title$>"/>	
+		<input type="hidden" name="isAdvanceSearch" id="isAdvanceSearch" value="1"/>
+		<input type="hidden" name="MicrositeCode" id="MicrositeCode" value="<$MicrositeCode$>"/>
+		<input type="hidden" name="ResultCount" id="ResultCount" value="<$wcmElement('ResultCount')$>"/>
+		<input type="hidden" name="isOnlyJobTitle" id="isOnlyJobTitle" value=""/>
+		
+		
+		<$if #active.debug$>STATUS = <$#active.STATUS$><$endif$>
+		
+		<label><$wcmElement("SearchBoxLabel")$>:</label>		
+		<input type="text" name="job_keywords" id="<$formName$>job_keywords" class=
+			"require_group jobSearchText" value="<$#active.job_keywords$>" maxlength=
+			"256" />	
+		
+		<label><$wcmElement("SearchByLabel")$>:</label>
+        <select id="searchBy" name="searchBy" class="searchBy">
+            <option value="N">Keyword</option>
+            <option value="Y">Job title</option>
+        </select>
+
+		
+		<$if rsExists('IndividualsList') AND rsFirst('IndividualsList') $>	
+		<label><$wcmElement("SpecialismLabel")$>:</label>		
+			 <select class="searchSpecialism" name="job_category" id="job_category">
+				<option value="">All</option>
+				<$loop IndividualsList$>
+				<option value="<$IndividualsList.id$>"><$IndividualsList.label$></option>
+				<$endloop$>			
+			 </select>	
+	    <$endif$>
+		
+		<input type="submit" value="<$lc('wwSearch')$>" class="button" id="searchSend"/>		
+	</form>
+	
+	<$wcm_element=wcmElement("BottomDescription")$>
+	<$include remove_paragraph_tags$>
+	<$if strLength(wcm_element) GT 0$>
+	<p><$wcm_element$></p>
+	<$endif$>		
+<@end@>
+
+<@dynamichtml rgtmp_microsite_job_searchresults_inc@>
+
+<$include job_search_results_buildsearchquery_url$>	
+	<$rssLink  = 'rss_'&siteId $>
+	<$SiteLocale=ssGetSiteProperty(siteId,"siteLocale")$>	
+	<$SortField=ssGetNodeProperty("jobListOrderBy")$>
+	<$SortOrder=ssGetNodeProperty("jobListOrder")$>	
+	<$executeService("HAYS_GET_SEARCH_RESULTS")$>
+	<$jobListTrClass=""$>
+	<$jobCount=1$>
+	<$jobNodeLink="jobs_"&#active.siteId$>
+	<$jobNodeUrl=ssNodeLink(jobNodeLink,siteId)$>
+	<$jobNodeUrl=strSubstring(jobNodeUrl,0,strLength(jobNodeUrl)-9)$>
+	<$jobsListHeading=wcmElement("JobListHeading")$>	
+	<$jobTitle=wcmElement("JobTitle")$>	
+	<$jobLocation=wcmElement("JobLocationTitle")$>	
+	<$jobSalary=wcmElement("JobSalaryTitle")$>	
+	<$HideSalary=wcmElement("HideSalary")$>	
+	<$HideLocation=wcmElement("HideLocation")$>		
+		<script type="text/javascript">
+			function HAYSform() {
+				if (window.jQuery && jQuery.isReady) {					
+					$(document).ready(function() {
+						<$if strLength(HideSalary) GT 0 AND isTrue(HideSalary)$>
+							$('#mainJobs td:nth-child(3),#mainJobs th:nth-child(3)').hide();
+						<$endif$>
+						<$if strLength(HideLocation) GT 0 AND isTrue(HideLocation)$>
+							$('#mainJobs td:nth-child(2),#mainJobs th:nth-child(2)').hide();
+						<$endif$>
+					});
+				}
+				else
+				{
+					window.setTimeout(HAYSform, 100);
+				}
+			}
+			HAYSform();
+		</script>
+	
+	<h1><$if strLength(jobsListHeading) GT 0$><$jobsListHeading$><$else$><$lc('wwMSJobsListHeading')$><$endif$></h1> 	   
+	<div>
+	<$include microsite_job_search_results_counter_inc$>
+	<table class="jobTable" id="mainJobs" width="567" border="0" cellpadding="0" cellspacing="0">	
+	<$if rsFirst('SearchResults') $>		
+		<tr>
+			<td align="left">
+				<a class="rsslink" href="<$ssNodeLink(rssLink, 
+		siteId)$>?QText=<$builtQuery$>&SortField=<$SortField$>"><img alt="RSS Feed" src=	
+		"/haysassets/HaysGeneralComponent/assets/img/icons/feed-icon-14x14.png" align="texttop"/><$lc('wwRssFeed')$>
+				</a>
+			</td>
+		</tr>
+			
+			<tr class="jobListHeader">
+				<th scope="col"><$if strLength(jobTitle) GT 0$><$jobTitle$><$else$><$lc('wwMSJobTitle')$><$endif$></th>
+				<th scope="col"><$if strLength(jobLocation) GT 0$><$jobLocation$><$else$><$lc('wwMSLocationTitle')$><$endif$></th>
+				<th scope="col"><$if strLength(jobSalary) GT 0$><$jobSalary$><$else$><$lc('wwMSSalaryDescTitle')$><$endif$></th>	
+			</tr>
+			<$loop SearchResults$>						
+				<$dDocName=SearchResults.dDocName$>
+				<$executeService("DOC_INFO_BY_NAME")$>
+				<$if jobCount%2==0$>
+					<$jobListTrClass="jobListItemAlt"$>
+				<$else$>
+					<$jobListTrClass="jobListItem"$>
+				<$endif$>
+			<tr class="<$jobListTrClass$>">
+				<td class="jobTitle">
+					<a href="<$jobNodeUrl$><$SearchResults.dDocName$>">										
+					<$SearchResults.dDocTitle$></a>
+				</td>
+				<td class="jobLocation"><$SearchResults.xLocationDescription$></td>
+				<td class="jobRate"><$DOC_INFO.xSalaryDescription $></td>
+			</tr>
+				<$jobCount=jobCount+1$>	
+			<$endloop$>			
+	<$else$>
+			<tr class="MicroItem">
+				<td colspan="3"><$wcmElement("NoJobsMessage")$></td>
+			</tr>
+	<$endif$>	
+		</table>
+		<a href="javascript:history.go(-1);" class="detailedBack">Back</a>
+	</div>	
+<@end@>	
+
+<@dynamichtml google_analytics_for_haysittest@>
+<$include is_output_social_analytics$>
+<$if isTrue(doOutput)$>
+<script type="text/javascript">
+var _gaq = _gaq || [];
+					var HAYS_ww_gacode1="UA-8526115-4";
+					_gaq.push(['_setAccount', HAYS_ww_gacode1]);
+ 
+					_gaq.push(['_setDomainName','hays-itservices.it']);
+ 
+					_gaq.push(['_setAllowLinker',true]);
+					_gaq.push(['_trackPageview']);
+					(function() {
+ 
+								var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ 
+								ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ 
+								var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ 
+							})();
+</script>
+<$endif$>
+<@end@>	
+
+<@dynamichtml rgtmp_microsite_htmlbody@>
+  <$body_Id=wcmElement("HtmlBodyID")$>
+	<$wcm_element=body_Id$>
+	<$include remove_paragraph_tags$>
+	<$body_Id=wcm_element$>
+  <$body_class=wcmElement("HtmlBodyClass")$>
+	<$wcm_element=body_class$>
+	<$include remove_paragraph_tags$>
+	<$body_class=wcm_element$>
+  <$body_attributes=wcmElement("HtmlBodyAttributes")$>
+	<$wcm_element=body_attributes$>
+	<$include remove_paragraph_tags$>
+	<$body_attributes=wcm_element$>
+<@end@>
+
+<@dynamichtml rgtmp_microsite_headtag_inc@>
+	<$wcmListStart("CSS")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>		
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$linkValue = wcmListElement("Link", wcmListIndex)$>
+			<$linkValue = js(linkValue)$>
+			<$startIndex=strIndexOf(linkValue, "href=")$>			
+			<$index = strIndexOf(linkValue,".css")$>
+			<$if index gt -1$>
+				<$endIndex = strIndexOf(linkValue, ".css")$>
+				<$linkValue=strSubstring(linkValue,startIndex+7,endIndex+4)$>
+				<link rel="stylesheet" type="text/css" href="<$linkValue$>" media="screen" />
+			<$endif$>
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$wcmListEnd("CSS")$>
+
+	<$wcmListStart("SCRIPTS")$>
+		<$wcmListIndex = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+		<$scriptsTagString = ""$>
+		<$loopwhile wcmListIndex < wcmListNumRows$>
+			<$linkValue = wcmListElement("Link", wcmListIndex)$>
+			<$linkValue = js(linkValue)$>
+			<$startIndex=strIndexOf(linkValue, "href=")$>
+			<$index = strIndexOf(linkValue,".js")$>
+			<$if index gt -1$>
+				<$endIndex = strIndexOf(linkValue, ".js")$>
+				<$linkValue=strSubstring(linkValue,startIndex+7,endIndex+3)$>
+				<$scriptsTagString = scriptsTagString&'<script type="text/javascript" src="'&linkValue&'"></script>'$>
+				[[%<script type="text/javascript" src="<$linkValue$>"></script>%]]
+			<$endif$>
+			
+			<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+	<$wcmListEnd("SCRIPTS")$>
+
+	[[%<$scriptsTagString$>%]]
+
+	<$favicon_image_link=wcmElement('FaviconIcon')$>
+	<$altIndex = strIndexOf(favicon_image_link,'alt')$>
+	<$if altIndex >=0$>
+		<$favicon_image_link = strSubstring(favicon_image_link,0, altIndex) & '/>'$>
+	<$endif$>
+	<$favicon_image_link = strReplace(favicon_image_link, 'src', 'href')$>
+	<$favicon_image = strReplace(favicon_image_link, '<img', '<link rel="shortcut icon" ')$>				
+	<$favicon_image$>
+	
+
+	<$favicon_image_link=wcmElement('AppleIcon')$>
+	<$altIndex = strIndexOf(favicon_image_link,'alt')$>
+	<$if altIndex >=0$>
+		<$favicon_image_link = strSubstring(favicon_image_link,0, altIndex) & '/>'$>
+	<$endif$>
+	<$favicon_image_link = strReplace(favicon_image_link, 'src', 'href')$>
+	<$ifone_image = strReplace(favicon_image_link, '<img', '<link rel="apple-touch-icon" ')$>
+	<$ifone_image$>
+	<$ifone_image_pre = strReplace(favicon_image_link, '<img', '<link rel="apple-touch-icon-precomposed" ')$>
+	<$ifone_image_pre$>
+<@end@>
+<@dynamichtml check_cerow_domain_inc@>
+<$domainName = HTTP_HOST$>
+<$is_cerow=1$>
+<$if ( (strIndexOf(domainName,'hays.co.uk') GT -1) or (strIndexOf(domainName,'hays.ie') GT -1))$>
+	<$is_cerow=0$>
+<$endif$>	
+<@end@>
+</body></html>

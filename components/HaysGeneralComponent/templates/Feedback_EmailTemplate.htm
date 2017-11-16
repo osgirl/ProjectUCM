@@ -1,0 +1,106 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+				<$siteLabel="",websiteURL=""$>	
+				<$dSiteId = siteId$>
+				<$executeService("SS_GET_ALL_SITE_DOMAINS")$>
+				<$loop DomainMap$>			
+					<$if strEqualsIgnoreCase(siteId,DomainMap.ssSiteId)$>						
+						<$if DomainMap.ssIsDefault == 1$>
+							<$siteLabel=DomainMap.ssKey$>
+							<$websiteURL=DomainMap.ssKey$>
+						<$endif$>					
+					<$endif$>
+			<$endloop$>
+			<$siteLabel=strReplace(siteLabel,"testsg.","")$>
+			<$siteLabel=strReplace(siteLabel,"www.","")$>
+			<$websiteURL="http://"&websiteURL$> 
+				<!-- Release 7 [Home page logo]-->
+				<$inThisConfig=#env.HAYS_RESPONSE_LOGO_HOME$>
+				<$checkThisValue=siteId$>
+				<$include checkFlagValue$>
+				<$if checkFlag==1$>
+				<!-- end -->		
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="<$websiteURL & ssWeblayoutUrl('IMG_LOGO_HAYSRESPONSE')$>" alt="Hays logo" width="183" height="50"/>
+					</TD>				
+				<$else$>
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81"/>
+					</TD>
+				<$endif$>
+              </TR>
+              <TR>
+                <TD vAlign=top width="auto" height=0>
+				
+				
+		   <strong><font size="3" face="Arial" color="#009FDA"><a href="<$websiteURL$>" style="text-decoration:none"><$siteLabel$></a></font></strong>
+		  </TD>
+              </TR>
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+		       <p style="FONT-SIZE: 12px; FONT-FAMILY: Arial;">			   
+                <$lc("wwFeedbackFormText1")$>: <$name$><br/><br/>
+				<$lc("wwFeedbackFormText2")$>: <$emailaddress$><br/><br/>
+				<$lc("wwFeedbackFormText3")$>: <$telephoneno$><br/><br/>
+				<$lc("wwFeedbackFormText4")$>: <$ContactPreference$><br/><br/>
+				<$lc("wwFeedbackFormText5")$>: <$DataForm2_job_title$><br/><br/>
+				<$lc("wwFeedbackFormText6")$>: <$organization$><br/><br/>
+				<$lc("wwFeedbackFormText7")$>: <$consultantname$><br/><br/>
+				<$lc("wwFeedbackFormText8")$>: <$hays_office$><br/><br/>
+				<$if domainId !=26 and domainId !=38$>
+				<$lc("wwFeedbackFormText9")$>: <$CurrentlyRecruiting$><br/><br/>
+				<$lc("wwFeedbackFormText10")$>: <$lookingjob$><br/><br/>
+				<$endif$>
+				<$lc("wwFeedbackFormText11")$>: <$comments$>
+				<$if domainId EQ 36 OR domainId EQ 37$>
+					<$lc("wwFeedbackFormText12")$>: <$AttachedDocument$>
+				<$endif$>
+			<img src="http://www9.hays.com/eshots/EMAILMAKER/H_Corporate.jpg" alt="H" width="165" height="166" align="right" />
+			<br/><br/><br/><br/>
+			<$lc("wwHaysMailSignatureText1")$><br/>
+			<$lc("wwHaysMailSignatureText2")$>
+			</p>
+			<p style="FONT-SIZE: 10; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+	        </TD></TR>
+			<TR>
+			<TD COLSPAN="2">
+			<$lc("wwHaysMailFooterMessage","@")$>
+			</TD>
+			</TR>
+			</TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>	
+			

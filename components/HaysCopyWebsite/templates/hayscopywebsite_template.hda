@@ -1,0 +1,24 @@
+﻿<?hda version="10.1.3.5.1 (100623)" jcharset=UTF8 encoding=utf-8?>
+@Properties LocalData
+blFieldTypes=
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+@end
+@ResultSet HaysCopyWebsite_Templates
+5
+name
+class
+formtype
+filename
+description
+COPY_WEBSITE_FORM
+Pages
+Administration
+copy_website_from.htm
+main form for the copy website functionality
+COPY_RESULTS
+Pages
+Pages
+copy_results.htm
+displays copied contents in a tabular form
+@end
+

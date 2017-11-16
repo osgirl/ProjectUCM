@@ -1,0 +1,633 @@
+package infomentum.ontology;
+
+
+
+
+
+import infomentum.ontology.loader.OntologyFacade;
+import infomentum.ontology.loader.OntologyReader;
+import infomentum.ontology.utils.OntologyUtils;
+import intradoc.data.DataResultSet;
+import intradoc.data.ResultSet;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import oracle.spatial.rdf.client.jena.Attachment;
+import oracle.spatial.rdf.client.jena.GraphOracleSem;
+import oracle.spatial.rdf.client.jena.InferenceMaintenanceMode;
+import oracle.spatial.rdf.client.jena.ModelOracleSem;
+import oracle.spatial.rdf.client.jena.Oracle;
+import oracle.spatial.rdf.client.jena.QueryOptions;
+
+import org.mindswap.pellet.jena.PelletReasonerFactory;
+
+import com.hp.hpl.jena.ontology.FunctionalProperty;
+import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.ObjectProperty;
+import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.OntProperty;
+import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.Filter;
+
+
+public class Converter {
+	private OntModel model = null;
+	private Property relationship = null;
+	private String lang = "en";
+	private Individual root = null;
+	private OntClass rootClass = null;
+	private boolean usePrefix = false;
+	private Map<String,String> prefixMap = null;
+	private Map<String,String> namespaceMap = null;
+	
+	static Query GET_ROOT_ELEMENTS = createQuery();
+	static Query GET_NAV_ELEMENTS = createNavigationQuery();
+	static private final String TREE_HEADER = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
+	static private final String DELIMETER = ";";
+	
+	public Converter(OntModel model, Map<String,String> prefixMap) {
+		this.model = model;
+		this.prefixMap = prefixMap;
+		this.usePrefix = true;
+		populatePrefixes();
+	}
+	
+	public Converter(OntModel model, Map<String,String> prefixMap, String lang) {
+		this.model = model;
+		this.prefixMap = prefixMap;
+		this.usePrefix = true;
+		populatePrefixes();
+		this.lang = lang;
+	}
+	
+	public Converter(OntModel model, Property relationship, String lang, Individual root,  Map<String,String> prefixMap, boolean usePrefix) {
+		this.model = model;
+		this.relationship = relationship;
+		this.root = root;
+		this.usePrefix = usePrefix;
+		this.prefixMap = prefixMap;
+		populatePrefixes();
+		if( lang != null)
+			this.lang = lang;
+	}
+	
+	public Converter(OntModel model, Property relationship, String lang, OntClass clas, Map<String,String> prefixMap, boolean usePrefix) {
+		this.model = model;
+		this.relationship = relationship;
+		this.rootClass = clas;
+		this.usePrefix = usePrefix;
+		this.prefixMap = prefixMap;
+		populatePrefixes();
+		if( lang != null)
+			this.lang = lang;
+	}
+	
+	private void populatePrefixes() {
+		try {
+			if( usePrefix && prefixMap != null) {
+				OntologyUtils.debug("Prefixes: " + prefixMap );
+				if( prefixMap != null) {
+					namespaceMap = new Hashtable<String, String>();		
+					String prefix = null;
+					for(Iterator<String> iter =  prefixMap.keySet().iterator(); iter.hasNext();) {
+						prefix = iter.next();
+						namespaceMap.put(prefixMap.get(prefix), prefix);
+					}
+				}
+			}
+		} catch(Exception ex) {
+			OntologyUtils.debug(ex);
+		}
+	}
+	
+	private class FilterRoot extends Filter {
+		Resource ind = null;
+		
+		public FilterRoot(Resource ind){
+			this.ind = ind;
+		}
+
+		public boolean accept(Object arg0) {
+			if(ind.equals(arg0))
+				return true;
+			return false;
+		}
+		
+	}
+	
+	public DataResultSet convertToNavigationRS() {
+		OntologyUtils.debug("convertToNavigation() start...");
+		if(root != null){
+			Individual[] roots = {root};
+			return convertToNavigationRS(roots);
+		} else if(rootClass != null) {
+			List<Resource> list = getRootElements();
+			Individual[] roots = new Individual[list.size()];
+			int i =0;
+			Resource resource = null;
+			for(Iterator<Resource> it = list.iterator(); it.hasNext();) {
+				resource = it.next();
+				roots[i++] = model.getIndividual(resource.getURI());
+			}
+			OntologyUtils.debug("convertToNavigation() : roots length: " + roots.length);
+			return convertToNavigationRS(roots);
+		}
+		return null;
+	}
+	
+	public DataResultSet secureConvertToNavigationRSSecure(String[] ids){
+		OntologyUtils.debug("secureConvertToNavigationSecure() : " + this.relationship + ", " + this.rootClass );
+		Individual[] resources = new Individual[ids.length];
+		RDFNode[] nodes = new RDFNode[ids.length];
+		for(int i = 0; i<ids.length; i++){
+			OntologyUtils.debug("roots for this user : ids[] = " + ids[i]);
+			resources[i] = model.getIndividual(ids[i]);
+			nodes[i] = model.getRDFNode(resources[i].asNode());
+		}
+		Vector<Individual> vec = new Vector<Individual>();
+		Individual r = null;
+		for(int i = 0; i<resources.length; i++){
+			r = resources[i];
+			for(int m = 0; m<nodes.length; m++){
+				if( r.hasProperty(relationship, nodes[m]) ){
+					vec.remove(r);
+					break;
+				}else if (!vec.contains(r)){
+					vec.add(r);					
+				}
+			}
+		}
+		Individual[] roots = new Individual[vec.size()];
+		OntologyUtils.debug("Secure roots for this user were processed to: " + vec);
+		vec.copyInto(roots);
+		return convertToNavigationRS(roots);
+	}
+	
+	private DataResultSet convertToNavigationRS(Individual[] roots) {
+		DataResultSet resultDRS = new DataResultSet(OntologyUtils.NAV_RS_FIELDS);
+		int level = 1;
+		for( int i = 0; i < roots.length; i++){
+			Individual ind = roots[i];
+			convertToNavigationRS(ind, null, resultDRS, level);
+		}
+		return resultDRS;
+	}
+	
+	private void convertToNavigationRS(Individual ind, Individual parent, DataResultSet result, int level){
+		if( !ind.isIndividual()) 
+			return;
+		OntologyUtils.debug("addToNavigation(): Individual: " + ind);
+		String uri, label = null;
+		uri = getURI(ind);
+		label = ind.getLabel(lang);
+		if( label == null)
+			label = ind.getLocalName();
+		
+		// populate the current record
+		Vector<String> row = new Vector<String>();
+		
+		row.add(uri);//nodeId ????
+		if(parent != null) {
+			row.add(getURI(parent)); // parentNodeId ???
+		} else
+			row.add("");
+		row.add(label); // label
+		row.add(String.valueOf(level)); // level
+		row.add(uri); // href
+		row.add(ind.getRDFType(true).getURI()); // class
+		OntologyUtils.debug("navigation row: " + row);
+	//	OntologyUtils.debug("ind.getRDFType().getLocalName(): " + ind.getRDFType().getLocalName() + ", false: " + ind.getRDFType(false) + ", true: " + ind.getRDFType(true));
+		result.addRow(row);
+		
+		// loop through kids
+		QuerySolutionMap initialSettings = new QuerySolutionMap() ;
+		initialSettings.add("ind", ind) ;
+		initialSettings.add("p", this.relationship) ;
+		
+		String[] values = {"x"};
+		
+		DataResultSet kids = executeQuery(GET_NAV_ELEMENTS, initialSettings, values);
+		Individual resource = null;
+		if( kids.first()) {
+			do {
+				resource = model.getIndividual(kids.getStringValue(0));			
+				convertToNavigationRS( resource, ind, result, level+1);
+			}while( kids.next());
+		}
+		
+	}
+	
+	private String getURI(Individual ind) {
+		String namespace, prefix, uri = null;
+		if( usePrefix ){
+			namespace = ind.getNameSpace();
+			prefix = namespaceMap.get(namespace);
+			uri = prefix + ":" + ind.getLocalName();
+		} else {
+			uri = ind.getURI();
+		}
+		return uri;
+	}
+	
+	private DataResultSet executeQuery(Query query, QuerySolutionMap initialSettings, String[] values) {
+		QueryExecution qexec =   QueryExecutionFactory.create(query, this.model, initialSettings) ;
+		DataResultSet drs = new DataResultSet(values);
+		com.hp.hpl.jena.query.ResultSet results = null;
+		Vector<Resource> row = null;
+		try {
+			results = qexec.execSelect() ;
+		    for ( ; results.hasNext() ; )    {
+		    	QuerySolution sol = results.nextSolution();
+		    	for(int i = 0; i < values.length; i++){
+		    		row = new Vector<Resource>();
+		    		row.add(sol.getResource(values[i]));
+		    	}
+		    	drs.addRow(row);
+		    }
+		}
+		finally { 
+			qexec.close() ; 
+		}
+		return drs;
+	}
+	
+	public StringBuffer convertToXML() {
+		OntologyUtils.debug("convertToXML() : " + this.relationship + ", " + this.rootClass);
+		if(root != null){
+			Individual[] roots = {root};
+			return convertToXML(roots);
+		} else if(rootClass != null) {
+			List<Resource> list = getRootElements();
+			Individual[] roots = new Individual[list.size()];
+			int i =0;
+			Resource resource = null;
+			for(Iterator<Resource> it = list.iterator(); it.hasNext();) {
+				resource = it.next();
+				roots[i++] = model.getIndividual(resource.getURI());
+			}
+			OntologyUtils.debug("convertToXML() : roots: " + roots.length);
+			return convertToXML(roots);
+		}
+		return null;
+	}
+	
+	public StringBuffer secureConvertToXML(String[] ids){
+		OntologyUtils.debug("secureConvertToXML() : " + this.relationship + ", " + this.rootClass );
+		Individual[] resources = new Individual[ids.length];
+		RDFNode[] nodes = new RDFNode[ids.length];
+		for(int i = 0; i<ids.length; i++){
+			OntologyUtils.debug("ids[] = " + ids[i]);
+			resources[i] = model.getIndividual(ids[i]);
+			OntologyUtils.debug("individual: " + resources[i]);
+			nodes[i] = model.getRDFNode(resources[i].asNode());
+		}
+		Vector<Individual> vec = new Vector<Individual>();
+		Individual r = null;
+		for(int i = 0; i<resources.length; i++){
+			r = resources[i];
+			for(int m = 0; m<nodes.length; m++){
+				if( r.hasProperty(relationship, nodes[m]) ){System.out.println("Remove: " + r);
+					vec.remove(r);
+					break;
+				}else if (!vec.contains(r)){System.out.println("Add: " + r);
+					vec.add(r);					
+				}
+			}
+		}
+		Individual[] roots = new Individual[vec.size()];
+		OntologyUtils.debug("Vector " + vec);
+		vec.copyInto(roots);
+		return convertToXML(roots);
+	}
+
+	private StringBuffer convertToXML(Individual[] roots) {
+		OntologyUtils.debug("Start convertToXML(): " + roots.length );
+		StringBuffer rez = new StringBuffer(TREE_HEADER);
+		rez.append("<tree id=\"0\">");
+		for( int i = 0; i < roots.length; i++){
+			Individual ind = roots[i];
+			addXMLElement(ind, relationship, rez);
+		}
+		rez.append("</tree>");
+		OntologyUtils.debug("REZ: " + rez);
+		return rez;
+	}
+	
+	private void addXMLElement(Individual ind, Property property, StringBuffer result){
+		OntologyUtils.debug("addXMLElement(): Individual: " + ind);
+		if( !ind.isIndividual()) 
+			return;
+		String namespace, prefix, uri, label = null;
+		if( usePrefix ){
+			namespace = ind.getNameSpace();
+			prefix = namespaceMap.get(namespace);
+			uri = prefix + ":" + ind.getLocalName();
+		} else {
+			uri = ind.getURI();
+		}
+		label = ind.getLabel(lang);
+	//	OntologyUtils.debug("uri:" + uri + ", label:" + label);
+		if( label == null)
+			label = ind.getLocalName();
+		
+		result.append("<item id=\"").append(uri).append("\" text=\"").append(label).append("\" >");
+		ExtendedIterator<Resource> kids = model.listResourcesWithProperty(property, ind).filterDrop(new FilterRoot(ind));
+		
+		Individual resource = null;
+		while(kids.hasNext()) {
+			resource = model.getIndividual(kids.next().getURI());			
+			addXMLElement( resource, property,  result);
+		}
+		result.append("</item>");
+	}
+	
+	public static String getLabel(String id, OntModel model, String lang) {
+		OntologyUtils.debug("get Label for id: " + id + ", " + model.getGraph().size() + ", lang: " + lang);
+		String label = null;
+		int index = id.indexOf(":");
+		if( index > 0) {
+			String prefix = id.substring(0, index); 
+			id = model.getNsPrefixURI(prefix) + id.substring(index+1);
+			OntologyUtils.debug("get Label > generate URI: " + id);
+		}		
+		Individual ind= model.getIndividual(id);		
+		return getLabel(ind, model, lang);
+	}
+	
+	public static String getLabel(Individual ind, OntModel model, String lang) {
+		String label = null;
+		OntologyUtils.debug("get Label for individual:" + ind);
+		if( ind != null) {
+			label = ind.getLabel(lang);
+			if( label == null)
+				label = ind.getLabel(null);
+			if( label == null)
+				label = ind.getLocalName();
+		}
+		OntologyUtils.debug("get Label :" + label);
+		return label;
+	}
+	
+	
+	/**
+	 * Returs all individuals of the passed class
+	 * @param classId - ontology class id
+	 * @return
+	 */
+	public DataResultSet getIndividuals(String classId) {
+		int index = classId.indexOf(":");
+		if( index > 0) {
+			String prefix = classId.substring(0, index); 
+			classId = model.getNsPrefixURI(prefix) + classId.substring(index+1);
+		}	
+		
+		Resource cl = model.getOntClass(classId);
+		OntologyUtils.debug("getIndividuals(): classID = " + classId + ", " + cl);
+		ExtendedIterator<Individual> it = model.listIndividuals(cl);
+		Individual ind = null;
+		DataResultSet drs = new DataResultSet(new String[] {"id", "label"});
+		Vector row = null;
+		String namespace, prefix, uri = null;
+		while(it.hasNext()){
+			ind = it.next();
+			row = new Vector();
+			namespace = ind.getNameSpace();
+			prefix = namespaceMap.get(namespace);
+			uri = prefix + ":" + ind.getLocalName();
+			row.add(uri); row.add( ind.getLabel(lang));
+			drs.addRow(row);
+		}		
+		return drs;
+	}
+	
+	private static Query createQuery() {
+		StringBuffer queryBase = new StringBuffer("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>");
+		queryBase.append("PREFIX owl: <http://www.w3.org/2002/07/owl#>"); 
+		queryBase.append("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>");
+		queryBase.append("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>");
+		
+		
+		queryBase.append("SELECT DISTINCT ?x WHERE { ?x rdf:type ?clas.");
+		queryBase.append(" OPTIONAL { ?x ?p ?parent} OPTIONAL{ ?parent rdf:type ?ptype} ");
+		queryBase.append(" FILTER( !bound( ?parent )  || ?ptype != ?clas ) }");
+		return QueryFactory.create(queryBase.toString()) ;
+	}
+	
+	private static Query createNavigationQuery() {
+		StringBuffer queryBase = new StringBuffer("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>");
+		queryBase.append("PREFIX owl: <http://www.w3.org/2002/07/owl#>"); 
+		queryBase.append("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>");
+		queryBase.append("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>");		
+		
+		queryBase.append("SELECT DISTINCT ?x ?label ?type");
+		queryBase.append("WHERE { ?x ?p ?ind.?x rdfs:label ?label. ?x rdf:type ?type} ");
+		queryBase.append(" ORDER BY ?label");
+		return QueryFactory.create(queryBase.toString()) ;
+	}
+	
+	public List<Resource> getRootElements() {		
+		List<Resource>  list = new ArrayList<Resource>();
+		OntResource resource = null;
+	//	QuerySolutionMap initialSettings = new QuerySolutionMap() ;
+	//	initialSettings.add("clas", this.rootClass) ;
+	//	initialSettings.add("p", this.relationship) ;
+		OntologyUtils.debug("Class: " + this.rootClass + ", relationship: " + this.relationship);
+		/*
+		QueryExecution qexec =   QueryExecutionFactory.create(GET_ROOT_ELEMENTS, model, initialSettings) ;
+		try {
+			com.hp.hpl.jena.query.ResultSet results = qexec.execSelect() ;
+		    for ( ; results.hasNext() ; )    {
+		    	QuerySolution sol = results.nextSolution();
+		    	resource = sol.getResource("x");
+		   // 	System.out.println("Res: " + sol.getResource("x"));
+		    //	System.out.println("Type: " + sol.getResource("parent") + " : " + sol.getResource("ptype"));
+		    	if( resource.isResource() && resource.getURI() != null )
+		    		list.add( resource ) ;
+		    //   System.out.println("Res: " + soln.getResource("x"));
+		    }
+		} finally { qexec.close() ; }
+		*/
+		 ExtendedIterator it = this.rootClass.listInstances(true);
+	//	 System.out.println( this.rootClass.getLocalName() + " Roots: " + it.toList());
+	        while(it.hasNext()){
+	        	OntResource r = (OntResource)it.next();
+	        	StmtIterator iter = r.listProperties(this.relationship);
+	        	OntologyUtils.debug(r.getLocalName() + " - " + iter.toList().size());
+	        	
+	        	if(iter.hasNext()) {
+	        		do {
+		        		Statement st = iter.next();
+		        		resource = this.model.getOntResource(st.getObject().toString());
+		        	//	System.out.println("parent: " + resource);
+		        		if( !resource.hasRDFType(this.rootClass)){
+		        			list.add( r ) ;
+		        		}
+	        		} while(iter.hasNext());
+	        	} else {
+	        		list.add( r ) ;
+	        	}
+	        }
+		OntologyUtils.debug("getRootElements() : " + list);
+		return list;
+	}
+	
+	public StringBuffer convertToXMLList(String value, String metadata, boolean isParentInclude) {
+
+		OntologyUtils.debug("convertToXMLList() starting " + value);
+		StringBuffer rez = new StringBuffer(TREE_HEADER);
+		rez.append("<tree id=\"0\">");
+		if(value != null && value.trim().length() > 0) {
+			if( value.startsWith(DELIMETER)) 
+				value = value.substring(1);
+			if( value.endsWith(DELIMETER))
+				value = value.substring(0, value.length() - 1);
+			OntologyUtils.debug("Metadata value = " + value);
+			
+			Property relation = null;
+			if( isParentInclude && metadata != null) {
+				try {
+					ResultSet mapping = OntologyFacade.getOntMapping();
+					DataResultSet mappingDRS = new DataResultSet();
+					mappingDRS.copy(mapping);
+					Vector<String> row = mappingDRS.findRow(0, metadata);
+					if( row != null ){
+						relation = model.getProperty(row.get(1));
+						OntologyUtils.debug("for the full label extract relation: " + relation);
+					}
+				} catch(Exception ex){
+					OntologyUtils.debug(ex);
+				}
+			}
+			
+			Individual ind = null;
+			String a_value, prefix, label = null;
+			int index = -1;
+			String[] list = value.split(DELIMETER);
+			for(int i = 0; i < list.length; i++) {
+				a_value = list[i];
+				index = a_value.indexOf(":");
+				prefix = a_value.substring(0, index);
+				ind = model.getIndividual( prefixMap.get(prefix) + a_value.substring(index+1));
+				OntologyUtils.debug("Extracted individual: " + ind);
+				if( ind != null) {
+					label = Converter.getLabel(ind, model, lang);
+					if( label != null) {
+						if( isParentInclude && relation != null) {
+							Statement parents = ind.getProperty(relation);
+							if( parents != null ){
+								RDFNode parent = parents.getObject();
+							//	OntologyUtils.debug("parent: " + parent + ", " + parent.isURIResource());
+								if( parent != null) {
+									ind = model.getIndividual(parent.asNode().getURI());
+									String parentLabel = Converter.getLabel(ind, model, lang);
+									OntologyUtils.debug("parent label: " + parentLabel);
+									if( parentLabel != null){
+										label += " [" + parentLabel + "]";
+									}
+								}
+							}
+						}
+						rez.append("<item id=\"").append(list[i]).append("\" text=\"").append(label).append("\" ></item>");
+					}
+				}
+			}
+		}
+		rez.append("</tree>");
+		return rez;
+	}
+	
+	public StringBuffer convertToXMLList(String value) {
+		return (convertToXMLList(value, null, false));
+	}
+
+	
+	public static void main(String[] args) {
+		String	ontology_life_events = "file:///C:/Users/Natalia/Infomentum/Hays/NataliaOntology/Hays_Ontology.owl";
+		String root = "http://www.hays.co.uk/ont#Banking";
+		String relationship = "http://www.hays.co.uk/ont#ParentTerm";
+		String clas = "http://www.hays.co.uk/ont#Specialism";
+	
+		
+	//	OntModel model = owlModel.getOntModel();
+try {
+		
+	Oracle oracle = new Oracle("jdbc:oracle:thin:@localhost:1522:orclOnt", "rdfusr", "rdfusr");
+
+	//	Model model = ModelOracleSem.createOracleSemModel( oracle, "xHaysSpec" +  OntologyUtils.ONT_TBL_EXT);
+		
+	//	Resource ontClass = model.getResource(clas);
+		//Resource rootEl = model.getResource(root); 
+	//	Property property = model.getProperty(relationship);
+	//	System.out.println("OWL: "+ model.size());
+		
+		StringBuffer st = new StringBuffer("select x from table(SEM_MATCH('{?x rdf:type ?.}'");
+		st.append(", SEM_Models('XHAYSSPEC_ONT_TBL'), null, ");
+		st.append("SEM_ALIASES(SEM_ALIAS('hays', 'http://www.hays.co.uk/ont#')), null))");
+	//	StringBuffer st = new StringBuffer("SELECT ?x ?p ?y  WHERE { ?x ?p ?y }");
+	//	List<String> list = new ArrayList<String>();
+		//list.add("'<http://http://www.direct.gov.uk/ontology#dgvocabulary>'");
+		List<String> list = new ArrayList<String>();
+		list.add("<http://www.hays.co.uk/ont#Specialism>");
+	//	java.sql.ResultSet rs = oracle.executeQuery(st.toString(),0,1, list);
+	//	while(rs.next()) {
+		//	System.out.println("RS: " + rs.getString("x"));
+	//	}
+	//	rs.close();
+	//    model.close();
+	    oracle.dispose();
+
+
+	//	OntModel model = OntologyReader.readOntology("xHaysSpec");//ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF   );
+//	System.out.println("OWL: " +OntologyFacade.getOntUserClasses("XTEST"));
+		//model.read( ontology_life_events );
+		
+		
+		//Converter con = new Converter(model, property, "en", ontClass, null, true);
+	//	con.getRootElements();
+		// Then read the data from the file into the ontology model
+		
+	//	System.out.println("OWL: " + model);
+}catch(Exception ex) {System.out.println("Exception : " + ex);}
+		
+		//c.convertToXML(model, root, relationship, null);
+	//	OntModel model = owlModel.getOntModel();
+	/*	Resource rootEl = model.getResource(root); 
+		Resource root2 = model.getResource("http://www.hays.com/ontology/spec#accounts_manager_director");
+		Property property = model.getProperty(relationship);
+		OntClass clasR = model.getOntClass(clas);
+	//	RootSelector sel = new RootSelector(clasR, property, model);
+	//	Filter f = new Converter.FilterRoot(rootEl);
+	//	Individual ind = model.getIndividual("http://www.hays.com/ontology/spec#architectural_technician");
+	//	System.out.println("Def: " + root2.hasProperty(property, model.getRDFNode(rootEl.asNode())));
+	//	System.out.println("Class: " + clasR + clasR.listInstances().toList());
+		Converter con = new Converter(model, property, null, clasR);
+		String[] str = {"http://www.hays.com/ontology/spec#accounts_manager_director","http://www.hays.com/ontology/sector#acc_finance"};
+		con.secureConvertToXML(str);
+	*/	
+	
+	}
+
+}

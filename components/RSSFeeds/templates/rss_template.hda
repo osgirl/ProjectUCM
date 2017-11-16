@@ -1,0 +1,34 @@
+<?hda version="7.5.1 (050317)" jcharset=Cp1252 encoding=iso-8859-1?>
+@Properties LocalData
+blFieldTypes=
+blDateFormat=M/d/yy {h:mm[:ss] {aa}[zzz]}!mAM,PM!tAmerica/Chicago
+@end
+@ResultSet RSSFeeds_Templates
+5
+name
+class
+formtype
+filename
+description
+OPML_TEMPLATE
+User
+PortalPage
+opml_template.htm
+null
+FEED_SELECTION
+User
+PortalPage
+feed_selection.htm
+null
+GENERIC_RSS_FEED
+User
+PortalPage
+generic_rss_feed.htm
+null
+STELLENT_RSS_FEED
+User
+PortalPage
+stellent_rss_feed.htm
+null
+@end
+

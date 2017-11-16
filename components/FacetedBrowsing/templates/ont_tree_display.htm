@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+Ontology Tree
+</title>
+<$include ont_javascript_dhtmlx_tree_inc$>
+<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+</head>
+<body>
+<div id="ont_tree">
+	<table>
+		<tr class="search">
+			<td><input type="text" id="stext" width="200px"> <a href="javascript:void(0)" onclick="tree.findItem(document.getElementById('stext').value,0,1)">Find</a> | 
+				<a href="javascript:void(0)" onclick="tree.findItem(document.getElementById('stext').value)">Find Next</a> | 
+				<a href="javascript:void(0)" onclick="tree.findItem(document.getElementById('stext').value,1)">Find Prev</a></td>			
+		</tr>
+		
+		<tr>
+			<td>
+				<div id="treeboxbox_tree"></div>
+			</td>			
+		</tr>
+		<tr>
+			<td><button name="selectButton" onClick="setChoice(tree.getSelectedItemId(), tree.getSelectedItemText());return false;">Select</button></td>
+		</tr>
+	</table>
+</div>
+
+<script>
+			tree=new dhtmlXTreeObject("treeboxbox_tree","100%","100%",0);
+			tree.setSkin('dhx_skyblue');
+			tree.setImagePath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/csh_bluefolders/");
+			tree.setIconsPath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/");
+			
+			tree.enableKeySearch(true);
+			// when XML parsing is over
+			tree.attachEvent("onXLE", sort);
+
+			tree.loadXML("?IdcService=ONT_LOAD_ONT_TREE&ont_metadata=<$ont_metadata$>&language=<$language$>&country=<$country$>&idcToken=<$idcToken$>");
+
+			function sort(tree, id) {
+				tree.sortTree(id,'ASC',1);
+			}
+
+			function setChoice(id, label) {
+			 try
+			 {
+				var callback = <$callback$>;
+				callback(id, label, '<$args$>');
+
+				// close this window
+				window.close();
+
+			 }
+			 catch ( error)
+			 {
+			 alert("There is an error passing data back to parent window");
+			 }
+			}
+	</script>
+</body>
+
+</html>

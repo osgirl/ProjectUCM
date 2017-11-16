@@ -1,0 +1,77 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=Hays_SiteMap
+blDateFormat=dd/MM/yyyy {H:mm[:ss] [zzz]}!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_01_09 (MR10 Build 1)
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/hays_sitemap_events.htm
+null
+10
+query
+resources/hays_sitemap_query.htm
+Hays_SiteMap_Queries
+10
+environment
+hays_sitemap_environment.cfg
+null
+10
+service
+resources/hays_sitemap_service.htm
+Hays_SiteMap_Services
+10
+resource
+resources/hays_sitemap_handlers.htm
+null
+10
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+scheduledSystemEvent
+hays.co.uk.SiteMapBuildEvent
+scheduledSystemEvent
+10
+afterLoadRecordWebChange
+hays.co.uk.metadata.ComplexMetadataFilter
+afterLoadRecordWebChange
+10
+afterLoadRecordWebChange
+hays.co.uk.metadata.ComplexMetadataFilter
+afterLoadOfficeRecordWebChange
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+Hays_SiteMap_ScheduleEvents
+IdcScheduledSystemEvents
+action
+1
+Hays_SiteMap_Handlers
+ServiceHandlers
+null
+10
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end

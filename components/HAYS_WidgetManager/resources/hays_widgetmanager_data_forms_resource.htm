@@ -1,0 +1,1367 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<@dynamichtml widget_data_forms_javascript@>
+<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function DataFormWidgetObject(name) {	
+					this.name = name;
+				};
+
+				DataFormWidgetObject.prototype = new WidgetObjectAPI();
+
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					DataFormWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var selectEl = $ID('df_include');
+							var email = $ID('email');	
+                            var dd1 = $ID('dd1');
+							var dd2 = $ID('dd2');
+							var dd3 = $ID('dd3');
+							var dd4 = $ID('dd4');
+	
+				   	
+                   var table = $ID('fieldsTable');
+				   var form_data="";
+				   var fieldvalues="";
+				   var requiredfields="";
+				   //alert("FormFields Table:"+table);
+				   if(null!=table)
+				   {
+				   var rowCount = table.rows;
+				   var trows=rowCount.length;
+                  				  
+				    for(var j=trows-1 ; j>=1; j--) {
+					//alert(j);
+					//for(var j=trows ; j>1; j--)for(var j=1 ; j<trows; j++)
+	                var row = table.rows[j];
+                    //alert(row);  
+	                var lblText = row.cells[0].childNodes[0];
+					var chkbox1 = row.cells[1].childNodes[0];
+					var chkbox2 = row.cells[2].childNodes[0];
+					var lbl_str=lblText.innerHTML;
+					//alert(lblText.innerHTML);
+                    //alert("Check Box Value:"+chkbox1.value);
+					
+					if (lbl_str.indexOf(",")>0)
+					{					
+					var myRegExp = new RegExp(",","g"); 
+					lbl_str=lbl_str.replace(myRegExp, "#");
+					lblText.innerHTML=lbl_str;					
+					}
+	               form_data=form_data+lblText.innerHTML+",";
+				   if(null != chkbox1 && true == chkbox2.checked && true == chkbox1.checked) {
+					   form_data=form_data+chkbox1.value+","+"1"+","; 
+	                   requiredfields=requiredfields+chkbox1.value+",";
+            			//alert(fieldvalues);
+ 				     }
+					 else
+					 {
+					  form_data=form_data+chkbox1.value+","+"0"+",";
+					 }
+					
+					 
+					
+					if(null != chkbox2 && true == chkbox2.checked) {
+					    form_data=form_data+chkbox2.value+","+"1"+",";
+	                    fieldvalues=fieldvalues+chkbox2.value+",";
+						//alert(fieldvalues);
+				     } 
+					 else
+					 {
+					   form_data=form_data+chkbox2.value+","+"0"+",";
+					 }
+					 
+					
+					 
+	                }
+				   form_data=form_data.substr(0,form_data.length-1);
+                   requiredfields=requiredfields.substr(0,requiredfields.length-1);
+	               fieldvalues=fieldvalues.substr(0,fieldvalues.length-1);
+                   //alert(requiredfields); 
+				   //alert(fieldvalues); 
+				   }
+				   //alert(form_data); 
+				   
+				   var form_dropdown=$ID('FormsDropdowns');
+				   //alert("Form Dropdown ID"+form_dropdown);
+				   var form_dropdown_Option=document.getElementById('Dropdowntype').innerHTML;
+				   var table = $ID('dataTable');
+					var rowCount = table.rows;
+			        var trows=rowCount.length;
+					var dropdown_req_val="false";
+					var dropdown_addtoform_val="false";
+					var email_Dropdown="";
+					var dropdown_lbl_ID=$ID('ddwn_labelname');
+					var dropdown_req_ID=$ID('ddwn_is_required');
+					//alert("DropDown trows:"+trows);
+					if(trows > 0)
+					{
+					
+					if(true == dropdown_req_ID.checked)
+					{
+					  dropdown_req_val="true";
+					}
+
+					if(true == ddwn_addtoform.checked)
+					{
+					  dropdown_addtoform_val="true";
+					}
+					
+                    //for(var j=trows-1 ; j>=0; j--)
+					var multipleEmailadress="";
+					var row = "";
+                    var opt_Text = "";
+					var opt_Value = "";
+					var multipleoptionvalue="";
+					var isoptionvalMultiple="";
+					for(var j=0 ; j<trows; j++)
+					{
+					 row = table.rows[j];
+                     opt_Text = row.cells[0].childNodes[0];
+					 opt_Value = row.cells[1].childNodes[0];
+					 multipleoptionvalue=opt_Value.value;
+					 isoptionvalMultiple=multipleoptionvalue.indexOf(',');
+					if(isoptionvalMultiple>'-1')
+					{
+					    multipleEmailadress=multipleoptionvalue.replace(/,/gi, ':');
+					    //alert(multipleEmailadress);
+						email_Dropdown=email_Dropdown+opt_Text.value+","+multipleEmailadress+",";
+					}
+                    //alert("opt_Text:"+opt_Text.value);
+					//alert("opt_Value:"+opt_Value.value);
+	                //if(null != opt_Value)
+					//{
+					else
+					{
+				      email_Dropdown=email_Dropdown+opt_Text.value+","+opt_Value.value+",";
+				     }
+            		   //alert(fieldvalues);
+ 				     //}
+                   }
+                  email_Dropdown=email_Dropdown.substr(0,email_Dropdown.length-1);
+			       }
+				  //alert(email_Dropdown);  
+                   //************************************				   
+				   
+							var sf_include = selectEl.options[selectEl.selectedIndex].value; 
+							var quotationStr = "<Widget><Name>data_forms</Name>";
+							quotationStr += "<sf_include>" + sf_include + "</sf_include>";
+							quotationStr +=   "<Email>"+ email.value + "</Email>";
+							quotationStr +=   "<dd1>"+ dd1.value + "</dd1>";
+							quotationStr +=   "<dd2>"+ dd2.value + "</dd2>";
+							quotationStr +=   "<dd3>"+ dd3.value + "</dd3>"; 
+							quotationStr +=   "<dd4>"+ dd4.value + "</dd4>"; 
+							quotationStr +=   "<FormData>"+ form_data + "</FormData>"; 
+							quotationStr +=   "<RequiredFields>"+ requiredfields + "</RequiredFields>";
+							quotationStr += "<FormFields>" + fieldvalues + "</FormFields>";
+							quotationStr += "<DropdownType>" + form_dropdown_Option + "</DropdownType>";
+							quotationStr += "<DropdownLabel>" + dropdown_lbl_ID.value + "</DropdownLabel>";
+							quotationStr += "<DropdownRequired>" + dropdown_req_val + "</DropdownRequired>";
+							quotationStr += "<DropdownAddToForm>" + dropdown_addtoform_val + "</DropdownAddToForm>";
+							quotationStr += "<DropdownOptions>" + email_Dropdown + "</DropdownOptions>";
+							quotationStr += "<FormDataTable>" + sf_include+"_FormFields" + "</FormDataTable>";
+							quotationStr += "<DropdownOptionsTable>" + sf_include+"_DropdownOptions" + "</DropdownOptionsTable></Widget>";
+							
+							
+   						    return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				
+				DataFormWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+						//alert(xmlObject);
+						var sf_url = xmlObject.getElementsByTagName('sf_include')[0].firstChild.data || '';	
+						//alert(sf_url);
+						var sf_include = $ID('df_include');	
+							//alert(sf_include.options.length);
+						for (var i=0; i<sf_include.options.length; i++){
+							 //alert("Value:"+sf_include.options[i].value);
+							 if (sf_include.options[i].value == sf_url){
+								sf_include.options[i].selected = true;
+								//alert("SelectedValue:"+sf_include.options[i].value);
+								addOptionData();
+								break;
+							 }
+						}
+
+					};
+
+					
+			
+
+			//*****************************************************************************
+
+
+				DataFormWidgetObject.prototype.isValid = function(  )	
+				{
+					//alert("In validation function");
+					var emailAddress= $ID('dataTable');	
+					var emailRowsCount=emailAddress.rows.length;
+					var email_addtoform=$ID('ddwn_addtoform');
+					var selectEl = $ID('df_include');
+                    var emailAddress= $ID('email');					
+					var sf_include = selectEl.options[selectEl.selectedIndex].value; 
+					if( sf_include == "select a form..." ) {
+						this.errorMessage = "<$lc('wwWidgetDataFormErrorMessage')$>";
+						return false;
+					}
+				   if(emailAddress.value!="")
+				   {
+					 if(!isValidEmailAddress(emailAddress.value))
+					  {
+					   this.errorMessage = "<$lc('wwWidgetDataFormValidEmailErrorMessage')$>";
+					   emailAddress.focus();
+					   return false;
+					  }
+							     
+			       }
+				   else
+				   {
+				    this.errorMessage = "<$lc('wwWidgetDataFormEmailBlankErrorMessage')$>";
+					emailAddress.focus();
+					return false;
+				   }
+
+				   if((true == email_addtoform.checked) && (emailRowsCount<=0))
+					  {
+					   this.errorMessage = "<$lc('wwWidgetDataFormEmailDropdownOptionsErrorMessage')$>";
+					   document.getElementById('ddwn_is_required').checked="";
+					   document.getElementById('ddwn_addtoform').checked="";
+					   return false;
+					  }
+
+					return true;
+				};
+
+
+		//*******************************************************************************
+        
+
+	  //*****************************************************************************
+	   function isValidEmailAddress(emailAddress)
+	   {
+	     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+	     // return pattern.test(emailAddress);
+	     var email = emailAddress.split(',');
+		for (var i = 0; i < email.length; i++) {
+		if(email[i]!='' && email[i]!=null)
+		{ 
+		if (!(pattern.test(email[i]))) {
+		  return false;
+		  }
+		 }
+		}
+		return true;
+	   }
+	  //*****************************************************************************
+		
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new DataFormWidgetObject("data_forms")); 
+
+		
+		
+		</script>
+
+<@end@>
+
+
+
+
+<@dynamichtml widget_data_forms_form@>
+
+	<h2><$lc('wwWidgetDataFormTitle')$></h2>
+	<$if strLength(#env.DataFormsBox) GT 0 $>
+		<$ rsCreateResultSet("dataFormsRS", "lbl,inc") $>
+		<$ rsAppendRowValues("dataFormsRS", #env.DataFormsBox)$>
+		<form class="polls" name="pollsforms" id="pollsforms" method="get" action="mailto:">
+
+					<div class="text">
+						<label for="df_url"><$lc('wwWidgetDataFormIDTitle')$></label>
+
+						<select name="df_include" id="df_include" onchange="addOptionData();return false;">
+							<option value="select a form..."><$lc('wwWidgetDataFormDefaultDropdownOption')$></option>
+							<$loop dataFormsRS$>
+							<option value="<$dataFormsRS.inc$>" id="dataforms"><$dataFormsRS.lbl$></option>
+							<$endloop$>
+						</select>
+                     
+						
+					</div>
+				<br/>	
+                <div class="text">					
+					<label for="email"><em>* </em>&nbsp; <$lc('wwWidgetDataFormEmailTextBoxTitle')$></label>&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="email" name="email" type="text" size="50" style="background:#C0C0C0;" disabled/>
+                </div>
+				<br/>
+
+		    </form>
+			<br/><br/>
+			
+			
+
+			<!--<INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" />-->
+			
+			
+			<TABLE width="500px" border="2">
+			<TR>
+			<TD colspan="2"><label><$lc('wwWidgetDataFormEmailDropDownFieldType')$></label>
+			</TD>
+			<TD colspan="3"><label id="Dropdowntype"><$lc('wwWidgetDataFormEmailDropDownType')$></label>
+			</TD>
+			</TR>
+			
+			<TR>
+			<TD  colspan="2"><label><$lc('wwWidgetDataFormEmailDropdownLabel')$></label>
+			</TD>
+			<TD colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text"  style="font-weight:bold" name="ddwn_labelname" id="ddwn_labelname" value=""/>
+			</TD>
+			</TR>
+			
+			<TR>
+			<TD colspan="3">
+			<label><$lc('wwWidgetDataFormEmailDropdownRequired')$></label>&nbsp;&nbsp;
+			<input id="ddwn_is_required" type='checkbox'/>
+			</TD>
+			<TD colspan="2">
+			<label><$lc('wwWidgetDataFormEmailDropdownAddToForm')$></label>&nbsp;&nbsp;
+			<input id="ddwn_addtoform" type='checkbox'/>
+			</TD>
+			</TR>
+			<TR>
+			   <TD colspan="2">
+			   </TD>
+			   <TD width="150px"><label><$lc('wwWidgetDataFormEmailDropdownOptionText')$></label>
+			   </TD>
+			   <TD><label><$lc('wwWidgetDataFormEmailDropdownOptionValue')$></label>
+			   </TD>
+			   <TD><INPUT type="button" value="<$lc('wwWidgetDataFormAddBtnLabel')$>" onclick="addRow('dataTable')" />
+               </TD>
+           </TR>
+	        <TR>
+	            <TD colspan="2"><lable><$lc('wwWidgetDataFormEmailDropdownOptions')$></label></TD>	
+	            <TD colspan="3">
+				<TABLE id="dataTable" width="350px" border="1">
+				</TABLE>
+				</TD>
+	        </TR>
+	       </TABLE>
+		   
+		   <br/><br/>
+		   
+			<div name="frmfields_div" id="frmfields_div" style="display:none">
+			<TABLE id="fieldsTable" width="500px" border="2">
+			<th><$lc('wwWidgetDataFormFieldsHeading1')$></th>
+			<th><$lc('wwWidgetDataFormFieldsHeading2')$></th>
+			<th><$lc('wwWidgetDataFormFieldsHeading3')$></th>
+			</TABLE>
+			</div>
+		    
+
+
+			<br/><br/>
+				<div class="text" id="dropdownlists" style="display:none;">
+				   <table border="1" width="80%">
+				   <th><b><$lc('wwWidgetDataFormCDropDownHeading1')$></b></th>
+                   <th><b><$lc('wwWidgetDataFormCDropDownHeading2')$></b></th>
+
+		
+					<tr  id="tr1" style="display:none">
+					<td>
+					<label for="dd1"><$lc('wwWidgetDataFormDropDown1Label')$></label>
+					</td>
+					<td>
+					<textarea cols="60" rows="5" class="wide" id="dd1" name="dd1"></textarea>
+					</td>
+					</tr>
+					
+					<tr  id="tr2" style="display:none">
+					<td>
+					<label for="dd2"><$lc('wwWidgetDataFormDropDown2Label')$></label>
+					</td>
+					<td>
+					<textarea cols="60" rows="5" class="wide" id="dd2" name="dd2"></textarea>
+					</td>
+					</tr>
+					
+					<tr  id="tr3" style="display:none">
+					<td>
+					<label for="dd3"><$lc('wwWidgetDataFormDropDown3Label')$></label>
+					</td>
+					<td>
+					<textarea cols="60" rows="5" class="wide" id="dd3" name="dd3"></textarea>
+					</td>
+					</tr>
+
+					<tr  id="tr4" style="display:none">
+					<td>
+					<label for="dd4"><$lc('wwWidgetDataFormDropDown4Label')$></label>
+					</td>
+					<td>
+					<textarea cols="60" rows="5" class="wide" id="dd4" name="dd4"></textarea>
+					</td>
+					</tr>
+					
+					</table>
+					
+				</div>
+	<$endif$>
+
+<$include widget_data_forms_javascript $>		
+<script type="text/javascript">
+function generateFormFields(formdataString)
+{
+//alert("Hi");
+ var formtable = document.getElementById("fieldsTable");
+	  
+	   //alert("Table:"+formtable);
+	   formfieldsArray=formdataString.split(",");
+	   //formfieldsArray=formfieldsArray.reverse();
+	   
+	   var rowCount = formtable.rows;
+	   var trowCount=rowCount.length;
+	   //alert("Rows:"+trowCount);
+	    
+	if(trowCount>'1')
+	 {
+	   //alert("Entered in delete loop");
+       for(var i = trowCount; i > 1;i--)
+       {
+         document.getElementById("fieldsTable").deleteRow(i -1);
+       }
+	   //alert(trowCount);
+	   trowCount=1;
+	 }
+ 
+	   for(i=0;i<formfieldsArray.length;)
+	   {
+	     //alert(i);
+	     var row = formtable.insertRow(trowCount);
+		 //alert(row);
+	     var cell1 = row.insertCell(0);
+		 //alert(cell1);
+	     var element1 = document.createElement("label");
+		 //alert(formfieldsArray[i]);
+		 var lbl_dsply_str=formfieldsArray[i];
+		 if (lbl_dsply_str.indexOf("#")>0)
+					{					
+					var myRegExp_dsply = new RegExp("#","g");										
+					lbl_dsply_str=lbl_dsply_str.replace(myRegExp_dsply, ",");
+					element1.innerHTML=lbl_dsply_str;										
+					}
+			else
+			{
+			  element1.innerHTML = formfieldsArray[i];
+			}
+	     
+		 
+	     cell1.appendChild(element1);
+		 i=i+1;
+		 
+	     
+		 
+	     var cell2 = row.insertCell(1);
+		 var element2 = document.createElement("input");
+	     element2.type = "checkbox";
+		 
+		 element2.setAttribute('value',formfieldsArray[i]);
+		 i=i+1;
+		 //alert(formfieldsArray[i]);
+		 cell2.appendChild(element2);
+		  if(formfieldsArray[i]=='1')
+		 { 
+		   element2.setAttribute('checked','checked');
+		 }
+		 
+		 
+	     
+		 i=i+1;
+		 var cell3 = row.insertCell(2);
+	     var element3 = document.createElement("input");
+	     element3.type = "checkbox";
+		 //alert(formfieldsArray[i]);
+		 element3.setAttribute('value',formfieldsArray[i]);
+		 i=i+1;
+		 //alert(i);
+		 cell3.appendChild(element3);
+		 if(formfieldsArray[i]=='1')
+		 { 
+		   element3.setAttribute('checked','checked');
+		 }
+		 
+		 i=i+1;
+		 //alert(i);
+		 rowCount=rowCount+1;
+   } // end for loop
+}
+
+function generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+{
+   //alert("Rows:"+trowCount);
+	var dropdownoptionsString= dropdownOptionsString;
+	if(dropdownoptionsString!="")
+	{
+	 dropdownoptionsArray= dropdownoptionsString.split(",");
+	}
+	else
+	{
+	 dropdownoptionsArray= "";
+	}
+	
+   	var rowCount=tdropdownoptionsrowCount;
+	var dropdownoptionsTable=dropdownoptionstable;
+	//alert(dropdownoptionsArray);
+
+	if(rowCount>'1')
+	 {
+	   //alert("Entered in delete loop");
+       for(var i = rowCount; i >= 1;i--)
+       {
+         //alert("Dropdown Delete loop:"+i);
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	   //alert(trowCount);
+	   rowCount=0;
+	 }
+       var row="";
+	   var cell1="";
+	   var element1="";
+	   for(i=0;i<dropdownoptionsArray.length;)
+	   {
+	     //alert("In dropdown For Loop:"+i);
+	     row = dropdownoptionsTable.insertRow(rowCount);
+		 //alert(row);
+	     cell1 = row.insertCell(0);
+		 //alert(i);
+	     element1 = document.createElement("input");
+		 element1.type = "text";
+		 //alert(dropdownoptionsArray[i]);
+	     element1.setAttribute('value',dropdownoptionsArray[i]);
+	     cell1.appendChild(element1);
+		 i=i+1;
+		 
+	     
+		 
+	     var cell2 = row.insertCell(1);
+		 var element2 = document.createElement("input");
+	     element2.type = "text";
+		 
+		 var multipleoptionvalue=dropdownoptionsArray[i];
+		 var isoptionvalMultiple=multipleoptionvalue.indexOf(':');
+		 if(isoptionvalMultiple>'-1')
+		{
+		 var multipleEmailadress=multipleoptionvalue.replace(/:/gi, ',');
+		 element2.setAttribute('value',multipleEmailadress);
+		}
+		else
+		{
+		 element2.setAttribute('value',dropdownoptionsArray[i]);
+		}
+        cell2.appendChild(element2);
+		 
+		 var cell3 = row.insertCell(2);
+	     var element3 = document.createElement("input");
+	     element3.type = "button";
+         element3.value = "<$lc('wwWidgetDataFormDeleteBtnLabel')$>";
+		 element3.onclick = function () { 
+				deleteRow( this );
+		 };
+		 //element3.setAttribute('onclick','deleteRow(this)');
+	     cell3.appendChild(element3);
+		 
+		 i=i+1;
+		 //alert(i);
+		 rowCount=rowCount+1;
+   } // end for loop
+}
+
+
+
+function deleteRow(buttObject)
+{
+ //alert("Hi");
+if(document.createElement && document.childNodes)
+ {
+var thisRow = buttObject.parentNode.parentNode;
+//alert("Current row:"+thisRow);
+thisRow.parentNode.removeChild(thisRow);
+ }
+}
+
+function addRow(tableID) {
+	            //alert("Hi");
+	            var table = document.getElementById(tableID);
+	 
+	            var rowCount = table.rows.length;
+	            var row = table.insertRow(rowCount);
+	
+	            var cell1 = row.insertCell(0);
+	            var element1 = document.createElement("input");
+	            element1.type = "text";
+	            cell1.appendChild(element1);
+	 
+	            var cell2 = row.insertCell(1);
+				var element2 = document.createElement("input");
+	            element2.type = "text";
+	            cell2.appendChild(element2);
+	 
+	            var cell3 = row.insertCell(2);
+	            var element3 = document.createElement("input");
+	            element3.type = "button";
+				element3.value = "<$lc('wwWidgetDataFormDeleteBtnLabel')$>";
+				element3.onclick = function () { 
+				deleteRow( this );
+				};
+				//element3.setAttribute("onclick","deleteRow(this)");
+	            cell3.appendChild(element3);
+ 	           }
+
+
+	 
+function addOptionData()
+{
+ //alert("In addOptionData function");	
+ var DataForm1_dropdowns='';
+ var DataForm9_dropdowns='';
+ var divcontent=""; 
+ var emailTextBox = $ID('email');
+ var dd1TextArea = $ID('dd1');
+ var dd2TextArea = $ID('dd2');
+ var dd3TextArea = $ID('dd3');
+ var dd4TextArea = $ID('dd4');
+ var emailDropdownLabel = $ID('ddwn_labelname');
+ var str=ElementAPI.GetDefaultData();
+ var start_widgetname_pos = str.indexOf('<Name>');
+ var end_widgetname_pos = str.indexOf('</Name>');
+ var widgetname=str.substring(start_widgetname_pos+6,end_widgetname_pos);
+ var start_dataformname_pos = str.indexOf('<sf_include>');
+ var end_dataformname_pos = str.indexOf('</sf_include>');
+ var dataformname=str.substring(start_dataformname_pos+12,end_dataformname_pos);
+ var start_formdata_pos = str.indexOf('<FormData>');
+ var end_formdata_pos = str.indexOf('</FormData>');
+ var formdataString=str.substring(start_formdata_pos+10,end_formdata_pos);
+ var start_dropdownOptions_pos = str.indexOf('<DropdownOptions>');
+ var end_dropdownOptions_pos = str.indexOf('</DropdownOptions>');
+ var dropdownOptionsString=str.substring(start_dropdownOptions_pos+17,end_dropdownOptions_pos);
+ var dropdownoptionstable = document.getElementById("dataTable");
+ dropdownoptionsArray=dropdownOptionsString.split(",");
+ var dropdownoptionsrowCount = dropdownoptionstable.rows;
+ var tdropdownoptionsrowCount = dropdownoptionsrowCount.length;
+ var start_dropdownRequired_pos = str.indexOf('<DropdownRequired>');
+ var end_dropdownRequired_pos = str.indexOf('</DropdownRequired>');
+ var dropdownRequired=str.substring(start_dropdownRequired_pos+18,end_dropdownRequired_pos);
+ var start_dropdownaddtoform_pos = str.indexOf('<DropdownAddToForm>');
+ var end_dropdownaddtoform_pos = str.indexOf('</DropdownAddToForm>');
+ var dropdownAddtoform=str.substring(start_dropdownaddtoform_pos+19,end_dropdownaddtoform_pos);
+ var start_dataformTable_pos = str.indexOf('<FormDataTable>');
+ var end_dataformTable_pos = str.indexOf('_FormFields</FormDataTable>');
+ var dataformTable=str.substring(start_dataformTable_pos+15,end_dataformTable_pos);
+ var start_dropdownoptionsTable_pos = str.indexOf('<DropdownOptionsTable>');
+ var end_dropdownoptionsTable_pos = str.indexOf('_DropdownOptions</DropdownOptionsTable>');
+ var dropdownoptionsTable=str.substring(start_dropdownoptionsTable_pos+22,end_dropdownoptionsTable_pos);
+
+ var start_Emaildropdownlabel_pos = str.indexOf('<DropdownLabel>');
+ var end_Emaildropdownlabel_pos = str.indexOf('</DropdownLabel>');
+ var Emaildropdownlabel_val="Location of Interest";
+
+ var start_emailTextBox_pos = str.indexOf('<Email>');
+ var end_emailTextBox_pos = str.indexOf('</Email>');
+ var emailTextBox_val="";
+ var start_dd1_pos = str.indexOf('<dd1>');
+ var end_dd1_pos = str.indexOf('</dd1>');
+ var dd1_val="";
+ var start_dd2_pos = str.indexOf('<dd2>');
+ var end_dd2_pos = str.indexOf('</dd2>');
+ var dd2_val="";
+ var start_dd3_pos = str.indexOf('<dd3>');
+ var end_dd3_pos = str.indexOf('</dd3>');
+ var dd3_val="";
+ var start_dd4_pos = str.indexOf('<dd4>');
+ var end_dd4_pos = str.indexOf('</dd4>');
+ var dd4_val="";
+ 
+ 
+ document.getElementById('ddwn_is_required').checked="";
+ document.getElementById('ddwn_addtoform').checked="";
+
+
+
+ 	if(start_emailTextBox_pos>'-1')
+	{
+	 emailTextBox_val=str.substring(start_emailTextBox_pos+7,end_emailTextBox_pos);
+	}
+		
+	if(start_dd1_pos>'-1')
+	{
+	 dd1_val=str.substring(start_dd1_pos+5,end_dd1_pos);
+	}
+		
+	if(start_dd2_pos>'-1')
+	{
+	 dd2_val=str.substring(start_dd2_pos+5,end_dd2_pos);
+	}
+		
+	if(start_dd3_pos>'-1')
+	{
+	 dd3_val=str.substring(start_dd3_pos+5,end_dd3_pos);
+	}
+	
+	if(start_dd4_pos>'-1')
+	{
+	 dd4_val=str.substring(start_dd4_pos+5,end_dd4_pos);
+	}
+	
+	if(start_Emaildropdownlabel_pos>'-1')
+	{
+	 Emaildropdownlabel_val=str.substring(start_Emaildropdownlabel_pos+15,end_Emaildropdownlabel_pos);
+	}
+	
+
+	 emailTextBox.disabled = false;
+	 emailTextBox.style.background="#FFFFFF";
+	 emailTextBox.value=emailTextBox_val;
+	 emailDropdownLabel.value=Emaildropdownlabel_val;
+
+ 
+ 	
+       
+	
+
+ 
+ /*******************************Data Form1****************************/	
+ if(document.pollsforms.df_include.value == "DataForm_1")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'block';	
+     document.getElementById('tr1').style.display = '';	
+     document.getElementById('tr2').style.display = '';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;	
+	 
+	 if (dataformTable == "DataForm_1")
+	 {
+	  
+	   //alert("Entered in DataForm1 Select Form");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	
+	 //alert("DataForm1 are not same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_1Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_1")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+	 
+    
+ }
+	
+
+
+/*******************************Data Form 2****************************/		
+ else if(document.pollsforms.df_include.value == "DataForm_2")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'none';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_2")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_2Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_2")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+    
+ }	
+
+
+
+/*******************************Data Form 3****************************/		
+ else if(document.pollsforms.df_include.value == "DataForm_3")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'block';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = '';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_3")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_3Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_3")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+    
+ }	
+
+
+
+/*******************************Data Form 4****************************/		
+ else if(document.pollsforms.df_include.value == "DataForm_4")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'none';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_4")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_4Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_4")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+    
+ }	
+
+
+
+
+
+/*******************************Data Form 5****************************/		
+ else if(document.pollsforms.df_include.value == "DataForm_5")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'none';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_5")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_5Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_5")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+	 
+    
+ }	
+
+
+
+/*******************************Data Form 6****************************/		
+ else if(document.pollsforms.df_include.value == "DataForm_6")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'none';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_6")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_6Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_6")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+	 
+    
+ }	
+
+
+	
+	
+/*******************************Data Form 7****************************/		
+else if(document.pollsforms.df_include.value == "DataForm_7")
+	{
+     
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'block';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+	 document.getElementById('tr3').style.display = '';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;		
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_7")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_7Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_7")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+	 
+}
+
+/*******************************Data Form9****************************/	
+ else if(document.pollsforms.df_include.value == "DataForm_9")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'block';	
+     document.getElementById('tr1').style.display = '';	
+     document.getElementById('tr2').style.display = '';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;	
+	 
+	 if (dataformTable == "DataForm_9")
+	 {
+	  
+	   //alert("Entered in DataForm9 Select Form");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	
+	 //alert("DataForm9 are not same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_9Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_9")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+	 
+    
+ }
+
+/*******************************Data Form 2****************************/		
+ else if(document.pollsforms.df_include.value == "DataForm_8")
+	{
+	 //alert("Entered in DataForm1 if condition");
+	 document.getElementById('frmfields_div').style.display="block";
+	 document.getElementById('dropdownlists').style.display = 'none';	
+     document.getElementById('tr1').style.display = 'none';	
+     document.getElementById('tr2').style.display = 'none';	
+     document.getElementById('tr3').style.display = 'none';	
+	 document.getElementById('tr4').style.display = 'none';	
+	 
+     dd1TextArea.value=dd1_val;
+	 dd2TextArea.value=dd2_val;
+     dd3TextArea.value=dd3_val;	
+	 dd4TextArea.value=dd4_val;
+	 
+	 if (dataformTable == "DataForm_8")
+	 {
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateFormFields(formdataString)
+
+ 	 } //end if 
+	 
+    else
+	{
+	 //alert("Data Form2Forms are Not Same"); 
+ 
+	 divcontent="<$rsCreateResultSet('SelectedFields_RS', 'lblid,fieldlbl,feildid') $><$rsAppendRowValues('SelectedFields_RS', #env.DataForm_8Fields)$><TABLE id='fieldsTable' width='500px' border='2'><th><$lc('wwWidgetDataFormFieldsHeading1')$></th><th><$lc('wwWidgetDataFormFieldsHeading2')$></th><th><$lc('wwWidgetDataFormFieldsHeading3')$></th><$loop SelectedFields_RS$><tr><td><label><$lc(SelectedFields_RS.fieldlbl)$></label></td><td><input type='checkbox' value='<$SelectedFields_RS.feildid$>' checked='checked'/></td><td><input type='checkbox' value='<$SelectedFields_RS.lblid$>' checked='checked'/></td></tr><$endloop$></TABLE>";
+     document.getElementById('frmfields_div').innerHTML=divcontent;
+    }
+	
+	if (dropdownoptionsTable == "DataForm_8")
+	 {
+	  
+	   if(dropdownRequired=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_is_required').checked="true";
+	   }
+	    if(dropdownAddtoform=="true")
+	   {
+	    //alert("Entered in dropdown req if");
+	    document.getElementById('ddwn_addtoform').checked="true";
+	   }
+	  
+	   //alert("Forms are Same");
+	   //alert(formtabid);
+	   generateDropdownOptions(tdropdownoptionsrowCount,dropdownoptionstable,dropdownOptionsString)
+ 	 } //end if 
+	 
+	else
+	{
+	  for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert("Forms are not same");
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+	}
+    
+ }	
+
+
+	
+else 
+ {
+    document.getElementById('frmfields_div').style.display="none";
+	document.getElementById('dropdownlists').style.display="none";
+	for(var i = tdropdownoptionsrowCount; i >= 1;i--)
+       {
+         //alert(i);
+		 document.getElementById("dataTable").deleteRow(i -1);
+       }
+ 	}
+	
+
+ }
+</script>
+<@end@>
+
+
+
+
+<@dynamichtml widget_data_forms_display@>
+	<$inc( getValue("widgetRS", "sf_include") ) $>
+<@end@>
+
+</body></html>

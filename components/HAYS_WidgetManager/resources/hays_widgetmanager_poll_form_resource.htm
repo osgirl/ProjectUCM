@@ -1,0 +1,113 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_poll_form_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function PollFormWidgetObject(name) {	
+					this.name = name;
+				};
+
+				PollFormWidgetObject.prototype = new WidgetObjectAPI();
+
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					PollFormWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var pf_url = WCM.DHTML.GetAttribute("pf_url", 'value') || '';
+
+							var quotationStr = "<Widget><Name>poll_form</Name>";
+							quotationStr += "<URL>" + pf_url + "</URL></Widget>";
+
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				PollFormWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+						var pf_url = xmlObject.getElementsByTagName('URL')[0].firstChild.data || '';	
+						WCM.DHTML.SetAttribute("pf_url", 'value', pf_url);
+					};
+
+					
+			
+
+			//*****************************************************************************
+
+
+				PollFormWidgetObject.prototype.isValid = function(  )	
+				{
+				
+					if( WCM.DHTML.GetAttribute("pf_url", 'value') .length == 0 ) {
+						this.errorMessage = "URL must be set";
+						return false;
+					}
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new PollFormWidgetObject("poll_form")); 
+
+		</script>
+
+
+
+<@end@>
+
+
+
+<@dynamichtml widget_poll_form_form@>
+	<h2>Polls &amp; forms</h2>
+	<form class="polls" method="get" action="#">
+				<div class="text">
+					<label for="pf_url">Poll or form URL</label>
+					<input id="pf_url" name="pf_url" type="text" />
+				</div>	
+	</form>
+		<$include widget_poll_form_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_poll_form_display@>
+	<$if strLength(title) lt 1 and strLength(content) lt 1$>
+		<div class="panel <$#active.dropDownColoursValue$>">
+			<div class="header"><div class="content"><h2></h2></div></div>
+			<div class="body">
+				<div class="content">
+					<div class="wysiwyg"></div>
+	<$endif$>
+	<div class="prezza-poll">
+		 <script language="javascript" src="<$getValue("widgetRS","URL") $>"></script>
+	</div>
+	<$if strLength(title) lt 1 and strLength(content) lt 1$>
+				</div>
+			</div>
+			<div class="footer"><div class="content">&nbsp;</div></div>
+		</div>
+	<$endif$>
+<@end@>
+
+
+</body></html>

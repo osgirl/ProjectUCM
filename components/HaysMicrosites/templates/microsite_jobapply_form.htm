@@ -1,0 +1,537 @@
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  	<meta name="title" content="<$lc('wwMSJobApplyFormTitle')$> "/>  
+ 
+  	<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" /> 
+	<title><$lc('wwMSJobApplyFormTitle')$></title>
+
+   	<!--css -->
+	<link rel="shortcut icon" href="<$HttpRelativeWebRoot$>HaysGeneralComponent/assets/img/favicon.ico" />
+	<link rel="stylesheet" type="text/css"  href="/haysassets/HaysGeneralComponent/assets/css/ucm_regions_r6.css" />
+	<link rel="stylesheet" type="text/css"  href="/cs/HaysMicroSites/assets/css/italy_jobapply.css" />
+	<link rel="canonical" href="http://www.hays.co.uk" /> 
+
+<!--[if IE]>
+	<style type="text/css">
+	div.italyinline
+	{
+	
+    float: left;
+    margin: 0 10px 0 0;
+    vertical-align: top;
+    width: 80px;
+    height: 20px;
+    zoom: 1;
+	}
+	
+	input.hide
+  {
+	  position:relative;
+	  top:-30px;
+	  left:0px;
+	  -moz-opacity:0;
+	  filter:alpha(opacity: 0);
+	  opacity: 0;
+	  z-index: 2;
+	  width:70px!important;
+	  height: 25px!important;
+	  border-width:0px;
+	  
+  }
+	</style>
+<![endif]-->
+	
+</head>
+<body id="pg_3col">
+  
+ <$if #active.submitted$>
+ 			<$if strLength(job_id) GT 0$>
+				<$exec rsRemove("DOC_INFO")$>
+				<$dDocName=job_id$>
+				<$executeService("DOC_INFO_BY_NAME")$>
+				<$applicationEmail=strTrimWs(DOC_INFO.xApplicationEmail)$>
+				<$jobTitle=DOC_INFO.dDocTitle$>
+				<$jobReference=DOC_INFO.xRecordId$>
+				<$crXmlToResultSet(DOC_INFO.xJobOwner, "rstMicrositeJobOwner")$>	
+				<$if strLength(applicationEmail)<=0$>
+					<$if rsFirst("rstMicrositeJobOwner")$>
+						<$applicationEmail=rstMicrositeJobOwner.email$>
+					<$endif$>
+				<$endif$>
+			<$endif$>
+			<$executeService("HAYS_MICROSITE_APPLY")$>	
+			<$if strEqualsIgnoreCase(mailResponse,"true")$>
+				<div class="container_24" style="padding-left: 35px;">
+			 
+				<div class="grid_14">
+				<div id="pl_main"> 
+				 <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+					  <TBODY>
+						  <TR>
+							<$if strEquals(micrositeId,'haysittest') or strEquals(micrositeId,'HAYSITC')$>
+							<$else$>
+							<TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />
+							<$endif$>
+							</TD>
+						  </TR>
+					  <TR>                
+					  </TR>
+					  </TBODY>
+				  </TABLE>
+				 
+				  	
+				  <$if strEquals(micrositeId,'haysittest') or strEquals(micrositeId,'HAYSITC')$>
+				  <form  class="hays_form"> 				 
+					<fieldset class="rc_grey">					
+						<div id="ConfirmationMessage">
+							<h2>Grazie per avere inviato la Sua candidatura.</h2>
+						<br/>
+							<p>Le abbiamo inviato una email di conferma all'indirizzo indicato. Nel caso in cui il Suo profilo risulterà in linea, un consulente si metterà in contatto con Lei.<p>
+						</div> 
+						<div>       
+						</p> 
+					  </div> 
+					</fieldset>
+				<div class="s_mrg">
+				 
+				 <input style="text-align: center;" onclick="self.close();" id="submitbutton" value="Chiudi" class="button">					 
+				 </div></form>
+				  <$else$>
+				 <form  class="hays_form"> 				 
+					<fieldset class="rc_grey">					
+						<div id="ConfirmationMessage">
+							<h2><$lc('wwMSApplicationConfirmation1')$></h2>
+						<br/>
+							<p><$lc('wwMSApplicationConfirmation2')$><p>
+						</div> 
+						<div>       
+						</p> 
+					  </div> 
+					</fieldset>
+				<div class="s_mrg">
+				 
+				 <input style="text-align: center;" onclick="self.close();" id="submitbutton" value=<$lc('wwCloseWindow')$> class="button">					 
+				 </div></form>
+				 <$endif$>
+				 <!---->
+			<div>  <div><div> 
+			<$else$>
+			<script type="text/javascript">
+				function HAYSform() {
+				
+					if (window.jQuery && jQuery.isReady) {	       
+						var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+						$("#dialog").html(dialogMessage).dialog({
+						autoOpen:false,
+						modal:true,
+						resizable:false,
+						position: 'center',
+						buttons: {
+							Ok:function(){
+								$(this).dialog('close');
+							}
+                        }                          
+					 });
+					$("#dialog").dialog('open');
+					}
+					else
+					{
+						window.setTimeout(HAYSform, 100);
+					}
+				 }
+				HAYSform();
+			</script>
+		  <$endif$>
+<$endif$>	 
+ <div id="dialog"><p></p></div>
+ 
+<$if isFalse(strEqualsIgnoreCase(#active.submitted,"false")) AND isFalse(strEqualsIgnoreCase(mailResponse,"true"))$>
+ 
+
+<div class="container_24" style="padding-left: 35px;">
+<div class="grid_14">
+<div id="pl_main"> 
+ [[%<img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />%]]
+
+					
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+
+ 
+   if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+		$.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+	  
+		
+		 
+		jQuery.validator.addMethod("fileext", function (val, element) {
+		if($('#AttachedDocument').val().length == 0)
+		{
+			return true;
+		}
+        var ext = $('#AttachedDocument').val().split('.').pop().toLowerCase();
+        var allow = new Array('doc','docx','rtf','txt');
+        if (jQuery.inArray(ext, allow) == -1) {
+		  return false;
+        } else {
+            return true;
+        }
+    }, "<$lc('wwJsmandatory_fileformat')$>");
+		
+		/*jQuery.validator.addMethod('filesize', function(value, element, param) 
+		{
+			if($('#AttachedDocument').val().length == 0)
+			{
+				return true;
+			}
+			else
+			{
+				alert(element.files[0]);
+				return this.optional(element) || (element.files[0].size <= param)
+			}
+		});*/
+		$("#application_form").validate({
+			focusInvalid: true,
+			onkeyup: false,			 
+			rules:{			
+			    AttachedDocument:{fileext:true},  
+				email:{email:true,maxlength:60},
+				full_name:{maxlength:60},
+				sur_name:{maxlength:60},
+				mobile:{maxlength:60},
+				daytimephone:{maxlength:60},
+				addinfo:{maxlength:4000},
+				policy1:{required:true},
+				policy2:{required:true}
+		},
+
+			 
+			messages:{			 
+				full_name:{
+					required:"<$lc('wwJsmandatory_msg_input')$>",
+					maxlength:"<$lc('wwMSMaxCharactersLimit','60')$>"
+				},
+				sur_name:{
+					required:"<$lc('wwJsmandatory_msg_input')$>",
+					maxlength:"<$lc('wwMSMaxCharactersLimit','60')$>"
+				},
+				email:{
+					required:"<$lc('wwJsmandatory_msg_input')$>",
+					email:"<$lc('wwJsmandatory_emailformate')$>",
+					maxlength:"<$lc('wwMSMaxCharactersLimit','60')$>"
+				},				
+				mobile:{
+					required:"<$lc('wwJsmandatory_msg_input')$>",
+					maxlength:"<$lc('wwMSMaxCharactersLimit','60')$>"
+				},
+				waytocontact:{
+					required:"<$lc('wwJsmandatory_msg_input')$>"
+				},
+				//AttachedDocument:{
+					//filesize:"<$lc('wwMSMaxFileSizeLimit',500)$>"
+				//},
+				daytimephone:{
+					maxlength:"<$lc('wwMSMaxCharactersLimit','60')$>"
+				},
+				addinfo:{
+					maxlength:"<$lc('wwMSMaxCharactersLimit','4000')$>"
+				},
+				policy1:{
+					required:"<$lc('wwconfirm_privacy_text')$>"
+				},
+				policy2:{
+					required:"<$lc('wwaccept_T_and_C')$>"
+				}
+			},
+			
+			errorPlacement: function(error, element) {				 
+			if (element.attr('name') == "policy1" || element.attr('name') == "policy2") {
+					error.insertAfter($("#" + element.attr('name')));
+				}
+				else
+					error.insertAfter(element);
+				 
+			}
+			 
+		}); 
+	}
+	
+	
+	
+	else {
+			window.setTimeout(HAYSform, 100);
+	}
+	
+ 
+	
+	
+}
+	HAYSform()
+//--><!]]>
+function buttonPush (buttonStatus)
+  {
+  if (buttonStatus == "depressed")
+		document.getElementById("pseudobutton").style.borderStyle = "inset";
+  else
+		document.getElementById("pseudobutton").style.borderStyle = "outset";
+  }
+function getFile(){
+	 var a = document.getElementById('AttachedDocument');
+	  var theSplit = a.value.split('\\');
+	document.getElementById('fileLabel').innerHTML=theSplit[theSplit.length-1];
+}
+</script>
+
+
+ 
+<br>
+
+<$if strLength(job_id) GT 0$>
+	<$exec rsRemove("DOC_INFO")$>
+	<$dDocName=job_id$>
+	<$executeService("DOC_INFO_BY_NAME")$>
+	<$applicationEmail=strTrimWs(DOC_INFO.xApplicationEmail)$>
+	<$jobTitle=DOC_INFO.dDocTitle$>
+	<$jobReference=DOC_INFO.xRecordId$>
+	<$crXmlToResultSet(DOC_INFO.xJobOwner, "rstMicrositeJobOwner")$>	
+	<$if strLength(applicationEmail)<=0$>
+		<$if rsFirst("rstMicrositeJobOwner")$>
+			<$applicationEmail=rstMicrositeJobOwner.email$>
+		<$endif$>
+	<$endif$>
+<$endif$>
+
+	
+	
+	
+	<$itOptional = "Opzionale"$>
+	<$itApply = "Candidarsi"$>
+	<$itApplicationForm = "MODULO DI RICHIESTA"$>
+	
+	
+	<$itChooseFile="Carica file"$>
+	<$itNoFileSelected="Nessun file selezionato"$>
+	
+	
+	
+		
+<div class="content_main">
+
+	<h1 style="font-weight: normal;"><$lc('wwGCApplyJobText1')$></h1>
+	<p><em class="red">* </em> <$lc('wwGCRequiredField')$></p>
+
+</div>
+<form id="application_form" class="hays_form"  method="post" enctype="multipart/form-data"> 
+  <input type="hidden" id="DataFormName" value="CustomForm1" name="DataFormName"/>  
+  [[%--<input type="hidden" id="Subject" value="Job Application <$jobTitle$> <$jobReference$>" name="Subject"/>--%]]
+  <input type="hidden" id="emailTemplate" value="microsite_jobapply_jobseeker,microsite_jobapply_employer" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  [[%--<input type="hidden" id="employerEmailID" value="<$applicationEmail$>" name="employerEmailID"/>--%]] 
+  
+  <input type="hidden" id="job_ID" value="<$job_id$>" name="job_ID"/>
+  <input type="hidden" id="siteLocale" value="<$xLocale$>" name="siteLocale"/>
+  <input type="hidden" id="micrositeId" value="<$micrositeId$>" name="micrositeId"/>
+  <input type="hidden" id="xPostingType" value="<$xPostingType$>" name="xPostingType"/>
+  <input type="hidden" id="xRecordId" value="<$xRecordId$>" name="xRecordId"/>
+  <input type="hidden" id="xApplicationEmail" value="<$applicationEmail$>" name="xApplicationEmail"/>
+  
+  <input type="hidden" id="xIsAdaptRecord" value="<$xIsAdaptRecord$>" name="xIsAdaptRecord"/>
+  <input type="hidden" name="submitted" value="1" /> 
+	
+	<fieldset class="rc_grey">
+	<legend><$lc('wwGCApplyJobText1')$></legend>
+	<ol class="abc">
+ 		<li>
+			<div class="grid_4 alpha">
+				<label for="full_name"><em>* </em><$lc('wwMSFirstName')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="full_name" name="full_name"/>
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="sur_name"><em>* </em><$lc('wwMSLastName')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="sur_name" name="sur_name" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="email"><em>* </em><$lc('wwMSEmail')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="email" name="email" />
+			</div>
+		</li>
+		
+		<li>
+			<div class="grid_4 alpha">
+				<label for="mobile"><em>* </em><$lc('wwMSMobileNo')$></label>
+			</div>
+			
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="mobile" name="mobile" />
+			</div>
+		</li>
+		
+		<li>
+			<div class="grid_4 alpha">	
+			<label for="daytimephone"><$lc('wwMSDayPhoneNo')$></label>
+			</div>
+			
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="" id="daytimephone" name="daytimephone" />
+			</div>
+		</li>
+
+		<li style="display: block;" class="" id="li6">
+		   <div class="grid_4 alpha">
+				<label for="wtc" id="wtc"><em>* </em><$lc('wwMSBestWayToContact')$></label>
+			</div>
+			 <div class="grid_5">
+				<select name="waytocontact" id="waytocontact" class="mandatory">
+					
+					<option value=""><$lc('wwMSBestWayOption1')$></option>	
+					<option value="1"><$lc('wwMSBestWayOption2')$></option>	
+					<option value="2"><$lc('wwMSBestWayOption3')$></option>	
+					<option value="3"><$lc('wwMSBestWayOption4')$></option>
+					
+				</select>
+			</div>
+		 </li>
+		 
+		 <li style="display: block;" class="" id="li7">
+		   <div class="grid_4 alpha">
+				<label for="AttachedDocument" id="lbl_add_cv"><$lc('wwMSUploadCV')$> </label>
+			</div>
+		<div class="grid_8 suffix_2 omega">   
+		   <$if strEquals(locale,'it-ITL')$>
+		     <div class="italywrap">
+	      <div class="italyinline" id="italystyle" > 
+		  <input type="button" class="1" id="pseudobutton" value="Carica file">
+		 
+		  </div>
+           	 <div class="italyinline" id="fileLabel"><$itNoFileSelected$></div>
+		  </div>
+		
+			<input type="file" name="AttachedDocument" class="hide" id="AttachedDocument" onmousedown="buttonPush('depressed');" onmouseup="buttonPush('normal');" onmouseout="buttonPush('phased');" onchange="getFile();">			
+			
+			<$else$>
+			
+			<input type="file" name="AttachedDocument" id="AttachedDocument" class="" />
+			<$endif$>
+			<div><span class="input_info"><$lc('wwfile_type')$></span></div>
+			
+			
+
+		</div>
+		 </li>
+
+		<li>
+			<div class="grid_4 alpha">
+				<label for="addinfo"><$lc('wwMSAdditionalInfo')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<textarea class="" id="addinfo" name="addinfo" ></textarea>
+			</div>
+		</li>		  
+	</ol> 
+</fieldset>
+<!-- MR12 RELAY 16401 Start-->
+ <div class="s_mrg">
+	<$if strEquals(micrositeId,'haysittest') or strEquals(micrositeId,'HAYSITC') or strEquals(micrositeId,'HRESPONRU') or strEquals(micrositeId,'HRESPONPL') or strEquals(micrositeId,'HRESPONCZ') or strEquals(micrositeId,'HRESPONHU') $>
+	<$if strEquals(micrositeId,'HAYSITC')$>
+	<div id="policy1">
+	<input type="checkbox" name="policy1" value=""> <label><em>* </em><$lc('wwPolicy1Text')$></label>
+	</div>
+<br/>
+		<div id="policy2">
+	<input type="checkbox" name="policy2" value=""> <label><em>* </em><$lc('wwPolicy2Text')$></label>
+	</div>
+	<br/>
+	<$else$>
+	<p><$lc('wwAgreePopUp')$></p>
+	<$endif$>
+		
+	<input type="button" class="button"  value="<$lc('wwNoAgree')$>" id="NoAgreePopUp"> 
+	<input type="submit" class="button" value="<$lc('wwMSApplyJobButton')$>" id="submitbutton">
+	
+	<style>
+	.ui-dialog .ui-dialog-content{min-height: 50px !important}
+	</style>
+ <!-- MR12 RELAY 16401 END-->
+	<$else$>
+	<input type="submit" class="button" value="<$lc('wwMSApplyJobButton')$>" id="submitbutton">
+	<$endif$>
+ </div>
+ <!-- MR12 RELAY 16401 Start-->
+<script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+function createPopUp() {
+	if (window.jQuery && jQuery.ui && jQuery.isReady) {
+		$("#NoAgreePopUp").click(function() {
+		$("#PopUp").dialog('open');
+			return false;
+		});
+			
+			
+		var button_ok = 'Ok';
+		var buttons = {}; 
+	
+		buttons[button_ok] = function(){$(this).dialog('close');}
+					
+		$("#PopUp").dialog({
+					autoOpen:false,
+					draggable:false,
+					modal:true,
+					resizable:false,
+					buttons: buttons,
+					title: ' '					
+					});				
+
+				}
+				else {
+					window.setTimeout(createPopUp, 100);
+				}
+			}
+			
+			createPopUp();
+			//--><!]]>
+			</script>
+			
+	 <div id="PopUp" style="min-height: 50px !important">
+	<!--	<p><$itNotAgreePopUp$></p>-->
+	<$if strEquals(micrositeId,'haysittest') or strEquals(micrositeId,'HAYSITC') or strEquals(micrositeId,'HRESPONRU') or strEquals(micrositeId,'HRESPONPL') or strEquals(micrositeId,'HRESPONCZ') or strEquals(micrositeId,'HRESPONHU') $>
+	<p><$lc('wwNotAgreePopUp')$></p>
+	<$endif$>
+		</div>
+
+
+
+ <!-- MR12 RELAY 16401 END-->
+<div class="clear"></div>
+</form></div></div></div>
+ 	 <$endif$>
+ 
+  <p><!--/end footer -->
+   <!--BAU REL-4 21118-->
+<$include include_jquery_js$>
+<!--BAU REL-4 21118-->
+   <script src="/haysassets/HaysGeneralComponent/assets/js/document_r6.js" type="text/javascript"></script>
+  </p>
+</body>
+</html>

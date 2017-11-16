@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+SangamExternalIntegration staticResTable
+</title>
+</head>
+<body>
+<!-- This table is required to integrate the custom Java code in
+     DatabaseProviderHandler into the content server.
+
+     The 'serviceName' is Service.  This means that ALL services
+     can execute the custom code in DatabaseProviderHandler.
+
+     The 'handler' is "DatabaseProvider.DatabaseProviderHandler", the
+     full path to the Java code that is executed.
+
+     The 'searchOrder' is set to 100, since this code will be rarely
+     executed.  If the code is frequently executed, you may want
+     to use 5.  -->
+<@table SangamExternalIntegrationHandlers@>
+<table border=1><caption><strong>
+<tr>
+<td>serviceName</td><td>handler</td><td>searchOrder</td>
+</tr>
+<tr>
+<td>Service</td>
+<td>hays.sangamexternalintegration.ExternalIntegration</td>
+<td>100</td>
+</tr>
+</table>
+<@end@>
+</body></html>

@@ -1,0 +1,280 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+FacetedBrowsing htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml custom_xui_result_heading@>
+<style TYPE="text/css">
+  tr.drillDownItems
+  {
+    font-family: tahoma;
+    font-size: 11px;
+  }
+  td.drillDownItems
+  {
+    padding: 1px 10px;
+  }
+  a.drillDownItems
+  {
+    color: #003399;
+    text-decoration: none;
+  	font-family: tahoma;
+  	font-size: 11px;
+  }
+  span.drillDownItems
+  {
+    color: #000;
+  }
+  a:hover.drillDownItems
+  {
+    text-decoration: underline;
+  }
+</style>
+	<tr><td colspan=2 style='text-align:center;height:24px;background:#E2E8F3;border-left:1px solid #636661;border-right:1px solid #636661;border-bottom:1px solid #636661'>
+<table id="drillDownMenu" style='text-align:center;margin-left:auto;margin-right:auto'  >
+<tr><td><span style="color:#3E403D"><$lcCaption("wwFilterByCategory")$></span></td>
+<$if FilterFields$>
+	<$rsMakeFromString("FilterFieldsRset", FilterFields)$>
+<$endif$>
+
+<$loop SearchResultNavigation$>
+	<td style="padding:0px 11px"> 
+ 	<$if (FilterFields and rsFindRowPrimary("FilterFieldsRset", SearchResultNavigation.drillDownFieldName))
+ 			or SearchResultNavigation.categoryCount > 1$>
+ 		<span style="height:100%;border:none"  id='<$drillDownFieldName$>_parent'onmouseout="setInParent('<$drillDownFieldName$>_parent', false);hideData('<$drillDownFieldName$>_parent', '<$drillDownFieldName$>', false)" onmouseover="showData(this, '<$drillDownFieldName$>')" class="menuA_TopCollectionItemTable" >
+		<img src="<$HttpSkinRoot$>/headMenu_ArrowDown.gif" style="padding-right:4px;vertical-align:middle"/>
+		<span style="vertical-align:middle">
+		
+		<$if SearchResultNavigation.categoryCount > 1$>
+			<$lc(drillDownDisplayValue)$>
+		<$else$>
+			<$rsetName = "SearchResultNavigation" & drillDownFieldName$>
+			<$if rsFirst(rsetName)$>
+				<$firstItemValue = getValue(rsetName, "drillDownOptionValue")$>
+			<$endif$>
+			<$displayValue = firstItemValue$>
+			<$if not firstItemValue$>
+				<$displayValue = lc("wwNone")$>			
+			<$endif$>
+				<$lcCaption(drillDownDisplayValue) & displayValue$>
+		<$endif$>
+		</span>
+		</span>
+		<span id="<$drillDownFieldName$>" style="display:none" class="menuA_TopChildCollectionContainer" onmouseover="setInChild('<$drillDownFieldName$>_parent', true)" onmouseout="setInChild('<$drillDownFieldName$>_parent', false);hideData('<$drillDownFieldName$>_parent', '<$drillDownFieldName$>', false)">
+		<div class="menuA_TopChildCollectionOutline">
+		
+		<$if SearchResultNavigation.categoryCount > 1$>
+			<table class="menuA_TopChildListTable">
+			<$rsetName = "SearchResultNavigation" & drillDownFieldName$>
+			<$if rsFirst(rsetName)$>
+				<$drillDownRowCount = getValue(rsetName, "#numRows")$>
+				<$newDrillDownRow = "1"$>
+				<$drillDownValueColumnCount = 0$>
+				<$loopwhile rsIsRowPresent(rsetName)$>
+					<$if isTrue(newDrillDownRow)$>
+						<tr class="drillDownItems">
+					<$endif$>
+					<$displayValue = getValue(rsetName, "drillDownOptionValue")$>
+					<td class="drillDownItems">
+						<$if not displayValue$>
+							<$displayValue = lc("wwNone")$>
+						<$endif$>
+						<a class="drillDownItems" href="javascript:addQueryFilter('<$drillDownFieldName$>', '<$getValue(rsetName, "drillDownOptionValue")$>')"><$displayValue$><span class="drillDownItems" >- (<$ getValue(rsetName, "count")$>)</a>
+					</td>
+					<$exec rsNext(rsetName)$>
+					<$if drillDownValueColumnCount == 3$>
+						<$drillDownValueColumnCount = 0$>
+						<$newDrillDownRow = 1$>
+						</tr>
+					<$else$>
+						<$drillDownValueColumnCount = drillDownValueColumnCount + 1$>
+						<$newDrillDownRow = 0$>
+					<$endif$>
+				<$endloop$>
+				<$if isFalse(newDrillDownRow)$>
+					</tr>
+				<$endif$>
+			<$endif$>
+			</table>
+		<$else$>
+			<table class="menuA_TopChildListTable"><tr><td class="drillDownItems">
+			<a href="javascript:removeQueryFilter('<$drillDownFieldName$>', '<$firstItemValue$>')"><$lc("wwRemoveFilter")$></a>
+			</td></tr></table>
+		
+		<$endif$>
+		</div>
+		</span>
+	<$else$>
+		<$firstItemValue = ""$>
+		<$rsetName = "SearchResultNavigation" & drillDownFieldName$>
+		<$if rsFirst(rsetName)$>
+			<$firstItemValue = getValue(rsetName, "drillDownOptionValue")$>
+		<$endif$>
+		<$if firstItemValue$>
+			<span style="color:blue"><$lcCaption(drillDownDisplayValue) & firstItemValue$></span>
+		<$endif$>
+	<$endif$>
+	</td>
+<$endloop$>
+</tr></table></span>
+</td>
+</tr>
+<script>
+	function showData(parent, childId)
+	{
+		var child = document.getElementById(childId);
+		setInParent(parent.id, true);
+		parent.className = "menuA_TopCollectionItemTable_over";  
+		displayMenu(parent, child, 'vertical');
+	}
+	function hideData(parentId, childId, timedOut)
+	{
+		var inMenu = getMouseState(parentId);
+		//debugger;
+		if (inMenu == 0)
+		{
+			if (!timedOut)
+			{
+				var func = "hideData('" + parentId + "','" + childId + "', true)";
+				setTimeout(func, 100);
+			}
+			else 
+			{
+				var child = document.getElementById(childId);
+				hideMenu(child);
+				var parent = document.getElementById(parentId);
+				//parent.className = "headMenu_TopCollectionItem"; 
+				parent.className = "menuA_TopCollectionItemTable";
+			}
+		}
+	}
+	
+	function setInParent(parentId, isInParent)
+	{
+		var inMenu = getMouseState(parentId);
+		inMenu = isInParent? inMenu | 0x10 :inMenu & 0x01;
+		setMouseState(parentId, inMenu);
+	}
+	
+	function setInChild(parentId, isInChild)
+	{
+	//debugger;
+		var inMenu = getMouseState(parentId);
+		inMenu = isInChild? inMenu | 0x01 :inMenu & 0x10;
+		setMouseState(parentId, inMenu);
+	}
+	
+	var mouseState = {};
+	function getMouseState(parentId)
+	{
+		if (mouseState[parentId] == null)
+		{
+			mouseState[parentId] = 0x00;
+		}
+		return mouseState[parentId];
+	}
+	
+	function setMouseState(parentId, state)
+	{
+		mouseState[parentId] = state;
+	}
+	
+	var queryFilter = '<$#active.QueryFilter$>';
+	var filterFields = '<$#active.FilterFields$>';
+	function addQueryFilter(field, value)
+	{
+		if (queryFilter != null && strTrim(queryFilter).length > 0)
+		{
+			queryFilter += " <AND> ";
+		}
+		// CUSTOMISED 'Contains' instead of 'Matches'
+		queryFilter += field + ' <Contains> `' + value + '`';
+		if (filterFields != null && filterFields.length > 0)
+		{
+			filterFields += ",";
+		}
+		filterFields += field;
+		window.location = resetQueryFilter(queryFilter, filterFields);
+	}
+	function removeQueryFilter(field, value)
+	{
+		var hasAnd = true;
+		var beginIndex = queryFilter.indexOf("<AND> " + field);
+		if (beginIndex < 0)
+		{
+			beginIndex = queryFilter.indexOf(field);
+			hasAnd = false;
+		}
+		
+		if (beginIndex >=0)
+		{
+			endIndex = queryFilter.indexOf("`" + value + "`", beginIndex);
+			if (endIndex > 0)
+			{
+				endIndex += ("`" + value + "`").length;
+				if (hasAnd == false && queryFilter.indexOf("`" + value + "` <AND>", beginIndex) > 0)
+				{
+					endIndex += 6;
+				}
+				var tmp = queryFilter.substr(0, beginIndex);
+				if (endIndex < queryFilter.length)
+				{
+					tmp += queryFilter.substr(endIndex);
+				}
+				queryFilter = tmp;
+			}
+		}
+		
+		// set filterFields;
+		beginIndex = filterFields.indexOf("," + field);
+		if (beginIndex < 0)
+		{
+			beginIndex = filterFields.indexOf(field);
+		}
+		if (beginIndex >= 0)
+		{
+			endIndex = filterFields.indexOf(",", beginIndex + 1);
+			if (endIndex < 0)
+			{
+				filterFields = filterFields.substr(0, beginIndex);
+			}
+			else
+			{
+				filterFields = filterFields.substr(0, beginIndex) + filterFields.substr(endIndex + 1);
+			}
+		}
+		window.location = resetQueryFilter(queryFilter, filterFields);
+			
+	}
+	
+	function resetQueryFilter(filter, fields)
+	{
+		var urlStr = document.URL;
+		urlStr = updateUrlStr(urlStr, "QueryFilter", filter);
+		return updateUrlStr(urlStr, "FilterFields", fields);
+	}
+	
+	function updateUrlStr(urlStr, key, value)
+	{
+		beginIndex = urlStr.indexOf("&" + key + "=");
+		if (beginIndex >= 0)
+		{
+			endIndex = urlStr.indexOf("&", beginIndex + 1);
+			var tmp = urlStr.substr(0, beginIndex);
+			if (endIndex < urlStr.length && endIndex > 0)
+			{
+				tmp += urlStr.substr(endIndex);
+			}
+			urlStr = tmp;
+		}
+		return urlStr + '&' + key + '=' + value;
+	}
+</script>
+<@end@>
+
+
+</body></html>

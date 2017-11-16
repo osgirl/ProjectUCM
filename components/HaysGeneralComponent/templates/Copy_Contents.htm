@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Copy Contents</title>
+</head>
+<body>
+
+<$if rsExists('OUTPUT_RESULT') AND rsFirst('OUTPUT_RESULT') $>
+rsIsRowPresent:<$rsIsRowPresent('OUTPUT_RESULT')$>:
+	rsExists:<$rsExists('OUTPUT_RESULT')$>:
+	
+<$name="OUTPUT_RESULT"$>
+<$rsFirst(name)$>
+<$loopwhile getValue(name, "#isRowPresent")$>
+
+	
+		<$OUTPUT_RESULT.dDocName$>:
+		<$OUTPUT_RESULT.Status$>:
+		<$OUTPUT_RESULT.NewDocName$>:	
+<br>
+<$trace("before rsNext..", "#console","services")$>		
+<$rsNext(name)$>
+<$trace("After rsNext before end loop..", "#console","services")$>
+<$endloop$>
+
+<$endif$>
+</body></html>

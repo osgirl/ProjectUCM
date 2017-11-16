@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent query
+</title>
+</head>
+<body>
+
+<@table HaysGeneralComponentR6_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>QGetJobTitles</td>
+	<td>select outer.* 
+		from 
+		(
+			select inner.*, rownum counter
+			from 
+			(SELECT title, locale
+			from jobs_titles
+			where locale = ? order by title asc) inner) outer
+    	where outer.counter between  ? and ?
+	</td>
+	<td>xLocale varchar
+		startrow int
+		endrow int</td>
+</tr>
+<tr>
+	<td>QGetJobTitleCounts</td>
+	<td>SELECT locale, count(title) counts
+		from jobs_titles
+		group by locale
+	</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QGetLocationsByLevel</td>
+	<td>SELECT ? location_desc , l.location_id location_id , l.level_no level_no
+		FROM hays_locations l, hays_location_domains d where l.location_id = d.location_id and l.level_no = ? and d.domain_id=?
+		order by display_order
+	</td>
+	<td>loc_descr column
+		level int
+	   domainId int</td>
+</tr>
+<tr>
+	<td>QGetLocationsByParent</td>
+	<td>SELECT ? location_desc , l.location_id location_id , l.level_no level_no
+		FROM hays_locations l, hays_location_domains d where l.location_id = d.location_id and d.domain_id=? and l.parent_location_id=?
+		order by display_order
+	</td>
+	<td>loc_descr column
+		domainId int
+	   parentLocationId int</td>
+</tr>
+</table>
+<@end@>
+</body></html>

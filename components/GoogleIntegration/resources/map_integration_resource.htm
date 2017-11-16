@@ -1,0 +1,366 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+GoogleIntegration htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+
+<@dynamichtml mapIntegrationjavaScriptCode@>
+	<script type="text/javascript" src="<$#env.GoogleMapsRequestUrl$>"></script>
+
+	<$include job_search_results_buildsearchquery_url$>
+
+      <!--changed language='javascript' becuase it was giving validation error 'required attribute "type" not specified'-->
+	<script type="text/javascript">
+	
+		<$if #active.contentType AND contentType like 'Candidates'$>
+			
+			<$ searchUrl = ssNodeLink('candidatessearchresults', siteId)$>
+		<$else$>
+			<$ searchUrl = ssNodeLink('jobssearchresults', siteId)$>
+		<$endif$>
+		var searchQuery = "<$searchUrl$>?<$builtQuery$>";
+
+		<$if #active.ne_latitude_filter AND #active.ne_longitude_filter AND #active.level_filter $>
+		 
+			var desc = 'TEST';
+			<$ index = strLastIndexOf(level_filter, ';') $>
+			<$if index GT 0 $>
+				var level = '<$ strSubstring(level_filter, index+1) $>';
+			<$else$>
+				var level = '<$level_filter$>';
+			<$endif$>
+
+			<$ index = strLastIndexOf(ne_latitude_filter, ';') $>
+			<$if index GT 0 $>
+				var lat = '<$ strSubstring(ne_latitude_filter, index+1) $>';
+			<$else$>
+				var lat = '<$ne_latitude_filter$>';
+			<$endif$>
+
+			<$ index = strLastIndexOf(ne_longitude_filter, ';') $>
+			<$if index GT 0 $>
+				var longi = '<$ strSubstring(ne_longitude_filter, index+1) $>';
+			<$else$>
+				var longi = '<$ne_longitude_filter$>';
+			<$endif$>
+		<$elseif #active.ne_latitude AND #active.ne_longitude AND #active.level $>
+		
+			var desc = 'TEST';
+			var level = '<$level$>';
+			var lat = '<$ ne_latitude $>';
+			var longi = '<$ ne_longitude $>';
+		<$else$>
+	
+		
+			var desc = 'UK';
+			var level = '2';
+			<$if #active.countryCordinates and strLength(#active.countryCordinates) gt 0$>
+			
+				<$index = strIndexOf(#active.countryCordinates,",")$>
+				<$if index GT 0$>
+					var lat = '<$strSubstring(#active.countryCordinates,0,index)$>';
+					var longi = '<$strSubstring(#active.countryCordinates,index+1)$>';
+				<$else$>
+					var lat = '54.2652';
+					var longi = '-1.4063';
+				<$endif$>
+			<$else$>
+				var lat = '54.2652';
+				var longi = '-1.4063';
+			<$endif$>
+		<$endif$>
+
+	//alert(level + ", " + '<$#active.level$>'  + ", " + '<$#active.level_filter$>')
+	//start populate the values from idoc
+		var values1 = new Array();
+		var values2 = new Array();
+		var values3 = new Array();
+		var values4 = new Array();
+		var values5 = new Array();
+		var values6 = new Array();
+
+
+				<$executeService("HAYS_GET_SEARCH_RESULTS")$>
+				var counter=0;
+				<$loop SearchResultNavigationxHaysLocation1$>
+					values1[counter]=new Array();
+					values1[counter][0] = '<$ SearchResultNavigationxHaysLocation1.drillDownOptionValue $>';
+					values1[counter][1] = '<$ SearchResultNavigationxHaysLocation1.count$>';
+					values1[counter][2] = "<$ SearchResultNavigationxHaysLocation1.locationDescription$>";
+					values1[counter][3] = '1';
+					counter++;
+				<$endloop$>
+
+				var counter=0;
+				<$loop SearchResultNavigationxHaysLocation2$>
+					values2[counter]=new Array();
+					values2[counter][0] = '<$ SearchResultNavigationxHaysLocation2.drillDownOptionValue$>';
+					values2[counter][1] = '<$ SearchResultNavigationxHaysLocation2.count$>';
+					values2[counter][2] = "<$ SearchResultNavigationxHaysLocation2.locationDescription$>";
+					values2[counter][3] = '2';
+					counter++;
+				<$endloop$>
+
+				var counter=0;
+				<$loop SearchResultNavigationxHaysLocation3$>
+					values3[counter]=new Array();
+					values3[counter][0] = '<$ SearchResultNavigationxHaysLocation3.drillDownOptionValue$>';
+					values3[counter][1] = '<$ SearchResultNavigationxHaysLocation3.count$>';
+					values3[counter][2] = "<$ SearchResultNavigationxHaysLocation3.locationDescription$>";
+					values3[counter][3] = '3';
+					counter++;
+				<$endloop$>
+
+				var counter=0;
+				<$loop SearchResultNavigationxHaysLocation4$>
+				values4[counter]=new Array();
+				values4[counter][0] = '<$ SearchResultNavigationxHaysLocation4.drillDownOptionValue$>';
+				values4[counter][1] = '<$ SearchResultNavigationxHaysLocation4.count$>';
+				values4[counter][2] = "<$ SearchResultNavigationxHaysLocation4.locationDescription$>";
+				values4[counter][3] = '4';
+				counter++;
+				<$endloop$>
+
+				var counter=0;
+				<$loop SearchResultNavigationxHaysLocation5$>
+				values5[counter]=new Array();
+				values5[counter][0] = '<$ SearchResultNavigationxHaysLocation5.drillDownOptionValue$>';
+				values5[counter][1] = '<$ SearchResultNavigationxHaysLocation5.count$>';
+				values5[counter][2] = "<$ SearchResultNavigationxHaysLocation5.locationDescription$>";
+				values5[counter][3] = '5';
+				counter++;
+				<$endloop$>
+
+				var counter=0;
+				<$loop SearchResultNavigationxHaysLocation6$>
+				values6[counter]=new Array();
+				values6[counter][0] = '<$ SearchResultNavigationxHaysLocation6.drillDownOptionValue$>';
+				values6[counter][1] = '<$ SearchResultNavigationxHaysLocation6.count$>';
+				values6[counter][2] = "<$ SearchResultNavigationxHaysLocation6.locationDescription$>";
+				values6[counter][3] = '6';
+				counter++;
+				<$endloop$>
+				//end populate the values from idoc
+				
+			//make sure the markers present on zoom in even if the arrays for that level are empty
+			if(values2.length <1 ) values2=values1;
+			if(values3.length <1 ) values3=values2;
+			if(values4.length <1 ) values4=values3;
+			if(values5.length <1 ) values5=values4;
+			if(values6.length <1 ) values6=values5;
+			
+			function HAYSGoogleMap() {
+				if (window.jQuery && jQuery.isReady){
+					$(document).ready(initialize);
+				}
+				else {
+					window.setTimeout(HAYSGoogleMap, 100);
+				}
+			}
+
+			function initialize(){
+				var def_zoom;
+				var def_marker;
+				var markersArray = [];
+				var cur_zoom= level;
+				//alert(cur_zoom);
+				switch(cur_zoom)
+				{
+				case "1":
+					def_zoom =3;
+					def_marker= values3;
+					break;
+				case "2":
+					def_zoom =5;
+					def_marker= values4;
+					break;
+				case "3":
+					def_zoom =6;
+					def_marker= values5;
+					break;
+				case "4":
+					def_zoom =8;
+					def_marker= values6;
+					break;
+				case "5":
+					def_zoom =10;
+					def_marker= values6;
+					break;
+				default:
+					def_zoom =15;
+					def_marker= values6;
+				}
+				//initialize map
+
+				//var latlng1 = new google.maps.LatLng(52.800651,-0.206055); //for UK region
+				var latlng1 = new google.maps.LatLng(lat,longi);
+				//alert(def_zoom);
+				var myOptions = {
+				  zoom: def_zoom,
+				  center: latlng1,
+				  disableDefaultUI: true,
+				  navigationControl: true,
+				  mapTypeControl: false,
+				  scaleControl: false,
+				  mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				var map = new google.maps.Map(document.getElementById("haysMap"), myOptions);
+
+
+
+				//put default markers
+				handleZoom(map, markersArray, def_marker);
+
+				 google.maps.event.addListener(map, 'zoom_changed', function() {
+					  //alert('zoom '+map.getZoom());
+					   cur_zoom = map.getZoom();
+					//   alert("zoom = " + cur_zoom);
+					  switch(cur_zoom)
+						{
+						case 1:case 2:
+							handleZoom(map, markersArray, values3);
+							break;
+						case 3:case 4:
+							handleZoom(map, markersArray, values4);
+							break;
+						case 5:case 6:
+							handleZoom(map, markersArray, values5);
+							break;
+						case 7:case 8:
+							handleZoom(map, markersArray, values6);
+							break;
+						case 9:case 10:case 11:
+							handleZoom(map, markersArray, values6);
+							break;
+						default:
+							handleZoom(map, markersArray, values6);
+						}
+				  });
+
+
+			}		//end initialize
+
+
+
+				HAYSGoogleMap();
+
+				var infowindow = new google.maps.InfoWindow({
+						content: ''
+						//disableAutoPan: true // Not compatible with InfoWindows. They are cropped...
+					  });
+
+
+			  function handleZoom(map, markersArray, vArray){
+				deleteOverlays(markersArray);
+
+				var latlong, lat, longi, count, description;
+				var varr;
+
+				for(var i=0;i < vArray.length;i++){
+					//alert("i="+i);alert(variable[i][0]);alert(variable[i][1]);
+					latlong = vArray[i][0];
+					count = vArray[i][1];
+					description = vArray[i][2];
+					varr = latlong.split('#');
+
+					addMarker(map, markersArray, varr[1], varr[0], count, description, vArray[i][3]);
+				}
+
+				showOverlays(map, markersArray);
+			  }
+
+
+			  function addMarker(map, markersArray, lat1, long1, count, description, level){
+
+				var latlng1 = new google.maps.LatLng(lat1,long1);
+
+				var imageUrl = "/haysassets/GoogleIntegration/veimages/pin_";
+				if (count < 10)
+					imageUrl = imageUrl + "00" + count + ".gif";
+				else if( count < 100 )
+						imageUrl = imageUrl + "0" + count + ".gif";
+				else
+					imageUrl = imageUrl + count + ".gif";
+
+			//alert(count + ", lat = " + lat1 + ", long = " + long1 + ", descr = " + description);
+				var marker = new google.maps.Marker({
+				  position: latlng1,
+				  map: map,
+			   //   title:
+				  icon: imageUrl
+				});
+
+				google.maps.event.addListener(marker, 'mouseover', function(event) {
+					var tail = "&ne_longitude_filter=" + long1 + "&ne_latitude_filter=" + lat1 + "&level_filter=" + level;
+					infowindow.setContent(count + " <$lc('wwGoogleMapText1')$> " + description + " <$lc('wwGoogleMapText2')$> <p><a href='" + searchQuery + tail + "'><$lc('wwGoogleMapText3')$></a></p>");
+					infowindow.setPosition(  marker.getPosition() );
+					infowindow.open(map, marker);
+				  });
+
+				  google.maps.event.addListener(marker, 'onclick', function(event) {
+					var tail = "&ne_longitude_filter=" + long1 + "&ne_latitude_filter=" + lat1  + "&level_filter=" + level;
+					infowindow.setContent(count + " <$lc('wwGoogleMapText1')$> " + description + " <$lc('wwGoogleMapText2')$> <p><a href='" + searchQuery + tail + "'><$lc('wwGoogleMapText3')$></a></p>");
+					infowindow.setPosition(  marker.getPosition() );
+					infowindow.open(map, marker);
+				  });
+
+
+				/*  google.maps.event.addListener(marker, 'mouseout', function(event) {
+						infowindow.close();
+				  });
+		*/
+
+				   markersArray.push(marker);
+			  }
+
+
+			  // Removes the overlays from the map, but keeps them in the array
+			function clearOverlays(markersArray) {
+			  if (markersArray) {
+				for (i=0;i< markersArray.length;i++) {
+				  markersArray[i].setMap(null);
+				}
+			  }
+			}
+
+			// Shows any overlays currently in the array
+			function showOverlays(map, markersArray) {
+			//alert(markersArray.length);
+			  if (markersArray) {
+				var str='';
+				for (i=0;i< markersArray.length;i++) {
+				//alert(i+" "+markersArray[i]);
+				 str = str+' '+markersArray[i].position;
+				  markersArray[i].setMap(map);
+				}
+				//alert(str);
+			  }
+			}
+
+			// Deletes all markers in the array by removing references to them
+			function deleteOverlays(markersArray) {
+
+			  if (markersArray && markersArray.length > 0) {
+				for (i=0;i< markersArray.length;i++) {
+				  markersArray[i].setMap(null);
+				}
+				markersArray.length = 0;
+			  }
+			}
+	</script>
+
+
+
+
+
+<@end@>
+
+
+
+
+</body></html>

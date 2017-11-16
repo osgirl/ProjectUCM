@@ -1,0 +1,834 @@
+<$include std_doctype_html_decl$>
+<head>
+   <$defaultPageTitle = "Office Hays Specialisms Page"$>
+   <$include std_html_head_declarations$>
+   <link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+   <$include std_page_begin$>
+   <div id="ont">
+      <h2>Office and Hays Specialism</h2>
+      <form name="OfficeSpec" enctype="multipart/form-data" method="GET" action="<$HttpCgiPath$> "onsubmit="return validateForm(); ">
+         <input type="hidden" name="IdcService" value="UPDATE_INSERT_OFFICE_SPECIALISM_DETAILS"/>
+         <input type="hidden" name="submitted" value="1" id="submitted"/>         
+         <div id="ConfirmationMessage" style = "visibility:hidden">
+            <p><font color = "green">Office/Specialism link has been saved successfully.</font></p>
+         </div>
+         <$schViewName = "OfficeCountryView"$>
+         <$if NOT rsExists('HAYSWEBSITES')$>
+         <$executeService("GET_SCHEMA_VIEW_VALUES_CUSTOM")$>
+         <$endif$>
+         <table>
+            <thead>
+               <$if rsExists('HAYSWEBSITES') AND rsFirst('HAYSWEBSITES') $>
+               <th><label for="Country">Country/Website:</label></th>
+               <th>
+                  <select id="Country" name="Country" onChange="getOffices(this.options[this.selectedIndex].value,null);return false;">
+                     <option name="Country" value="" selected>Select...</option>
+                     <$loop HAYSWEBSITES$>
+                     <option name="Country" value="<$HAYSWEBSITES.SITELOCALEDUP$>"><$HAYSWEBSITES.COUNTRY$> <$HAYSWEBSITES.LANGUAGELABEL$></option>
+                     <$endloop$>
+                  </select>
+               </th>
+               </tr>
+               <$endif$>
+            </thead>
+         </table>
+         <!--MR4 Requirements Avesh Gupta-->	
+         <table style="" id ="test1">
+            <tbody>
+               <tr class="loader">
+                  <td colspan="2">
+                     <div id="waiting" style="visibility: hidden">Loading</div>
+                  </td>
+               </tr>
+               <tr id="Offices" style="visibility:hidden">
+                  <td ><label for="officeId"><font color ="red">*</font>Office:</label></td>
+                  <td>
+                     <select name="officeId" id="officeId" onChange="getSpecialisms(this.options[this.selectedIndex].value,Country.options[Country.selectedIndex].value,null);return false;">
+                     </select>
+                  </td>
+               </tr>
+               <tr id="specialisms" style="visibility: hidden">
+                  <td><label for="specialismId"><font color ="red">*</font>Specialism:</label>	</td>
+                  <td>
+                     <select name="specialismId" id="specialismId" onChange="getSubSpecialisms(this.options[this.selectedIndex].value,officeId.options[officeId.selectedIndex].value,Country.options[Country.selectedIndex].value);return false;">
+                     </select>
+                  </td>
+               </tr>
+               <tr id="subpecialisms" style="visibility: hidden" id ="row1">
+                  <td><label for="subspecialismId">SubSpecialism:</label>	</td>
+                  <td>
+                     <select name="subspecialismId" id="subspecialismId" onChange="getLinkingAttributes(this.options[this.selectedIndex].value,officeId.options[officeId.selectedIndex].value,Country.options[Country.selectedIndex].value,specialismId.options[specialismId.selectedIndex].value);return false;">
+                     </select>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <!--MR4 Requirements Avesh Gupta-->
+         <table style="" id ="test">
+            <tbody>
+               <tr id="Phone1" style="visibility: hidden" id ="row1">
+                  <td>
+                     <label for="phone"><span id="starphone"><font color ="red">*</font></span>Office/Specialism Phone Number:</label>
+                  </td>
+                  <td>
+                     <input type="text" name="phone" id="phone" value="" size="60" maxlength="60"/>
+                  </td>
+               </tr>
+               <tr id="Fax1" style="visibility: hidden" id ="row2">
+                  <td>
+                     <label for="fax"><span id="starfax"><font color ="red">*</font></span>Office/Specialism Fax Number:</label>
+                  </td>
+                  <td>
+                     <input type="text" name="fax" id="fax" value="" size="60" maxlength="60"/>
+                  </td>
+               </tr>
+               <tr id="Email" style="visibility: hidden" id ="row3">
+                  <td><label for="emailId"><font color ="red">*</font> Office/Specialism Email Address:</label></td>
+                  <td>
+                     <input type="text" name="emailId" id="emailId" value="" size="60" maxlength="60"/>						
+                  </td>
+               </tr>
+               <tr id="JobAdderUserName" style="visibility: hidden" id ="row4">
+                  <td><label for="user"><font color ="red">*</font> Job Board Aggregator Login:</label></td>
+                  <td>
+                     <input type="text" name="user" id="user" value="" size="60" maxlength="60"/>
+                  </td>
+               </tr>
+               <tr id="JobAdderPassword" style="visibility: hidden" id ="row5">
+                  <td><label for="password"><font color ="red">*</font> Job Board Aggregator Password:</label></td>
+                  <td>
+                     <input type="text" name="password" id="password" value="" size="60" maxlength="30"/>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <table class="no_border">
+            <tfoot>
+               <tr>
+                  <td></td>
+                  <td><input type="submit" name="Add" value="Add/Update" class="button"/></td>
+               </tr>
+            </tfoot>
+         </table>
+      </form>
+   </div>
+   <$include std_page_end$>
+   <script  type="text/javascript" src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+   <script type="text/javascript">
+      var countryRegion;	
+      var countryDomainId;
+      function populate(loader, elementId, phone, fax, email, user, password, seloffice, locale)
+      {         		
+      		if(loader.xmlDoc.responseXML != null)
+      	{
+      		var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+      		var selectBox = document.getElementById( elementId );							
+            if( list != null)
+      		{
+      			list = fixUserAttribRS(list);						
+      			if(list==undefined)
+      			{
+      				alert("No Offices Exist for this country");
+      				removeAllOptions( selectBox );
+      				hide(phone);hide(fax);hide(email);hide(user);hide(password);
+      				return;
+      			}
+      			list = list.getElementsByTagName('idc:row'); 
+      		}
+      		
+      		//alert(selectBox);
+      		removeAllOptions( selectBox );
+      		option = document.createElement('option');
+      		option.setAttribute('value', '');
+      		option.appendChild( document.createTextNode('Select...') );
+      		selectBox.appendChild(option);
+             for(var i=0;i<list.length;i++)
+      		{
+      			var option = document.createElement('option');
+      			var value =  extractValue(list[i],"dDocName");
+      			var officename =  extractValue(list[i],"dDocTitle");
+      			option.setAttribute('value', value);      			
+      			var suburb = extractChildValue( list[i].getElementsByTagName('idc:field')[1]);
+      			var address1 = extractChildValue( list[i].getElementsByTagName('idc:field')[2]);
+      			var address2 = extractChildValue( list[i].getElementsByTagName('idc:field')[3]);
+      			var officeid = extractChildValue( list[i].getElementsByTagName('idc:field')[6]);
+      			<!--MR4 Requirements Avesh Gupta-->
+      			
+				if(getCookie_Office("countryRegion")=="cerow" && (getCookie_Office("countryDomainId")=="3"|| getCookie_Office("countryDomainId")=="38"))
+      			{
+      				var Officedetails = officename;
+      			}
+				else if(getCookie_Office("countryRegion")=="uk" || getCookie_Office("countryRegion")=="cerow")
+				{
+					var Officedetails = officename+ ", " + address1;
+				}
+      			else
+      			{
+      				var Officedetails = suburb + ", " + address1;
+      			}			
+      			if(address2.length>0 && (getCookie_Office("countryRegion")!="uk" && getCookie_Office("countryRegion")!="cerow") ) /** Check to see if it contains values since it  is a non mandatory field during check-in**/
+				{					
+					Officedetails = Officedetails + ", " + address2;					
+				}
+      			var node = document.createTextNode( Officedetails );
+      			option.appendChild(node);
+      			selectBox.appendChild(option);
+      		}
+      		if(seloffice != null)
+      		{ 
+      			for(var i=0;i<selectBox.length;i++)
+      		  	{
+      				if(selectBox.options[i].value==seloffice)
+      			 	{ 
+      					break;
+      			 	}
+      		 	} 
+                    selectBox.options.selectedIndex = i;
+                    selectBox.options[selectBox.options.selectedIndex].setAttribute("selected", "selected") ;
+      		}
+      	}
+      }
+      
+      
+      function populatespecialisms(loader, elementId, email, phone, fax, user, password)
+      {	
+      	if(loader.xmlDoc.responseXML != null)
+      	{
+      		var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+      		if( list != null)
+      		{
+      			list = fixUserAttribRS(list);
+      			list = list.getElementsByTagName('idc:row'); 
+      		}
+      		var phone = document.getElementById( phone );
+      		var fax = document.getElementById( fax );
+            var email = document.getElementById( email );
+      		var selectBox = document.getElementById( elementId );
+      		removeAllOptions( selectBox );
+      		var user = document.getElementById( user );
+      		var password = document.getElementById( password );
+      		
+      		 //alert(email.value);
+      		 removeValue( email );
+      		 removeValue( phone );
+      		 removeValue( fax );
+      		 removeValue( user );
+      		 removeValue( password );
+      
+      		option = document.createElement('option');
+      		option.setAttribute('value', '');
+      		option.appendChild( document.createTextNode('Select...') );
+      		selectBox.appendChild(option);
+      		for(var i=0;i<list.length;i++)
+      		{
+      			var option = document.createElement('option');
+      			var value =  extractChildValue( list[i].getElementsByTagName('idc:field')[0] );
+      			option.setAttribute('value', value);
+      			option.appendChild(document.createTextNode( extractChildValue( list[i].getElementsByTagName('idc:field')[1])));
+      		  	selectBox.appendChild(option);
+      			
+      		}
+      	}
+      }
+      
+      
+      
+      function populatesubpecialisms(loader, elementId, email, phone, fax, user, password)
+      {	
+      	if(loader.xmlDoc.responseXML != null)
+      {
+      	var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+      	if( list != null)
+      	{
+      		list = fixUserAttribRS(list);
+      		list = list.getElementsByTagName('idc:row'); 
+      	}
+      	var phone = document.getElementById( phone );
+      	var fax = document.getElementById( fax );
+                        	var email = document.getElementById( email );
+      	var selectBox = document.getElementById( elementId );
+      	removeAllOptions( selectBox );
+      	var user = document.getElementById( user );
+      	var password = document.getElementById( password );
+      	removeValue( email );
+      	removeValue( phone );
+      	removeValue( fax );
+      	removeValue( user );
+      	removeValue( password );
+      	option = document.createElement('option');
+      	option.setAttribute('value', '');
+      	option.appendChild( document.createTextNode('Select...') );
+      	selectBox.appendChild(option);
+      	for(var i=0;i<list.length;i++)
+      	{
+      		var option = document.createElement('option');
+      		var value =  extractChildValue( list[i].getElementsByTagName('idc:field')[0] );
+      		option.setAttribute('value', value);
+      		option.appendChild(document.createTextNode( extractChildValue( list[i].getElementsByTagName('idc:field')[1])));
+      	  	selectBox.appendChild(option);
+      	}			
+      }
+      }			
+      
+      <!--MR4 Requirements Avesh Gupta-->
+      function populateAttributes(loader, emailid, phone , fax, user, password,office,locale) 
+      {	
+      	if(loader.xmlDoc.responseXML != null)
+      	{
+      		var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+                         	if( list != null)
+      		{
+                 list = fixUserAttribRS(list);
+      			//alert(list);
+      			if(list==undefined)
+      			{ 
+      				url = "?IdcService=GET_OFFICE_SPECIALISM_DETAIL&IsSoap=1&xLocale="+locale+"&dDocName="+office;
+      				var loader = dhtmlxAjax.getSync(url);
+      		    		prepopulatevalues(loader,'emailId', 'phone', 'fax' , 'user', 'password'); /** If the linking does not exist then,prepopulate the values with Office values **/
+      				document.getElementById( "user" ).value = "";
+      				document.getElementById( "password" ).value = "";
+      				
+					if(getCookie_Office("countryRegion")=="cerow" && (getCookie_Office("countryDomainId")=="3"|| getCookie_Office("countryDomainId")=="38"))
+      				{
+      					show('Email'); show ('Phone1'); show('Fax1'); hide('JobAdderUserName'); hide('JobAdderPassword');  			
+      				}
+					else if(getCookie_Office("countryRegion")=="cerow" || getCookie_Office("countryRegion")=="uk")
+					{
+						show('Email'); show ('Phone1'); show('Fax1'); hide('JobAdderUserName'); hide('JobAdderPassword');  			
+					}
+      				else
+      				{	
+      					show('Email'); show ('Phone1'); show('Fax1'); show('JobAdderUserName'); show('JobAdderPassword');
+      				}
+      				hide('waiting');
+      				return;
+      			}
+      			list = list.getElementsByTagName('idc:row');                    					
+      		}
+      		var email = document.getElementById( emailid );
+      		var phone = document.getElementById( phone );
+      		var fax = document.getElementById( fax );
+      		var user = document.getElementById( user );
+      		var password = document.getElementById( password );
+      		removeValue( email );
+      		removeValue( phone );
+      		removeValue( fax );
+      		removeValue( user );
+      		removeValue( password );
+            var emailValue =extractChildValue( list[0].getElementsByTagName('idc:field')[0]);
+      		var phoneValue = extractChildValue( list[0].getElementsByTagName('idc:field')[1]);
+      		var faxValue = extractChildValue( list[0].getElementsByTagName('idc:field')[2]);
+      		var userVal = extractChildValue( list[0].getElementsByTagName('idc:field')[3]);
+      		var passwordVal = extractChildValue( list[0].getElementsByTagName('idc:field')[4]);
+      		email.value=emailValue;
+      		phone.value = phoneValue;
+      		fax.value = faxValue;
+      		user.value = userVal;
+      		password.value = passwordVal;
+      	}
+      }
+      
+      
+      function populateLinkingAttributes(loader, emailid, phone , fax, user, password,office,locale,specialismid,subspecialism)
+      {	
+          if(loader.xmlDoc.responseXML != null)
+      	{
+      		var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+            if( list != null)
+      		{
+            	list = fixUserAttribRS(list);
+      			if(list==undefined)
+      			{ 
+					url = "?IdcService=GET_OFFICE_SPECIALISM_ATTRIBUTES&IsSoap=1&specialismid="+specialismid + "&officeid=" +office;
+      				var loader = dhtmlxAjax.getSync(url);
+      			   	populateAttributes(loader, 'emailId','phone','fax','user','password',office,locale);
+      			   	document.getElementById( "user" ).value = "";
+      			   	document.getElementById( "password" ).value = "";      			  
+      			  	show('JobAdderUserName'); show('JobAdderPassword');
+      			   	hide('waiting');
+      				return;
+      			}
+      			list = list.getElementsByTagName('idc:row');
+      		}
+      		var email = document.getElementById( emailid );
+      		var phone = document.getElementById( phone );
+      		var fax = document.getElementById( fax );
+      		var user = document.getElementById( user );
+      		var password = document.getElementById( password );
+      		removeValue( email );
+      		removeValue( phone );
+      		removeValue( fax );
+      		removeValue( user );
+      		removeValue( password );
+            var emailValue =extractChildValue( list[0].getElementsByTagName('idc:field')[0]);
+      		var phoneValue = extractChildValue( list[0].getElementsByTagName('idc:field')[1]);
+      		var faxValue = extractChildValue( list[0].getElementsByTagName('idc:field')[2]);
+      		var userVal = extractChildValue( list[0].getElementsByTagName('idc:field')[3]);
+      		var passwordVal = extractChildValue( list[0].getElementsByTagName('idc:field')[4]);
+      		email.value=emailValue;
+      		phone.value = phoneValue;
+      		fax.value = faxValue;
+      		user.value = userVal;
+      		password.value = passwordVal;
+      	}
+      }
+      
+      function prepopulatevalues(loader, email, phone, fax, user, password)
+      {	
+      			if(loader.xmlDoc.responseXML != null)
+      	{
+      		var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+      		if( list != null)
+      		{
+      			list = fixUserAttribRS(list);
+      			list = list.getElementsByTagName('idc:row'); 
+      		}
+      		var phone = document.getElementById( phone );
+      		var fax = document.getElementById( fax );
+            var email = document.getElementById( email );
+      		var user = document.getElementById( user );
+      		var password = document.getElementById( password );
+      		removeValue( email );
+      		removeValue( phone );
+      		removeValue( fax );
+      		removeValue( user );
+      		removeValue( password );
+      		for(var i=0;i<list.length;i++)
+      		{
+      			/**Prepopulating the text fields with Office values  when an office is chosen**/
+      		    	/**start**/
+      			var phoneVal= extractChildValue( list[i].getElementsByTagName('idc:field')[3]);
+      			var faxVal = extractChildValue( list[i].getElementsByTagName('idc:field')[4]);          
+      		    var emailval = extractChildValue( list[i].getElementsByTagName('idc:field')[5]);
+      			email.value = emailval;
+      			fax.value = faxVal;
+      			phone.value = phoneVal;
+      		     	/**end**/
+      		}
+      	}
+      }
+      
+      
+      
+      
+      function removeAllOptions(selectbox)	
+      {
+      	var i;
+      	for(i=selectbox.options.length-1;i>=0;i--)
+      	{
+      		selectbox.remove(i);
+      	}
+      }
+      
+      function removeValue(element)
+      {
+      	 element.value = "";
+      }
+      
+      <!--MR4 Requirements Avesh Gupta-->
+      function getOffices(Country,seloffice)
+      {		
+      	var table = document.getElementById("test");
+      	var table1 = document.getElementById("test1");
+      	var row1 = table.rows[0];
+        var row2 = table.rows[1];
+        var row3 = table.rows[2];
+      	var row4 = table.rows[3];
+      	var row5 = table.rows[4];
+      	var row6 = table1.rows[3];
+       	var specialism = document.getElementById("specialismId");
+       	var subspecialism = document.getElementById("subspecialismId");
+       	var offices = document.getElementById("officeId");
+      	var email = document.getElementById( "emailId" );
+       	var phone = document.getElementById( "phone" );
+       	var fax = document.getElementById( "fax" );
+       	var user = document.getElementById( "user" );
+       	var password = document.getElementById( "password" );
+        removeValue( email );
+      	removeValue( phone );
+      	removeValue( fax );
+      	removeValue( user );
+      	removeValue( password );		
+      	if( Country.length > 0)
+      	{
+      		url = "?IdcService=GET_COUNTRY_DETAILS&IsSoap=1&siteLocale="+Country;
+			loader = dhtmlxAjax.getSync(url);
+			populatesCountryRegion(loader);
+			if(getCookie_Office("countryRegion")=="cerow" && (getCookie_Office("countryDomainId")=="3"|| getCookie_Office("countryDomainId")=="38"))
+      		{
+      			row6.style.cssText ='display:none';
+      			row4.style.cssText ='display:none';
+      			row5.style.cssText ='display:none';										
+      		}
+			else if(getCookie_Office("countryRegion")=="cerow" || getCookie_Office("countryRegion")=="uk")
+			{
+				row6.style.cssText ='display:none';
+      			row4.style.cssText ='display:none';
+      			row5.style.cssText ='display:none';	
+			}
+      		if(getCookie_Office("countryRegion")=="cerow" || getCookie_Office("countryRegion")=="uk")
+			{
+				//alert("1");
+				url = "?IdcService=GET_ALL_OFFICES_DROP_DOWN_UKCEROW&IsSoap=1&xLocale="+Country;
+			}
+			else
+			{
+				//alert("2");
+				url = "?IdcService=GET_ALL_OFFICES_DROP_DOWN&IsSoap=1&xLocale="+Country;
+			}
+			
+      		waiting();
+      		var loader = dhtmlxAjax.getSync(url);
+      		populate(loader, 'officeId', 'Phone1', 'Fax1', 'Email' ,'JobAdderUserName', 'JobAdderPassword' ,seloffice, Country);
+      		removeAllOptions(specialism);
+      		removeAllOptions(subspecialism);
+      		if(row1.style.cssText == 'display: none;' && row2.style.cssText == 'display: none;' && row3.style.cssText == 'display: none;')
+      		{
+      			
+      		   row1.style.cssText ='visibility: visible;';
+      		   row2.style.cssText ='visibility: visible;';
+      		   row3.style.cssText ='visibility: visible;'; 
+      		}
+      		hide('waiting');show('Offices');
+      	}
+      	else
+      	{
+      	 	removeAllOptions(specialism);
+      		removeAllOptions(subspecialism);
+      		removeAllOptions(offices);
+      		if(row1.style.cssText == 'display: none;' && row2.style.cssText == 'display: none;' && row3.style.cssText == 'display: none;')
+      		{
+      		   row1.style.cssText ='visibility: visible;';
+      		   row2.style.cssText ='visibility: visible;';
+      		   row3.style.cssText ='visibility: visible;'; 
+      		}
+      		show('Offices');
+      	}      	
+      	
+      }
+      
+      function getSpecialisms(office,locale,param)
+      {	          	
+      	var table = document.getElementById("test");
+      	var row1 = table.rows[0];
+        var row2 = table.rows[1];
+        var row3 = table.rows[2];
+       	var specialism = document.getElementById("specialismId");
+       	var subspecialism = document.getElementById("subspecialismId");
+       	var offices = document.getElementById("officeId");
+       	var email = document.getElementById( "emailId" );
+       	var phone = document.getElementById( "phone" );
+       	var fax = document.getElementById( "fax" );
+       	var user = document.getElementById( "user" );
+       	var password = document.getElementById( "password" );
+        removeAllOptions(specialism);
+      	removeAllOptions(subspecialism);
+        removeValue( email );
+      	removeValue( phone );
+      	removeValue( fax );
+      	removeValue( user );
+      	removeValue( password );
+             if( office.length > 0)
+      	{
+      		url = "?IdcService=GET_OFFICE_SPECIALISM_DETAIL&IsSoap=1&xLocale="+locale+"&dDocName="+office;
+      		waiting();
+      		var loader = dhtmlxAjax.getSync(url);
+      		populatespecialisms(loader, 'specialismId','emailId', 'phone', 'fax' , 'user', 'password');
+      		if(row1.style.cssText == 'display: none;' && row2.style.cssText == 'display: none;' && row3.style.cssText == 'display: none;')
+      		 {
+      		   row1.style.cssText ='visibility: visible;';
+      		   row2.style.cssText ='visibility: visible;';
+      		   row3.style.cssText ='visibility: visible;'; 
+      		 }
+      		hide('waiting');show('specialisms');
+      	}
+      	else
+      	{
+       		row1.style.cssText ='visibility: visible;';
+      		row2.style.cssText ='visibility: visible;';
+      		row3.style.cssText ='visibility: visible;';
+      		show('JobAdderUserName'); show('JobAdderPassword');
+      	}
+          	if (param != null)
+            {
+      		hide('Email');hide ('Phone1'); hide('Fax1'); hide('JobAdderUserName'); hide('JobAdderPassword');
+			} 			
+      	}
+      
+      <!--MR4 Requirements Avesh Gupta-->
+      function getSubSpecialisms(selspecialism,office,country)
+      {		
+      	if(country.length>0)
+        {
+        	var langcont= country.split('-');
+      	    var language = langcont[0];
+      	    var country1 = langcont[1];
+      	}
+        var table = document.getElementById("test");
+      	var row1 = table.rows[0];
+        var row2 = table.rows[1];
+        var row3 = table.rows[2];
+      	var subspecialism = document.getElementById("subspecialismId");
+       	var offices = document.getElementById("officeId");
+       	var email = document.getElementById( "emailId" );
+       	var phone = document.getElementById( "phone" );
+       	var fax = document.getElementById( "fax" );
+      	var user = document.getElementById( "user" );
+       	var password = document.getElementById( "password" );
+      	removeAllOptions(subspecialism);
+        removeValue( email );
+      	removeValue( phone );
+      	removeValue( fax );
+      	removeValue( user );
+      	removeValue( password );
+      	if( selspecialism.length > 0)
+      	{
+      		url = "?IdcService=ONT_GET_INDIVIDUALS&IsSoap=1&metadata=xCategory&ontClass=hays:specialism&language="+language+"&country="+country1+"&parentTerm="+selspecialism;
+      		waiting();
+      		var loader = dhtmlxAjax.getSync(url);
+      		populatesubpecialisms(loader, 'subspecialismId','emailId', 'phone', 'fax' , 'user', 'password');
+      		getLinkingAttributes('',office,country,selspecialism); /**We need to populate attributes with Office-Specialism details or Office Details if the linking does not exist**/
+      		if(getCookie_Office("countryRegion")=="cerow" && (getCookie_Office("countryDomainId")=="3"|| getCookie_Office("countryDomainId")=="38"))
+      		{
+      			hide('subpecialisms');      						
+      		}
+			else if(getCookie_Office("countryRegion")=="cerow" || getCookie_Office("countryRegion")=="uk")
+			{
+				hide('subpecialisms');
+				if(selspecialism=="hays:ConstructionProperty" && getCookie_Office("countryRegion")=="uk"){
+				show('subpecialisms');
+				document.getElementById('subpecialisms').style.display = "";
+				}
+			}
+      		else
+      		{	
+      			hide('waiting');show('specialisms');show('subpecialisms');
+                    		}		
+      	}
+      	else
+      	{
+      		row1.style.cssText ='visibility: visible;';
+      		row2.style.cssText ='visibility: visible;';
+      		row3.style.cssText ='visibility: visible;';
+      		show('JobAdderUserName'); show('JobAdderPassword');				
+      	}
+      }
+      
+      <!--MR4 Requirements Avesh Gupta-->
+      function getLinkingAttributes(subspecialism,officeid,locale,specialismid)
+      {
+      	var table = document.getElementById("test");
+      	var row1 = table.rows[0];
+        var row2 = table.rows[1];
+        var row3 = table.rows[2];			
+        var specialism = document.getElementById("specialismId");
+       	var offices = document.getElementById("officeId");
+       	var email = document.getElementById( "emailId" );
+       	var phone = document.getElementById( "phone" );
+       	var fax = document.getElementById( "fax" );
+       	var user = document.getElementById( "user" );
+       	var password = document.getElementById( "password" );
+        removeValue( email );
+      	removeValue( phone );
+      	removeValue( fax );
+      	removeValue( user );
+      	removeValue( password );	
+         if( specialismid.length > 0 && officeid.length >0)
+      	{	
+      		hide("ConfirmationMessage");
+      		waiting();		
+      		if (subspecialism != null && subspecialism.length == 0)
+                 			{
+      			url = "?IdcService=GET_OFFICE_SPECIALISM_ATTRIBUTES&IsSoap=1&specialismid="+specialismid + "&officeid=" +officeid;
+      	       	var loader = dhtmlxAjax.getSync(url);
+      	       	populateAttributes(loader, 'emailId','phone','fax','user','password',officeid,locale);
+      			row1.style.cssText ='visibility: visible;';
+      			row2.style.cssText ='visibility: visible;';
+      			row3.style.cssText ='visibility: visible;';      	  		
+      		}
+			else if (subspecialism != null && specialismid=="hays:ConstructionProperty" && getCookie_Office("countryRegion")=="uk"){
+				url = "?IdcService=GET_OFFICE_SUBSPECIALISM_ATTRIBUTES&IsSoap=1&subspecialismId="+subspecialism+ "&officeid=" +officeid;
+      			var loader = dhtmlxAjax.getSync(url);
+      			populateAttributes(loader, 'emailId','phone','fax','user','password',officeid,locale);
+      			row1.style.cssText ='visibility: visible;';
+      			row2.style.cssText ='visibility: visible;';
+      			row3.style.cssText ='visibility: visible;'; 
+			}
+              else
+      		{	    
+      			url = "?IdcService=GET_OFFICE_SUBSPECIALISM_ATTRIBUTES&IsSoap=1&subspecialismId="+subspecialism+ "&officeid=" +officeid;
+      			var loader = dhtmlxAjax.getSync(url);
+      			populateLinkingAttributes(loader, 'emailId','phone','fax','user','password',officeid,locale,specialismid,subspecialism);
+      			row1.style.cssText ='display:none';
+      			row2.style.cssText ='display:none';
+      			row3.style.cssText ='display:none';      						
+      		} 
+      		
+			if(getCookie_Office("countryRegion")=="cerow" && (getCookie_Office("countryDomainId")=="3"|| getCookie_Office("countryDomainId")=="38"))
+      		{	
+      			//alert("1");
+				//alert(getCookie_Office("countryRegion"));				
+				document.getElementById("starphone").style.cssText = "visibility: hidden";
+      			document.getElementById("starfax").style.cssText = "visibility: hidden";      			 
+      			hide('JobAdderUserName'); hide('JobAdderPassword'); hide('waiting');					
+      		}
+			else if(getCookie_Office("countryRegion")=="cerow" || getCookie_Office("countryRegion")=="uk")
+      		{	
+      			//alert("2");
+				//alert(getCookie_Office("countryRegion"));
+				document.getElementById("starphone").style.cssText = "visibility: visible";
+				document.getElementById("starfax").style.cssText = "visibility: hidden";      			 
+      			hide('JobAdderUserName'); hide('JobAdderPassword'); hide('waiting');					
+      		}
+      		else
+      		{      		
+      			show('JobAdderUserName'); show('JobAdderPassword'); hide('waiting'); 
+      		}
+           	   	}				 			
+      	else
+      	{
+      		show('Email');show ('Phone1'); show('Fax1'); show('JobAdderUserName'); show('JobAdderPassword');				
+      	}
+      }
+      
+      
+      
+      function waiting()
+      {      	
+      	document.getElementById('waiting').style.visibility = "visible";
+      }
+      
+      function hide(id)
+      {
+      	document.getElementById(id).style.visibility = "hidden";
+      }
+      
+      function show(id)
+      {
+      	document.getElementById(id).style.visibility = "visible";
+      }
+      
+      function extractValue(element,attribute)
+      {      	
+      	var value =  element.getAttributeNode(attribute);
+      	if( value != null)
+      		value = value.nodeValue;
+      	else value = "";
+      	return value;
+      }
+      
+      function extractChildValue(element) 
+      {
+      	var value =  element.firstChild;
+      	if( value != null)
+      		value = value.nodeValue;
+      	else value = "";
+      	return value;
+      }
+      
+      <!--MR4 Requirements Avesh Gupta-->
+      function validateForm()
+      {      	
+        var email,phone,fax,user,password,officeId,specialismId;
+        office = document.getElementById("officeId");
+      	specialism = document.getElementById("specialismId");        
+      	
+		if(getCookie_Office("countryRegion")=="cerow" && (getCookie_Office("countryDomainId")=="3"|| getCookie_Office("countryDomainId")=="38"))
+      	{
+      		if(office.options[office.selectedIndex].value== "" || specialism.options[specialism.selectedIndex].value== "" || document.getElementById("emailId").value == "")
+        		{
+                alert("Please complete all mandatory fields")							
+      			return false;		   
+         		}	   
+      	   	else
+      	   	{
+      	      		return true;
+         		}
+      	}
+		else if(getCookie_Office("countryRegion")=="cerow" || getCookie_Office("countryRegion")=="uk")
+      	{
+      		if(office.options[office.selectedIndex].value== "" || specialism.options[specialism.selectedIndex].value== "" || document.getElementById("emailId").value == ""|| document.getElementById("phone").value == "")
+        		{
+                alert("Please complete all mandatory fields")							
+      			return false;		   
+         		}	   
+      	   	else
+      	   	{
+      	      		return true;
+         		}
+		}
+      	else
+      	{
+         		if(office.options[office.selectedIndex].value== "" || specialism.options[specialism.selectedIndex].value== "" || document.getElementById("emailId").value == "" || document.getElementById("phone").value == "" || document.getElementById("fax").value == "" || document.getElementById("user").value == "" || document.getElementById("password").value == "")
+         		{
+                alert("Please complete all mandatory fields")
+      			return false;		   
+         		}
+         		else
+         		{
+             		return true;
+         		}
+      		}
+       }
+      	
+      	function populatesCountryRegion(loader)
+      {	
+      	if(loader.xmlDoc.responseXML != null)
+      	{
+      		var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+      		if( list != null)
+      		{					
+      			list = fixUserAttribRS(list);					
+      			list = list.getElementsByTagName('idc:row'); 
+      		}				
+      			countryRegion =  extractChildValue( list[0].getElementsByTagName('idc:field')[1] );
+      			countryDomainId = extractChildValue( list[0].getElementsByTagName('idc:field')[2] );      			
+      			document.cookie = "countryRegion="+countryRegion+"; path=/";
+      			document.cookie = "countryDomainId="+countryDomainId+"; path=/";
+      			
+      	}
+      }
+
+      	function fixUserAttribRS(list){
+    		if(list[0] != null){
+    	  	  if(list[0].getAttribute("name") == "UserAttribInfo"){
+    				return list[1];							
+    			}
+    		}
+    			return list[0];
+          }
+        
+      function getCookie_Office(c_name)
+      {
+      var i,x,y,ARRcookies=document.cookie.split(";");
+      for (i=0;i<ARRcookies.length;i++)
+      {
+        x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+        y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+        x=x.replace(/^\s+|\s+$/g,"");
+        if (x==c_name)
+      	{
+      	return unescape(y);
+      	}
+        }
+      }
+      
+   </script>
+   <$if #active.submitted$>
+   <script>
+      show("ConfirmationMessage"); 
+      var selcountry = '<$#active.Country$>';
+      var seloffice = '<$#active.officeId$>';      
+      var country = document.getElementById("Country");
+      
+      for(var i=0;i<country.length;i++) { if(country.options[i].value==selcountry) { break; } } 
+      country.options.selectedIndex = i;       
+      country.options[country.options.selectedIndex].setAttribute("selected", "selected") ;      
+      getOffices(selcountry,seloffice);
+      getSpecialisms(seloffice,selcountry,hide);      
+   </script>
+   <$endif$>
+</body>
+</html>

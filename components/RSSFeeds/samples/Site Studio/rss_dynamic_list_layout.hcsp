@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="<!--$PageCharset-->" ?>
+<!--$setContentType("text/xml") -->
+<!--$exec inc("std_rss_feed_variables") -->
+
+<!--$SortField = "dInDate", SortOrder = "Desc",
+      ResultCount = "50" -->
+<!--$if not xmlQueryText -->
+	<!--$QueryText = ssGetNodeProperty(nodeId, "xmlQueryText") -->
+	<!--$if not QueryText-->
+		<!--$QueryText = ssGetNodeProperty(sourceId, "xmlQueryText") -->
+	<!--$endif-->
+	<!--$if not QueryText-->
+		<!--$QueryText = "xWebsites <contains> `" & siteId & "`" -->
+	<!--$endif-->
+<!--$else-->
+	<!--$QueryText = xmlQueryText-->
+<!--$endif-->
+<!--$executeService("GET_SEARCH_RESULTS")-->
+<rss version="2.0">
+<channel>
+	<title><!--$if CaptionText --><!--$CaptionText--><!--$else--><!--$lc("wwRssFeedResultsForWebsite", ssUrlPrefix, siteRelativeUrl)--><!--$endif--></title>
+	<link><!--$HttpAbsoluteCgiPath-->?IdcService=SS_GET_PAGE&amp;nodeId=<!--$if sourceId--><!--$sourceId--><!--$else--><!--$nodeId--><!--$endif--></link>
+<!--$loop SearchResults-->
+	<item>
+	 <guid><!--$xml(HttpAbsoluteCgiPath & "?IdcService=SS_GET_PAGE&amp;ssDocName=" & dDocName)--></guid>
+	 <title><!--$xml(dDocTitle)--></title>
+	 <pubDate><!--$formatDateWithPattern(dInDate, RssDateFormat)--></pubDate>
+	 <author><!--$xml(dDocAuthor)--></author>
+	 <link><!--$xml(HttpAbsoluteCgiPath & "?IdcService=GET_DYNAMIC_CONVERSION&amp;dDocName="
+	 	& dDocName & "&amp;RevisionSelectionMethod=LatestReleased")--></link>
+	 <description><![CDATA[
+		 <b><!--$lc("wwLabelTitle")--></b><!--$dDocTitle--><br/>
+		 <b><!--$lc("wwLabelAuthor")--></b> <!--$dDocAuthor--><br/>
+		 <b><!--$lc("wwLabelType")--></b> <!--$dDocType--><br/>
+		 <b><!--$lc("wwLabelRevision")--></b> <!--$dRevLabel--><br/>
+		 <b><!--$lc("wwLabelReleaseDate")--></b> <!--$dInDate--><br/>
+		 <b><!--$lc("wwLabelDescription")--></b> <!--$xComments--><br/>
+		 <a href="<!--$HttpAbsoluteCgiPath-->?IdcService=SS_GET_PAGE&ssDocName=<!--$dDocName-->">
+		 <b><!--$lc("wwWebLocation")--></b></a>]]>
+	 </description>
+	 </item>
+<!--$endloop-->
+</channel>
+</rss>
+<!-- the HEAD element is required by SiteStudio
+	<head><!--$include ss_layout_head_info-->
+	</head>
+-->

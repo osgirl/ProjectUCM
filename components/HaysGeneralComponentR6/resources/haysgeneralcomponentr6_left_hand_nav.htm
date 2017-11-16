@@ -1,0 +1,225 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponentR6 htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml LeftHandNav_r6@>
+
+	<div class="left_nav">
+		<div class="cnr"></div>
+		<div class="ln_inner">
+			<$include build_left_navigation_r6$>
+		</div>
+	</div>
+<@end@>
+
+<@dynamichtml build_left_navigation_r6@>
+	<$  startNodeId = '' $>
+	<$if NOT rsExists('HaysNavNodes') $>
+		<$ haysLoadSiteNavResultSet(siteId) $>
+	<$endif$>
+ 
+ [[%Added for release 9.0 start%]] 
+	<$country= strUpper(strSubstring(siteId,strLength(siteId)-2,strLength(siteId)))$>
+	<$customizeLHNav = strUpper(getValue('#env','customizeLHNavigationCountryList'))$>
+	<$isCountryCNorJP=''$>
+	<$if (strIndexOf(customizeLHNav,country) < 0)$>
+	<$isCountryCNorJP=0$>
+	<$else$>
+	<$isCountryCNorJP=1$>
+	<$endif$>
+	[[%Added for release 9.0 end%]]
+	
+	<$if (rsFindRowPrimary('HaysNavNodes', #local.nodeId)) AND ( strLength(HaysNavNodes.parentNodeId) GT 0 ) $> [[% Specialism or sub-specialism page %]]
+		
+			<$if HaysNavNodes.contributorOnly like '1' $> 
+					<$include build_left_nav_admin_main_inc$>
+			<$else$>
+				
+					[[% commented for release 9.0 <$if HaysNavNodes.level == 2$>	
+							<$ startNodeId = #local.nodeId $>
+					<$else$>											
+							<$ startNodeId = HaysNavNodes.parentNodeId $>
+					<$endif$>%]]
+					
+					 [[%Added for release 9.0 start%]]
+				   <$if isCountryCNorJP == 0$>
+						<$if HaysNavNodes.level == 2$> [[% specialism %]]
+						 <$ startNodeId = #local.nodeId $>
+						<$else$>           [[% sub-specialism %]]
+						 <$ startNodeId = HaysNavNodes.parentNodeId $>
+						<$endif$>
+				   <$else$>
+						<$if HaysNavNodes.level == 2$> 
+								<$ startNodeId = HaysNavNodes.parentNodeId  $>
+						<$else$>
+							<$ startNodeId = #local.nodeId  $>
+						<$endif$>
+				   <$endif$>
+				   [[%Added for release 9.0 end%]]
+					
+				<$include build_left_nav_specialisms_r6_inc$>
+			<$endif$>
+	<$else$>											[[% general %]]
+		<$if #active.navType AND (navType like 'Candidates' OR navType like '2') $>
+			<$ startNodeId = getValue('#env', 'PageType_2') $>
+		<$else $>
+			<$ startNodeId = getValue('#env', 'PageType_' & ssGetNodeProperty(#local.nodeId, 'HeaderType')) $>
+			
+		<$endif$>
+		<$include build_left_nav_general_inc_r6$>
+	<$endif$>
+
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : GROUPING *********
+**********************************************-->
+<@dynamichtml build_left_nav_general_inc_r6@>
+	<span class="h2"><$lc('wwHaysExpertise')$></span>
+	<ul id="suckerfish">
+  <$rsCopyFiltered("HaysNavNodes", "rsGroupingAndSpecialisms", "startingNodeId",startNodeId)$>
+  
+  [[% commented for release 9.0
+  <$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+  <$rsSort("rsSpecialisms","label","string","asc")$>%]]
+  
+  [[%Added for release 9.0 start%]]
+	
+	<$if isCountryCNorJP == 0$>
+	<$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","2")$>
+	<$rsSort("rsSpecialisms","label","string","asc")$>
+	<$else$>
+	<$rsCopyFiltered("rsGroupingAndSpecialisms", "rsSpecialisms", "level","1")$>
+	<$endif$>
+	[[%Added for release 9.0 end%]]
+	
+  <$loop rsSpecialisms$>
+	<$specNodId = rsSpecialisms.nodeId$>
+	
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",specNodId)$>
+	<$numberOfSubSpecKids=rsNumRows("rsSubSpecialisms")$>
+	
+	<$if numberOfSubSpecKids gt 0$>
+		<li class="popout"><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a> 
+		<$include build_left_navigation_specialism_popup_inc$>
+		</li>
+	<$else$>
+		<li ><a href="<$ rsSpecialisms.href $>"><$ rsSpecialisms.label $></a></li>
+	<$endif$>
+ <$endloop$>
+</ul>
+<$include left_nav_back$>
+
+	[[% Admin pages %]]
+	<$if isTrue(#active.SSContributor) $>
+		<$include build_left_nav_admin_main_r6_inc$>
+	<$endif$>
+<@end@>
+
+<!--***********************************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM POPUPS OF SUBSPEC *********
+************************************************************-->
+<@dynamichtml build_left_navigation_specialism_popup_inc@>
+	<$ gridClass = '' $>
+	<$if numberOfSubSpecKids GT 7 $>
+		<$ gridClass = 'grid_50' $>
+	<$endif$>
+
+	<ul class="<$ gridClass $>">
+		<$loop rsSubSpecialisms$>
+				<li><a href="<$ rsSubSpecialisms.href $>" style="min-height: 15px;"><$ rsSubSpecialisms.label $> <$lc('wwLeftNavJobSuffix')$></a></li>
+		<$endloop$>
+	</ul>
+<@end@>
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : SPECIALISM *******
+**********************************************-->
+<@dynamichtml build_left_nav_specialisms_r6_inc@>
+	<$rsCopyFiltered("HaysNavNodes", "rsSubSpecialisms", "parentNodeId",startNodeId)$>
+	<$if startNodeId like #local.nodeId$>
+		<span class="h2"><$ ssGetNodeProperty(startNodeId, "label") $></span>
+	<$else$>
+		<a href="<$ ssNodeLink(startNodeId,siteId) $>"><span class="h2"><$ ssGetNodeProperty(startNodeId, "label") $></span></a>
+	<$endif$>
+	<ul id="suckerfish" class="deep">
+	<$loop rsSubSpecialisms$>
+		<$if rsSubSpecialisms.nodeId like #local.nodeId$>
+			<li><span class="group"><$ rsSubSpecialisms.label $></span></li>
+		<$else$>
+		 
+			<li><a href="<$ rsSubSpecialisms.href $>"><$ rsSubSpecialisms.label $></a></li>
+		<$endif$>
+	<$endloop$>
+	</ul>
+	<$include left_nav_back$>
+		[[% Admin pages %]]
+		<$if isTrue(#active.SSContributor) $>
+			<$include build_left_nav_admin_main_r6_inc$>
+		<$endif$>
+<@end@>
+
+
+<!--********************************************
+****** LEFT SIDE NAVIGATION : ADMIN MAIN *******
+**********************************************-->
+<@dynamichtml build_left_nav_admin_main_r6_inc@>
+	<$rsCopyFiltered('HaysNavNodes', 'HaysNavNodesAdmin', 'contributorOnly', '1') $>
+	<$if rsFindRowPrimary('HaysNavNodesAdmin', #local.nodeId)$>
+		<$include build_left_nav_sub_admin_inc$>
+
+	<$else$>
+		<$if rsFirst('HaysNavNodesAdmin') $>
+			<$ parentId = HaysNavNodesAdmin.parentNodeId $>
+			<$rsCopyFiltered('HaysNavNodesAdmin', 'HaysNavNodesAdminTop', 'parentNodeId', parentId) $>
+			<$ numberOfKids = HaysNavNodesAdminTop.#numRows, gridClass = ''$>
+			<$if numberOfKids GT 14  $>
+				<$ gridClass = 'grid_33' $>
+			<$elseif numberOfKids GT 7 $>
+				<$ gridClass = 'grid_50' $>
+			<$endif$>
+
+			<$if numberOfKids GT 0 $>
+						</div>
+				</div>
+				<div class="left_nav">
+					<div class="cnr"></div>
+					<div class="ln_inner">
+						<span class="h2"><$lc('wwHaysAdmin')$></span>
+						<ul >
+							<$loop HaysNavNodesAdminTop $>
+								<li><a href="<$ HaysNavNodesAdminTop.href $>" style="min-height: 15px;"><$ HaysNavNodesAdminTop.label $></a></li>
+							<$endloop$>
+						</ul>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+
+
+
+
+<!--**************************************************
+****** LEFT SIDE NAVIGATION : ADMIN PAGES    *********
+***************************************************-->
+<@dynamichtml build_left_nav_sub_admin_r6_inc@>
+			<span class="h2"><$ HaysNavNodesAdmin.label $></span>
+			<ul id="suckerfish"class="deep">
+			<$ exec rsNext('HaysNavNodesAdmin') $>
+			<$loopwhile getValue('HaysNavNodesAdmin', '#isRowPresent') $>
+				<$if HaysNavNodesAdmin.parentNodeId like #local.nodeId $>
+					<li><a href="<$ HaysNavNodesAdmin.href $>" ><$ HaysNavNodesAdmin.label $></a></li>
+				<$endif$>
+				<$ exec rsNext('HaysNavNodesAdmin') $>
+			<$endloop$>
+			</ul>
+<@end@>
+
+
+</body></html>

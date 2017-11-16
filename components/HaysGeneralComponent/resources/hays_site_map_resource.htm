@@ -1,0 +1,757 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml localjobs@>
+
+
+
+	[[%<h2>Testing !!</h2>
+
+  			<h2>TestAdress Website Section 1!!</h2>
+ 				 <h3>Suffix: <$path$></h3>
+				 <h3>domainId: <$domainId$></h3>
+ 				 <h3>LanguageCode: <$LanguageCode$></h3>
+ 				 <h3>locationColumn: <$locationColumn$></h3>%]]
+					  <$Localjoburl=parseLocalJobUrl(path,domainId,LanguageCode,locationColumn)$>
+				 [[% <$host = GetDomainName("http://testsg.hays.co.uk")$>
+				  <h3>host: <$host$></h3> %]]
+  
+  					[[%
+					<h3>localePageType: <$localePageType$></h3>
+ 				 <h3>localSpecialismId: <$localSpecialismId$></h3>
+  					<h3>localSubSpecialismId: <$localSubSpecialismId$></h3>
+  					<h3>localRegionLocationId: <$localRegionLocationId$></h3>
+					  <h3>localTownLocationId: <$localTownLocationId$></h3>%]]
+
+ 
+  <$incl = "localjobs_" & localePageType$>
+
+  
+ <$inc("localjobs_" & localePageType) $>
+
+ <$include localjobs_otherLocations$>
+<@end@>
+
+
+
+
+<!-- ************************************************************************************************************************
+**************** Include for displaying Other Regional locations for same specialism in Right Hand block*********************
+*****************************************************************************************************************************--> 
+ 
+<@dynamichtml right_localjobs_in_other_regions@>
+	<$if strEquals(localePageType,"2")$>
+		<$LocaljobSpec=localJobsInYourArea(domainId,LanguageCode,locationColumn)$>
+		<$specialism_Url=#active.specialismUrl$>
+		<div class="side_box">
+			<div class="rc_blue">
+				<div class="cnr"></div>
+				<h2><$lc('wwLocalJobs_OtherRegions')$></h2>
+			</div>
+			<div class="rc_grey sb_inner pull block_list even">
+				<ul><li>
+				<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+					<$loop rsLocalRegionLocationProperties$>
+						<$if not strEquals(rsLocalRegionLocationProperties.description,#active.loc)$>
+							<$location_url=rsLocalRegionLocationProperties.url$>
+							<h3><a href="<$"../"&specialism_Url&"/"&location_url$>"><$rsLocalRegionLocationProperties.description$> &gt;</a></h3>
+						<$endif$>
+					<$endloop$>
+				<$endif$>
+				</li></ul>				
+			</div>
+		</div>
+	<$endif$>
+<@end@>
+
+
+<!-- ************************************************************************************************************************
+**************** Include for displaying Other town locations in Right Hand block*********************************************
+*****************************************************************************************************************************--> 
+ <@dynamichtml right_localjobs_other_locations@>
+ 
+ 	<$if strEquals(localePageType,"4") OR strEquals(localePageType,"5")$>
+ 		
+		<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+			<$loop rsLocalTownLocationProperties$>
+				<$localTownLocationId=rsLocalTownLocationProperties.locationId$>
+				<$townurl=rsLocalTownLocationProperties.url$>
+				<$Townlocation=rsLocalTownLocationProperties.description$>
+			<$endloop$>
+		<$endif$>
+
+		<$LocalOtherLocations=getOtherLocations(localTownLocationId,locationColumn,domainId)$>
+
+
+		[[%<$if rsExists("rsLocalOtherLocations") and rsFirst("rsLocalOtherLocations")$>
+					<$loop rsLocalOtherLocations$>
+							:<$rsLocalOtherLocations.locationId$>:	
+							:<$rsLocalOtherLocations.url$>:
+							:<$rsLocalOtherLocations.description$>:				
+							:<$rsLocalOtherLocations.parentLocationId$>:				
+							:<$rsLocalOtherLocations.parentUrl$>:	
+							:<$rsLocalOtherLocations.parentDescription$>:	
+					<$endloop$>
+		<$endif$>%]]
+		<$if rsExists("rsLocalOtherLocations") and rsFirst("rsLocalOtherLocations")$> 
+		<div class="side_box">
+			<div class="rc_blue">
+				<div class="cnr"></div>
+				<h2><$lc('wwLocalJobs_OtherLocations')$></h2>
+			</div>
+			<div class="rc_grey sb_inner pull block_list even">
+				<ul><li>
+				<$if rsExists("rsLocalOtherLocations") and rsFirst("rsLocalOtherLocations")$>
+					<$loop rsLocalOtherLocations$>
+						<$parent_location_url=rsLocalOtherLocations.parentUrl$>
+						<$location_url=rsLocalOtherLocations.url$>
+						<h3><a href="<$"../"&parent_location_url&"/"&location_url$>"><$rsLocalOtherLocations.description$> &gt;</a></h3>	
+					<$endloop$>
+				<$endif$>
+				</li></ul>				
+			</div>
+		</div>
+		<$endif$>
+	<$endif$>	
+	
+<@end@>
+ 
+ 
+<!-- ************************************************************************************************************************
+*********Include for displaying Locations for Local jobs in Left Hand block for Specialism and Sub-specialism pages**********
+*****************************************************************************************************************************--> 
+
+<@dynamichtml left_localjobs_in_your_area@>
+		
+	<$currentnode=#active.nodeId$>
+	
+	<$if NOT rsExists('HaysNavNodes') $>
+		<$ haysLoadSiteNavResultSet(siteId) $>
+	<$endif$>
+	
+	<$if (rsFindRowPrimary('HaysNavNodes', currentnode))$>
+		<$sectionlevel=HaysNavNodes.level$>
+	<$endif$>
+	
+	<$LocaljobSpec=localJobsInYourArea(domainId,LanguageCode,locationColumn)$>
+	
+	<$if strEquals(sectionlevel,2)$>	
+		<$specialism_id = ssGetNodeProperty(currentnode, 'xCategory')$>
+		<$specialism_id=strReplace(specialism_id,";","")$> 
+	<$endif$>
+	
+	<$if strEquals(sectionlevel,3)$>
+			
+		<$subspecialism_id = ssGetNodeProperty(currentnode,"xCategory")$>
+		<$subspecialism_id=strReplace(subspecialism_id,";","")$> 
+				
+		<$loop SiteStudioNavNodes$>
+			<$if strEquals(currentnode,SiteStudioNavNodes.nodeId)$>	
+				<$parentnodeID = SiteStudioNavNodes.parentNodeId$>
+			<$endif$>
+		<$endloop$>
+				
+		<$specialism_id=ssGetNodeProperty(parentnodeID,'xCategory')$>
+		<$specialism_id=strReplace(specialism_id,";","")$> 
+			
+	<$endif$>
+	
+	<$if rsExists("rsLocalSpecialismProperties") and rsFirst("rsLocalSpecialismProperties")$>
+		<$loop rsLocalSpecialismProperties$>
+			<$specialismid = rsLocalSpecialismProperties.specialismId$>	
+			<$specialismurl=rsLocalSpecialismProperties.url$>
+			<$if strEquals(specialismid,specialism_id)$>
+				<$specialism_url=specialismurl$>
+			<$endif$>
+		<$endloop$>
+	<$endif$>
+		
+	<$if strEquals(sectionlevel,3)$>
+			<$LocaljobsubSpec=localJobsInYourAreaSubSpec(domainId,LanguageCode,locationColumn,specialism_url)$>
+			<$if rsExists("rsLocalSubSpecialismProperties") and rsFirst("rsLocalSubSpecialismProperties")$>
+			<$loop rsLocalSubSpecialismProperties$>
+					<$subSpecilismurl = rsLocalSubSpecialismProperties.url$>	
+					<$subSpecialismid = rsLocalSubSpecialismProperties.specialismId$>	
+					<$if strEquals(subSpecialismid,subspecialism_id)$>
+							<$subspecialism_url=subSpecilismurl$>
+					<$endif$>			   
+			<$endloop$> 
+			
+			
+		<$endif$>
+	<$endif$>
+	
+	<div class="left_nav">
+		<div class="cnr"></div>
+		<div class="ln_inner">
+			<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+				<span class="h2"><$lc('wwLocalJobs_JobsInYourArea')$></span>
+				<$loop rsLocalRegionLocationProperties$>
+					<$regionurl=rsLocalRegionLocationProperties.url$>
+					<ul id="suckerfish" class="deep">
+						<$if strEquals(sectionlevel,2)$>
+							<li><a href="<$"../../../uklocaljobs/"&specialism_url&"/"&regionurl$>"><$rsLocalRegionLocationProperties.description$></a></li>
+						<$elseif strEquals(sectionlevel,3)$>
+							<li><a href="<$"../../../../uklocaljobs/"&specialism_url&"/"&subspecialism_url&"/"&regionurl$>"><$rsLocalRegionLocationProperties.description$></a></li></a></li>
+						<$endif$>
+					</ul>
+				<$endloop$>
+			<$endif$>  
+			<div class="msg back">
+				<a href="<$"../../../../uklocaljobs/"$>">Browse  &gt;</a> 
+			</div>
+		</div>
+	</div>
+
+	
+<@end@>
+ 
+
+<!-- ***************************************************************
+*********Include for Title and Metadata in Local jobs***************
+*********************************************************************--> 
+
+ 
+<@dynamichtml localjobs_title_and_metadata@>
+	<$if strEquals(nodeId,"local-jobs")$>
+	
+		<$a=parseLocalJobUrl(path,domainId,LanguageCode,locationColumn)$>
+		
+		<$if rsExists("rsLocalSpecialismProperties") and rsFirst("rsLocalSpecialismProperties")$>
+			<$loop rsLocalSpecialismProperties$>
+				<$specilism = rsLocalSpecialismProperties.description$>				
+			<$endloop$>
+		<$endif$>
+		<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+			<$loop rsLocalRegionLocationProperties$>
+				<$location = rsLocalRegionLocationProperties.description$>
+			<$endloop$>
+		<$endif$>
+		<$if rsExists("rsLocalSubSpecialismProperties") and rsFirst("rsLocalSubSpecialismProperties")$>
+			<$loop rsLocalSubSpecialismProperties$>
+				   <$subSpecilism = rsLocalSubSpecialismProperties.description$>				
+			<$endloop$>
+		<$endif$>
+		<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+				<$loop rsLocalTownLocationProperties$>
+						<$town=rsLocalTownLocationProperties.description$>
+				<$endloop$>
+			<$endif$>
+
+		<$if strEquals(localePageType,1)$>
+			<$ document_title = lc('wwLocalJobs_PageTitle_1')$>
+			<meta name="description" content="<$lc('wwLocalJobs_Metadata_1')$>"/>
+		<$elseif strEquals(localePageType,2)$>			
+			<$ document_title = lc('wwLocalJobs_PageTitle_2',location,specilism)$>
+			<meta name="description" content="<$lc('wwLocalJobs_Metadata_2',specilism,location,specilism)$>"/>
+		<$elseif strEquals(localePageType,3)$>		
+			<$ document_title = lc('wwLocalJobs_PageTitle_3',location,subSpecilism,specilism)$>
+			<meta name="description" content="<$lc('wwLocalJobs_Metadata_3',subSpecilism,location,specilism)$>"/>
+		<$elseif strEquals(localePageType,4)$>	
+			<$ document_title = lc('wwLocalJobs_PageTitle_4',town,specilism)$>
+			<meta name="description" content="<$lc('wwLocalJobs_Metadata_4',specilism,town,specilism)$>"/>
+		<$elseif strEquals(localePageType,5)$>
+			<$ document_title = lc('wwLocalJobs_PageTitle_5',town,subSpecilism,specilism)$>
+			<meta name="description" content="<$lc('wwLocalJobs_Metadata_5',subSpecilism,town,specilism)$>"/>
+		<$endif$>
+		
+		
+	<$endif$>
+
+<@end@>
+
+
+<!-- ***************************************************************
+*********Include for Local jobs page type 1*************************
+*********************************************************************--> 
+ 
+<@dynamichtml localjobs_1@>
+
+	
+	[[%rsLocalSpecialismProperties:
+	<$if rsExists("rsLocalSpecialismProperties") and rsFirst("rsLocalSpecialismProperties")$>
+				<$loop rsLocalSpecialismProperties$>
+					    :<$rsLocalSpecialismProperties.specialismId$>:	
+						:<$rsLocalSpecialismProperties.sectionId$>:
+						:<$rsLocalSpecialismProperties.url$>:
+						:<$rsLocalSpecialismProperties.description$>:				
+				<$endloop$>
+	<$endif$>
+	rsLocalRegionLocationProperties:
+	<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+				<$loop rsLocalRegionLocationProperties$>
+					    :<$rsLocalRegionLocationProperties.locationId$>:	
+						:<$rsLocalRegionLocationProperties.url$>:
+						:<$rsLocalRegionLocationProperties.description$>:
+				<$endloop$>
+	<$endif$>%]]
+	<h1><$lc("wwLocalJobs_title1")$></h1>
+	
+	<$if rsExists("rsLocalSpecialismProperties") and rsFirst("rsLocalSpecialismProperties")$>
+		<div class="specialism_module">
+			<$loop rsLocalSpecialismProperties$>
+				<div class="spec_col">
+					<ul>
+						<li><a href="<$ssGetServerRelativeUrl(siteId, rsLocalSpecialismProperties.sectionId)$>"><$rsLocalSpecialismProperties.description$></a></li>
+					</ul>
+					<span>
+						<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+							<$numRows = rsNumRows("rsLocalRegionLocationProperties")$>
+							<$counter=1$>
+							<$loop rsLocalRegionLocationProperties$>
+								<$if strEquals(counter,numRows)$>
+									<a href="<$rsLocalSpecialismProperties.url & "/" & rsLocalRegionLocationProperties.url$>">	<$rsLocalRegionLocationProperties.description$></a>
+								<$else$>
+									<a href="<$rsLocalSpecialismProperties.url & "/" & rsLocalRegionLocationProperties.url$>">	<$rsLocalRegionLocationProperties.description$> - </a>
+								<$endif$>
+								<$counter=counter+1$>
+							<$endloop$>
+						<$endif$>
+					</span>
+				</div>
+			<$endloop$>
+		</div>
+	<$endif$>
+	
+<@end@>
+
+
+
+
+<!-- ***************************************************************
+*********Include for Local jobs page type 2*************************
+*********************************************************************-->
+
+<@dynamichtml localjobs_2@>
+	
+	[[%rsLocalTownLocationProperties:
+	<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+				<$loop rsLocalTownLocationProperties$>
+					    :<$rsLocalTownLocationProperties.locationId$>:	
+						:<$rsLocalTownLocationProperties.url$>:
+						:<$rsLocalTownLocationProperties.description$>:
+				<$endloop$>
+	<$endif$>%]]
+
+
+	<$if rsExists("rsLocalSpecialismProperties") and rsFirst("rsLocalSpecialismProperties")$>
+				<$loop rsLocalSpecialismProperties$>
+					<$spec = rsLocalSpecialismProperties.description$>	
+					<$specialismUrl=rsLocalSpecialismProperties.url$>					
+				<$endloop$>
+	<$endif$>
+	<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+				<$loop rsLocalRegionLocationProperties$>
+						<$locurl = rsLocalRegionLocationProperties.url$>
+						<$loc = rsLocalRegionLocationProperties.description$>
+				<$endloop$>
+	<$endif$>
+		
+	<h1><$lc("wwLocalJobs_title2",strUpper(spec),strUpper(loc))$></h1>
+	<hr>
+	<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+		<div class="mid_module">
+				<$loop rsLocalTownLocationProperties$>
+					<ul class="location_module">
+						<li><a href="<$locurl & "/" & rsLocalTownLocationProperties.url$>"><$lc("wwSpecialism_LocalJobsin_town",rsLocalTownLocationProperties.description)$></a></li>
+					</ul>
+				<$endloop$>
+		</div>
+	<$endif$>
+<@end@>
+
+
+
+
+<!-- ***************************************************************
+*********Include for Local jobs page type 3*************************
+*********************************************************************-->
+
+<@dynamichtml localjobs_3@>
+
+	
+	
+	[[%rsLocalSubSpecialismProperties:
+	<$if rsExists("rsLocalSubSpecialismProperties") and rsFirst("rsLocalSubSpecialismProperties")$>
+				<$loop rsLocalSubSpecialismProperties$>
+					    :<$rsLocalSubSpecialismProperties.specialismId$>:	
+						:<$rsLocalSubSpecialismProperties.sectionId$>:
+						:<$rsLocalSubSpecialismProperties.url$>:
+						:<$rsLocalSubSpecialismProperties.description$>:				
+				<$endloop$>
+	<$endif$>%]]
+	
+
+	<$if rsExists("rsLocalSubSpecialismProperties") and rsFirst("rsLocalSubSpecialismProperties")$>
+				<$loop rsLocalSubSpecialismProperties$>
+					   [[% :<$rsLocalSubSpecialismProperties.specialismId$>:	
+						:<$rsLocalSubSpecialismProperties.sectionId$>:
+						:<$rsLocalSubSpecialismProperties.url$>:%]]
+						<$subSpec = rsLocalSubSpecialismProperties.description$>				
+				<$endloop$>
+	<$endif$>
+	<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+				<$loop rsLocalRegionLocationProperties$>
+						<$locurl = rsLocalRegionLocationProperties.url$>
+						<$loc = rsLocalRegionLocationProperties.description$>
+				<$endloop$>
+	<$endif$>
+	<h1><$lc("wwLocalJobs_title3",strUpper(subSpec),strUpper(loc))$></h1>
+	<hr>		
+	<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+		<div class="mid_module">
+			<$loop rsLocalTownLocationProperties$>
+				<ul class="location_module">
+					<li><a href="<$locurl & "/" & rsLocalTownLocationProperties.url$>"><$lc("wwLocalJobs_inTown",subSpec,rsLocalTownLocationProperties.description)$></a></li>
+				 </ul>
+			<$endloop$>
+		</div>
+	<$endif$>
+
+<@end@>
+
+
+
+
+<!-- ***************************************************************
+*********Include for Local jobs page type 4*************************
+*********************************************************************-->
+
+<@dynamichtml localjobs_4@>
+
+		
+	
+	<$if rsExists("rsLocalSpecialismProperties") and rsFirst("rsLocalSpecialismProperties")$>
+		<$loop rsLocalSpecialismProperties$>
+			<$specurl = rsLocalSpecialismProperties.url$>					
+			<$LocalSpecialismID = rsLocalSpecialismProperties.specialismId$>	
+			<$SpecialismDescription = rsLocalSpecialismProperties.description$>				
+		<$endloop$>
+	<$endif$>
+	
+	
+	<$if rsExists("rsLocalRegionLocationProperties") and rsFirst("rsLocalRegionLocationProperties")$>
+		<$loop rsLocalRegionLocationProperties$>			
+			<$regnurl=rsLocalRegionLocationProperties.url$>
+		<$endloop$>
+	<$endif$>
+
+	<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+		<$loop rsLocalTownLocationProperties$>
+			<$localTownLocationId=rsLocalTownLocationProperties.locationId$>
+			<$townurl=rsLocalTownLocationProperties.url$>
+			<$Townlocation=rsLocalTownLocationProperties.description$>
+		<$endloop$>
+	<$endif$>
+	
+	<$rsCopyFiltered('rsLocalSubSpecialismProperties', 'rsLocalSubSpecialism', 'isSubSpecialism','Y')$> 
+	<$rsCopyFiltered('rsLocalSubSpecialismProperties', 'rsLocalSubSpecialism_jobtitle', 'isSubSpecialism','N')$> 
+	
+	<h1 class="specialism_title" style="text-transform: uppercase;"><$lc("wwLocalJobs_title4",strUpper(SpecialismDescription),strUpper(Townlocation))$></h1>
+	<div class="half_intro"> 	
+		<div class="hi_inner">
+			<div class="wysiwyg" id="wysToggle">	
+			<$lc("wwLocalJobs_Description1",SpecialismDescription,Townlocation)$><BR>
+			<$loop rsLocalSubSpecialism$>			
+					<$spec = rsLocalSubSpecialism.description$>	
+					<$subspecurl = rsLocalSubSpecialism.url$>	
+					<a href="<$ "../../"& specurl & "/" & subspecurl & "/" & regnurl & "/" & townurl$> "><$rsLocalSubSpecialism.description$></a>&nbsp;&nbsp;&nbsp;  				
+			<$endloop$>
+			</div>
+			<$if rsNumRows("rsLocalSubSpecialism_jobtitle") GT 0$>
+			<div class="wysiwyg" id="wysToggle">
+			<$loop rsLocalSubSpecialism_jobtitle$>			
+					<$subspecurl = rsLocalSubSpecialism_jobtitle.url$> 
+					<a href="<$ "../../"& specurl & "/" & subspecurl & "/" & regnurl & "/" & townurl$> "><$rsLocalSubSpecialism_jobtitle.specialismId$></a>&nbsp;&nbsp;&nbsp;  				
+			<$endloop$>
+			<$endif$>
+			</div>
+		</div>	
+	</div>	
+	
+	<$include latitude_and_longitude_from_locationid$>
+	
+	<$varlocaljob=1$>
+
+	<$include hays_job_cand_search_form_r6$>
+	
+	<$categoryid = LocalSpecialismID$>
+	
+	<$include latest_jobs_local_specilism_landing_page$>
+
+<@end@>
+
+<@dynamichtml latitude_and_longitude_from_locationid@>
+	<$locationDesc=""$>
+	<$exec rsRemove("LOCATION_DETAILS")$>
+	<$if strLength(#active.localTownLocationId) gt 0$>
+		<$exec locationDetails(localTownLocationId,'LOCATION_DETAILS')$>
+		<$loop LOCATION_DETAILS$>
+			<$locationDesc=locationDesc & DEFAULT_DESCRIPTION$>
+			<$locationLatitude=latitude$>
+			<$locationLongitude=longitude$>
+			<$locationLevel=LOCATION_DETAILS.level$>
+		<$endloop$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml latest_jobs_local_specilism_landing_page@>
+		
+			<$ queryString = '' $>
+		<$include set_query_string_simple$> 
+		[[%<$localTownLocationId="27"$>%]]
+		
+		<$if strEquals(localePageType,"4")$>		
+			<$ queryString = queryString & " <AND> (dDocType <matches> `Jobs`) <AND> (xSpecialismId <CONTAINS> `"&  categoryid & "`) <AND> ( xLocation <matches> `"& localTownLocationId &"`)"$>		
+		<$else$>		
+			<$ queryString = queryString & " <AND> (dDocType <matches> `Jobs`) <AND> (xCategory <CONTAINS> `"&  categoryid & "`) <AND> ( xLocation <matches> `"& localTownLocationId &"`)"$>		
+		<$endif$>
+			<$contentType = 'Jobs' $>
+			<$ QueryText = queryString $>
+			<$ SortField = 'dInDate', SortOrder = "Desc", ResultCount = 10 $>
+			<$ sectionUrl = ssNodeLink("jobssearchresults", siteId)& "?contentType=" & contentType$>
+			<$sectionUrl = sectionUrl & '&job_category=' & categoryid & '&level=6'&'&job_location=' & localTownLocationId$>
+	
+		
+		<div class="content_boxes">
+		<ul class="cb_inner featured_boxes subpage">
+			<li>
+				<div class="promo_box" style="min-height: 145px;">
+					<div class="pb_inner" id ="pg_home">
+						<h2><$lc("wwLocalJobs_LatestJobs",strUpper(Townlocation))$>  <div class = "more-localjobs"><a  href="<$ sectionUrl $>"><$lc('wwViewMore_localjobs')$></a></div></h2>
+						
+							<div class="med_inner">
+								<$executeService("GET_SEARCH_RESULTS") $>
+								<$if rsFirst('SearchResults') $>
+									<ul >
+										<$loop SearchResults $>
+											<$dID = SearchResults.dID$>
+											<$executeService('DOC_INFO_SIMPLE')$>
+											<$if rsFirst('DOC_INFO') $>
+												<$ job_description = DOC_INFO.xDescription$>
+											<$endif$>	
+											
+												<li>
+													<h3><a href="<$ssLink(dDocName) $>"><$SearchResults.dDocTitle $></a></h3>
+													<$job_description$>
+													<p></p>
+												</li>
+											
+										<$endloop $>
+									</ul>
+								<$endif $>										
+							</div>		
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div class="clear"></div>
+<@end@>
+
+
+
+
+<!-- ***************************************************************
+*********Include for Local jobs page type 1*************************
+*********************************************************************-->
+<@dynamichtml localjobs_5@>
+
+
+	<$if rsExists("rsLocalSubSpecialismProperties") and rsFirst("rsLocalSubSpecialismProperties")$>
+				<$loop rsLocalSubSpecialismProperties$>
+					<$LocalSubSpecialismID = rsLocalSubSpecialismProperties.specialismId$>
+					<$subSpecialismDescription = rsLocalSubSpecialismProperties.description$>
+					<$isSubSpecialism=rsLocalSubSpecialismProperties.isSubSpecialism$>
+				<$endloop$>
+	<$endif$>
+	
+	<$if rsExists("rsLocalTownLocationProperties") and rsFirst("rsLocalTownLocationProperties")$>
+				<$loop rsLocalTownLocationProperties$>
+					<$localTownLocationId=rsLocalTownLocationProperties.locationId$>	
+					<$Townlocation=rsLocalTownLocationProperties.description$>						
+				<$endloop$>
+	<$endif$>
+	
+	<h1 class="specialism_title" style="text-transform: uppercase;"><$lc("wwLocalJobs_title5",strUpper(subSpecialismDescription),strUpper(Townlocation))$></h1>
+	<div class="half_intro"> 	
+		<div class="hi_inner">
+			<div class="wysiwyg" id="wysToggle">
+			<$lc("wwLocalJobs_Description2")$><BR>				
+			</div>
+		</div>	
+	</div>
+	<$include latitude_and_longitude_from_locationid$>
+	<$varlocaljob=1$>
+	<$include hays_job_cand_search_form_r6$>
+	<$categoryid = LocalSubSpecialismID$>
+	
+	<$include latest_jobs_local_specilism_landing_page$>
+
+<@end@>
+
+
+
+
+
+<@dynamichtml SiteMap@>
+	[[%Initialise the request parameters%]]
+	<$if not (#active.pStartLevel)$>
+		<$pStartLevel = 2$>
+	<$endif$>
+
+	<$if not (#active.pshowSubLevel)$>
+		<$pshowSubLevel = "true"$>
+	<$endif$>
+		
+	<$if not (#active.activeParentNodeId)$>
+		<$activeParentNodeId=ssGetRelativeNodeId(siteId, nodeId, "parent")$>
+	<$endif$>
+	<$if isTrue(pshowSubLevel)$>
+		<$vnEndLevel=pStartLevel+1$>
+	<$else$>
+		<$vnEndLevel=pStartLevel$>	
+	<$endif$>
+
+	[[%As nodeId will get replaced in the loop store it in another variable%]]
+	<$vnActiveNodeId = nodeId$>
+	<$vnActiveNodeLevel = ssNavNodeList.#numRows$>
+
+	[[%Initialise variable used in looping below%]]
+	<$vnPrevNodeLevel = pStartLevel$>
+	<$linkNodeId=activeParentNodeId$>
+	<$linkDisplay="true"$>	
+	<$headerLabel = ssGetNodeLabel(siteId, activeParentNodeId)$>
+	<$childrenNodesNum=0$>
+	
+	[[%Set header to static label when user is above Specialism level%]]
+	<$if vnActiveNodeLevel lt 4$>
+		<$headerLabel = "Hays Expertise"$>
+		<$linkDisplay="false"$>
+	<$endif$>
+	
+	[[%Set the Link to All Expertise page for later usage%]]
+	<ul class="site_map grid_33">
+		<div class="ln_inner">
+			<span class="h2"><$headerLabel$></span>
+		
+		[[%Get all the nodes in hierarchy%]]
+		<$if not rsExists("SiteStudioNavNodes")$>
+			<$ssLoadSiteNavResultSet(siteId)$>
+		<$endif$>
+		<$if rsExists("SiteStudioNavNodes")$>	
+		
+					<ul>    		
+	
+			<$isSublevel="false"$>
+			<$relevantChildStart="false"$>
+			<$loop SiteStudioNavNodes$>
+				<$if (level ge pStartLevel) and (level le vnEndLevel)$>
+					[[%Need to show only relevant nodes between start and end levels%]]
+					<$if strEquals(parentNodeId,activeParentNodeId) or isTrue(relevantChildStart)$>
+						[[%Show nodes and sub-nodes under the selected parent node only%]]
+						<$count = 0$>
+						<$if (level eq pStartLevel)$>
+							<$if strEquals(parentNodeId,activeParentNodeId)$>
+								<$relevantChildStart="true"$>	
+							<$else$>
+								<$relevantChildStart="false"$>
+								<$break$>
+							<$endif$>					
+							<$crGetChildrenNodes(nodeId, 1)$>
+							<$childrenNodesNum=CRCildNodes.#numRows$>		
+							<$if #active.debug$>childrenNodesNum = <$childrenNodesNum$> nodeId = <$nodeId$> label = <$label$><$endif$>
+						<$endif$>
+						<$if (level gt vnPrevNodeLevel)$>
+							[[%definitely start of childs under previous node which was a parent%]]
+							<$isSublevel="true"$> 
+							[[%TOP LEVEL%]]
+							<$if childrenNodesNum le 6$> 
+								<$vnOutputText = '<ul>1<li><a href="' & href & '">' & label &  '</a></li>'$>
+							<$elseif childrenNodesNum ge 14$>
+								<$vnOutputText = '<ul class="grid_33"><li>2<a href="' & href & '">' & label &  '</a></li>'$>
+							<$else$>
+								<$vnOutputText = '<ul class="grid_50"><li>3<a href="' & href & '">' & label &  '</a></li>'$>
+							<$endif$>
+						<$elseif (level lt vnPrevNodeLevel)$>
+							<$count = count + 1$>
+							[[%definitely end of all childs under previous parent and start of another parent%]]
+							<$isSublevel="false"$>
+							<$if strEquals(vnActiveNodeId,nodeId)$>	
+								<$if level eq 2$>
+									[[%Dont want href at this level%]]
+									<$vnOutputText = '</ul></li><li>B<span class="group">' & count & label & '</span>'$>
+								<$else$>
+									<$vnOutputText = '</ul></li><li>N<span class="group">' & label & '</span>'$>
+								<$endif$>	
+							<$else$>	
+								<$if level eq 2$>	 
+									[[%LAST IN FIRST SET%]]
+				  					<$vnOutputText = '</ul></li><li>Z<span class="group">' & label & '</span>'$>
+						  		<$else$>
+						  			<$vnOutputText = '</ul></li><li>X<a href="' & href & '">' & label & '</a>'$>
+								<$endif$>				
+							<$endif$>	
+						<$else$>
+							[[%Same level - can be parent or child both%]]
+							<$if isTrue(isSublevel)$>
+								[[%SUB LEVEL 2+%]]
+								[[%Child%]]
+								<$vnOutputText = '<li>Q<a href="' & href & '">' & label & '</a></li>'$>
+							<$else$>		
+								[[%Parent%]] 
+								<$if level eq 4$>
+									[[%Flat structure to be shown%]]	
+									<$if strEquals(vnActiveNodeId,nodeId)$> 
+										<$c="NA"$>
+										<$vnOutputText = '<li>A<span class="group">' & label & '</li>'$>
+									<$else$>	
+										<$vnOutputText = '<li>S<a href="' & href & '">' & label & '</a></li>'$>
+									<$endif$>
+								<$else$>
+									<$if vnActiveNodeId = nodeId$>
+										<$c="NA"$>
+										<$if level eq 2$>	
+											<$vnOutputText = '</li><li>D<span class="group">' & label & '</span>'$>
+										<$else$>
+											<$vnOutputText = '</li><li>F<span class="group">' & label & '</span>'$>
+										<$endif$>			
+									<$else$>	
+										<$if level eq 2$>
+											<$c="Odd Random Rows"$>
+											<$vnOutputText = '</li><li>G<span class="group">' & label & '</span>'$>
+										<$else$>
+											<$vnOutputText = '</li><li>H<a href="' & href & '">' & label & '</a>'$>
+										<$endif$>	
+									<$endif$>																			
+								<$endif$>				
+						<$endif$>
+					<$endif$>	
+					<$vnPrevNodeLevel = level$>
+					<$if strLength(vnOutputText) gt 0$>
+						<$vnOutputText$>
+					<$endif$>
+				<$endif$>	
+			<$endif$>	
+		<$endloop$>
+			</ul></li></ul>
+			<div class="clear"></div>
+				
+		<$c="Display link to see all areas of expertise"$>
+		<$if isTrue(linkDisplay)$>
+			<div class="msg back">
+				<$cnid = ssGetServerRelativeUrl(siteId, linkNodeId)$>
+					  <a href="<$cnid$>">See all areas of expertise </a>
+				  </div>
+		<$endif$>									
+	<$endif$>
+	</div>	
+</UL>	
+
+<@end@>
+</body></html>

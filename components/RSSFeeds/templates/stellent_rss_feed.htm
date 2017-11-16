@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="<$PageCharset$>" ?>
+<$exec inc("std_rss_feed_variables")$><$includeName = feedName & "_rss_feed"$>
+<$if feedMaxAge$>
+    <$cacheInclude(includeName, rssCacheScope, feedMaxAge, "rssCache", QUERY_STRING)$>
+<$else$>
+    <$inc(includeName)$>
+<$endif$>

@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+FacetedBrowsing ONT_CLASSIFIERs
+</title>
+<$include ont_javascript_dhtmlx_tree_inc$>
+<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+</head>
+<body>
+<div id="ont_tree">
+	<table>
+		<tr class="search">
+			<td>			
+				<input type="text" id="stext">
+				<a href="javascript:void(0);" onClick="tree.findItem(document.getElementById('stext').value)">Find</a>
+			</td>
+			<td>
+				<a href="javascript:void(0);" onClick="list.deleteItem(list.getSelectedItemId(),true);">Delete</a> selected item</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="treeboxbox_tree"/>
+			</td>
+			<td>
+				<div id="treeboxbox_list" />		
+			</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td style="text-align:right">
+				<button name="selectButton" onClick="setChoice();return false;">Select</button>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<script>
+
+			var obj = <$callback$>;
+
+			tree=new dhtmlXTreeObject("treeboxbox_tree","100%","100%",0);
+
+			tree.setSkin('dhx_skyblue');
+			tree.setImagePath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/csh_bluefolders/");
+			tree.setIconsPath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/");
+			tree.enableDragAndDrop(true);
+			tree.enableMercyDrag(true); 
+			tree.setDragBehavior("complex");
+			tree.attachEvent("onDragIn", denyDragIn);
+			tree.registerXMLEntity('&','and');
+			// when XML parsing is over
+			tree.attachEvent("onXLE", sort);
+
+
+			tree.loadXML("?IdcService=ONT_LOAD_ONT_TREE&ont_metadata=<$ont_metadata$>&language=<$language$>&country=<$country$>");
+			
+
+			list=new dhtmlXTreeObject("treeboxbox_list","100%","100%",0);
+
+			list.setSkin('dhx_skyblue');
+			list.setImagePath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/csh_bluefolders/");
+			list.setIconsPath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/");
+			list.enableDragAndDrop(true);
+			list.enableTreeImages("false");
+			list.enableTreeLines("false");
+			list.attachEvent("onDrag", denyKids);
+	
+					
+			list.loadXMLString( obj.convert() ); 
+
+			function denyKids( nodeId, parentId) {
+				if( tree.getLevel(nodeId) < 2)
+					return false;
+				if( list.getIndexById(nodeId) == null ) {
+					list.insertNewChild(0,nodeId, tree.getSelectedItemText() + ' [' + tree.getItemText(tree.getParentId(nodeId)) + ']',0,0,0,0,"CHILD,CHECKED");
+					sort(list, '0');
+				}
+				return false;	
+			}
+
+
+			function sort(tree, id) {
+				tree.sortTree(id,'ASC',1);
+			}
+
+			function denyDragIn( ) {
+				return false;	
+			}
+
+			function setChoice() {
+			 try {			
+				obj.extractIds(list.serializeTree());
+
+				// close this window
+				window.close();
+			 }
+			 catch ( error)	 {
+				alert("There is an error passing data back to parent window: " + error);
+			 }
+			}
+			
+	</script>
+</body>
+
+</html>

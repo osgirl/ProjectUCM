@@ -1,0 +1,37 @@
+﻿<?hda version="11.1.1.8.1DEV-2014-01-06 04:18:30Z-r114490" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=OracleSupportDiagnostics
+blDateFormat=M/d{/yy}{ h:mm[:ss]{ a}}!mAM,PM!tAmerica/New_York
+classpath=$COMPONENT_DIR/classes
+classpathorder=-10
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_04_11(build 1)
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+@end

@@ -1,0 +1,39 @@
+<?hda version="10.1.3.5.1 (100623)" jcharset=UTF8 encoding=utf-8?>
+@Properties LocalData
+blFieldTypes=
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+@end
+@ResultSet HaysMicroSites_Templates
+5
+name
+class
+formtype
+filename
+description
+microsite_jobapply_form
+microsite_jobapply_form
+microsite_jobapply_form
+microsite_jobapply_form.htm
+microsite_jobapply_form
+microsite_jobapply_jobseeker
+microsite_jobapply_jobseeker
+microsite_jobapply_jobseeker
+microsite_jobapply_jobseeker.htm
+microsite_jobapply_jobseeker
+microsite_jobapply_employer
+microsite_jobapply_employer
+microsite_jobapply_employer
+microsite_jobapply_employer.htm
+microsite_jobapply_employer
+microsite_speculative_EmailTemplate
+microsite_speculative_EmailTemplate
+microsite_speculative_EmailTemplate
+microsite_speculative_EmailTemplate.htm
+microsite_speculative_EmailTemplate
+HAYS_MICROSITE_PROP_FORM
+HAYS_MICROSITE_PROP_FORM
+HAYS_MICROSITE_PROP_FORM
+microsite_prop_form.htm
+HAYS_MICROSITE_PROP_FORM
+@end
+

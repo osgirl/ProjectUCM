@@ -1,0 +1,45 @@
+@charset "utf-8";
+
+
+input.red
+	{
+  background-color:#cc0000;
+  font-weight:bold;
+  color:#ffffff;
+  z-index:1;
+  width:75px;
+  height:20px;
+  font-size:10px;
+	}
+	
+#italystyle{
+position: relative;
+}
+div.italywrap {
+    width: 350px; /* or whatever */
+    overflow: hidden;
+    white-space: nowrap;
+   
+}
+
+div.italyinline {
+    display: inline-block;
+   width: 80px;
+    height: 20px;
+
+}
+#fileLabel{
+padding: 5px;
+}
+input.hide
+	{
+  position:relative;
+  top:-30px;
+  
+  left:-0px;
+  -moz-opacity:0;
+  filter:alpha(opacity: 0);
+  opacity: 0;
+  z-index: 2;
+	}
+	

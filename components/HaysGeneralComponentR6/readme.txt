@@ -1,0 +1,1 @@
+﻿HaysGeneralComponentR6 Component

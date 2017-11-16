@@ -1,0 +1,18 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=ChangeSSHttpErrHeader
+CreateDate=29/01/14 07:43
+blDateFormat=dd/MM{/yy}{ HH:mm}!mAM,PM!tGB
+blFieldTypes=CreateDate date
+@end
+@ResultSet Manifest
+2
+entryType
+location
+component
+ChangeSSHttpErrHeader/ChangeSSHttpErrHeader.hda
+componentExtra
+ChangeSSHttpErrHeader/readme.txt
+componentClasses
+ChangeSSHttpErrHeader/classes
+@end

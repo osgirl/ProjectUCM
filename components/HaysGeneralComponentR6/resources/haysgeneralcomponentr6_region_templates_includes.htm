@@ -1,0 +1,1679 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponentR6 htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml rgtmp_full_width_blocks_r6_inc@>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+
+		<div class="content_boxes">
+		<ul class="cb_inner featured_boxes subpage">
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$ temp = dDocName, adDocName = '', aTitle = '', aSummary = '', aLink = '', friendlyURL = '' $>
+				<li>
+				<div class="promo_box" style="min-height: 145px;">
+				  <div class="pb_inner" id ="pg_home">
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<h2><$shortcutTitle$></h2>
+							<div class="med_inner"><p><$ shortcutText $></p></div>
+								<div class="med_inner pb_links"><ul><li><a href="<$ shortcutTarget$>"><$ shortcutLink $></a></li></ul></div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+								[[%	<$queryString = queryString & "<AND> xWebsiteObjectType <in> `Data File`"$>
+									<$include set_query_string$>
+								%]]
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+							 <$ anImage = wcmListElement("Image", wcmListIndex)$>
+
+
+
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(anImage) GT 0 $>
+									<$ anImage $>
+								<$endif$>
+
+								<$if strLength(aSummary) GT 0 $>
+									<div class="med_inner">
+										<$aSummary$>
+									</div>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<div class="med_inner pb_links"><ul><li><a href="<$ aLink$>">more....</a></li></ul></div>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<div class="med_inner pb_links"><ul><li><a href="<$ aLink$>">more....</a></li></ul></div>
+									<$endif$>
+
+								<$else$>
+									<div class="med_inner pb_links"><ul><li><$ aLink$></li></ul></div>
+								<$endif$>
+					<$endif$>
+					</div>
+				</div>
+				</li>
+
+				<$if ((wcmListIndex+1)%3==0 and wcmListIndex!=0) or (wcmListIndex+1==wcmListNumRows)$>
+				 <$endif$>
+
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		<$wcmListEnd(blockName)$>
+		</ul>
+		</div>
+		<div class="clear"></div>
+<@end@>
+
+<@dynamichtml rgtmp_half_width_blocks_r6_inc@>
+<$if strEquals(#active.IdcService,"WCM_PLACEHOLDER")$> <!--Thank You Page Event firing-->
+	<$event = "buy"$>
+	<$include fire_events$>
+<$endif$>
+		<$wcmListStart(blockName)$>
+		<$wcmListIndex = 0, primarywidget = 0$>
+		<$wcmListNumRows = wcmListRowCount()$>
+
+		<div class="content_boxes grid_50">
+		<ul class="cb_inner featured_boxes subpage">
+			<$loopwhile wcmListIndex LT wcmListNumRows$>
+				<$ temp = dDocName, adDocName = '', aTitle = '', aSummary = '', aLink = '', friendlyURL = '' $>
+				<li>
+				<div class="promo_box" style="min-height: 145px;">
+				  <div class="pb_inner" id ="pg_home">
+					<$ widgetXML = wcmListElement("Widget", wcmListIndex), widgetTitle = wcmListElement("Title", wcmListIndex)$>
+					<$if strLength(widgetXML) GT 0 $>
+						<$crXmlToResultSet(widgetXML, "widgetRS") $>
+						<$if strEquals("shortcuts", getValue("widgetRS", "Name")) $>
+							<$include widget_shortcuts_generic_display$>
+							<h2><$shortcutTitle$></h2>
+							<div class="med_inner"><p><$ shortcutText $></p></div>
+								<div class="med_inner pb_links"><ul><li><a href="<$ shortcutTarget$>"><$ shortcutLink $></a></li></ul></div>
+						<$else$>
+							<$if getValue("widgetRS", "#numRows") > 0 $>
+								<$inc("widget_" & getValue("widgetRS", "Name") & "_display" ) $>
+							<$endif$>
+						<$endif$>
+					<$else$>
+							<$ dataFileName = wcmListElement("CustomSearch",wcmListIndex)$>
+							<$ queryString = wcmListElement("Query", wcmListIndex)$>
+
+							<$if strLength(dataFileName) GT 0 $>
+									<$temp = dDocName, dDocName = dataFileName$>
+									<$executeService('DOC_INFO_BY_NAME')$>
+									<$if rsFirst('DOC_INFO') $>
+										<$ adDocName = DOC_INFO.dDocName$>
+										<$ aTitle = DOC_INFO.dDocTitle$>
+										<$ aSummary = DOC_INFO.xDescription$>
+										<$ friendlyURL = DOC_INFO.xUrlPageName $>
+									<$endif$>
+									<$dDocName = temp$>
+							 <$elseif strLength(queryString) GT 0 $>
+								[[%	<$queryString = queryString & "<AND> xWebsiteObjectType <in> `Data File`"$>
+									<$include set_query_string$>
+								%]]
+									<$include set_query_locale_include$>
+									<$QueryText = queryString$>
+									<$LimitScope='true', SortField='dInDate', SortOrder='Desc', ResultCount=1$>
+									<$executeService("SS_GET_SEARCH_RESULTS")$>
+									<$if rsFirst('SearchResults') $>
+										<$ aTitle = SearchResults.dDocTitle$>
+										<$ aSummary = SearchResults.xDescription$>
+										<$ friendlyURL = SearchResults.xUrlPageName $>
+										<$ adDocName = SearchResults.dDocName$>
+									<$endif$>
+							<$endif$>
+
+
+							 <$ contextStringTitle = wcmListElement("Title", wcmListIndex)$>
+							 <$if NOT strEquals(contextStringTitle, '&nbsp;') AND strLength(contextStringTitle) GT 0 $>
+								<$ aTitle = contextStringTitle $>
+							 <$endif$>
+							 <$if strLength(aTitle) EQ 0 $>
+								<$ aTitle = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Title']/text()")$>
+							 <$endif$>
+
+							 <$ contextStringSummary = wcmListElement("Content", wcmListIndex)$>
+							  <$if  NOT strEquals(contextStringSummary, '&nbsp;') AND strLength(contextStringSummary) GT 0  $>
+								<$ aSummary = contextStringSummary $>
+							 <$endif$>
+							 <$if strLength( aSummary) EQ 0 $>
+								<$ aSummary = ssIncludeXml(dataFileName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+							 <$endif$>
+
+							 <$ aLink = wcmListElement("Link", wcmListIndex)$>
+
+							 <$ anImage = wcmListElement("Image", wcmListIndex)$>
+
+
+
+								<$if strLength(aTitle) GT 0 $>
+									<h2><$ aTitle $></h2>
+								<$endif$>
+								<$if strLength(anImage) GT 0 $>
+									<$ anImage $>
+								<$endif$>
+
+								<$if strLength(aSummary) GT 0 $>
+									<div class="med_inner">
+										<$aSummary$>
+									</div>
+								<$endif$>
+
+								 <$if strLength(aLink) EQ 0 OR strEquals(aLink, '&nbsp;')  $>
+									<$if strLength(friendlyURL) GT 0 $>
+										<$ aLink = ssLink(friendlyURL) $>
+										<div class="med_inner pb_links"><ul><li><a href="<$ aLink$>">more....</a></li></ul></div>
+									<$elseif strLength(adDocName) GT 0 $>
+										<$ aLink = ssLink(adDocName) $>
+										<div class="med_inner pb_links"><ul><li><a href="<$ aLink$>">more....</a></li></ul></div>
+									<$endif$>
+
+								<$else$>
+									<div class="med_inner pb_links"><ul><li><$ aLink$></li></ul></div>
+								<$endif$>
+					<$endif$>
+					</div>
+				</div>
+				</li>
+
+				<$if ((wcmListIndex+1)%3==0 and wcmListIndex!=0) or (wcmListIndex+1==wcmListNumRows)$>
+				 <$endif$>
+
+				<$wcmListIndex = wcmListIndex + 1$>
+		<$endloop$>
+		<$wcmListEnd(blockName)$>
+		</ul>
+		</div>
+		<div class="clear"></div>
+<@end@>
+
+ <!-- Start of MR7 Google Search Count-->
+ <@dynamichtml search_google_job_inc@>
+
+<script type="text/javascript">
+var value1  = "";
+function parseXml(xml) {
+value1 = $(xml).find("M").text();
+if(value1){
+<$if domainId eq 1$>
+if(value1<100)
+value1 = "";
+<$endif$>
+document.getElementById('googleJobs').innerHTML = document.getElementById('googleJobs').innerHTML.replace("*",value1);
+<$if GCSEnabledCountry eq 1 and isABTestingOnForGCS eq 0$>
+$("#googleJobs").hide();
+<$else$>
+$("#googleJobs").show();
+<$endif$>
+
+}
+}
+function getData(){
+if (window.jQuery && jQuery.ui && jQuery.isReady) {
+$.ajax({
+type: "GET",
+async: false,
+url: "/search?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=xlocale:<$SiteLocale$>&sort=date:D:L:d1&call=viewJobsCountBtn",
+dataType: "xml",
+success: parseXml
+});
+}
+else
+ window.setTimeout(getData,50);
+ }
+ getData(); 
+</script>
+<@end@>
+ <!-- End of MR7 - Google Search Count-->
+<@dynamichtml global_consent_generation@>
+	
+	<$if (#active.OTId) $>
+		<$if (#active.type) $>
+			<$onetouchId=#active.type & "_" & #active.OTId $>
+		<$else$>
+			<$onetouchId=#active.OTId$>
+		<$endif$>		
+	<$endif$>
+	
+	
+	
+	<$CandAccessToken=""$> 
+	<$AccessTokenSecret=""$> 
+	<$executeService("HAYS_SAVE_GLOBAL_ACCESS_CONSENT")$>
+	<$CandConsent=#active.consent$>
+	<$consentSource=#active.source$>
+	<$ConsentResponse = #active.consentResponse$>
+	
+	
+<@end@>
+<@dynamichtml rgtmp_main_region_general_r6_inc@>
+<$if strEquals(#active.nodeId, 'linkedin_consent_response')$> 
+	<$include linkedin_consent_token_generation$>
+<$endif$>
+<$aTitle = wcmElement("Title")$>
+<$aSecondaryTitle = wcmElement("Secondary_Title")$>
+<$variableToTrim = aTitle$>	
+<$include removeLeadingAndTrailingSpaces_inc$>
+<$aTitle=variableToTrim$>	
+<$variableToTrim = aSecondaryTitle$>	
+<$include removeLeadingAndTrailingSpaces_inc$>
+<$aSecondaryTitle=variableToTrim$>	
+<$variableToTrim=""$>
+
+<$if strLength(aTitle) gt 0$>
+	<h1 class="specialism_title" style="text-transform: uppercase;"><$aTitle$></h1>
+<$endif$>
+<$if strLength(aSecondaryTitle) gt 0$>
+	<$if countryName like 'Hays Response BE'$>
+		<span class="sub_text" style="color:#96B043;text-transform: uppercase;">
+		<$aSecondaryTitle$></span>
+	<$else$>
+		<span class="sub_text" style="text-transform: uppercase;">
+		<$aSecondaryTitle$></span>
+	<$endif$>
+<$endif$>
+
+<div class="half_intro"> 
+	<$if #active.image and not strEquals(strTrimWs(#active.image),'')$>
+		<$ strReplace(image, '<img', '<img width="182" height="182" ') $>	
+	<$endif$>	
+	<div class="hi_inner">
+		<div class="wysiwyg" id="wysToggle">	
+			<$wcmElement("Summary")$>
+			<$sectionCategory=ssGetNodeProperty(nodeId,"xCategory")$>
+			
+			<$contentType=ssGetNodeProperty(nodeId,"SpecialismJobsCandidatesCounter")$>
+			<$showViewAllJobsCand="False"$>
+			<$if (strLength(sectionCategory) gt 2) and (strLength(strTrimWs(contentType)) gt 0)$>
+				
+				<$sectionCategory=strReplace(sectionCategory,";", ",")$>
+				<$sectionCategory=strSubstring(sectionCategory, 1, strLength(sectionCategory)-1)$>
+				
+				<$ subTerms = ontGetRelatedTerms(sectionCategory, 'xCategory@hays:ParentTerm') $>
+				<$if subTerms like '[]'$>
+					<$ subTerms = sectionCategory  $>
+				<$elseif strLength(subTerms) GT 0 $>
+					<$ subTerms = sectionCategory & ',' & strSubstring(subTerms, 1, strLength(subTerms)-1)  $>
+				<$endif$>
+				<$ subTerms = strReplace(subTerms, " ", ""), subTerms1 = subTerms $>
+				<$ subTerms = strReplace(subTerms, ",", "','") $>
+				
+				<$tblName="COMPLEXMETA_XCATEGORY", METATERM= subTerms $>
+				
+				<$if contentType like "2" OR contentType like 'Candidate'$>
+					<$dDocType="Candidates", link = ssGetServerRelativeUrl(siteId, "candidatessearchresults")$>
+				<$else$>
+					<$dDocType="Jobs", link = ssGetServerRelativeUrl(siteId, "jobssearchresults")$>
+				<$endif$>
+				<$IsJobCountVisible=ssGetSiteProperty(siteId,"isJobCountVisible")$>
+				<$executeService("GET_COMPLEXMETA_COUNTER")$>
+				<$if #active.COUNTER GT 0$>
+					<$showViewAllJobsCand="True"$>
+				<$endif$>
+				
+				<$if strEquals(IsJobCountVisible,"false") $>
+						 <$if contentType like "2"$>
+							<$ aTitle = lc('wwViewAllCandidates', '') $>
+						<$else$>
+							<$ aTitle = lc('wwViewAllJobs', '') $>
+						<$endif$>				
+				<$else$>
+					  <$if #active.COUNTER GT 0$>
+						<$if contentType like "2"$>
+							<$ aTitle = lc('wwViewAllCandidates', COUNTER) $>
+						<$else$>
+							<$ aTitle = lc('wwViewAllJobs', COUNTER) $>
+						<$endif$>
+					 <$endif$>	
+				<$endif$>		  
+		<$endif$>
+		</div>
+		</div>	
+		<script type="text/javascript"> 
+			<!--//--><![CDATA[//><!--
+				function wysToggle() {
+					if (window.jQuery) {
+						var expand = $('<a href="#" id="wysEvent" class="more"><span class="switch"><$lc('wwMainRegionReadMore')$></span><span class="access"> on '+$('h1').text()+'</span></a>');
+						var totalContents = document.getElementById('wysToggle').innerHTML;
+						var totalHeight = $('#wysToggle').height();
+						if(totalHeight < 125) {
+							$('#wysEvent').hide();
+						}
+						else {
+							var newLimit = 0;
+							var currentHeight = 0;
+							/*Keep adding characters until the box is less than 105px height*/
+							while(currentHeight < 105) { 
+								newLimit ++;
+								var newVisibleText = totalContents.substring(0,newLimit);
+								$('#wysToggle').html(newVisibleText);
+								currentHeight = $('#wysToggle').height();								
+							}							
+							//alert('currentHeight final '+currentHeight);
+							/*With the new text, keep removing charatcers until I find the first blank space*/
+							//while(newVisibleText.charAt(newVisibleText.length-1) != " "){							
+							while(!(/\s/.test(newVisibleText.charAt(newVisibleText.length-1)))){
+							//alert('newVisibleText.charAt(newVisibleText.length-1) '+ newVisibleText.charAt(newVisibleText.length-1)+" "+(/\s/.test(newVisibleText.charAt(newVisibleText.length-1))));
+							//alert('newVisibleText.length '+newVisibleText.length);
+								var counter = newVisibleText.length-1;
+								newVisibleText = totalContents.substring(0,counter);
+								//alert(newVisibleText);
+							}							
+							$('#wysToggle').html(newVisibleText);
+							/**currentHeight = $('#wysToggle').height(); Removed this (not too sure what is does?)*/
+							$('#wysToggle > :last-child').append(expand);
+						}
+						$('#wysEvent').toggle(function(e){
+							$(this)
+								.detach()
+								.removeClass('more')
+								.addClass('less')
+								.children('.switch')
+								.text('<$lc('wwMainRegionReadLess')$>');
+							$('#wysToggle')
+								.html(totalContents)
+								.find('> :last-child')
+								.append(this);
+							
+							e.preventDefault();
+						}, function(e){
+							$(this)
+								.detach()
+								.removeClass('less')
+								.addClass('more')
+								.children('.switch')
+								.text('<$lc('wwMainRegionReadMore')$>');
+							$('#wysToggle')
+								.html(newVisibleText)
+								.find('> :last-child')
+								.append(expand);
+							e.preventDefault()
+						});
+					}else{
+						window.setTimeout(wysToggle, 100);
+					}
+				}
+				wysToggle();
+			//--><!]]>
+			</script>
+			
+			
+			<!-- start of MR6 - Amit Narula -->
+			<$temp3 = strReplace(sectionCategory, 'hays:', '')$>
+			<$temp3 = strReplace(temp3, ',', '|xCategory:')$>
+			<$parentNodeIdLevel1 = ssGetRelativeNodeId(siteId, nodeId , "parent" , "no")$>
+			<$parentNodeIdLevel2 = ssGetRelativeNodeId(siteId, parentNodeIdLevel1 , "parent" , "no")$>
+			<$include is_international_website$>
+			<$include google_search_enabled_countries$>
+					<$if strEquals(isInternationalWebsite,"1") $>
+					<$internationalCategory=ssGetNodeProperty(nodeId,"InternationalCategory")$>
+					<$micrositeCode=ssGetSiteProperty(siteId,"micrositeCode")$>
+					<!--MR8 Changes Oil and Gas 10117-->
+					<div class="msg"> <a class="button" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(InternationalSpecialism:<$internationalCategory$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=IsInternationalPosting:Y|IsOilandGasPosting:Y|MicrositeID:<$MicrositeCode$>&sort=date:D:L:d1"><$aTitle $></a> </div>
+					<!--MR8 Changes Oil and Gas 10117-->
+				<$else$>
+					
+				
+						
+						<$if (isGoogleSearch EQ 1) and (strEqualsIgnoreCase(parentNodeIdLevel1,"jobseeker") or strEqualsIgnoreCase(parentNodeIdLevel2,"jobseeker")) and not (isEmployer eq 1) $>
+							<$ aTitle = lc('wwViewAllJobs', '*') $>
+							<$include search_google_job_inc$>
+							<$if isProjectSEnabled eq 1$>
+								<$searchUrl = portalUrl & #env.ProjectS_Search_Results$>
+								<$if isCrossCountry ne 1$>
+									<div class="msg" > <a class="button" id="googleJobs" style="display:none;" href="<$searchUrl$>?q=hays&specialismId=<$temp3$>"><$ aTitle $></a> </div>
+								<$else$>
+									<div class="msg" > <a class="button" id="googleJobs" style="display:none;" href="<$searchUrl$>?q=hays&specialismId=<$temp3$>&CrossCountry=<$SiteLocale$>"><$ aTitle $></a> </div>
+								<$endif$>
+							<$else$>
+								<$include cross_country_enabled_countries$>
+								<$if isCrossCountry ne 1$>
+									<div class="msg" > <a class="button" id="googleJobs" style="display:none;" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=xlocale:<$SiteLocale$>&sort=date:D:L:d1"><$ aTitle $></a> </div>
+								<$else$>
+									<div class="msg" > <a class="button" id="googleJobs" style="display:none;" href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>).(CrossCountry:<$SiteLocale$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&sort=date:D:L:d1"><$ aTitle $></a> </div>
+								<$endif$>
+							<$endif$>	
+						<$else$>
+						<$if isTrue(showViewAllJobsCand)$>
+							<div class="msg"> <a class="button" href='<$link$>?job_category=<$subTerms1$>&contentType=<$dDocType$>&SiteLocale=<$SiteLocale$>&SortField=SCORE&SortOrder=Desc'><$ aTitle $> </a> </div>
+						<$endif$>
+					<$endif$>	
+				<$endif$>
+			<!-- end if MR6 - Amit Narula -->
+
+		[[%<$if #active.nodeId and not isTrue(ssGetNodeProperty("SwitchOffDate"))$>
+			<$if #active.ssDocName and strLength(#active.ssDocName)gt 0$>
+				<$dDocName = ssDocName$>
+			<$endif$>
+			<$executeService('DOC_INFO_BY_NAME')$>
+			<div class="date"><$lc('wwContentLatUpdatedLabel')$> <$formatDateWithPattern(DOC_INFO.dReleaseDate,#active.websiteDateFormat)$></div>
+		<$endif$>%]]
+	    
+			
+</div> 
+
+         <$if strLength(wcmElement("UpperButtonLink")) gt 0 $>
+         <div class="intro-btn">
+              <div class="btn">
+            <$wcmElement("UpperButtonLink")$>
+             </div></div>
+	  <$endif$>
+         
+<div class="clear"></div>
+<$wcmListStart("Content")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+<$if wcmListNumRows gt 0$>
+<div class="content_main">
+    
+
+	<$loopwhile wcmListIndex < wcmListNumRows$>
+		<$strTitle=wcmListElement("Title", wcmListIndex)$>
+		<$strSummary=wcmListElement("Summary", wcmListIndex)$>
+		<$strBody=wcmListElement("Body", wcmListIndex)$>
+		<$if strLength(strTitle) gt 0$>
+	        <h2><$wcmListElement("Title", wcmListIndex)$></h2>
+	    <$endif$>
+		<$if strLength(strSummary) gt 0$>
+        	<h3><$wcmListElement("Summary", wcmListIndex)$></h3>
+	    <$endif$>
+        <!--  $wcmListElement("Body", wcmListIndex)$-->
+	    <$include is_output_social_analytics$>
+		<$if isFalse(doOutput)$>
+        	<$strBody = strReplace(strBody, 'https://apis.google.com/js/plusone.js?onload=onLoadCallback', '') $>
+        	<$strBody = strReplace(strBody, '//platform.linkedin.com/in.js', '') $>
+		<$endif$>
+        <$strBody$>
+		<$wcmListIndex = wcmListIndex + 1$>
+	<$endloop$>
+	<$wcmListEnd("Content")$>
+</div>
+
+ <$if strLength(wcmElement("LowerButtonLink")) gt 0 $>
+     <div class="intro-btn">
+         <div class="btn">
+            <$wcmElement("LowerButtonLink")$>
+         </div></div>
+	 <$endif$>
+
+<div class="clear"></div>
+<$endif$>
+<@end@>
+
+
+<@dynamichtml rgtmp_main_region_global_consent@>
+<$strSuccessTitle=wcmElement("SuccessTitle")$>
+<$strSuccessSummary=wcmElement("SuccessSummary")$>
+<$strFailureTitle=wcmElement("FailureTitle")$>
+<$strFailureSummary=wcmElement("FailureSummary")$>
+<$if strEquals(#active.nodeId, 'global_consent_response')$> 
+	<$include global_consent_generation$>
+
+<div id="ConfirmationMessage" style = "padding-top:5px;">
+<$if strEquals(ConsentResponse,"SUCCESS")$>
+	<h1><$strSuccessTitle$></h1>
+	<div id="SummaryText" style = "background-color:#F5F5F5; padding:1px 1px 1px 10px;">
+	<p><$strSuccessSummary$><p>
+	</div>
+<$else$>
+	<h1><$strFailureTitle$></h1>
+	<div id="SummaryText" style = "background-color:#F5F5F5; padding:1px 1px 1px 10px; ">
+	<p><$strFailureSummary$><p>
+	</div>
+<$endif$>
+</div>		
+<div class="clear"></div>
+<$else$>
+<div id="ConfirmationMessage">
+	<strong>Success Title: </strong><$strSuccessTitle$>
+	
+	<strong>Success Summary: </strong><$strSuccessSummary$>
+	
+	<strong>Failure Title: </strong><$strFailureTitle$>
+	
+	<strong>Failure Summary: </strong><$strFailureSummary$>
+	
+</div>	
+<$endif$>
+<@end@>
+
+<@dynamichtml rgtmp_background_home_image_uk_inc@>
+<$image=''$>
+<div id="slideshow">
+<$wcmListStart("BackgroundImages")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	
+	<$if wcmListNumRows ge 0 $>
+	<$loopwhile wcmListIndex LT wcmListNumRows$>
+	
+		<$image=wcmListElement("Image",wcmListIndex)$>		
+
+<$if not strEquals(image,'')$>
+	<$index=strIndexOf(image,"src=")$>
+	
+	<$if index gt -1$> 
+	<$src1=strIndexOf(image,"src=")$>
+ 	<$imageUrl=strSubstring(image,src1+5)$>
+ 	<$src2=strIndexOf(imageUrl,'"')$>
+ 	<$imageUrl=strSubstring(imageUrl,0,src2)$>
+	<$endif$>
+
+	<$index=strIndexOf(image,"alt=")$>
+	
+	<$if index gt -1$> 
+	<$src1=strIndexOf(image,"alt=")$>
+ 	<$imagealt=strSubstring(image,src1+5)$>
+ 	<$src2=strIndexOf(imagealt,'"')$>
+ 	<$imagealt=strSubstring(imagealt,0,src2)$>
+	<$endif$>
+	
+
+	<$if wcmListIndex eq 0$>
+	<img src="<$imageUrl$>" alt="<$imagealt$>" class="active" />
+	<$else$>
+	<img src="<$imageUrl$>" alt="<$imagealt$>" />
+	<$endif$>
+	
+<$endif$>
+	
+<$wcmListIndex = wcmListIndex + 1$>
+<$endloop$>
+<$endif$>
+<$wcmListEnd("BackgroundImages")$>	
+</div>
+<$include haysresponse_background_image_script_uk$>
+<@end@>
+
+
+<!--added for POC for home search page start-->
+<@dynamichtml rgtmp_home_main_block_uk_inc@>
+<div class="lrg_inner">
+<$if siteId like 'itITHR'  OR siteId like 'esESHR'  OR countryName like 'Hays Response BE'$>
+	<h1 style ="color:white;"><$wcmElement("Title")$></h1>
+	<h2 class="h1" style ="color:white; text-transform:capitalize"><$wcmElement("SubTitle")$></h2>
+<$elseif siteId like 'mxMXHR' OR siteId like 'brPTHR' or siteId like 'ptPTHR'$> <!-- Release 7 [Title text in white color but not the subtitle]-->
+	<h1 style ="color:white;"><$wcmElement("Title")$></h1>
+	<h2 class="h1"><$wcmElement("SubTitle")$></h2>
+<$else$>
+	<h1><$wcmElement("Title")$></h1>
+	<h2 class="h1"><$wcmElement("SubTitle")$></h2>
+<$endif$>
+</div>
+</div> [[%end of grid_24%]]
+<div class="grid_15 suffix_9">
+	<div class="lrg_inner">
+	<div id="tabs" class="home_search">
+		<ul class="tabs">
+		<$wcmListStart("Widgets")$>
+		 <$wcmListIndex = 0$>
+		 <$wcmListNumRows = wcmListRowCount()$> 
+		 <$loopwhile wcmListIndex LT wcmListNumRows$>
+			<$widgetXML = wcmListElement("Widget", wcmListIndex),widgetTitle = wcmListElement("Title", wcmListIndex)$>
+			<$if widgetXML and strIndexOf(widgetXML,"job") GT 0$>
+				<$contentType="Jobs"$>
+			<$else$>
+				<$contentType="Candidates"$>
+			<$endif$>
+			
+			<!--Start of MR4 changes - Amit Narula -->
+				<$if wcmListNumRows > 1$>
+					<li>
+					<a href="#tabs-<$wcmListIndex+1$>">
+					<span>
+					<$if contentType like "Jobs" and strLength(widgetTitle) <=0 $>
+						<$include getNumLiveJobs_inc$>
+					<$elseif contentType like "Candidates" and strLength(widgetTitle) <=0$>
+						<$lc('wwHomePageCandSrchTitle')$>
+					<$else$>
+						<$widgetTitle$>
+					<$endif$>
+					</span>
+					</a>
+					</li>
+				<$else$>
+					<li>
+					<span class="be_width">
+					<$if contentType like "Jobs" and strLength(widgetTitle) <=0 $>
+						<$include getNumLiveJobs_inc$>
+					<$elseif contentType like "Candidates" and strLength(widgetTitle) <=0$>
+						<$lc('wwHomePageCandSrchTitle')$>
+					<$else$>
+						<$widgetTitle$>
+					<$endif$>
+					</span>
+					</li>
+				<$endif$>				
+			<!--End of MR4 changes - Amit Narula -->
+			<$wcmListIndex = wcmListIndex + 1$>
+		 <$endloop$>
+		 </ul>
+		 <$wcmListIndex = 0$>
+		 <$loopwhile wcmListIndex LT wcmListNumRows$>
+		 <div id="tabs-<$wcmListIndex+1$>">
+		 <$widgetXML = wcmListElement("Widget", wcmListIndex)$>
+		<$if strLength(widgetXML) GT 0 $>
+			<$crXmlToResultSet(widgetXML, "widgetRS") $>
+				<$if getValue("widgetRS", "#numRows") > 0 $>
+					<$inc("widget_" & getValue("widgetRS", "Name") & "_display" ) $>
+				<$endif$>
+			<$endif$>
+		 
+		 	<$if widgetXML and strIndexOf(widgetXML,"job") GT 0$>
+				<$contentType="Jobs"$>
+			<$else$>
+				<$contentType="Candidates"$>
+			<$endif$>
+		  <$include home_SpecialismList$> 
+		 </div>
+		 <$wcmListIndex = wcmListIndex + 1$>
+		 <$endloop$>
+		<$wcmListEnd("Widgets")$>
+	</div>
+
+ </div>
+ </div>
+ <@end@>
+
+<!-- ***********************************************************
+ Home Page Specialism List
+***************************************************************-->
+<@dynamichtml home_SpecialismList@>
+ <$if #active.contentType like 'Jobs'$>
+	<$currentTabValue="jobseeker"$>
+ <$elseif #active.contentType like 'Candidates'$>
+	<$currentTabValue="employer"$>
+ <$endif$>
+ <$ssLoadSiteNavResultSet(siteId)$>
+ <$rsCopyFiltered("SiteStudioNavNodes", "rsSpecialisms", "parentNodeId",currentTabValue)$>
+ <!-- added on 08/06/2011 -->
+  <$if domainId != 27 and domainId !=24 $>
+ <$rsSort("rsSpecialisms","label","string","asc")$>  
+ <$endif$>
+ 
+ <$TotalRows=rsNumRows("rsSpecialisms")$>
+ [[%<$loop SiteStudioNavNodes$>
+  <$if strEqualsIgnoreCase(SiteStudioNavNodes.parentNodeId,"jobseeker")$>
+   <$if SiteStudioNavNodes.level==2$>
+    <$TotalRows=TotalRows+1$>
+   <$endif$>
+  <$endif$>
+ <$endloop$>%]]
+ <$if (TotalRows%3)==0$>
+  <$maxcount=TotalRows/3$>
+ <$else$>
+  <$maxcount=(TotalRows/3)+1$>
+ <$endif$>
+ <$rowcount=0$>
+ <$count=0$>
+ 
+ <div class="home_panel2">
+  <h2><$lc('wwHaysExpertise')$></h2>
+   <div class="home_panel2_inner">
+ 
+		<ul class="homesuckerfish expertise_col<$count+1$>">
+			<$loop rsSpecialisms$>
+				[[%<$rsCopyFiltered("SiteStudioNavNodes", "rsSubSpecialisms", "parentNodeId",rsSpecialisms.nodeId)$>
+				<$numSubSpec=rsNumRows("rsSubSpecialisms")$>%]]
+				<$liClass="popout"$>
+				<$if rowcount==(maxcount-1)$>
+					<$liClass="popout final"$>
+				<$endif$>
+				<$if maxcount==rowcount$>
+					<$rowcount=0$>
+				<$count=count+1$>
+		</ul>
+	    <ul class="homesuckerfish expertise_col<$count+1$>">
+		<$endif$>
+ [[% <$if numSubSpec gt 0$>
+	   <li class="<$liClass$>">
+		<a href="<$ssNodeLink(rsSpecialisms.nodeId, siteId)$>"><$rsSpecialisms.label$> <!--<$lc('wwFooterSiteMapText')$>--></a>
+		<$include home_SpecialismList_Popup$>
+	   </li>
+  <$else$>%]][[%The home page fly outs are not required any more%]]
+		
+	   <li><a href="<$ssNodeLink(rsSpecialisms.nodeId, siteId)$>"><$rsSpecialisms.label$> <!--<$lc('wwFooterSiteMapText')$>--></a></li>
+  [[%<$endif$>%]]
+
+
+   <$rowcount=rowcount+1$>	
+ <$endloop$>
+ </ul>
+ <div class="clearfix"></div>
+ </div>
+</div>
+<@end@>
+
+<@dynamichtml home_SpecialismList_Popup@>
+	<$if numSubSpec gt 8$>
+		<$popStyle="height: 300px; width: 360px;"$>
+	<$else$>
+		<$popStyle="height: 300px;"$>
+	<$endif$>
+	<$specCount=1$>
+	<div class="subspecialbox" style="<$popStyle$>">
+		<div class="specialcol">
+			<ul>
+		<$loop rsSubSpecialisms$>
+			<$if (specCount gt 1) and ((specCount-1)%8)==0$>
+				</ul>
+				</div>
+				<div class="specialcol">
+				<ul>
+			<$endif$>
+			<li><a href="<$ssNodeLink(rsSubSpecialisms.nodeId, siteId)$>"><$rsSubSpecialisms.label & ' ' & lc('wwFooterSiteMapText')$></a></li>
+			<$specCount=specCount+1$>
+		<$endloop$>
+			</ul>
+		</div>
+	</div>
+<@end@>
+
+
+<!-- **********************************************************
+				MAIN BLOCKS ON HOME PAGE
+*************************************************************-->
+
+<@dynamichtml lower_region_test_display@>	
+
+<$gird_50="false"$>
+<$gird_33="false"$>
+<$gird_25="false"$>
+<$gird_10="false"$>
+<$wcmListStart("SelectedContent")$>		
+	<$if fe_count GT 0$>			
+		<$if rowSum EQ 2$>				
+			<div class="grid_24 grid_1_block">				
+			<$loopwhile wcmListIndex LT test_row$>	
+				<$  widgetXML = wcmListElement("Widget",wcmListIndex) $>
+				<$if strLength(widgetXML) GT 0 $>					
+					<$if strIndexOf(widgetXML , 'featuredEmployer') GT 0 $>										
+						<$include widget_display$>		
+			</div>								
+					<$elseif strIndexOf(widgetXML , 'survey') GT 0$>
+					<div class="main_box promo_box partners_box featured_boxes subpage">
+							<$include widget_display$>
+						</div>							
+					<$else$>								
+						<$include widget_display$>
+						<$if isTrue( #active.isAlternativeUsed ) $>
+							<$include home_main_block_inc $>
+							<$ isAlternativeUsed = 0 $>
+						<$endif$>
+					<$endif$>
+				<$else$>	
+					<$count1 = count1 + 1$>
+					<$include home_main_block_inc $>
+				<$endif$>
+				<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>
+		  </div>
+		  <$fe_count=0 , count1 = 0,begin_promo="false" , begin_fe="false"$>
+	  <$else$>		
+		 <div class="grid_24">			
+		 <$loopwhile wcmListIndex LT test_row$>	
+			<$if (wcmListIndex EQ fe_index) OR (wcmListIndex EQ survey_index)$>
+				<$if isTrue(begin_promo) AND (count1 EQ 2)$>
+					</ul>
+		</div>							
+				<$endif$>
+				<$if fe_count EQ 2 AND isFalse(begin_fe)$>
+					<div class="grid_12 grid_1_block alpha">
+				<$elseif fe_count EQ 2 AND isTrue(begin_fe)$>
+					<div class="grid_12 grid_1_block omega">
+				<$else$>
+					<div class="grid_12 grid_1_block alpha omega">
+				<$endif$>
+				<$begin_fe="true" ,begin_promo="false"$>
+			<$else$>
+				<$if isFalse(begin_promo) AND isFalse(begin_fe)$>
+					<$begin_promo = "true"$>
+					<div class="grid_12 grid_4col alpha" style="width:475px">
+						<ul class="featured_boxes">
+				<$endif$>
+				<$if isFalse(begin_promo) AND isTrue(begin_fe) $>
+					<$begin_promo = "true"$>
+					<div class="grid_12 grid_4col omega" style="width:475px">
+						<ul class="featured_boxes">
+				<$endif$>						
+			<$endif$>
+			<$  widgetXML = wcmListElement("Widget",wcmListIndex) $>
+				<$if strLength(widgetXML) GT 0 $>
+					<$if strIndexOf(widgetXML , 'featuredEmployer') GT 0 $>	
+						<$include widget_display$>		
+								</div>
+							</div>
+					<$elseif strIndexOf(widgetXML , 'survey') GT 0$>							
+						<$if survey_block EQ 1 $>							
+							<div class="main_box promo_box partners_box featured_boxes subpage" style=
+							"margin-left:5px">
+						<$else$>								
+							<div class="main_box promo_box partners_box featured_boxes subpage" style=
+							"margin-right:5px">
+						<$endif$>
+							<$include widget_display$>
+								</div>
+							</div>
+				   <$else$>								
+						<li>
+							<div class="promo_box">
+							<$include widget_display$>
+							</div>
+						</li>
+						<$if isTrue( #active.isAlternativeUsed ) $>
+							<$include home_main_block_inc $>
+							<$ isAlternativeUsed = 0 $>
+						<$endif$>
+				  <$endif$>
+					<$else$>	
+						<$count1 = count1 + 1$>		
+							
+						<$include home_main_block_inc $>
+					<$endif$>
+				<$wcmListIndex = wcmListIndex + 1$>
+				<$endloop$>
+				<$if (isTrue(begin_promo) AND isTrue(begin_fe)) AND (wcmListIndex EQ (test_row))  $>
+				
+					</ul></div>							
+				<$endif$>
+				
+			</div>
+			<$fe_count=0 , count1 = 0 , begin_promo="false" , begin_fe="false"$>
+		<$endif$>
+				
+		<$else$>			
+			<$loopwhile wcmListIndex LT test_row$>			
+				<$if (test_row1 eq 1) AND isFalse(gird_50)$>
+					<div class="grid_24 grid_1col">
+					<ul class="featured_boxes">
+					<$gird_50 = "true"$>
+				<$elseif (test_row1 eq 2) AND isFalse(gird_33)$>
+					<div class="grid_24 grid_2col">
+					<ul class="featured_boxes">
+					<$gird_33 = "true"$>
+				<$elseif (test_row1 eq 3) AND isFalse(gird_25)$>
+					<div class="grid_24 grid_3col">
+					<ul class="featured_boxes">
+					<$gird_25 = "true"$>
+				<$elseif (test_row1 gt 3) AND isFalse(gird_10)$>
+					<$count = count+1$>					
+					<div class="grid_24 grid_4col">
+					<ul class="featured_boxes">
+					<$gird_10 = "true"$>					
+				<$endif$>		
+				
+					<$  widgetXML = wcmListElement("Widget",wcmListIndex) $>				
+					<$if strLength(widgetXML) GT 0 $>					  
+						<li>
+							<div class="promo_box">
+							<$include widget_display$>
+							</div>
+						</li>
+						<$if isTrue( #active.isAlternativeUsed ) $>
+							<$include home_main_block_inc $>
+							<$ isAlternativeUsed = 0 $>
+						<$endif$>							
+					<$else$>
+						<$include home_main_block_inc $>
+					<$endif$>
+					<$wcmListIndex = wcmListIndex + 1$>			
+			<$endloop$>
+			</ul>
+			</div>	
+	<$endif$>	
+	<$wcmListEnd("SelectedContent")$>
+<@end@>
+
+<@dynamichtml home_main_blocks_R6@>	 	
+
+<$isFEExists="false"$>
+<$isSurveyExists="false"$>		
+<$fe_count=0$>
+<$promo_count=0$>
+<$survey_index=-1, fe_index=-1 , t=-1$>	
+<$wcmListIndex=0,count1 =0 , begin_promo="false" , begin_fe="false",fe_block=-1,survey_block=-1$>
+
+<$wcmListStart("SelectedContent")$>	
+	<$wcmListIndex1 = 0, wcmListNumRows = wcmListRowCount() , rowSum=0$>	
+	<$loopwhile wcmListIndex1 LT wcmListNumRows$>			
+		
+		<$widgetXML = wcmListElement("Widget",wcmListIndex1) $>		
+		
+		<$if strLength(widgetXML) GT 0$>			
+			<$if (strIndexOf(widgetXML , 'featuredEmployer') GT 0) OR  (strIndexOf(widgetXML , 'survey') GT 0)$>		
+				<$if (strIndexOf(widgetXML , 'survey') GT 0)$>
+					<$survey_index=wcmListIndex1$> 
+					<$if fe_block EQ -1 $>
+						<$if promo_count EQ 2$>
+							<$survey_block=3$>
+						<$else$>
+							<$survey_block=1$>
+						<$endif$>
+					<$else$>
+						<$survey_block=3$>
+					<$endif$> 
+			   <$else$>
+					<$fe_index=wcmListIndex1$>						
+					<$if survey_block EQ -1$>
+						<$if promo_count EQ 2$>
+							<$fe_block=3$>
+						<$else$>
+							<$fe_block=1$>
+						<$endif$>
+					<$else$>
+						<$fe_block=3$>
+					<$endif$>
+			  <$endif$>
+			  <$fe_count = fe_count + 1$> 
+			  <$rowSum = rowSum+2$>						
+			<$endif$>			
+			<$if (strIndexOf(widgetXML , 'socialmediablogs') GT 0)$>
+				<$rowSum = rowSum+1$>
+				<$promo_count=promo_count+1$> 
+			<$endif$>		
+		<$else$>
+			<$rowSum = rowSum+1$>
+			<$promo_count=promo_count+1$> 
+		<$endif$>
+		
+		<$if (rowSum LT 4) AND (wcmListIndex1 EQ (wcmListNumRows - 1)) $>			
+			<$if fe_count EQ 0$>
+				<$test_row1=rowSum$>
+			<$endif$>
+			<$test_row=wcmListIndex1+1$> 
+			<$wcmListIndex=t+1$>
+			<$include lower_region_test_display$>
+			<$survey_block = -1 , fe_block = -1 , promo_count = 0$>
+		<$endif$>
+		
+		<$if rowSum EQ 4 $>		
+			<$if fe_count EQ 2$>									
+				<$test_row=wcmListIndex+(rowSum/2)$>
+				<$wcmListIndex=t+1$>																	
+			<$elseif fe_count EQ 1$>
+				<$test_row=wcmListIndex+(rowSum/2)+1$>							
+				<$wcmListIndex=t+1$>						
+			<$else$>
+				<$test_row=wcmListIndex+rowSum$>
+				<$test_row1=wcmListIndex+rowSum$>							
+				<$wcmListIndex=t+1$>	
+			<$endif$>	
+			<$include lower_region_test_display$>	
+			<$rowSum = 0$>	
+			<$t=wcmListIndex1$> 
+			<$survey_block = -1 , fe_block = -1 , promo_count=0 $>
+		<$endif$>
+		
+		<$if rowSum GT 4 $>	
+			
+			<$fe_count=0$>						
+			<$test_row = wcmListIndex+(rowSum-2)$>	
+			<$test_row1 = (rowSum-2)$>
+			<$wcmListIndex=t+1$>	
+			<$include lower_region_test_display$>	
+			<$t=wcmListIndex1-1$>
+			<$wcmListIndex1 = wcmListIndex1 -1$>
+			<$rowSum = 0 $>
+			<$survey_block = -1 , fe_block = -1,promo_count=0$>
+		<$endif$>											
+		<$wcmListIndex1 = wcmListIndex1 + 1$>		
+	
+	<$endloop$>	
+				
+<$wcmListEnd("SelectedContent")$>
+<@end@>
+
+
+
+<!-- **********************************************************
+				Promotional Blocks generic Pages
+*************************************************************-->
+<@dynamichtml rgtmp_blocks_R6_inc@>
+
+
+<$include check_nav_type$>
+<$latestJobsTitle = wcmElement("LatestJobsTitle")$>
+<$JobSearchesTitle= wcmElement("JobSearchesTitle")$>
+<$FeaturedEmployersTitle= wcmElement("FeaturedEmployersTitle")$>
+<$count=0$>
+<$showColumns=0$>
+<$wcmListNumRows=0$>  
+<$wcmListStart("JobSearchesList")$>
+  <$wcmListNumRows = wcmListRowCount()$>
+<$wcmListEnd("JobSearchesList")$>
+
+<$if strLength(FeaturedEmployersTitle) GT 0 $>
+	<$include get_dyn_partnered_companies_r6_inc$>
+	<$rsNewName="FeaturedEmployerSearchResults"$>
+	<$exec rsRename("SearchResults", rsNewName)$>
+<$endif$>
+
+<$include get_jobs_cadidates_latest_r6$>
+
+<$if strLength(latestJobsTitle) GT 0 and  rsFirst('SearchResults')$>
+<$count=count+1$>
+<$showColumns=1$>
+<$endif$>
+
+<$if strLength(FeaturedEmployersTitle) GT 0 and rsFirst('FeaturedEmployerSearchResults')$>
+  <$count=count+1$>
+  <$showColumns=1$>
+<$endif$>
+
+<$if wcmListNumRows ge 0 and strLength(JobSearchesTitle) GT 0$> 
+<$count=count+1$>
+<$showColumns=1$>
+<$endif$>
+<$if showColumns==1$>
+<div class="container_flex">
+		<div class="col<$count$> searchbox">
+		<div class="searchboxinner">
+
+		<$if strLength(latestJobsTitle) GT 0 and  rsFirst('SearchResults')$>
+		<$include jobs_cadidates_latest_r6$>
+		<$endif$>
+
+		<$if strLength(JobSearchesTitle) GT 0 and wcmListNumRows ge 0$>
+			<$wcmListStart("JobSearchesList")$>
+			<$wcmListIndex = 0$>
+			<$if (wcmListNumRows ge 0)$>
+			 <div class="searchcol">
+			   <div class="searchinner">
+				 <h2><$JobSearchesTitle$></h2>	
+				 <ul class="popularjobsearches">
+			<$loopwhile wcmListIndex LT wcmListNumRows$>	
+				<li><$wcmListElement("Link",wcmListIndex)$></li>   	   	
+			<$wcmListIndex = wcmListIndex + 1$>	
+			<$endloop$>
+			 </ul>
+			</div>
+			</div>
+			<$endif$>
+			<$wcmListEnd("JobSearchesList")$>
+		<$endif$>
+
+		<$if strLength(FeaturedEmployersTitle) GT 0 and rsFirst('FeaturedEmployerSearchResults')$>
+		<$include subtmp_dyn_partnered_companies_r6_inc$>
+		<$endif$>
+
+		<$if count GT 1$>
+		</div>
+		<$endif$>
+
+
+		<div class="searchlinksall">
+		<$if strLength(latestJobsTitle) GT 0$>
+			<$if isEmployer eq 1$>
+				<$viewMoreText=lc('wwLatestAllCandidates')$>
+			<$else$>
+				<$viewMoreText=lc('wwLatestAllJobs')$>
+			<$endif$>
+			<$ category = ssGetNodeProperty(nodeId, 'xCategory')$>
+			<$if rsFirst('SearchResults') and strLength(category) gt 0$>
+				<div class="searchcol searchlink">
+				 <$if isProjectSEnabled eq 1 and not (isEmployer eq 1)$>
+					<$searchUrl = portalUrl & #env.ProjectS_Search_Results & "?q=hays&specialismId=" & strSubstring(category, strIndexOf(category,":")+1, strLength(category)-1) $>
+					<a href="<$searchUrl $>"><span><$viewMoreText$></span></a>
+				<$else$>
+					<$include google_search_enabled_countries$>
+					<$if (isGoogleSearch EQ 1) and not (isEmployer eq 1)$>
+						<a href="<$lc('wwGoogleSearchAction')$>?q=&locationToSearch=&partialfields=(xSpecialism:<$temp3$>|xSubSpecialism:<$temp3$>)&contentType=<$dDocType$>&level=&location_id=&ne_longitude=&ne_latitude=&site=<$#env.GoogleSite$>&proxyreload=0&filter=0&btnG=<$#env.GoogleBtnG$>&client=<$lc('GoogleClient')$>&getfields=*&entsp=<$lc('GoogleEntsp')$>&oe=UTF-8&exclude_apps=1&ud=1&proxystylesheet=<$lc('GoogleProxyStyleSheet')$>&siteLocale=<$SiteLocale$>&domainId=<$domainId$>&requiredfields=xlocale:<$SiteLocale$>&sort=date:D:L:d1"><span><$viewMoreText$></span></a>
+					<$else$>
+						<a href="<$sectionUrl $>"><span><$viewMoreText$></span></a>
+					<$endif$>
+				<$endif$>
+				</div>
+			<$elseif rsFirst('SearchResults') and strLength(category)<=0$>
+				<div class="searchcol searchlink">
+			&nbsp;
+			</div>
+			<$endif$>
+		<$endif$>
+
+		<$if strLength(JobSearchesTitle) GT 0 and wcmListNumRows ge 0$>
+			<$if isEmployer eq 1$>
+				<$searchSectionName = 'candidates-search' $>
+				<$searchList_title=lc('wwPopularCandidatesSearches')$>
+			<$else$>
+				<$searchSectionName = 'jobs-search' $>
+				<$searchList_title=lc('wwPopularJobsSearches')$>
+			<$endif$>
+			<div class="searchcol searchlink">
+			<$if isProjectSEnabled eq 1$>
+				<$searchalljobs_url=portalUrl$>
+			<$else$>
+				<$searchalljobs_url=ssNodeLink(searchSectionName, siteId)$>
+			<$endif$>
+			<a href="<$searchalljobs_url$>"><span><$searchList_title$></span></a>
+			</div>
+		<$endif$>
+
+		<$if strLength(FeaturedEmployersTitle) GT 0$>
+			<!-- added for Ticket 6809822 on 06/04/2012 -->
+				<$SortField='dInDate'$>
+				<$SortOrder='DESC'$>
+			<!--end -->	
+			<$if FeaturedEmployerSearchResults.#numRows gt 0$>
+				<div class="searchcol searchlink">
+				<a href="<$featuredEmployerNodeLink$>?QueryText=<$queryString$>&SortField=<$SortField$>&SortOrder=<$SortOrder$>"><span><$lc('wwfeaturedEmployersTitle')$></span></a>
+				</div>
+			<$endif$>
+		<$endif$>
+		</div>
+
+		<$if count EQ 1$>
+		</div>
+		</div>
+		<$else$>
+		</div>
+		<$endif$>
+ </div> <!-- added for Release 8.0 sec 7.2 8A-->
+<$endif$>
+
+<div class="clear"></div><!-- added for Release 8.0 sec 7.2 8A--> 
+<@end@>
+
+<@dynamichtml get_dyn_partnered_companies_r6_inc@>
+		<$if #active.nodeId$>
+			<$ xCategory = '' $>
+			<$ xCategory = ssGetNodeProperty("xCategory")$>
+		<$endif$>
+		<$ queryString = '' $>
+		<$include set_query_string_no_empty_catagory$>		
+			<$ queryString = queryString & " <AND> dDocType <matches> `SponsoredEmployer` <AND> (xIsFeatured <matches> `yes`) "$>
+			<$ QueryText = queryString $> 
+		<$ SortField = 'dInDate', SortOrder = "Desc", ResultCount = "100"$>
+
+		<$executeService("GET_SEARCH_RESULTS") $>
+<@end@>
+
+<@dynamichtml get_jobs_cadidates_latest_r6@>
+        <$ queryString = '' $>
+		<$include set_query_string_simple$>
+
+		<$if isTrue(isCandidateSeeker) $>
+			<$ queryString = queryString & " <AND> dDocType <matches> `Candidates`", aTitleLbl = 'wwLatestCandidates', searchSection = 'candidatessearchresults', contentType = 'Candidates' $>
+		<$else$>
+			<$ queryString = queryString & " <AND> dDocType <matches> `Jobs`", aTitleLbl = 'wwLatestJobs', searchSection = 'jobssearchresults', contentType = 'Jobs' $>
+		<$endif$>
+
+		<$ QueryText = queryString $>
+		<$ SortField = 'dInDate', SortOrder = "Desc", ResultCount = 5$>
+
+		<$executeService("GET_SEARCH_RESULTS") $>
+<@end@>
+
+<!--*************** LATEST JOBS/ CANDIDATES - Release 6.0****************
+*********************************************************** -->
+<@dynamichtml jobs_cadidates_latest_r6@>
+		<$if rsFirst('SearchResults') $>
+			<div class="searchcol">
+				<div class="searchinner">
+					<h2><$latestJobsTitle$></h2>
+					<ul class="latetjobs">
+					<$loop SearchResults $>
+						<li>
+							<h3>
+							<$if isProjectSEnabled eq 1 and not (isEmployer eq 1)$>
+								<$jobUrl = portalUrl & #env.ProjectS_Job_Details & dDocName$>
+								<a href="<$jobUrl$>"><$SearchResults.dDocTitle$></a>
+							<$else$>
+								<a href="<$ssLink(dDocName) $>"><$SearchResults.dDocTitle$></a>
+							<$endif$>	
+							</h3>
+							<p><$SearchResults.xLocationDescription$></p>
+							<$if isTrue(#active.display_salary_rate)$>
+								<p><$SearchResults.xSalaryDescription$></p>
+							<$endif$>
+						</li>
+					<$endloop$>
+					</ul>
+
+					<$ sectionUrl = ssNodeLink(searchSection, siteId) & "?contentType=" & contentType $>
+					<$if strLength(subTerms) GT 0 $>
+						<$ sectionUrl = sectionUrl & '&job_category=' & subTerms $>
+					<$endif$>
+					
+				</div>
+			</div>
+			
+		<$endif $>
+<@end@>
+
+<@dynamichtml subtmp_dyn_partnered_companies_r6_inc@>
+ 	<$if rsExists("FeaturedEmployerSearchResults")$>
+			
+			<div class="searchcol">
+	          	<div class="searchinner">
+		     	<h2><$FeaturedEmployersTitle$></h2>
+		    	<ul class="partners_box">			
+			<$itemCount = 1$>
+			<$loop FeaturedEmployerSearchResults$>
+			  	<$if itemCount gt 5$>
+			  		<$break$>
+			  	<$endif$>
+				<$link=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Microsite_URL']/text()")$>
+			
+				<$if not strEquals(link,'')$>
+						<li><a href="<$link$>" target="_blank"><$ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Image']/text()")$></a></li>
+						<$itemCount = itemCount+1$>
+				<$endif$>
+
+			<$endloop$> 
+		</ul>
+		<$queryString="dDocType <matches> `SponsoredEmployer` <AND> (xIsFeatured <matches> `yes`)"$>
+		<$include set_query_string_no_empty_catagory$>
+		<$featuredEmployerNodeLink= ssNodeLink("featured-employers")$>		
+		
+	</div>
+</div>
+<div class="clear"></div>
+<$endif$> 
+<@end@>
+
+<@dynamichtml rgtmp_rl_hand_blocks_r6_inc@>
+<$wcmListStart("SelectedContent")$>
+<$wcmListIndex = 0$>
+<$wcmListNumRows = wcmListRowCount()$>
+
+<div class="side_box">
+	<div class="rc_blue">
+		<div class="cnr"></div>
+		<h2><$wcmElement("Title")$></h2>
+	</div>
+	<div class="rc_grey sb_inner pull block_list even flimg-l">
+		<ul>
+	    <$loopwhile wcmListIndex < wcmListNumRows$>	
+			<li>
+				<h3><$wcmListElement("Title", wcmListIndex)$></h3>
+					<$image_rhs=wcmListElement("Image", wcmListIndex)$>
+					<$if #active.image_rhs and not strEquals(strTrimWs(#active.image_rhs),'')$>
+					  <$ strReplace(image_rhs, '<img', '<img height="60" width="60"') $>
+					<$endif$>					
+				    <$wcmListElement("Content", wcmListIndex)$>
+					<$strReplace(wcmListElement("Link", wcmListIndex),"<a","<a class=\"generic_small_link\"")$>
+			</li>
+			<$wcmListIndex = wcmListIndex + 1$>
+			<$endloop$>			
+		</ul>	
+	</div>
+</div>
+<$wcmListEnd("SelectedContent")$>	
+<@end@>
+
+<@dynamichtml extract_datafile_sec_header_r6_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_from_top_node_r6_inc$>
+	<$wcmPlaceholder('Header_Secondary_Navigation', 'templateDocName=RGTMP_HEADER_SUB_R6', datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_from_top_node_r6_inc@>
+	<$ datafile = '', datafileInclude = 'dataFileDocName=' $>
+	<$ navTopNodeId = ssGetFirstNodeId(siteId) $>
+	<$ primaryUrlProp = ssGetNodeProperty(navTopNodeId, 'primaryUrl') $>
+	<$ index = strIndexOf(primaryUrlProp, PL_NAME) $>
+	<$if index GE 0 $>
+		<$ datafile = strSubstring(primaryUrlProp, index + strLength(PL_NAME) + 1) $>
+		<$ index = strIndexOf(datafile, '&') $>
+		<$if index GT 0 $>
+			<$ datafile = strSubstring(datafile, 0, index) $>
+		<$endif$>
+	<$endif$>
+	<$ datafileInclude = datafileInclude & datafile $>
+<@end@>
+
+<@dynamichtml top_tab_navigation_r6@>
+
+
+	<ul class="user_nav">
+	<$wcmListStart(tabListName)$>
+	<$if wcmListRowCount() gt 0$>
+		<$ nNumRecords = (wcmListRowCount() - 1), nPos = 0, isSet = '0', className = '' $>
+		<$loopwhile nPos LE nNumRecords$>
+			<$ aLink = wcmListElement("Link", nPos) $>
+			<$ aLink = strReplace(aLink, '">', '"> <span>') $>
+			<$ aLink = strReplace(aLink, '</a>', '</span></a>') $>
+			<$if nPos == 0 $>
+				<$ className = 'first' $>
+			<$elseif nPos == nNumRecords $>
+				<$ className = 'last' $>
+			<$else$>
+				<$ className = '' $>
+			<$endif$>
+			<$username=getCookie("usrname")$>
+			<$if ssNavNodeList$>
+				<$loop ssNavNodeList$>							
+					<$if (strIndexOf(aLink, '/' & ssNavNodeList.nodeId & '/') GT 0) OR ( strIndexOf(aLink, ssGetNodeProperty(ssNavNodeList.nodeId, 'urlDirName')) GT 0) $>
+						<$ aLink = strReplace(aLink, '<a', '<a class="active" ') $>
+						<li class="<$className$>"><$ aLink $></li>
+						<$ isSet = '1' $>
+						<$break$>
+					<$endif$>
+				<$endloop$>
+				
+			<$elseif (strIndexOf(aLink,"SSOController") gt 0) and not strEquals(username,"")$>[[%This is for the webcenter pages to make the my account tab active%]]
+				<$ aLink = strReplace( aLink , '<a', '<a class="active" onclick="return Hays_gaq_push(this.href)" ' ) $> 
+				<li class="<$className$>"><$ aLink $></li>
+				<$ isSet = '1' $>
+			<$endif$>
+
+			<$if isFalse(isSet) $>
+			<$ aLink = strReplace(aLink, '<a', '<a class="" onclick="return Hays_gaq_push(this.href)"') $>
+				<li class="<$className$>"><$ aLink $></li>
+			<$endif$>
+		<$ nPos = nPos + 1, isSet = '0'$>
+		<$endloop$>
+	<$endif$>
+	<$wcmListEnd(tabListName)$>
+	</ul>
+<@end@>
+
+<@dynamichtml rgtmp_header_sub_r6_inc@>
+	<$ navType = '0', headerType = '0' $>
+
+	<$if #active.contentType $>
+	
+		<$if contentType like 'Candidates'$>
+			<$ navType = 2 $>
+		<$else$>
+			<$ navType = 1 $>
+		<$endif$>
+	<$elseif #active.nodeId$>
+		<$ headerType = ssGetNodeProperty("HeaderType") $>
+		<$if headerType like '1|2' $>
+			<$ navType = headerType $>
+  		<$endif$>
+  	<$endif$>
+  	
+  	<$if navType like '0' $>
+
+  		<$userRole=getCookie("tgtaud")$>
+  		<$if strLength(userRole) gt 0$> 
+  			<$if strEquals(userRole,'2')$>  
+  					<$ navType = 2 $>
+  			<$else$>
+  					<$ navType = 1 $>
+  			<$endif$>
+  		<$endif$>
+  	<$endif$>
+   <$if navType like '0' $>
+ 
+   		<$employerUrlPageName=ssGetNodeProperty("employer","urlDirName")$>
+ 		<$candidateSearchUrlPageName=ssGetNodeProperty("candidates-search","urlDirName")$>
+ 		<$if HTTP_REFERER  and ((strIndexOf(HTTP_REFERER,employerUrlPageName) gt 0 )or (strIndexOf(HTTP_REFERER,candidateSearchUrlPageName) gt 0))$>
+ 		
+			<$ navType = 2 $>
+		<$endif$>
+   <$endif$>
+   
+    <$if navType like '0' $>
+   		
+ 		<$if currentNavType  and strLength(currentNavType) gt 0$>
+			<$ navType = currentNavType $>
+		<$endif$>
+   <$endif$>
+
+  	<$if navType like '2' $>  
+  			<$ tabListName = 'TabNavigation_Employer' $>	
+	<$else$>
+				<$ tabListName = 'TabNavigation_JobSeeker' $>
+	<$endif$>
+	<$include top_tab_navigation_r6$>
+
+<@end@>
+
+<@dynamichtml rgtmp_main_sec_r6_inc@>
+<$aTitle = wcmElement("Title")$>
+<$aSecondaryTitle = wcmElement("Secondary_Title")$>
+<$variableToTrim = aTitle$>	
+<$include removeLeadingAndTrailingSpaces_inc$>
+<$aTitle=variableToTrim$>	
+<$variableToTrim = aSecondaryTitle$>	
+<$include removeLeadingAndTrailingSpaces_inc$>
+<$aSecondaryTitle=variableToTrim$>
+<$variableToTrim=""$>
+<$if strLength(aTitle) gt 0$>
+	<h1 class="specialism_title" style="text-transform: uppercase;"><$aTitle$></h1>
+<$endif$>
+<$if strLength(aSecondaryTitle) gt 0$>
+	<span class="sub_text" style="text-transform: uppercase;"><$aSecondaryTitle$></span>
+<$endif$>	
+<div class="half_intro"> 
+	<$if #active.image and not strEquals(#active.image,'')$>
+		<$ strReplace(image, 'img', 'img height="261" width="180" ') $>	
+	<$endif$>	
+	<div class="hi_inner">	
+		<div class="wysiwyg">
+			<$wcmElement("Summary")$>			
+		</div>
+		<$if #active.nodeId and not strEqualsIgnoreCase(ssGetNodeProperty("SwitchOffDate"),"true")$>
+			<$if #active.ssDocName and strLength(#active.ssDocName)gt 0$>
+					<$dDocName = ssDocName$>
+			<$endif$>
+			<$executeService('DOC_INFO_BY_NAME')$>
+			<div class="date"><$lc('wwContentLatUpdatedLabel')$> <$formatDateWithPattern(DOC_INFO.dReleaseDate,#active.websiteDateFormat)$></div>
+		<$endif$>
+	</div>
+		
+</div> 
+<$if strLength(wcmElement("UpperButtonLink")) gt 0 $>
+<div class="intro-btn">
+              <div class="btn">
+            <$wcmElement("UpperButtonLink")$>
+             </div></div>
+	<$endif$>
+
+<div class="clear"></div>
+<div class="content_main">
+    <$wcmListStart("Content")$>
+	<$wcmListIndex = 0$>
+	<$wcmListNumRows = wcmListRowCount()$>
+	<$loopwhile wcmListIndex < wcmListNumRows$>
+		<$strTitle=wcmListElement("Title", wcmListIndex)$>
+		<$strSummary=wcmListElement("Summary", wcmListIndex)$>
+		<$strBody=wcmListElement("Body", wcmListIndex)$>
+		<$if strLength(strTrimWs(strTitle)) gt 0$>
+	        <h2><$wcmListElement("Title", wcmListIndex)$></h2>
+	    <$endif$>
+		<$if strLength(strTrimWs(strSummary)) gt 0$>
+        	<h3><$wcmListElement("Summary", wcmListIndex)$></h3>
+	    <$endif$>
+        <$wcmListElement("Body", wcmListIndex)$>
+		<$wcmListIndex = wcmListIndex + 1$>
+	<$endloop$>
+	<$wcmListEnd("Content")$>
+	
+	
+</div>
+<$if strLength(wcmElement("LowerButtonLink")) gt 0 $>
+         <div class="intro-btn">
+         <div class="btn">
+            <$wcmElement("LowerButtonLink")$>
+         </div></div>
+	<$endif$>
+
+
+
+<div class="clear"></div>
+
+
+<$ blockName = "Block1" $>
+<$include rgtmp_half_width_blocks_r6_inc$>
+
+<$ blockName = "Block2", blockTitle = "Block2_Title" $>
+<$include rgtmp_full_width_blocks_r6_inc$>
+
+<@end@>
+
+<!-- added for Oil and Gas Region Templete -->
+<@dynamichtml rgtmp_home_main_block_oilgas_inc@>
+<div class="lrg_inner">
+	<h1><$wcmElement("Title")$></h1>
+	<h2 class="h1"><$wcmElement("SubTitle")$></h2>
+</div>
+</div> [[%end of grid_24%]]
+<div class="grid_15 suffix_9" style="margin-bottom: 20px;">
+	<div class="lrg_inner" style="min-height: 130px;margin-bottom: 20px;width:240px;"><$wcmElement("BlankBox")$> </div> 
+	<$currentTabValue="jobseeker"$>
+	<$include home_SpecialismList$>
+ </div>
+ <@end@> 
+
+<@dynamichtml rgtmp_jobdetail_jobs_sponsored@>
+<!--Start small,big image and Link extraction-->
+	<$smallImage=wcmElement("SmallImage")$>
+	<$bigImage=wcmElement("BigImage")$>
+	<$linkValue=wcmElement("Link")$>
+	<$if not strEquals(smallImage,'')$> 
+		<$index=strIndexOf(smallImage,"src=")$>			
+		<$if index gt -1$> 
+			<$src1=strIndexOf(smallImage,"src=")$>
+			<$smallImageUrl=strSubstring(smallImage,src1+5)$>
+			<$src2=strIndexOf(smallImageUrl,'"')$>
+			<$smallImageUrl=strSubstring(smallImageUrl,0,src2)$>
+		<$endif$>
+	<$endif$>
+	<$if not strEquals(bigImage,'')$>
+		<$index=strIndexOf(bigImage,"src=")$>			
+		<$if index gt -1$> 
+			<$src3=strIndexOf(bigImage,"src=")$>
+			<$bigImageUrl=strSubstring(bigImage,src3+5)$>
+			<$src4=strIndexOf(bigImageUrl,'"')$>
+			<$bigImageUrl=strSubstring(bigImageUrl,0,src4)$>
+		<$endif$>
+	<$endif$>	
+	<$if not strEquals(linkValue,'')$>	
+		<$linkindex = strIndexOf(linkValue,"href=")$>
+		<$linkLabelIndex=strIndexOf(linkValue,'">')$>		
+		<$if linkindex gt -1$>			
+			<$linkHref1=strSubstring(linkValue,linkindex+6)$>			
+			<$linkHref2=strIndexOf(linkHref1,'"')$>
+			<$href=strSubstring(linkHref1,0,linkHref2)$>
+			<$linkLabel1=strSubstring(linkValue,linkLabelIndex+2)$>			
+			<$linkLabel2=strIndexOf(linkLabel1,'<')$>
+			<$linkLabel=strSubstring(linkLabel1,0,linkLabel2)$>			
+		<$endif$>						
+	<$endif$>
+<!--End small,big image and Link extraction-->
+	<$if #active.ssDocName $>	
+		<$include reset_search_params_inc $>
+		<$ job_sponsored = 'Y', job_location = '', radius = #env.DefaultRadius, job_type='',job_rate = '', job_min = '', job_max = '', contentType= 'Jobs', job_title_ref='' $>	
+		<$if strLength(job_category) GT 0 $>
+			<$include related_block_inc$>
+		<$endif$>
+	<$else$>	
+		<$ queryString = 'dDocType <MATCHES> `Jobs` <AND> <NOT> (xSponsored <CONTAINS> `idcnull`)' $>
+		<$ include set_query_string $>
+		
+		<$ QueryText = queryString, SortField='dInDate', SortOrder="Desc", ResultCount=5 $>
+		
+		<$ executeService("GET_SEARCH_RESULTS") $>
+	<$endif$> 
+	<$if rsFirst('SearchResults') $>
+		<$if  rsFindRowPrimary('SearchResults', DOC_INFO.dDocName) AND SearchResults.#numRows EQ 1   $>
+		<$else$>
+			<div class="side_box">
+				<div class="rc_blue">
+					<div class="cnr"></div>
+					<h2><$lc('wwSponsoredJobsTitle')$></h2>
+				</div>
+				<div class="rc_grey sb_inner pull block_list even">
+				<ul>
+				<$loop SearchResults$>
+					<li>
+						<$Sponsored = SearchResults.xSponsored$>
+
+						<h3><a href="<$ssLink(SearchResults.dDocName)$>"><$SearchResults.dDocTitle$></a></h3>
+						<p><$SearchResults.xLocationDescription$></p>
+						<$if isTrue(#active.display_salary_rate)$>
+							<p><span class="strong"><$SearchResults.xSalaryDescription $></span></p>
+						<$endif$>
+						<$ imagePath = haysIncludeXML(Sponsored,"wcm:root/wcm:element[@name='Image']/text()")$>
+						<$if strLength(imagePath) GT 0 $><$ imagePath $><$endif$>
+					</li>
+				 <$endloop$>
+				</ul>
+				 </div>
+			</div>
+		<$endif$>
+		
+		
+	<$endif$>
+	<div class="side_box">	
+			<a href="<$href$>" style="color: #FFFFFF" target="_blank"> 			
+				<div id="SponsorImg" class="rc_blue" style="background-image:url(<$smallImageUrl$>);border:.1em #FFFFFF solid">
+					<div id="sponsored_link" style="margin-top:142px;padding: 5px 5px 5px 5px; position: relative;font-size:11px;"> 
+						<$linkLabel$>
+					</div>
+				</div>		
+			</a>
+		</div>
+	<script type="text/javascript">
+		var bigImageUrL="<$bigImageUrl$>";
+	</script>
+<@end@>
+
+
+</body></html>

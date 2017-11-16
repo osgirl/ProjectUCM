@@ -1,0 +1,24 @@
+﻿<?hda version="10.1.3.5.0 (090630)" jcharset=UTF8 encoding=utf-8?>
+@Properties LocalData
+blFieldTypes=
+blDateFormat=dd/MM/yyyy {H:mm[:ss] [zzz]}!tUTC
+@end
+@ResultSet HAYS_WidgetManager_Templates
+5
+name
+class
+formtype
+filename
+description
+CR_CHOOSE_WEBSECTION
+CR
+CR
+choose_websection.htm
+Select websections
+CR_STRUCTURE_PROJECT_DEF
+CR
+CR
+structure_project_def.htm
+null
+@end
+

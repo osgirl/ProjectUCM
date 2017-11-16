@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+<$lc("wwSelectProfileFormTitle")$>
+</title>
+</head>
+<body>
+<$executeService('SS_GET_CONFIG_INFO')$>
+<$ loop SSDefaultDocuments $>
+	<$token = '', primaryFile = '' $>
+	<$if strEquals(SSDefaultDocuments.token, 'SSContributorDataFile') $>
+		<$ token = SSDefaultDocuments.token, primaryFile = SSDefaultDocuments.primaryFile $>
+		<$break$>
+	<$endif$>
+<$endloop$>
+<form name="selectProfileForm" id="selectProfileForm" method="get" action="<$HttpCgiPath$>">
+	<input type="hidden" name="IdcService" value="CHECKIN_NEW_FORM"/>
+	<input type="hidden" name="useHaysCheckin" value="1"/>
+	<input type="hidden" name="WCMPopupId" value="<$WCMPopupId$>"/>
+	<input type="hidden" name="coreContentOnly" value="1"/>
+	<input type="hidden" name="AllowPrimaryMetaFile" value="0"/>
+	<input type="hidden" name="suppressAlternateFile" value="1"/>
+	<input type="hidden" name="ssDefaultDocumentToken" value="<$token$>"/>
+	<input type="hidden" name="primaryFile" value="<$primaryFile$>"/>
+	<input type="hidden" name="dpTriggerValue" id="dpTriggerValue" value=""/>
+	<input type="hidden" name="dpDisplayLabel" id="dpDisplayLabel" value=""/>
+	<input type="hidden" name="SiteLocale" id="SiteLocale" value="<$SiteLocale$>"/>
+	<input type="hidden" name="LanguageCode" id="LanguageCode" value="<$LanguageCode$>"/>
+	<input type="hidden" name="CountryCode" id="CountryCode" value="<$CountryCode$>"/>
+	<input type="hidden" name="xLocale" id="xLocale" value="<$SiteLocale$>"/>
+	<input type="hidden" name="xWebsiteObjectType" id="xWebsiteObjectType" value="Data File"/>
+	<input type="hidden" name="xWebsiteSection" id="xWebsiteSection" value="<$section$>"/>
+ 
+	<$if  strEquals(SiteLocale, 'en-WW') == 1$>
+	
+		<select name="select_profile" id="select_profile" >
+			<option name="none" id="none" value="">Select document profile...</option>
+			<option name="PromotionalContent" id="PromotionalContent" value="PromotionalContent">Promotional Content</option>
+			<option name="News" id="News" value="News">News</option>
+			<option name="CRReport" id="CRReport" value="CRReport">CRReport</option>
+			<option name="Initiative" id="Initiative" value="Initiative">Initiative</option>
+			<option name="Highlights" id="Highlights" value="Highlights">Highlights</option>
+			<option name="Video" id="Video" value="Video">Video</option>
+			<option name="ResultCenter" id="ResultCenter" value="ResultCenter">Result Center</option>
+			<option name="Presentation" id="Presentation" value="Presentation">Presentation</option>
+			<option name="AnnualReport" id="AnnualReport" value="AnnualReport">Annual Report</option>
+			<option name="FinancialCalendar" id="FinancialCalendar" value="FinancialCalendar">Financial Calendar</option>
+					</select>
+		
+	
+	<$else$>
+		<select name="select_profile" id="select_profile" >
+			<option name="none" id="none" value=""><$lc('wwSelectProfileFormDefaultOption')$></option>
+			<$loop DocumentProfiles$>
+			<option name="<$DocumentProfiles.dpName$>" id="<$DocumentProfiles.dpName$>" value="<$DocumentProfiles.dpTriggerValue$>"><$lc(dpDisplayLabel)$></option>
+			<$endloop$>
+		</select>
+	
+	<$endif$>
+	
+	
+
+	<input type="button" name="submitit" value="<$lc('wwSelectProfileFormSubmitButtonLabel')$>" onclick="submitform(selectProfileForm)" /> 
+</form>
+
+<script>
+	function submitform(form) {
+		var select = document.getElementById('select_profile');
+		var selectValue = select[select.selectedIndex].value; 
+		if( selectValue == "") {
+			alert("<$lc('wwSelectProfileFormErrorMessage')$>");
+			return false;
+		}
+		var selectLabel = select[select.selectedIndex].text; 
+		document.getElementById('dpTriggerValue').value = selectValue;
+		document.getElementById('dpDisplayLabel').value = selectLabel;
+		form.submit();
+	}
+</script>
+</body></html>

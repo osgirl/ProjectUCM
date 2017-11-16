@@ -1,0 +1,177 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_officelocator_javascript@>
+<script language="JavaScript">
+
+/**
+ * This JavaScript is used to set the value for
+ * IdcService in the Office Locator form
+ */
+
+function doSubmit()
+{
+ if ( (document.OfficeLocator.Name.selectedIndex == 0)&&(document.forms[0].elements[2].value == "" || document.forms[0].elements[2].value =="e.g. Cambridge")&&(document.forms[0].elements[3].value == "" || document.forms[0].elements[3].value =="e.g. EC1V"))
+ {
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary1').style.display  = 'none';
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary2').style.display  = 'none';
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary3').style.display  = 'block';
+  //alert("Expertise is mandatory");
+  return false;
+ }
+ if ( document.OfficeLocator.Name.selectedIndex == 0 )
+ {
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary1').style.display  = 'block';
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary2').style.display  = 'none';
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary3').style.display  = 'none';
+  //alert("Expertise is mandatory");
+  return false;
+ }
+ if ((document.forms[0].elements[2].value == "" || document.forms[0].elements[2].value =="e.g. Cambridge")&&(document.forms[0].elements[3].value == "" || document.forms[0].elements[3].value =="e.g. EC1V"))
+ {
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary2').style.display  = 'block';
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary1').style.display  = 'none';
+  document.getElementById('ctl00_ctl00_PageBody_ContentMain_valSummary3').style.display  = 'none';
+  //alert("Please enter either a town or a postcode");
+  return false;
+ }
+ else
+  {
+	<!--$executeService("EXECUTE_HAYS_PROVIDER_QUERY")-->
+    return true;
+  }
+}
+</script>
+
+
+
+<@end@>
+
+
+
+<@dynamichtml widget_bookmark_form@>
+	<h2>Office Locator</h2>
+
+	<$include widget_officelocator_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_bookmark_display@>
+	 <$if HAYS_RESULT_SET$>
+	            <h4>You searched for Hays offices that:</h4>
+	            <ul>
+	                <li>Specialise in <$Name$></li>
+
+	                <li>are near <$Town$></li>
+	                <li>are near <$PostCode$></li>
+	            </ul>
+
+
+	            <div class="icons-header">
+	                <h2>Your nearest offices are</h2>
+	                <p class="icons"><a class="map-pin" href="">View on a map</a></p>
+
+	            </div>
+	            <table id="office-results">
+	            <thead>
+	            	<tr>
+	                	<th class="address">Office</th>
+	                	<th class="specialises">Specialises in</th>
+	                	<th class="distance">Distance</th>
+
+	                </tr>
+	            </thead>
+	         <$endif$>
+
+	            <tbody>
+
+	             <$if HAYS_RESULT_SET$>
+	             <$loop HAYS_RESULT_SET$>
+	              <tr>
+	                	<td class="address">
+	                    	<p><strong>Hays – <$OfficeName$></strong><br /><$if Building$><$Building$>,<$endif$> <$if Street$><$Street$>,<br /><$endif$><$Town$>,<br /><$PostCode$></p>
+	                        <p><strong>t</strong> : <$Telephone$><br /><strong>f</strong> : <$Telephone$><br /><strong>e</strong> : <a href="mailto:<$EmailAddress$>"><$EmailAddress$></a></p>
+
+	                    </td>
+	                    <td class="specialises">
+	                    	<p><$Name$></p>
+	                    </td>
+	                    <td class="distance">3.1 miles<br/><a href="">See on a map</a></td>
+	                </tr>
+
+	              <$endloop$>
+	             <$else$>
+	              <h2>No Results found</h2>
+	            <$endif$>
+	            </tbody>
+	            </table>
+	            <!-- /search results -->
+
+
+
+	         <!-- office search -->
+	            <form name="OfficeLocator" method="POST" action="<$ssGetServerRelativeUrl(siteId, "35")$>">
+	            <!--<input type=hidden name=IdcService value="">-->
+	                <fieldset class="outline-box">
+	                    <div class="box-header">
+	                        <div class="box-content">
+	                            <h3 class="hashed">New Office Search</h3>
+
+	                        </div>
+	                    </div>
+	                    <div style="color: Red;display:none;" class="box message error" id="ctl00_ctl00_PageBody_ContentMain_valSummary1"><p>Please amend the following fields</p><ul><li>Please select a expertise</li></ul></div>
+	                    <div style="color: Red;display:none;" class="box message error" id="ctl00_ctl00_PageBody_ContentMain_valSummary2"><p>Please amend the following fields</p><ul><li>Please enter either a town or a postcode</li></ul></div>
+	                     <div style="color: Red;display:none;" class="box message error" id="ctl00_ctl00_PageBody_ContentMain_valSummary3"><p>Please amend the following fields</p><ul><li>Please select a expertise</li><li>Please enter either a town or a postcode</li></ul></div>
+	                    <div class="box-body">
+	                    	<div class="box-content">
+	                        	<p><em class="required">*</em> Indicates a required field</p>
+	                        </div>
+	                        <table class="wide-form">
+
+	                        <tbody>
+	                            <tr>
+	                                <th><label for="os-expertise"><em class="required">*</em> Expertise</label></th>
+	                               <td><select id="os-expertise" class="select-large hint" name="BrandId">
+	                                   <option value=""></option>
+	                                    <$executeService("EXECUTE_LIST")$>
+	 									<$loop HAYS_RESULT_SET$>
+										<option value="<$BrandId$>"><$Name$></option>
+										<$endloop$>
+	                                    </select></td>
+	                            </tr>
+	                            <tr>
+	                                <th><label for="os-town">Town</label></th>
+	                                <td><input id="os-town" class="text-large hint" type="text" name="Town" value="e.g. Cambridge" /></td>
+	                            </tr>
+	                            <tr>
+
+	                                <th><label for="os-postcode">or Postcode</label></th>
+	                                <td><input id="os-postcode" class="text-large hint" type="text" name="PostCode" value="e.g. EC1V" /></td>
+	                            </tr>
+	                        </tbody>
+	                        </table>
+	                    </div>
+	                </fieldset>
+
+	                <fieldset class="box-footer">
+
+	                    <p class="buttons"><input class="main-button" type="submit" value="Search"  onClick="return doSubmit('EXECUTE_HAYS_PROVIDER_QUERY')"/></p>
+	                </fieldset>
+	            </form>
+	            <!-- /office search -->
+
+
+<@end@>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,139 @@
+@charset "utf-8";
+
+body,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,th,td { margin:0; padding:0; }
+a:active, a:focus { outline: 0;}/* gets rid of dots in firefox */
+
+/**************************************MAIN-BODY*********************************************/
+
+html, body {height: 100%; }
+body { color:#333333; font-size:.8em; font-family: Arial, Helvetica, sans-serif; background:url(images/bg.jpg) repeat-x top; }
+
+#outer-wrapper { width:1000px; margin:0 auto; margin-bottom:20px; min-height:100%; }
+#inner-wrapper { 
+	width:960px; 
+	margin:0 auto; 
+	overflow:visible; 
+	padding:0 20px 100px 20px;
+	background:url(images/btm-curve.jpg) no-repeat bottom;  
+}
+
+#header { width:960px; position:relative; padding-top:70px; }
+#slideshow { width:960px; height:211px; overflow:hidden; background:url(images/1.jpg) no-repeat; float:left; position:relative; z-index:1; }
+#midd-content { width:960px; }
+#text { width:465px; padding:0 25px 0 20px; float:left; background:url(images/background-coluna-direita.gif) repeat-y right; }
+#r-col { float:left; width:250px; padding:0 5px 0 15px; font-size:.85em; 
+ }
+
+h1{ color:#008F83; font-weight:normal; font-size:2em; padding: 0 0 15px; }
+h2 { color: #008F83; font-size: 1.2em; padding: 0 0 5px;}
+h3 { color: #EAAB12; font-size: 1.05em; padding: 0 0 5px; }
+p{ padding-bottom:15px; color:#3D3D3D; }
+
+a:link. a:visited { color:#008F83; text-decoration:none; }
+a:hover, a:focus { color:#008F83; text-decoration:underline; }
+
+.logo { padding-right:10px; display:block; position:absolute; top:70px; left:0; z-index:2; }
+.yellow-line { border-bottom:1px solid #F8E5BA; height:1px; width:760px; padding-top:33px; float:right; }
+.clearer { clear:both; }
+
+
+/************************************** NAVIGATION *********************************************/
+
+#nav { width:180px; float:left; }
+#nav ul { padding:0; margin:0; list-style:none; }
+#nav ul li a {
+	width:130px;
+	color:#555555;
+	text-decoration:none;
+	display:inline-block;
+	padding: 6px 10px 6px 15px;
+	border-bottom:1px solid #E5E5E5;
+	float:left; background:url(images/arrow.gif) no-repeat 5px center;  
+}
+#nav ul li a:hover, #nav ul li a:focus { color:#FFFFFF; font-weight:bold; 
+background:url(images/arrow.gif) no-repeat 5px center #008F83; }
+#pageWelcome .wel-sel, #pageAbout .about-sel, #pageLocation .loc-sel, #pageJobs .jobs-sel { font-weight:bold; color:#008F83; }
+
+/****************************************** FOOTER *************************************************/
+#outer-footer { 
+	width:100%;
+	position: relative;
+	margin-top: -60px; /* negative value of footer height */
+	height: 40px;
+	clear:both;
+}
+#footer { width:980px; margin:0 auto; }
+#footerpush {height:40px; clear: both; }  /* must be same height as the footer */
+
+/*Opera Fix*/
+body:before {
+	content:"";
+	height:100%;
+	float:left;
+	width:0;
+	margin-top:-32767px;/
+}
+
+#innerFooter {
+	color: #666666;
+	margin-right: 240px;
+	color: #3e5991;
+	font-size:.85em;
+}
+#innerFooter .pipe { margin: 0 2px 0 5px; color: #009fda; font-size: 1.2em; color: #FFFFFF; border-left: #00aeef solid 1px; }
+#innerFooter a { color: #3e5991; text-decoration: none; }
+#innerFooter a:hover, #innerFooter a:focus { text-decoration: underline; color: #162b61; }
+#innerFooter a img { border: none; float: left; margin: -12px 12px 0 0; position: relative; }
+#innerFooter a.hayslogo {
+	border: none;
+}
+
+/* SHARE */
+.share {
+	height:15px;
+	width:170px;
+	float:right;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 0;
+	margin-right: 10px;
+}
+
+
+/******************************************SEARCH RESULTS STYLING *************************************************/
+#pageWelcome #Form1 table { width: 98% !important; color:#3D3D3D; font-size:1em; }
+#Form1 table { width: 98% !important; color:#3D3D3D; font-size:.95em; }
+
+#pageWelcome tr.MicroHeader th { display:none; }
+tr.MicroHeader th { padding: 0 10px 3px 10px; text-align: left; border-bottom: 1px solid #E2F3F1; color: #EAAB12; }
+
+tr.MicroItem td { padding: 10px; background: none; text-align:left; }
+tr.MicroAltItem td {
+	padding: 10px;
+	text-align:left;
+	color:#3D3D3D;
+	background-color:#FCF3E2;
+}
+
+.Micro { margin-top:10px; border-collapse:collapse; }
+.Micro a { text-decoration:none; color:#008F83; background:url(images/green-cir.png) no-repeat center right; padding:0 20px 0 0;  }
+.Micro a:hover, .Micro a:focus { background:url(images/yellow-cir.png) no-repeat center right; padding:0 20px 0 0; color:#EAAB12; }
+.MSRSS { color:#008F83; }
+
+p.title { color:#008F83; font-size: 1.2em; padding: 0 0 5px; }
+
+a.applylinks {
+	display: -moz-inline-box;
+	display: inline-block;
+	clear: none;
+	font-size: 0.9em;
+	text-align: center;
+	text-decoration: none;
+	margin:1em 1em 0 0;
+	padding:6px 15px;
+	color:#008F83;
+	font-weight:bold;
+	background:url(images/green-cir.png) no-repeat center right; padding:0 20px 0 0;
+}
+a.applylinks:hover, a.applylinks:focus { color:#EAAB12; background:url(images/yellow-cir.png) no-repeat center right; 
+padding:0 20px 0 0; text-decoration: none; }

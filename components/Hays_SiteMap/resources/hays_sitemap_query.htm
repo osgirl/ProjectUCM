@@ -1,0 +1,131 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+Hays_SiteMap query
+</title>
+</head>
+<body>
+
+<@table Hays_SiteMap_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>QcontentForSiteMap</td>
+	<td>SELECT  C.metaterm METATERM, string_agg(R.dDocName || '@' || M.xWebsiteSection || '@' || to_char(R.dindate , 'yyyy-mm-dd HH24:SSTZR')) NAMEDATE 
+		FROM ( 
+		  SELECT C1.*,  RANK() OVER (PARTITION BY C1.metaterm ORDER BY R1.dInDate DESC NULLS LAST) AS RANK 
+		  FROM  ? C1, Revisions R1 
+		  WHERE R1.did = C1.did AND R1.dDocType = ? AND R1.dStatus<>'DELETED' AND R1.dStatus<>'EXPIRED' AND C1.xLocale = ? AND
+		  regexp_like (C1.METATERM, ?)
+		 ) C, Revisions R, Docmeta M
+		  WHERE R.dID=C.dID AND R.did = M.did and RANK <= ? GROUP BY C.metaterm
+	</td>
+	<td>
+		tblName column
+		dDocType varchar
+		siteLocale varchar
+		metaTerms varchar
+		resultCount int
+	</td>
+</tr>
+<tr>
+	<td>QlatestSectionUpdateDate</td>
+	<td>select L.xWebsiteSection  SECTION, to_char(L.dindate , 'yyyy-mm-dd HH24:SSTZR') LATEST_DATE
+		  from (
+			select  R.dInDate, D.xWebsiteSection, RANK() OVER (PARTITION BY D.xWebsiteSection ORDER BY R.dInDate Desc NULLS LAST) AS LATEST FROM 
+			Revisions R, Docmeta D where R.did = D.did AND D.xWebsiteObjectType='Data File' AND D.xWebsites like ?
+			) L  WHERE LATEST = 1
+
+	</td>
+	<td>
+		siteId varchar
+	</td>
+</tr>
+<tr>
+	<td>DcomlexMetadata</td>
+	<td>DELETE FROM ? WHERE dDocName=?</td>
+	<td>
+	tblName column
+	dDocName varchar
+	</td>
+</tr>
+<tr>
+	<td>IcomplexMetadata</td>
+	<td>INSERT INTO ? (dID,METATERM, dDocName, dDocType,xlocale) 
+		VALUES (?, ?, ?, ?, ?)</td>
+	<td>tblName column
+	    dID int
+		METATERM varchar
+	    dDocName varchar
+	    dDocType varchar
+		xLocale varchar</td>
+</tr>
+<tr>
+	<td>DofficeLocations</td>
+	<td>DELETE FROM ? WHERE dDocName=?</td>
+	<td>
+	tblName column
+	dDocName varchar
+	</td>
+</tr>
+<tr>
+	<td>IOfficeLocations</td>
+	<td>INSERT INTO ? (dID,Geo_Location, dDocName, dDocType,xCountry) 
+		VALUES (?, SDO_GEOMETRY(2001, 8307, 
+     SDO_POINT_TYPE (?,?,NULL), NULL, NULL), ?, ?, ?)</td>
+	<td>tblName column
+	    dID int
+		longitude varchar
+	    latitude varchar
+	    dDocName varchar
+		dDocType varchar
+		xCountry varchar</td>
+</tr>
+<tr>
+	<td>QOfficeLatLong</td>
+	<td>SELECT xLatitude "latitude" , xLongitude "longitude" from DOCMETA WHERE DOCMETA.dID=?</td>
+	<td>dID int</td>
+</tr>
+<tr>
+	<td>QGenericContentForSiteMap</td>
+	<td>SELECT dDocName, TO_CHAR(dindate , 'yyyy-mm-dd HH24:SSTZR') LATEST_DATE,	Revisions.ddoctype,DocMeta.xsubtype,DocMeta.xwebsitesection
+		FROM Revisions, DocMeta
+		WHERE ( DocMeta.dID = Revisions.dID ) AND
+				(( Revisions.dDocType in ('?') ) OR
+        ( DocMeta.xsubtype in ('?') ) )AND
+				( Revisions.dStatus = 'RELEASED' ) AND
+				( Revisions.dRevRank = 0 ) AND
+				( Docmeta.xlocale = ? )
+	</td>
+	<td>
+		dDocType boolean
+		xSubType boolean
+		siteLocale varchar
+	</td>
+</tr>
+<tr>
+	<td>QIndexerContentForSiteMap</td>
+	<td>SELECT dDocName, xwebsitesection,TO_CHAR(dindate , 'yyyy-mm-dd HH24:SS')||'+00:00' LATEST_DATE
+		FROM ?
+		WHERE (ddoctype = 'Jobs') and
+				( xlocale = ?)
+	</td>
+	<td>
+		tableName column
+		siteLocale varchar
+	</td>
+</tr>
+<tr>
+	<td>QgetDefaultSiteAddress</td>
+	<td>select * from sssiteaddresses where disdefault = 1 where dsiteid = ?
+	</td>
+	<td>
+		siteId varchar
+	</td>
+</tr>
+</table>
+<@end@>
+</body></html>

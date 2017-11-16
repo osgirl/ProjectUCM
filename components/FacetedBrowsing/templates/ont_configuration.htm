@@ -1,0 +1,173 @@
+	<$include std_doctype_html_decl$>
+<head>
+	<$defaultPageTitle = "Ontology Configuration"$>
+	<$include std_html_head_declarations$>
+	<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+
+	<$include std_page_begin$>
+
+	
+	
+	<div id="ont">
+	<h2>Ontology Configuration</h2>
+	<form name="OntConfig" enctype="multipart/form-data" method=post action="<$HttpCgiPath$>">
+	<input type="hidden" name="IdcService" value="ONT_CONFIG_SAVE"/>
+	<$include idc_token_form_field$>
+	<table>
+		<thead>
+			<tr>			
+			<$if #active.ontMetadata $>
+				<th colspan="2">Metadata field: <$ontMetadata$>	</th>
+				<input type="hidden" name="ontMetadata" value="<$ontMetadata$>"/>
+			<$else $>
+			
+			<$executeService("ONT_GET_ASSIGNED_META")$>
+				<th><label for="ontMetadata">Select metadata field:</label></th>
+				<th>
+					<select id="ontMetadata" name="ontMetadata" onChange="getClasses(this.options[this.selectedIndex].value);return false;">
+						<option name="ontMetadata" value="" selected>Select metadata ...</option>
+						<$loop OntMetadataRS$>
+							<option name="ontMetadata" value="<$OntMetadataRS.metadata$>" ><$OntMetadataRS.dCaption$></option>
+						<$endloop$>
+					</select>
+				</th>			
+			<$endif$>
+			</tr>
+		</thead>
+	</table>
+		
+	<table>
+		<tbody>
+			<tr class="loader">
+				<td colspan="2"><div id="waiting" style="visibility: hidden">Loading</div></td>
+			</tr>
+			<tr id="classes" style="visibility:<$if #active.ontMetadata $>visible<$else$>hidden<$endif$>">
+				<td ><label for="ontClass">Select default class:</label></td>
+				<td>
+					<select name="ontClass" id="ontClass" onChange="getRelationships(this.options[this.selectedIndex].value);return false;">
+						
+					</select>
+				</td>
+			</tr>			
+			<tr id="relationship" style="visibility: hidden">
+				<td><label for="ontRelationship">Select default relationship:</label>	</td>
+				<td>
+					<select name="ontRelationship" id="ontRelationship">
+						
+					</select>
+				</td>
+			</tr>
+				
+		</tbody>
+	</table>
+	
+	<table class="no_border">		
+		<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td><input type="submit" name="Next" value="Next" class="button"/></td>
+			</tr>
+		</tfoot>
+	</table>
+	
+	
+	</form>	
+</div>
+	
+<$include std_page_end$>
+<script  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+<script>
+		var metadataGlobal = '<$#active.ontMetadata$>';
+
+		<$if #active.ontMetadata $>
+			getClasses( '<$ontMetadata$>');
+		<$endif$>
+
+		function populate(loader, elementId) {
+			if(loader.xmlDoc.responseXML != null){
+				var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+				if( list != null) {
+					list = fixUserAttribRS(list);	
+					list = list.getElementsByTagName('idc:row'); 
+				}
+				var selectBox = document.getElementById( elementId );
+				removeAllOptions( selectBox );
+
+				option = document.createElement('option');
+				option.setAttribute('value', '');
+				option.appendChild( document.createTextNode('Select...') );
+				selectBox.appendChild(option);
+
+				for(var i=0;i<list.length;i++){
+					var option = document.createElement('option');
+					var value =  extractValue( list[i].getElementsByTagName('idc:field')[0] );
+					option.setAttribute('value', value);
+					option.appendChild(document.createTextNode( extractValue( list[i].getElementsByTagName('idc:field')[1])));
+					selectBox.appendChild(option);
+				}
+			}
+		}
+
+		function removeAllOptions(selectbox)	{
+			var i;
+			for(i=selectbox.options.length-1;i>=0;i--) {
+				selectbox.remove(i);
+			}
+		}
+
+		function getClasses(metadata){		
+			if( metadata.length > 0) {
+				metadataGlobal = metadata;
+				url = "?IdcService=ONT_GET_ONT_CLASSES&IsSoap=1&ont_metadata="+metadata+"&idcToken=<$idcToken$>";
+				hide('classes'); hide('relationship'); waiting();
+				var loader = dhtmlxAjax.getSync(url);
+				populate(loader, 'ontClass');
+				show('classes'); hide('waiting');
+			} else {
+				hide('classes'); hide('relationship');
+			}
+		}
+
+		function getRelationships( clas){		
+			if( clas.length > 0) {
+				url = "?IdcService=ONT_GET_ONT_RELATIONSHIPS&IsSoap=1&ont_metadata="+metadataGlobal + "&ont_class=" + clas+"&idcToken=<$idcToken$>";
+				hide('relationship'); waiting();
+				var loader = dhtmlxAjax.getSync(url);
+				populate(loader, 'ontRelationship');
+				show('relationship'); hide('waiting');
+			}
+		}
+
+		function waiting() {
+			/*document.getElementById('waiting').innerHTML="Loading";*/
+			document.getElementById('waiting').style.visibility = "visible";
+		}
+
+		function hide(id) {
+			document.getElementById(id).style.visibility = "hidden";
+		}
+
+		function show(id) {
+			document.getElementById(id).style.visibility = "visible";
+		}
+
+		function extractValue(element) {
+			var value =  element.firstChild;
+			if( value != null)
+				value = value.nodeValue;
+			else value = "";
+			return value;		
+
+		}
+		
+		function fixUserAttribRS(list){
+	   	  if(list[0].getAttribute("name") == "UserAttribInfo"){
+				return list[1];							
+			}
+			return list[0];
+      }
+</script>
+</body></html>

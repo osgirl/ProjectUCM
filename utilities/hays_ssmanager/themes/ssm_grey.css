@@ -1,0 +1,482 @@
+﻿/**********************************/
+/***** GENERIC UTILITY STYLES *****/
+/**********************************/
+
+/**/
+/* easiest way to prevent linked images from having a border without border="0" in every single <img> tag */
+/**/
+img
+{
+	border: 0px;
+}
+
+/**************************/
+/***** MAIN DIV STYLE *****/
+/**************************/
+
+#ssm_main /* the outermost <div> */
+{
+	display: none;
+	width: 100%;
+}
+
+#ssm_main * { font-family: Arial; font-size: 8pt; } /* in strict mode, I could have put this inside #ssm_main and it would have applied to all children, but in quirks mode it doesnt work, so this trick does the same thing */
+
+#ssm_main_table /* the main <table> */
+{
+	display: table;
+	width: 100%;
+}
+
+/************************************/
+/***** HEADER TABLE CELL STYLES *****/
+/************************************/
+
+#ssm_left_pre_header { text-align: left; }
+#ssm_right_pre_header { text-align: right; }
+
+#ssm_left_header,
+#ssm_right_header
+{
+	white-space: nowrap;
+	padding: 4px;
+	vertical-align: middle;
+	color: white;
+	background-color: #808080;
+}
+
+#ssm_left_header { border-width: 1px 0px 1px 1px; border-style:solid; border-color:Black; }
+#ssm_right_header { border-width: 1px 1px 1px 0px; border-style:solid; border-color:Black; }
+
+#ssm_title { padding-left: 5px; padding-right: 5px; }
+#ssm_loadsite_link { color:#D3D3D3; margin-right: 10em; }
+
+#ssm_logged_on_status { color:black; }
+#ssm_logged_on_status .ssm_logged_on_name { color: red; }
+
+#ssm_help
+{
+	cursor: pointer;
+	position:relative;
+	top:-5px;
+}
+
+/**********************************/
+/***** BODY TABLE CELL STYLES *****/
+/**********************************/
+
+#ssm_body /* the <table> that contains the application */
+{
+	display:none;
+	width: 100%;
+	border: 1px black solid;
+	background-color:white;
+}
+
+#ssm_body_left,
+#ssm_body_right
+{
+	vertical-align: top;
+	padding: 10px;
+}
+
+#ssm_body_left { width: 1%; }
+#ssm_body_right { width: 99%; }
+
+/*********************************/
+/***** HIERARCHY PANE STYLES *****/
+/*********************************/
+
+#ssm_hierarchy_label
+{
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	background-color: #808080;
+	color: white;
+	padding: 1px 5px 1px 5px;
+}
+
+
+#ssm_hierarchy /* the <div> that contains the site hierarchy */
+{
+	padding: 5px;
+	border: 1px solid black;
+	background-color: White;
+}
+
+.ssm_hierarchy_item /* the <div> containing each entry in the site hierarchy tree control */
+{
+	padding-right: 10px;
+	border: 1px solid white;
+}
+
+.ssm_hierarchy_selected_item /* the <div> containing the selected item in the site hierarchy tree control */
+{
+	padding-right: 10px;
+	color: White;
+	background-color: #808080;
+	border: 1px solid #808080;
+}
+
+.ssm_hierarchy_dragged_item
+{
+	padding-right: 10px;
+	color:white;
+	background-color: #808080;
+}
+
+.ssm_hierarchy_droptarget_item
+{
+	padding-right: 10px;
+	color: White;
+	background-color:#D3D3D3;
+	border: 1px dashed black;
+}
+
+.ssm_disabled_treectrl div.ssm_hierarchy_selected_item
+{
+	color: #D3D3D3; /* lightgray */
+}
+
+.ssm_section_contextmenu
+{
+	border: 2px solid black;
+}
+
+.ssm_section_contextmenu_icon
+{
+	background-color: #D3D3D3; /* lightgray */
+}
+
+.ssm_section_contextmenu_item
+{
+}
+
+.ssm_section_contextmenu_hover_item
+{
+	color: White;
+	background-color: #808080;
+}
+
+/*******************************/
+/***** ACTIONS PANE STYLES *****/
+/*******************************/
+
+div.ssm_actions_banner { background-color: #808080; border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black; text-align:right;}
+div.ssm_actions_body { background-color: white; border: 1px solid black; padding: 5px; }
+
+span.ssm_actions_selected_tab
+{
+	background-color:#808080;
+	border-top:1px solid black;
+	border-left:1px solid black;
+	border-right: 1px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 3px;
+	position: relative;
+	top: 1px;
+}
+
+span.ssm_actions_unselected_tab
+{
+	background-color:#999966;
+	border:1px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+	position: relative;
+	top: 0px; /* fixes an IE bug */
+}
+
+span.ssm_actions_unselected_tab a { color: #EEEEBB; text-decoration:none; }
+span.ssm_actions_selected_tab a { color: white; font-weight: normal; text-decoration:none; position:relative; top:-2px; }
+
+#ssm_actions_for_section,
+#ssm_actions_for_primary_layout,
+#ssm_actions_for_secondary_layout,
+#ssm_actions_for_custom_properties
+{
+	margin: 10px;
+}
+
+#ssm_actions_for_section_title,
+#ssm_actions_for_primary_layout_title,
+#ssm_actions_for_secondary_layout_title,
+#ssm_actions_for_custom_properties_title
+{
+	padding-bottom: 1em;
+}
+
+#ssm_actions_for_section_label,
+#ssm_actions_for_primary_layout_label,
+#ssm_actions_for_secondary_layout_label,
+#ssm_actions_for_custom_properties_label
+{
+	font-weight: bold;
+	font-size: larger;
+}
+
+.ssm_action_item /* any <div> containing an action item command */
+{
+	display: list-item;
+	list-style: disc;
+	margin-left: 3em;
+	margin-right: 3em;
+	padding-bottom: 2px;
+}
+
+/******************************************/
+/***** SECTION PROPERTIES PANE STYLES *****/
+/******************************************/
+
+#ssm_properties { margin: 1em 3em 0em 3em; }
+
+td.ssm_property_name,
+td.ssm_property_value
+{
+	padding: 2px;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+td.ssm_property_name { text-align: right; }
+td.ssm_property_value { width: 10em; }
+
+#ssm_properties input.text { height: 1.5em; padding: 0px; margin: 0px; border: 1px solid black; width: 100%; background-color: white; }
+#ssm_properties input.checkbox { height: 1.5em; margin: 0px; padding: 0px;}
+
+#ssm_properties input.ssm_disabled_textbox { border: 1px solid #B3B3B3; color: #B3B3B3; }
+#ssm_properties input.ssm_disabled_checkbox {}
+#ssm_properties input.ssm_disabled_radio {}
+#ssm_properties span.ssm_disabled_combobox {}
+
+/**************************************************/
+/***** PRIMARY & SECONDARY LAYOUT PANE STYLES *****/
+/**************************************************/
+
+#ssm_primary_layout_name,
+#ssm_secondary_layout_name
+{
+	font-weight: bold;
+}
+
+#ssm_primary_layout_icon,
+#ssm_secondary_layout_icon
+{
+	vertical-align: middle;
+}
+
+#ssm_primary_layout_info,
+#ssm_secondary_layout_info
+{
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#ssm_primary_layout_combo_parent, #ssm_secondary_layout_combo_parent { margin: 0.5em 0em 0em 0em; }
+
+.ssm_primary_layout_combo, .ssm_secondary_layout_combo { background-color:White; color:Black; }
+.ssm_primary_layout_combo_popup, .ssm_secondary_layout_combo_popup { background-color:White; color:Black; }
+
+.ssm_primary_layout_combo_hover, .ssm_secondary_layout_combo_hover { background-color: #808080; color: white; }
+.ssm_primary_layout_combo_item_hover, .ssm_secondary_layout_combo_item_hover { background-color: #808080; color: white; }
+
+#ssm_primary_layout_combo_parent .ssm_disabled_combobox,
+#ssm_secondary_layout_combo_parent .ssm_disabled_combobox
+{
+	color: gray;
+	cursor: auto;
+}
+
+
+#ssm_primary_layout_preview_frame,
+#ssm_secondary_layout_preview_frame
+{
+	width:99%;
+	height: 40em;
+	border: 1px solid black;
+	margin-top: 1em;
+}
+
+/*****************************************/
+/***** CUSTOM PROPERTIES PANE STYLES *****/
+/*****************************************/
+
+#ssm_custom_properties
+{
+	border: 1px solid gray;
+	background-color: white;
+	margin: 1em 3em 0em 3em;
+}
+
+th.ssm_custom_property_buffer, td.ssm_custom_property_buffer
+{
+	border: 0px;
+	background-color: #D1CFC2;
+}
+
+.ssm_custom_property_buffer { width: 1%; }
+.ssm_custom_property_name { width: 1%; }
+.ssm_custom_property_value { width: 98%; }
+
+th.ssm_custom_property_name,
+td.ssm_custom_property_name,
+th.ssm_custom_property_value,
+td.ssm_custom_property_value
+{
+	border-bottom: 2px solid #E5ECF9;
+	border-left: 2px solid #E5ECF9;
+	border-top: 0px;
+	border-right: 0px;
+	white-space: nowrap;
+	padding-left: 4px;
+	padding-right: 4px;
+	vertical-align: middle;
+}
+
+th.ssm_custom_property_name,
+th.ssm_custom_property_value
+{
+	background-color: #D1CFC2;
+	text-align: left;
+}
+
+#ssm_custom_properties input.text { height: 1.5em; padding: 0px; margin: 0px; border: 0px; width: 100%; background-color: white; }
+#ssm_custom_properties input.checkbox { height: 1.5em; margin: 0px; }
+
+#ssm_custom_properties input.ssm_disabled_textbox { color: Gray; }
+#ssm_custom_properties input.ssm_disabled_checkbox {}
+#ssm_custom_properties input.ssm_disabled_radio {}
+#ssm_custom_properties span.ssm_disabled_combobox {}
+
+/*******************************/
+/***** PROGRESS BAR STYLES *****/
+/*******************************/
+
+.ssm_progress { margin-left: auto; margin-right: 0px; }
+.ssm_progress_default { border: 1px solid black; }
+
+.ssm_progress_0 { background-color: #D3D3D3; border: 1px solid black; }
+.ssm_progress_1 { background-color: #C2C2C2; border: 1px solid black; }
+.ssm_progress_2 { background-color: #B1B1B1; border: 1px solid black; }
+.ssm_progress_3 { background-color: #A0A0A0; border: 1px solid black; }
+.ssm_progress_4 { background-color: #909090; border: 1px solid black; }
+.ssm_progress_5 { background-color: #909090; border: 1px solid black; }
+.ssm_progress_6 { background-color: #808080; border: 1px solid black; }
+.ssm_progress_7 { background-color: #808080; border: 1px solid black; }
+
+/******************************/
+/***** MESSAGE BOX STYLES *****/
+/******************************/
+
+.ssm_error_message,
+.ssm_warning_message,
+.ssm_info_message
+{
+	background-color: #FCF9E8;
+	font-size: larger;
+	width: 30em;
+}
+
+.ssm_error_message
+{
+	background-color: Yellow;
+	color: Red;
+}
+
+.ssm_error_message_title,
+.ssm_warning_message_title,
+.ssm_info_message_title
+{
+	font-weight: bold;
+}
+
+.ssm_info_message_buttons,
+.ssm_warning_message_buttons,
+.ssm_error_message_buttons
+{
+	font-size: smaller;
+}
+
+/***********************/
+/***** LINK STYLES *****/
+/***********************/
+
+.ssm_action_link,
+.ssm_info_message_link,
+.ssm_warning_message_link,
+.ssm_form_link,
+.ssm_error_message_link
+{
+	color: blue;
+}
+
+#ssm_actions_body .ssm_disabled_link,
+.ssm_form .ssm_disabled_link
+{
+	color: gray;
+}
+
+#ssm_left_header .ssm_disabled_link,
+#ssm_actions_tabs .ssm_disabled_link
+{
+	color: #D3D3D3; /* lightgray */
+}
+
+/*******************************/
+/***** FORM CONTROL STYLES *****/
+/*******************************/
+
+.ssm_form
+{
+	font-size: larger;
+	background-color: #FCF9E8;
+	width: auto;
+}
+
+.ssm_form_title { font-weight: bold; }
+.ssm_form_buttons { font-size: smaller; }
+
+.ssm_form label { white-space: nowrap; }
+.ssm_form fieldset { border: 1px solid black; padding: 5px 2px 5px 2px; margin: 0px; }
+.ssm_form input.text { height: 1.5em; border: 1px solid black; }
+.ssm_form input.radio {  }
+
+.ssm_form input.ssm_disabled_textbox {}
+.ssm_form input.ssm_disabled_checkbox {}
+.ssm_form input.ssm_disabled_radio {}
+.ssm_form span.ssm_disabled_combobox {}
+
+/************************************/
+/***** MOVE SECTION FORM STYLES *****/
+/************************************/
+
+#ssm_form_move_section_hierarchy
+{
+	border: 1px solid black;
+	background-color: White;
+	height: 30em;
+	width: 30em;
+	overflow: auto;
+}
+
+#ssm_form_move_section_label
+{
+	font-weight: bold;
+}
+
+/**********************************/
+/***** TRACING CONSOLE STYLES *****/
+/**********************************/
+.ssm_console { }
+.ssm_console_title { padding: 4px 0px 2px 0px; }
+.ssm_console_body { }
+.ssm_console_item { }
+.ssm_console .ssm_disabled_link { color: Gray; }
+
+.ssm_trace_idc_service_header { font-weight: bold; }
+.ssm_trace_idc_service_header_label {  }
+.ssm_trace_idc_service_header_name { color: Red; }
+.ssm_trace_idc_service_header_message { font-weight: normal; color: Gray; }
+.ssm_trace_idc_service_body { padding-left: 2em; font-weight: normal; font-style: italic; }

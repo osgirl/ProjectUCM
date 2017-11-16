@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysCopyWebsite query
+</title>
+</head>
+<body>
+
+<@table HaysCopyWebsite_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+<tr>
+	<td>QgetAccounts</td>
+	<td>select ddocaccount from  DocumentAccounts where ddocaccount not like '%/%'</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QgetDATAPREFIX</td>
+	<td>Select datafileprefix from hayswebsites WHERE siteid = ?</td>
+	<td>oldsite varchar</td>
+</tr>
+<tr>
+	<td>QgetSiteIdUKHays</td>
+	<td>Select DISTINCT siteid from hayswebsites</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QgetSiteIdFullUKHays</td>
+	<td>Select siteid from hayswebsites</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QgetSiteId</td>
+	<td>Select DISTINCT siteid from hayswebsites where upper(site_type) = upper(?)</td>
+	<td>sitetype varchar</td>
+</tr>
+<tr>
+	<td>QgetLocale</td>
+	<td>select sitelocale from hayswebsites WHERE siteid = ?</td>
+	<td>oldsite varchar</td>
+</tr>
+<tr>
+	<td>QgetDomainForLocale</td>
+	<td>select domainid from hayswebsites WHERE sitelocale = ?</td>
+	<td>siteLocale varchar</td>
+</tr>
+<tr>
+	<td>QGetWebsiteContents</td>
+	<td>select ddocname, ddocaccount, xwebsites, xwebsitesection, xlocale, ddoctitle
+		from revisions r, docmeta d
+		where r.did = d.did
+		AND DREVRANK = 0
+		and dstatus = 'RELEASED'
+		and (ddocaccount not like '%TEMPLATES%' or ddocaccount is null)
+		and (xwebsitesection like ? OR (xlocale = ? and (ddocname like '%HEADER%' OR ddocname like '%FOOTER%' OR ddocname like '%WC%')))
+		AND ddoctype <> 'Jobs'
+		AND ddoctype <> 'Candidates'
+		AND ddoctype <> 'SponsoredEmployer'
+		and ddoctype <> 'News'
+		and ddoctype <> 'Survey'
+		and ddoctype <> 'SiteStudio'</td>
+	<td>xwebsitesection varchar
+	xlocale varchar</td>	 
+</tr>
+<tr>
+	<td>QgetExistingWebsites</td>
+	<td>select * from hayswebsites WHERE siteid = ?</td>
+	<td>newsite varchar</td>
+</tr>
+<tr>
+	<td>QgetAllLocales</td>
+	<td>select DISTINCT sitelocale from hayswebsites</td>
+	<td></td>
+</tr>
+</table>
+<@end@>
+</body></html>

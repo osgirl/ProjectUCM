@@ -1,0 +1,285 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+FacetedBrowsing service
+</title>
+</head>
+<body>
+
+<@table FacetedBrowsing_Services@>
+<table border=1><caption><strong>Scripts For Custom Services</strong></caption>
+<tr>
+	<td>Name</td><td>Attributes</td><td>Actions</td>
+</tr>
+<tr>
+	<td>ONT_SAVE_ONTOLOGY</td>
+	<td>Service
+		10
+		null
+		null
+		null<br>
+		Unable to save ontology</td>
+	<td>3:saveOntology:::null
+		3:prepareRedirect:IdcService=<$if isTrue(nextStep)$>ONT_CONFIG<$else$>ONT_EDIT_ONTOLOGY<$endif$>&ontMetadata=<$ontMetadata$>&modelSize=<$modelSize$>&idcToken=<$idcToken$>::null</td>
+</tr>
+<tr>
+	<td>ONT_UPDATE_ONTOLOGY</td>
+	<td>Service
+		10
+		null
+		null
+		null<br>
+		Unable to save ontology</td>
+	<td>3:updateOntology:::null
+		3:prepareRedirect:IdcService=ONT_LOAD_CONFIRM&ontMetadata=<$ontMetadata$>&modelSize=<$modelSize$>&idcToken=<$idcToken$>::null</td>
+</tr>
+<tr>
+	<td>ONT_EDIT_ONTOLOGY</td>
+	<td>Service
+		10
+		ONT_EDIT_ONTOLOGY
+		null
+		null<br>
+		Unable to save ontology</td>
+	<td>3:setEnvProperty:propName,SharedWeblayoutDir::null</td>
+</tr>
+<tr>
+	<td>ONT_CONFIG</td>
+	<td>Service
+		3
+		ONT_CONFIG
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ONT_EDIT_CONFIRM</td>
+	<td>Service
+		1
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getOntologyInfo:::null
+		3:prepareRedirect:IdcService=<$if isTrue(toBeConfigured)$>ONT_CONFIG<$else$>ONT_LOAD_CONFIRM<$endif$>&ontMetadata=<$ontMetadata$>&modelSize=<$modelSize$>&idcToken=<$idcToken$>::null</td>
+</tr>
+<tr>
+	<td>ONT_LOAD_CONFIRM</td>
+	<td>Service
+		1
+		ONT_LOAD_CONFIRM
+		null
+		null<br>
+		null</td>
+	<td>3:getOntologyInfo:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_MATA</td>
+	<td>MetaService
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getAllMetadataForOntology:::null</td>
+</tr>
+<tr>
+	<td>ONT_LOAD_ONT_TREE</td>
+	<td>DocService
+		33
+		ONT_LOAD_TREE
+		null
+		null<br>
+		null</td>
+	<td>3:getOntStructure:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_ONT_FOR_META</td>
+	<td>Service
+		1
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getOntologyForMetadata:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_ASSIGNED_META</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getMetadataForOntology:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_ONT_CLASSES</td>
+	<td>Service
+		1
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getOntologyClasses:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_ONT_RELATIONSHIPS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getPropertiesForClass:::null</td>
+</tr>
+<tr>
+	<td>ONT_CONFIG_SAVE</td>
+	<td>Service
+		3
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:saveOntologyConfig:::null
+		3:prepareRedirect:IdcService=ONT_SECURITY_CONF&ontMetadata=<$ontMetadata$>&idcToken=<$idcToken$>::null</td>
+</tr>
+<tr>
+	<td>ONT_CLASSIFIER</td>
+	<td>Service
+		1
+		ONT_CLASSIFIER
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ONT_LOAD_META_VALUES</td>
+	<td>DocService
+		33
+		ONT_LOAD_TREE
+		null
+		null<br>
+		!csUnableToGetRevInfo</td>
+	<td>3:getMetadataValuesAsStructure:::null</td>
+</tr>
+<tr>
+	<td>ONT_LOADER</td>
+	<td>Service
+		3
+		ONT_LOADER
+		null
+		null<br>
+		null</td>
+	<td>3:getAllMetadataForOntology:::null</td>
+</tr>
+<tr>
+	<td>ONT_DELETE_ONTOLOGY</td>
+	<td>Service
+		10
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:deleteOntology:::null</td>
+</tr>
+<tr>
+	<td>ONT_DISPLAY_TREE</td>
+	<td>Service
+		33
+		ONT_TREE_DISPLAY
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ONT_SECURITY_CONF</td>
+	<td>Service
+		1
+		ONT_SECURITY
+		null
+		null<br>
+		null</td>
+	<td>1:Qroles:RolesList::null
+		3:getSecurityForOntology:::null</td>
+</tr>
+<tr>
+	<td>ONT_SECURITY_CONF_SAVE</td>
+	<td>Service
+		5
+		ONT_LOAD_CONFIRM
+		null
+		null<br>
+		null</td>
+	<td>3:saveOntologySecurity:::null
+		3:getOntologyInfo:::null</td>
+</tr>
+<tr>
+	<td>ONT_EXTRACT_META_VALUES</td>
+	<td>Service
+		33
+		ONT_EXTRACT_META_VALUES
+		null
+		null<br>
+		null</td>
+	<td>3:extractTermsFromXml:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_SEARCH_RESULTS</td>
+	<td>SearchService
+		33
+		StandardResults
+		null
+		null<br>
+		!csUnableToRetrieveSearchResults</td>
+	<td>3:getSearchResults::0:null
+		3:postPopulateOntFacets:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_TERM_LABEL</td>
+	<td>Service
+		1
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getSiteProperty:::null
+		3:getTermLabel:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_INDIVIDUALS</td>
+	<td>Service
+		33
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:extractIndividuals:::null</td>
+</tr>
+<tr>
+	<td>ONT_GET_ONT_FILEPATH</td>
+	<td>Service
+		1
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:getOntologyFile:::null</td>
+</tr>
+<tr>
+	<td>ONT_CLEAR_CACHE</td>
+	<td>Service
+		2
+		null
+		null
+		null<br>
+		null</td>
+	<td>3:clearOntologyCache:::null</td>
+</tr>
+</table>
+<@end@>
+</body></html>

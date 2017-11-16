@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<style type="text/css">
+<!--
+.dialog {
+	left: auto;
+}
+-->
+</style>
+<$defaultPageTitle=lc("wwMyStellentRssFeeds")$>
+<$include std_html_head_declarations$>
+<$isAbsoluteWeb=1, isAbsoluteCgi=1, authString = "Auth=internet"$>
+<$if isTrue(#env.NtlmSecurityEnabled)$>
+	<$authString = "Auth=intranet"$>
+<$endif$>
+</head>
+<body>
+
+<$include body_def$>
+<$include std_page_begin$>
+<$include std_header$>
+
+<h4 class=pageTitle><$lc("wwMyStellentRssFeeds")$></h4>
+
+<h4 class=xuiSubheading><$lc("wwMyProductivityFeeds")$></h4>
+
+<table width=80% border=0>
+
+	<tr><td>
+	<i><$lc("wwMyProductivityFeedsDesc")$></i><br>
+	</td></tr>
+
+	<$include my_productivity_rss_feeds$>
+
+</table>
+
+<$if utLoadResultSet("pne_portal", "SavedQueries") and rsFirst("SavedQueries")$>
+<h4 class=xuiSubheading><$lc("wwMySavedQueries")$></h4>
+<table width=80% border=0>
+
+	<$include my_saved_searches_rss_feeds$>
+
+</table>
+<$endif$>
+
+<!--
+<$if utLoadResultSet("prj_portal", "MyProjects")$>
+	<h4 class=xuiSubheading>My Projects</h4>
+	<table width=80% border=0>
+	<$if rsFirst("MyProjects")$>
+		<outline text="My Projects">
+			<$loop MyProjects$>
+				<$dClbraName=getValue("MyProjects","name")$>
+				<$executeService("GET_CLBRA_INFO")$>
+				<$if rsFirst("CLBRA_INFO")$>
+					<$projectName=getValue("CLBRA_INFO","dClbraDescription")$>
+					<$folder=getValue("#active","dCollectionID")$>
+					 <tr><td><span class="tableEntry">
+					 <a href="<$HttpAbsoluteCgiPath$>?IdcService=COLLECTION_DISPLAY&hasCollectionID=true&dCollectionID=<$folder$>&MergeInclude=project_contents_rss_feed&IsJava=1&<$authString$>">
+					 <img src="<$xmlIcon$>" border=0 width="36" height="14"></a>
+					 <$projectName$>
+					 </span></td></tr>
+				<$endif$>
+			<$endloop$>
+		 </outline>
+	<$endif$>
+	</table>
+<$endif$>
+-->
+
+<h4 class=pageTitle><$lc("wwDownloadOPML")$></h4>
+
+<table width=80% border=0>
+<tr><td>
+<i><$lc("wwDownloadOPMLDesc")$></i><br>
+</td></tr>
+
+<tr><td><span class="tableEntry">
+<a href="<$HttpCgiPath$>?IdcService=GET_OPML">
+<img src="<$HttpImagesRoot$>rss/icon_opml.gif" border=0 width="36" height="14"></a>
+<$lc("wwOpmlDefinitionForAllFeeds")$>
+</span></td></tr>
+
+</table>
+<$include std_page_end$>
+</body>
+</html>

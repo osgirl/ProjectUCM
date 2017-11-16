@@ -1,0 +1,93 @@
+﻿<?hda version="11.1.1.8.1DEV-2014-01-06 04:18:30Z-r114490" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysGeneralComponentR6
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_05_23 (MR11 Build 2)
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+extraBeforeCacheLoadInit
+hays.com.filter.JobsLoadFilter
+extraBeforeCacheLoadInit
+50
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/haysgeneralcomponentr6_region_templates_includes.htm
+null
+10
+resource
+resources/haysgeneralcomponentr6_sub_templates_includes.htm
+null
+10
+resource
+resources/haysgeneralcomponentr6_searchresults_includes.htm
+null
+10
+resource
+resources/haysgeneralcomponentr6_left_hand_nav.htm
+null
+10
+resource
+resources/haysgeneralcomponentr6_Salary_Guide_includes.htm
+null
+10
+resource
+resources/haysgeneralcomponentr6_local_jobs_includes.htm
+null
+10
+service
+resources/haysgeneralcomponentr6_service.htm
+HaysGeneralComponentR6_Services
+10
+query
+resources/haysgeneralcomponentr6_query.htm
+HaysGeneralComponentR6_Queries
+10
+resource
+resources/haysgeneralcomponentr6_handlers.htm
+null
+10
+environment
+hays_general_environmentr6.cfg
+null
+10
+resource
+resources/haysgeneralcomponentr6_idoc_extension.htm
+HaysGeneralComponentR6_Idoc
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+HaysGeneralComponentR6_Handlers
+ServiceHandlers
+null
+10
+HaysGeneralComponentR6_Idoc
+IdocScriptExtensions
+name
+10
+@end

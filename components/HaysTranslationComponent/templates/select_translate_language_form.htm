@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+<$lc("wwTranslateFormTitle")$>
+</title>
+</head>
+<body>
+
+<form name="selectLanguageForm" id="selectLanguageForm" method="get" action="<$HttpCgiPath$>">
+	
+		<input type="hidden" name="IdcService" id="IdcService" value="HAYS_TRANSLATE_CONTENT"/>
+		<input type="hidden" name="nodeId" id="nodeId" value="<$nodeId$>"/>
+		<input type="hidden" name="dDocName" id="dDocName" value="<$contentId$>"/>
+		<input type="hidden" name="WCMPopupId" value="<$WCMPopupId$>"/>
+		<$secondarySiteExists=getSecondarySites(siteId)$>
+		<$if rsExists("SecondaryWebsites") and rsFirst("SecondaryWebsites")$>
+			<select name="siteId" id="siteId" >
+				<option name="none" id="none" value=""><$lc("wwSelectTranslationLanguage")$></option>
+				<$loop SecondaryWebsites$>
+					<option name="<$SecondaryWebsites.SITEID$>" id="<$SecondaryWebsites.SITEID$>" value="<$SecondaryWebsites.SITEID$>"><$SecondaryWebsites.LANGUAGELABEL$></option>
+				<$endloop$>
+			</select>
+		<$else$>
+			<$lc("wwTranslateFormNoTranslationExist")$> <$siteId$>
+		<$endif$>
+
+		<input type="button" name="submitit" value="<$lc("wwTranslateFormSubmitButtonLabel")$>" onclick="submitform(selectLanguageForm)" /> 
+	</form>
+
+	<script>
+		function submitform(form) {
+			var select = document.getElementById('siteId');
+			var selectValue = select[select.selectedIndex].value; 
+			if( selectValue == "") {
+				alert("<$lc('wwTranslateFormErrorMessage')$>");
+				return false;
+			}
+			form.submit();
+		}
+	</script>
+
+</body></html>

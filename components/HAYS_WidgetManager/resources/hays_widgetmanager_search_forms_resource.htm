@@ -1,0 +1,119 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<@dynamichtml widget_search_forms_javascript@>
+<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function SearchFormWidgetObject(name) {	
+					this.name = name;
+				};
+
+				SearchFormWidgetObject.prototype = new WidgetObjectAPI();
+
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SearchFormWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var selectEl = $ID('sf_include');					
+							var sf_include = selectEl.options[selectEl.selectedIndex].value; 
+
+							var quotationStr = "<Widget><Name>search_forms</Name>";
+							quotationStr += "<sf_include>" + sf_include + "</sf_include></Widget>";
+
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				SearchFormWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+						var sf_url = xmlObject.getElementsByTagName('sf_include')[0].firstChild.data || '';	
+						var sf_include = $ID('sf_include');
+						for (var i=0; i<sf_include.options.length; i++){
+							 if (sf_include.options[i].value == sf_url){
+								sf_include.options[i].selected = true;
+								break
+							 }
+						}
+
+					};
+
+					
+			
+
+			//*****************************************************************************
+
+
+				SearchFormWidgetObject.prototype.isValid = function(  )	
+				{
+					var selectEl = $ID('sf_include');
+					var sf_include = selectEl.options[selectEl.selectedIndex].value; 
+					if( sf_include == "select a form..." ) {
+						this.errorMessage = "<$lc('wwWidgetSearchFormEmpty')$>";
+						return false;
+					}
+					return true;
+				};
+
+		//*******************************************************************************
+
+		
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new SearchFormWidgetObject("search_forms")); 
+
+		</script>
+<@end@>
+
+
+
+
+<@dynamichtml widget_search_forms_form@>
+	<h2><$lc('wwWidgetSearchFormTitle')$></h2>
+	<$if strLength(#env.SearchFormsBox) GT 0 $>
+		<$ rsCreateResultSet("searchFormsRS", "lbl,inc") $>
+		<$ rsAppendRowValues("searchFormsRS", #env.SearchFormsBox)$>
+		<form class="polls" method="get" action="#">
+					<div class="text">
+						<label for="sf_url"><$lc('wwWidgetSearchFormID')$></label>
+						<select name="sf_include" id="sf_include" onSelect=>
+							<option value="select a form..."><$lc('wwdefaultOptionLabel')$></option>
+							<$loop searchFormsRS$>
+							<option value="<$searchFormsRS.inc$>"><$searchFormsRS.lbl$></option>
+							<$endloop$>
+						</select>
+					</div>	
+
+
+		</form>
+	<$endif$>
+
+	<$include widget_search_forms_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_search_forms_display@>
+		
+		<$inc( getValue("widgetRS", "sf_include") ) $>
+		
+<@end@>
+
+</body></html>

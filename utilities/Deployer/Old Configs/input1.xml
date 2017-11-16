@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy>
+	<movement from="APAC_PROD_CONSUMP" to="LOCAL">
+		<file name="ont_loader.htm" sourcelocation="FacetedBrowsing/templates" destination="" locationtype="relative"/>
+		<file name="facetedbrowsing_admin_resource.htm" sourcelocation="FacetedBrowsing/resources" destination="" locationtype="relative"/>
+		<file name="copy_results.htm" sourcelocation="HaysCopyWebsite/templates" destination="" locationtype="relative"/>
+		<file name="copy_website_from.htm" sourcelocation="HaysCopyWebsite/templates" destination="" locationtype="relative"/>
+		<file name="microsite_jobapply_form.htm" sourcelocation="HaysMicroSites/templates" destination="" locationtype="relative"/>
+		<file name="microsite_prop_form.htm" sourcelocation="HaysMicroSites/templates" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_common_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysmicrosites_region_template_resource.htm" sourcelocation="HaysMicroSites/resources" destination="" locationtype="relative"/>
+		<file name="haysworldwide_sub_templates.htm" sourcelocation="HaysWorldwide/resources" destination="" locationtype="relative"/>
+		<file name="haystranslationcomponent_resource.htm" sourcelocation="HaysTranslationComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponentr6_region_templates_includes.htm" sourcelocation="HaysGeneralComponentR6/resources" destination="" locationtype="relative"/>
+		<file name="hays_widgetmanager_bookmarking_resource.htm" sourcelocation="HAYS_WidgetManager/resources" destination="" locationtype="relative"/>
+	</movement>
+</deploy>

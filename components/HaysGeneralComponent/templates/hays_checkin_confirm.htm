@@ -1,0 +1,66 @@
+<$include std_doctype_html_decl$>
+
+<head>
+	<$defaultPageTitle=lc("wwCheckInConfirmation", dDocTitle)$>
+	<$include std_html_head_declarations$>
+	
+	<script type="text/javascript">
+		<$include custom_checkin_confirm_script$>
+	</script>
+</head>
+
+<$include body_def$>
+
+<$include std_page_begin$>
+
+<$include std_header$>
+<table  summary="">
+	<tr>
+		<td width="<$StdPageWidth$>"><h1 class="underlinePageTitle"><$lc("wwCheckInConfirmation", dDocTitle)$></h1></td>
+	</tr>
+</table>
+
+<table border="0" width="<$StdPageWidth$>" summary="">
+<tr>
+    <td>
+	    <span class=infoLabel><$include doc_name_tag$>: </span><span class=tableEntry><$dDocName$></span>
+	    &nbsp;&nbsp;<span class="xxsmall">
+	    <font color="<$if navHeaderTextColor$><$navHeaderTextColor$><$else$>#999999<$endif$>">
+	    </font>
+	    </span>
+	</td>
+</tr>
+<tr>
+	<td><span class=infoLabel><$lc("wwContentTitleLabel")$></span><span class=tableEntry><$dDocTitle$></span></td>
+</tr>
+<$if not strEquals(dDocAuthor, UserName)$>
+<tr>
+    <td><span class=infoLabel><$lc("wwContentAuthorLabel")$></span><span class=tableEntry><$dDocAuthor$></span></td>
+</tr>
+<$endif$>
+<tr>
+	<td><span class=infoLabel><$lc("wwContentCheckinUserLabel")$></span><span class=tableEntry><$UserName$></span></td>
+</tr>
+<tr>
+    <td><hr></td>
+</tr>
+
+<tr> <td><span class=tableEntry></span></td> </tr> <tr> <td align=center> 
+<span  id="Msg"><$lc("wwHaysCheckinConformationMessage")$></span> 
+</td> </tr> 
+<tr> <td><span class=tableEntry></span></td> </tr> <tr> <td align=center> 
+<span class="title" id="Msg"><input type="button" id="closebutton" name="closebutton" value="Finish" onClick="contributionRedirect('<$dDocName$>');"></span> 
+</td> </tr> 
+
+</table>
+<$include std_page_end$>
+<script type="text/javascript">
+	var attemptNumber=0;
+	function contributionRedirect( dId ){ 
+		popupObj = window.opener.WCM.GetCacheObject('<$WCMPopupId$>');
+		popupObj.Close(dId);
+	}
+</script>
+
+</body>
+</html>

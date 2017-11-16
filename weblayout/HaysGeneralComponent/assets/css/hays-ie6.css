@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+
+ul#nav .dropmenu {
+	background: url(../images/bg-dropmenu-repeat-ie6.png) bottom repeat-x;
+	padding: 25px 0 20px 25px;
+}
+
+
+
+.tabs-narrow .selected-tab-content .col-1 {
+	padding: 10px 10px 0 10px;
+}
+
+
+/* Colorbox ie6 border instead of shadow */
+#cboxLoadedContent {
+	background-image: none;
+	border-top: 1px solid #f4f4f4;
+	border-right: 1px solid #d4d4d4;
+	border-bottom: 1px solid #c4c4c4;
+	padding: 0;
+}
+
+/* Colorbox ie6 adjust close position */
+#cboxClose{top:2px;}
+

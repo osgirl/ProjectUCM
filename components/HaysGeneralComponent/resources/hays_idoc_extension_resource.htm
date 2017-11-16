@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent staticResTable
+</title>
+</head>
+<body>
+
+<@table HaysGeneralComponent_Idoc@>
+<table border=1><caption><strong>
+
+<tr>
+<td>name</td><td>class</td><td>loadOrder</td>
+</tr>
+<tr>
+<td>HaysIdocExtension</td><td>IdocExtension</td><td>10</td>
+</tr>
+<tr>
+<td>HaysNewIdocExtension</td><td>HaysIdocExtensions</td><td>10</td>
+</tr>
+<tr>
+<td>MyIdocExtensions</td><td>MyIdocExtensions</td><td>10</td>
+</tr>
+<tr>
+<td>LocalJobsIdocExtensions</td><td>hays.com.localjobs.LocalJobIdocExtensions</td><td>10</td>
+</tr>
+<tr>
+<td>NewScriptExtensions</td><td>NewScriptExtensions</td><td>10</td>
+</tr>
+</table>
+<@end@>
+
+
+
+<@dynamichtml std_format_fields@>
+<$if not ExcludeClientControlled$>
+		<$include super.std_format_fields$>
+	<$endif$>
+<@end@>
+
+
+
+<@table HaysGeneralComponent_Handler@>
+<table border=1><caption><strong>
+
+<tr>
+<td>serviceName</td><td>handler</td><td>searchOrder</td>
+</tr>
+
+<tr>
+<td>DocService</td><td>hays.alertsearch.AlertSearchHandlerHays</td><td>10</td>
+</tr>
+</table>
+
+<@end@>
+
+
+<!-- --------------------------------------------------------------------- -->
+<@table HaysPublishedStaticFiles@>
+<table border=1><caption><strong>Hays Published Files</strong></caption>
+<tr>
+	<td>srcPath</td>
+	<td>path</td>
+	<td>class</td>
+	<td>loadOrder</td>
+	<td>doPublishScript</td>
+	<td>canDeleteDir</td>
+</tr>
+<tr>
+	<td>publish/resources</td>
+	<td>resources</td>
+	<td>resources:sitestudio</td>
+	<td>60</td>
+	<td><$doPublish = 1$></td>
+	<td>1</td>
+</tr>
+</table>
+<@end@>
+
+
+
+
+</body></html>

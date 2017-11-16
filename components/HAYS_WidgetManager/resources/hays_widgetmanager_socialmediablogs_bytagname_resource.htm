@@ -1,0 +1,100 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml widget_socialmediablogs_bytagname_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function SocialMediaBlogsByTagNameWidgetObject(name) {
+					this.name = name;					
+				};
+
+				SocialMediaBlogsByTagNameWidgetObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SocialMediaBlogsByTagNameWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var quotationStr = "<Widget><Name>socialmediablogs_bytagname</Name></Widget>";
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				SocialMediaBlogsByTagNameWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+					};
+
+			//*****************************************************************************
+
+
+				SocialMediaBlogsByTagNameWidgetObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new SocialMediaBlogsByTagNameWidgetObject("socialmediablogs_bytagname")); 
+
+		</script>
+<@end@>
+
+
+
+<@dynamichtml widget_socialmediablogs_bytagname_form@>
+	<h2>Social Media Blogs</h2>
+	<$include widget_socialmediablogs_bytagname_javascript$>	
+<@end@>
+
+
+
+
+<@dynamichtml widget_socialmediablogs_bytagname_display@>
+
+<$SocialMediaTags=ssGetNodeProperty("SocialMediaTags")$>
+
+<$executeService('GET_SOCIALMEDIA_BLOGS_BY_TAGNAME')$>
+
+<$if rsFirst('BLOGS_RESULTSET_BYTAGNAME') $>
+<div class="pb_inner">
+	<h2><$lc('wwSocialBlogsByTagNameHeading')$></h2>
+	<div class="med_inner">
+		<ul>			
+			<$loop BLOGS_RESULTSET_BYTAGNAME$>
+				<li style="overflow:hidden;">
+					<img style="clear:both;float:right;width:100px;height:66px;" src="<$BLOGS_RESULTSET_BYTAGNAME.Thumbnail$>"/>
+					<p><a href="<$BLOGS_RESULTSET_BYTAGNAME.Url$>"><$BLOGS_RESULTSET_BYTAGNAME.Title$></a></p>
+				</li>
+			<$endloop$>			
+		</ul>		
+		<ul>
+			<li>
+				<a href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>
+			</li>
+		</ul>		
+	</div>	
+</div>
+<$endif$>
+	
+<@end@>
+
+</body>
+
+</html>

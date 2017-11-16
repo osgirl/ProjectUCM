@@ -1,0 +1,22 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=RSSFeeds
+CreateDate=29/01/14 08:41
+blDateFormat=dd/MM{/yy}{ HH:mm}!mAM,PM!tGB
+blFieldTypes=CreateDate date
+@end
+@ResultSet Manifest
+2
+entryType
+location
+component
+RSSFeeds/RSSFeeds.hda
+componentExtra
+RSSFeeds/readme.txt
+componentClasses
+RSSFeeds/classes/
+componentLib
+RSSFeeds/lib/
+componentExtra
+RSSFeeds/samples/
+@end

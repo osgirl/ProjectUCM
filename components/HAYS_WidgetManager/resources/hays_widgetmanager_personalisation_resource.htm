@@ -1,0 +1,232 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager Personalisation
+</title>
+</head>
+<body>
+
+
+<@dynamichtml widget_personalisation_javascript@>
+<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function PersonalisationWidgetObject(name) {
+					this.name = name;
+				};
+
+				PersonalisationWidgetObject.prototype = new WidgetObjectAPI();
+
+
+
+
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+
+				PersonalisationWidgetObject.prototype.getResultDataStr = function()
+				{
+						var selectEl = $ID('personalisation_type');
+						var personalisation_type = selectEl.options[selectEl.selectedIndex].value;
+
+						var quotationStr = "<Widget><Name>personalisation</Name>";
+						quotationStr += "<personalisation_type>" + personalisation_type + "</personalisation_type></Widget>";
+
+						 return 	quotationStr;
+
+				};
+
+
+				//************************************************************************
+
+
+				PersonalisationWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+						var isSet = false;
+						var val = xmlObject.getElementsByTagName('personalisation_type')[0].firstChild.data || '';
+						var option = $ID('personalisation_type');
+						for (var i=0; i < option.options.length; i++){
+							 if (option.options[i].value == val ){
+								option.options[i].selected = true;
+								break
+							 }
+						}						
+
+					};
+
+
+
+
+			//*****************************************************************************
+
+
+				PersonalisationWidgetObject.prototype.isValid = function(  )
+				{
+					var selectEl = $ID('personalisation_type');
+					var value1 = selectEl.options[selectEl.selectedIndex].value;
+
+					if( value1.length == 0 ) {
+						this.errorMessage = "<$lc('wwWidgetPersonalisationEmpty')$>";
+						return false;
+					}
+					return true;
+				};
+
+		//*******************************************************************************
+
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new PersonalisationWidgetObject("personalisation"));
+
+		</script>
+<@end@>
+
+
+
+
+<@dynamichtml widget_personalisation_form@>
+	<h2><$lc('wwWidgetPersonalisationTitle')$></h2>
+	<$if strLength(#env.personalisation) GT 0 AND strLength(#env.personalisationLabels) GT 0 $>
+		<$ rsMakeFromString("personalisationRS", #env.personalisation, "id") $>
+		<$ rsMakeFromString("personalisationLabelsRS", #env.personalisationLabels, "label") $>
+		<$if rsFirst("personalisationLabelsRS") $>
+			<form name="personalisation_form" id="personalisation_form" class="polls" method="get" action="#">
+				<div class="text">
+					<label for="personalisation_type"><$lc('wwWidgetPersonalisationEmpty')$></label>
+					<select name="personalisation_type" id="personalisation_type"  >
+						<option id="personalisation_types_none" name="personalisation_types_none" value=""><$lc('wwdefaultOptionLabel')$></option>
+						<$loop personalisationRS $>
+							<option value="<$ personalisationRS.id $>"><$ personalisationLabelsRS.label $></option>
+							<$exec rsNext("personalisationLabelsRS") $>
+						<$endloop$>
+					</select>
+				</div>
+			</form>
+		<$endif$>
+	<$endif$>
+
+	<$include widget_personalisation_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_personalisation_display@>
+	<$inc( "personalisation_" &  getValue("widgetRS", "personalisation_type") & "_display") $>
+<@end@>
+
+
+
+<!--=========================================================
+	Get the type of user (job seeker / employer ), primary specialism,
+	salary range etc
+	from the cookie. Set to 'job seeker' by default.
+	Use this value to retrieve the list of the latest jobs or candidates
+============================================================-->
+<@dynamichtml personalisation_latestJC_display@>
+		<$ tail = '' $>
+
+		[[% retrieve type of user from cookie %]]
+		<$ targetAudit = getCookie("tgtaud")$>
+		<$if strLength(targetAudit) GT 0 AND targetAudit like '2' $>
+			<$ tail = ' dDocType <MATCHES> `Candidates` ', title = lc('wwLatestCandidates') $>
+		<$else$>
+			<$ tail = ' dDocType <MATCHES> `Jobs` ', title = lc('wwLatestJobs') $>
+		<$endif$>
+
+		[[% retrieve primary specialism from cookie %]]
+		<$ primarySpecialism = getCookie("prispc")$>
+		<$if strLength(primarySpecialism) GT 0 $>
+			<$ tail = tail & ' AND xCategory <CONTAINS> `' & primarySpecialism & '` ' $>
+		<$endif$>
+
+		[[% retrieve salary range from cookie %]]
+		<$ salaryRange = getCookie("sal")$>
+		<$if strLength(salaryRange) GT 0 $>
+			<$ delim = strIndexOf(salaryRange, ',' ) $>
+			<$if delim GT 0 $>
+				<$ salaryMin = strSubstring(salaryRange, 0, delim), salaryMax = strSubstring(salaryRange, delim + 1) $>
+				<$ tail = tail & ' AND xMinSalary >= ' & salaryMin & ' AND xMaxSalary <= ' & salaryMax $>
+			<$endif$>
+		<$endif$>
+
+		[[% retrieve primary industry from cookie %]]
+		<$ industry = getCookie("indry")$>
+		<$if strLength(industry) GT 0 $>
+			<$ tail = tail & ' AND xIndustry <CONTAINS> `' & industry & '` ' $>
+		<$endif$>
+
+		[[% retrieve primary location from cookie 
+		<$ location = getCookie("location")$>
+		<$if strLength(location) GT 0 $>
+			<$ tail = tail & ' AND xLocationDescription <CONTAINS> `' & location & '` ' $>
+		<$endif$>%]]
+
+		<$ QueryText = tail, SortField = 'dInDate', SortOrder='Desc', ResultCount='1' $>
+		<$ executeService('SS_GET_SEARCH_RESULTS') $>
+		<$if rsFirst('SearchResults') $>
+		<li>
+			<div class="promo_box">
+				<div class="pb_inner">
+					<h2><$ title $></h2>
+					<div class="med_inner">
+					<h3><a href="<$strLower(SearchResults.ssUrl) $>"><$SearchResults.dDocTitle $></a></h3>
+					<p><$ SearchResults.xLocationDescription  $></p>
+							<$include extract_salary_inc$>
+					</div>
+				</div>
+			</div>
+		</li>
+		<$endif$>
+<@end@>
+
+
+
+
+
+
+<!--==========================================================
+	Creates personalised block based on the user's preferences
+	retrieved from the cookie: user type and specialism.
+	If no info is known than use the provided title, summary, link, etc
+============================================================-->
+<@dynamichtml personalisation_specLink_display@>
+		<$ isAlternativeUsed = 1 $>
+		[[% retrieve type of user from cookie %]]
+		<$ targetAudit = getCookie("tgtaud")$>
+		<$if strLength(targetAudit) GT 0 AND targetAudit like '2' $>
+			<$ startNodeId = #env.PageType_2, title = lc('widget_transform_your_businessTitle'), context = lc('widget_transform_your_businessText') $>
+		<$else$>
+			<$ startNodeId = #env.PageType_1, title = lc('widget_enhance_careerTitle'), context = lc('widget_enhance_careerText') $>
+		<$endif$>
+
+		[[% retrieve primary specialism from cookie %]]
+		<$ primarySpecialism = getCookie("prispc")$>
+		<$if strLength(primarySpecialism) GT 0 $>
+			<$if strIndexOf(primarySpecialism, ';') LT 0 $>
+				<$ primarySpecialism = ';' & primarySpecialism & ';' $>
+			<$endif$>
+			<$ targetNodeId = getNodeByProperty('xCategory', primarySpecialism) $>
+			<$if strLength(targetNodeId) GT 0 $>	
+				<$ isAlternativeUsed = 0 $>
+				<li>
+					<div class="promo_box">
+						<div class="pb_inner">
+							<h2><$ title $></h2>
+							<div class="med_inner">
+							<p class="pb-body"><$ context $></p>
+							<ul><li><a href="<$ssNodeLink(targetNodeId, siteId)$>"><$ ssGetNodeProperty(targetNodeId, 'label') $></a></li></ul>
+							</div>
+						</div>
+					</div>
+				</li>	
+			<$endif$>
+		<$endif$>
+<@end@>
+
+
+
+</body></html>

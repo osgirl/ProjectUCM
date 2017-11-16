@@ -1,0 +1,917 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+FacetedBrowsing htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml custom_finish_layout_init@>
+	<$include super.custom_finish_layout_init$>
+    <$isAllowIntranetUsers =  userHasRole(#env.OntologyAdminRole)$>
+<@end@>
+
+<@dynamicdata CoreMenuItems@>
+	id,           label,       linkType, linkData
+	ONT_ADMIN,  Ontology Administration, ,
+	ONT_LOAD,     Ontology Loader,         cgi,   IdcService=ONT_LOADER&idcToken=<$idcToken$>
+	ONT_CONFIG, Ontology Configuration,     cgi,   IdcService=ONT_CONFIG&idcToken=<$idcToken$>
+	ONT_MNG,	Ontology Manager,	cgi,	IdcService=ONT_EDIT_ONTOLOGY&idcToken=<$idcToken$>
+	CPY_SITE,	Copy Site,	,
+	CPY_OLD_SITE,	Copy Old Site,	cgi,	IdcService=COPY_WEBSITE_DISPLAY_FORM&idcToken=<$idcToken$>
+	OFF_SPECIALISM,	Office Specialism,	,
+	OFF_AND_HAYS_SPLSM,	Office and Hays Specialism,	cgi,	IdcService=GET_OFFICE_HAYS_SPECIALISMS_PAGE&idcToken=<$idcToken$>
+	SET_MSITE,	Microsite,	,
+	SET_MSITE_PROP,	Set Microsite Property,	cgi,	IdcService=GET_MSITE_PROP_PAGE&idcToken=<$idcToken$>
+	SET_WIDGET,	Widget Mapping,	,
+	SET_WIDGET_PROP,	Set Widget Mapping,	cgi,	IdcService=GET_WIDGET_PROP_PAGE&idcToken=<$idcToken$>
+	SET_CONTENT_WIDGET_PROP,	Create Widget,	cgi,	IdcService=GET_CONTENT_WIDGET_PROP_PAGE&idcToken=<$idcToken$>
+	KILLER_QS, Qualifying Questions, ,
+	CREATE_QS, Create Questions, cgi, IdcService=GET_KILLER_QS_PAGE&idcToken=<$idcToken$>
+<@end@>
+<@dynamicdata CoreMenuItemRelationships@>  
+<?commatable mergeKey="primaryKey"?>
+	parentId,    id,           loadOrder
+	MENU_B,      ONT_ADMIN,  1000
+	ONT_ADMIN, ONT_LOAD,     10
+	ONT_ADMIN, ONT_CONFIG, 20
+	ONT_ADMIN, ONT_MNG, 30
+	MENU_B,	CPY_SITE, 2000
+	CPY_SITE, CPY_OLD_SITE,	 20
+	MENU_B,	OFF_SPECIALISM, 3000
+	OFF_SPECIALISM, OFF_AND_HAYS_SPLSM,	 10
+	MENU_B,	SET_MSITE, 3000
+	SET_MSITE, SET_MSITE_PROP,	 10
+	MENU_B,	SET_WIDGET, 3000
+	SET_WIDGET, SET_WIDGET_PROP,	 10
+	SET_WIDGET, SET_CONTENT_WIDGET_PROP,	 10
+	MENU_B,	KILLER_QS, 3000
+	KILLER_QS, CREATE_QS, 10
+<@end@>
+<@dynamicdata CoreMenuItemsFlags@>
+	id,           flags
+	ONT_ADMIN,  isLoggedIn:ontologyOnly
+	ONT_LOAD,     
+	ONT_CONFIG, 
+	ONT_MNG,  
+	CPY_SITE,	isLoggedIn:ontologyOnly
+	CPY_OLD_SITE,	
+	OFF_SPECIALISM,	isLoggedIn:isJuniorAdmin
+	OFF_AND_HAYS_SPLSM,	
+	SET_MSITE,	isLoggedIn:consumptionEnv
+	SET_MSITE_PROP,
+	SET_WIDGET,	isLoggedIn:isJuniorAdmin
+	SET_WIDGET_PROP,	
+	KILLER_QS, isLoggedIn:isKillerEnable
+	CREATE_QS,	
+<@end@>
+
+<@dynamichtml navigation_filter_rset_menu_item@>
+<$include super.navigation_filter_rset_menu_item$>
+<$if not tmpDeleteRow$>
+	<$if not isTrue(#env.KillerEnable) and flags like "*isKillerEnable*"$>
+		<$tmpDeleteRow = 1$>
+	<$endif$>
+	<$if not userHasRole("CentralContributor") and flags like "*isKillerEnable*"$>
+		<$tmpDeleteRow = 1$>
+	<$endif$>
+	<$if not userHasRole(#env.OntologyAdminRole) and flags like "*ontologyonly*"$>
+		<$tmpDeleteRow = 1$>
+	<$endif$>
+	<$if not (userHasRole(#env.OntologyAdminRole) OR userHasRole("JuniorAdmin")) and flags like "*isJuniorAdmin*"$>
+		<$tmpDeleteRow = 1$>
+	<$endif$>
+	<$if  isTrue(#env.DisableSiteStudioContribution) and flags like "*consumptionEnv*"$>
+		<$tmpDeleteRow = 1$>
+	<$endif$>
+<$endif$>
+<@end@>
+
+<!-- add a drop-down menu or a new tray to contain all how to components -->
+<@dynamicdata admin11g@>
+id, label, linkType, linkData
+OntLoaderMenu, Ontology Loader, cgi, IdcService=ONT_LOADER
+<@end@>
+
+<@dynamichtml WebAdministratorMenu@>    
+	<$if not WebAdministratorMenu_included$>
+
+        // add a drop-down menu, or a tray to the UI
+        navBuilder.addChildNodeTo('NAVTREE', 'collection', 'id==WebAdministratorMenu', 'label==Ontology Administration');
+        if (navBuilder.menuB)
+            navBuilder.menuB.addTopLevelNode("WebAdministratorMenu");
+        else if (navBuilder.trayA)
+            navBuilder.trayA.addTopLevelNode("WebAdministratorMenu");
+
+        <$WebAdministratorMenu_included=1$>
+    <$endif$>
+<@end@>
+
+<@dynamichtml OntAdministrator@>
+    navBuilder.addChildNodeTo('WebAdministratorMenu', 'item', 'id==OntLoaderMenu',
+  'label==Ontology Loader', 'url==<$HttpCgiPath$>?IdcService=ONT_LOADER');
+    navBuilder.addChildNodeTo('WebAdministratorMenu', 'item', 'id==OntConfigMenu',
+  'label==Ontology Configuration', 'url==<$HttpCgiPath$>?IdcService=ONT_CONFIG');
+    navBuilder.addChildNodeTo('WebAdministratorMenu', 'item', 'id==OntManagerMenu',
+  'label==Ontology Manager', 'url==<$HttpCgiPath$>?IdcService=ONT_EDIT_ONTOLOGY');
+    navBuilder.addChildNodeTo('WebAdministratorMenu', 'item', 'id==TaxonomyHelp',
+  'label==Ontology Engine Help', 'url==<$HttpRelativeWebRoot$>XXXX.pdf');
+<@end@>
+
+
+
+<@dynamichtml std_page_begin@>
+
+	<$include super.std_page_begin$>
+	  <$if strEquals(#active.IdcService,"CHECKIN_NEW_FORM")$>
+		 <$if strEquals(#active.dpTriggerValue,"Office") $>
+			<$include office_checkin_page$>		
+		 <$elseif strEquals(#active.dpTriggerValue,"Office-Belgium")$>
+			<$include office_belgium_checkin_page$>
+		 <$elseif strEquals(#active.dpTriggerValue,"Office-UK")$>	
+			<$include office_uk_cerow_checkin_page$>
+		 <$endif$>		
+	  <$endif$>
+	
+	  <$if strEquals(#active.Page,"STANDARD_QUERY_PAGE") AND ((strEquals(#active.dpTriggerValue,"Office")) OR (strEquals(#active.dpTriggerValue,"Office-Belgium")) OR (strEquals(#active.dpTriggerValue,"Office-UK")))$>
+	  	   <$include office_search_page$>
+	  <$endif$>
+		<$if (#active.isCheckin AND isTrue(isCheckin)) OR (#active.isUpdate AND isTrue(isUpdate)) OR (#active.isInfo AND isTrue(isInfo))$>
+	 		[[% set language and country locale according to xLocale metadata value of the current content %]]
+		<$if #active.xLocale AND NOT (#active.LanguageCode AND #active.CountryCode) $>
+			<$ index = strIndexOf(xLocale, '-') $>
+			<$if index LT 0 $>
+				<$ index = strIndexOf(xLocale, '_') $>
+			<$endif$>
+			<$if index GT 0 $>
+				<$ LanguageCode = strSubstring(xLocale, 0, index), CountryCode = strSubstring(xLocale, index + 1) $>
+			<$endif$>
+		<$endif$>
+		<$include ont_custom_javascript$>
+
+		<$executeService("ONT_GET_ASSIGNED_META") $>
+		<$ ontMetadata = ""$>
+		<$loop OntMetadataRS$>
+			<$ontMetadata = ontMetadata & ';' & OntMetadataRS.metadata$>
+		<$endloop$>
+		<$ontMetadata = ontMetadata & ';' $>
+		
+	<$endif$> 
+	
+	<!--added for Featured Employers -->
+	<div id = "error_message" >	</div>	
+		
+	
+<@end@>
+
+
+<@dynamichtml office_checkin_page@>
+
+ <script>
+  	window.onload=function customizeOfficeCheckin()
+	{
+	   
+		var form = document.forms["Checkin"];
+		form.elements["dDocTitle"].maxLength = '60';
+		form.elements["xAddressLine1"].maxLength = '60';
+		form.elements["xAddressLine2"].maxLength = '60';
+        form.elements["xSuburb"].maxLength = '60';
+       	form.elements["xPhone"].maxLength = '60';
+		form.elements["xFax"].maxLength = '60';
+		form.elements["xEmail"].maxLength = '60';
+				
+	}
+   
+	
+	
+</script>
+
+<@end@>
+
+
+<@dynamichtml office_belgium_checkin_page@>
+ <script>
+  	window.onload=function customizeOfficeCheckin()
+	{
+	   	var form = document.forms["Checkin"];
+		form.elements["dDocTitle"].maxLength = '60';				
+	}
+</script>
+<@end@>
+
+
+
+<@dynamichtml office_search_page@>
+
+ <script  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+<script>
+
+	window.onload=function customizeOfficeSearch()
+	{
+		var form = document.forms["QUERYTEXTCOMPONENTS"];
+		//form.elements["xCountry_Options"].setAttribute('onchange','setOption(this),getSpecialisms(options[this.selectedIndex].value);');
+		form.elements["xCountry_Options"].onchange = handleOnChange;
+		
+       	form.elements["xOfficeCategory"].style.display = "none"; 
+		var  td = form.elements["xOfficeCategory"].parentNode;
+		var sel = document.createElement("select"); //adding a custom element for specialisms value.
+		sel.setAttribute("id", "specialism");
+		sel.setAttribute("onchange","populateValue(this.form,options[this.selectedIndex].value);")
+        td.appendChild(sel);
+		
+		
+
+       		
+	}
+   
+	function handleOnChange(){
+		setOption(this);
+		getSpecialisms(this[this.selectedIndex].value);
+	}
+
+
+	
+	function getSpecialisms(country)
+   {
+   if( country.length > 0) {
+     var lang = country.split('-');
+	   //alert(lang[1]);
+				url = "?IdcService=ONT_GET_INDIVIDUALS&metadata=xCategory&language="+lang[0]+"&country="+lang[1]+"&ontClass=hays:Specialism&IsSoap=1";
+				var loader = dhtmlxAjax.getSync(url);
+				 //alert(loader);
+				if(loader.xmlDoc.responseXML != null){
+				var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+				//alert(list);
+				if( list != null) {
+					list = list[0];
+					list = list.getElementsByTagName('idc:row'); 
+				}
+				  			  
+                var selectBox = document.getElementById("specialism");
+				removeAllOptions( selectBox );
+				option = document.createElement('option');
+				option.setAttribute('value', '');
+				option.appendChild( document.createTextNode('Select...') );
+				selectBox.appendChild(option);
+				
+				
+				for(var i=0;i<list.length;i++){
+					var option = document.createElement('option');
+					var value =  extractChildValue( list[i].getElementsByTagName('idc:field')[0] );
+					option.setAttribute('value', value);
+					
+					option.appendChild(document.createTextNode( extractChildValue( list[i].getElementsByTagName('idc:field')[1])));
+				    selectBox.appendChild(option);
+					
+				}
+			var v = selectBox.options[selectBox.selectedIndex].value;	
+			//alert(v)	;
+			//form.elements["xOfficeCategory"].value = selectBox.options[selectBox.selectedIndex].value;
+		}
+			else{alert("Empty");}
+				
+			}
+    
+    }
+	
+	
+            function extractChildValue(element) {
+			var value =  element.firstChild;
+			if( value != null)
+				value = value.nodeValue;
+			else value = "";
+			return value;
+		}
+
+  function populateValue(form,val)
+   {
+     //alert(value);
+	 form.elements["xOfficeCategory"].value = val;
+	 //var v = document.forms["QUERYTEXTCOMPONENTS"].elements["xOfficeCategory"].value;
+	 //alert(v);
+   } 
+
+function removeAllOptions(selectbox)	{
+			var i;
+			for(i=selectbox.options.length-1;i>=0;i--) {
+				selectbox.remove(i);
+			}
+		}   
+	
+	
+
+</script>
+
+<@end@>
+<@dynamichtml check_Solar_DocType@>
+	<$doctypelist=","&#env.SOLAR_DOCTYPES&","$>
+	<$currentDoctype = #active.dDocType$>
+	<$currentDoctype=","&currentDoctype&","$>
+	
+	<$if strIndexOf(doctypelist,currentDoctype) >=0$> 
+		<$isDocTypeForSolar=1$>	
+	<$else$>
+		<$isDocTypeForSolar=0$>
+	<$endif$>
+	
+<@end@>
+<@dynamichtml check_Solar_Regions@>
+	
+	<$currentRegion = #active.xRegionDefinition$>
+	
+	
+	<$if strEquals(currentRegion,'') or strIndexOf(currentRegion,'RGDEF_MAIN_REGION_SEC') >=0 or strIndexOf(currentRegion,'RGDEF_MAIN_REGION') >=0 or strIndexOf(currentRegion,'RGDEF_BLOG') >=0 $> 
+		<$isRegionForSolar=1$>	
+	<$else$>	
+	 <$isRegionForSolar=0$>
+	<$endif$>
+	
+<@end@>
+
+
+<@dynamichtml std_field_entry@>
+	
+	<$if (#active.isInfo AND isTrue(isInfo)) AND (strIndexOf(ontMetadata, ';' & fieldName & ';') GE 0) $>
+		<$if strLength(fieldValue) GT 0 $>
+		<div id="treeboxbox_tree_<$fieldName$>" style="width:400px; height:150px;background-color:#f5f5f5;border :1px solid Silver;; overflow:auto;">
+		</div>
+		<input type="hidden" name="<$fieldName$>" id="<$fieldName$>_tarea" value="<$fieldValue$>"/>
+		<script>
+			tree_<$fieldName$> = new dhtmlXTreeObject("treeboxbox_tree_<$fieldName$>","100%","100%",0);
+			tree_<$fieldName$>.setSkin('dhx_skyblue');
+			tree_<$fieldName$>.setImagePath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/csh_bluefolders/");
+			tree_<$fieldName$>.setIconsPath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/");
+			tree_<$fieldName$>.lockTree(true);
+			var metaValue_<$fieldName$> = new MetaValue('<$fieldName$>', tree_<$fieldName$>);			
+			metaValue_<$fieldName$>.buildTree( );
+		</script>
+		<$endif$>
+	<!-- added for Taxonomy -->	
+	
+	
+		<$elseif (strIndexOf(#active.fieldName, 'xSolarTags')) GE 0 $>
+			<$if isFieldInfoOnly$>
+				<$include std_value_label$>
+			<$else$>
+				<$include std_edit_entry$>
+			<$endif$>
+			<$include check_Solar_DocType$>
+			<$include check_Solar_Regions$>
+			
+			<link rel="stylesheet" type="text/css"  href="/cs/HaysGeneralComponent/assets/css/token-input-facebook.css"/>
+			<script src="/cs/HaysGeneralComponent/assets/js/jquery/jquery1.11.1.min.js"></script>
+			<script src="/cs/HaysGeneralComponent/assets/js/jquery/jquery-ui.js"></script>
+			<script src="/cs/HaysGeneralComponent/assets/js/jquery/jquery.tokeninput.js"></script>
+			<script type="text/javascript">	
+			$(document).ready(function(e)
+			{
+		
+				var elements = document.getElementsByName('xSolarTags');		
+				var id = elements[0].getAttribute('id');
+				var final_id="#"+id;
+				
+				
+				if(queryString.indexOf('IdcService=CHECKIN_NEW_FORM') != -1 || queryString.indexOf('IdcService=GET_DOC_PAGE') != -1 || queryString.indexOf('IdcService=GET_UPDATE_FORM') != -1)
+				{				
+					var preText=$(final_id).val();
+					if (preText.trim()){
+					var preData = preText.split(",");
+					var preJson = [];
+					$.each(preData, function (index, data) {
+						 preJson.push({ id: data, name: data });
+					});}
+					$(final_id).tokenInput("<$#env.SolrTagSuggestAction$>"+$(final_id).val(), {
+						onResult: function (results) {
+							var resultData = [];
+							$.each(results.tags, function (id, tag) {
+								 resultData.push({ id: tag.tag_name, name: tag.tag_name });
+							});
+
+							return resultData;
+						},
+						prePopulate: preJson,
+						theme: "facebook",
+						queryParam:"str",
+						tokenLimit: 10,
+						preventDuplicates: true,
+						tokenDelimiter: ","
+					});
+				}
+												
+				<$inThisConfig=#env.SOLAR_USERS$>
+				<$checkThisValue=dUser$>
+				<$include checkFlagValue$>
+				 <$if userHasRole(#env.SolarUserRole)$>
+		          <$checkFlag=1$>	
+                 <$endif$>
+				
+				<$if (not strEquals(inThisConfig,'') and checkFlag eq 1  and isDocTypeForSolar eq 1 and isRegionForSolar eq 1) $>
+				$("[name='xSolrFeedRequired']").bind("change", function(){ updateDependentChoices(this.id, 'xSolrFeedRequired', 1);changeEventSolarFeed(); });
+				changeEventSolarFeed(e);
+
+
+					//$(".idcRowClass-xSolarCategory").addClass("idcRequiredEntry");
+					//$(".idcRowClass-xSolarSubCategory").addClass("idcRequiredEntry");	
+				<$else$>
+					$("[name='xSolarTags']").parent().parent().hide();
+					$("[name='xSolarCategory']").parent().parent().parent().hide();
+					$("[name='xSolarSubCategory']").parent().parent().parent().hide();
+					$("[name='xSolrFeedRequired']").parent().parent().parent().hide();
+				<$endif$>
+				
+				
+
+			});	
+function changeEventSolarFeed(event){
+
+var solarFeedRequired= $("[name='xSolrFeedRequired']").val();
+var solrCategoryid=$("[name='xSolarCategory']").attr('id');
+var solrSubCategoryid=$("[name='xSolarSubCategory']").attr('id');
+var solrCategoryidrow="#"+$("[name='xSolarCategory']").attr('id')+"_row";
+var solrSubCategoryidrow="#"+$("[name='xSolarSubCategory']").attr('id')+"_row";
+
+if(solarFeedRequired=='Yes')
+{
+$(solrCategoryidrow).addClass('idcRequiredEntry');
+$(solrSubCategoryidrow).addClass('idcRequiredEntry');
+$("label[for="+solrCategoryid+"]").html("*Solar Category");
+$("label[for="+solrSubCategoryid+"]").html("*Solar SubCategory");
+} else{
+$(solrCategoryidrow).removeClass('idcRequiredEntry');
+$(solrSubCategoryidrow).removeClass('idcRequiredEntry');
+$("label[for="+solrCategoryid+"]").html("Solar Category");
+$("label[for="+solrSubCategoryid+"]").html("Solar SubCategory");
+}
+
+}
+		
+
+  </script>
+	
+<$elseif (strIndexOf(#active.fieldName, 'xEshotHeaderLogo') GE 0 AND (strIndexOf(#active.IdcService, 'CHECKIN_NEW_FORM') GE 0 OR strIndexOf(#active.IdcService, 'GET_UPDATE_FORM') GE 0))$>
+
+			<input name="<$fieldName$>" id="<$fieldName$>" value="<$fieldValue$>" type="text" size="30"/>
+			<input type="button" id="browse-button-<$fieldName$>" onclick="OnSelectLogo('<$fieldName$>')" value="Browse...">
+		<script src="/cs/HaysGeneralComponent/assets/js/jquery/jquery1.11.1.min.js"></script>
+		<script src="/cs/HaysGeneralComponent/assets/js/jquery/jquery-ui.js"></script>
+		<script src="/cs/HaysGeneralComponent/assets/js/jquery/jquery.tokeninput.js"></script>
+		<script src="/cs/resources/wcm/./wcm.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/wcm.contentserver.popup.js"></script>
+		<script src="/cs/resources/wcm/./base/wcm.dhtml.js"></script>
+		<script src="/cs/resources/wcm/./base/wcm.get.js"></script>
+		<script src="/cs/resources/wcm/./base/wcm.http.js"></script>
+		<script src="/cs/resources/wcm/./base/wcm.popup.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/wcm.contentserver.popup.js"></script>
+		<script src="/cs/resources/wcm/./form/elements/wcm.elementapi.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/elements/wcm.sitestudio.elementapi.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/wcm.idc.js"></script>
+		<script src="/cs/resources/wcm/./form/elements/element/wcm.element.js"></script>
+		<script src="/cs/resources/wcm/./form/elements/custom/wcm.custom.js"></script>
+		<script src="/cs/resources/wcm/./form/wcm.form.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/wcm.helpfiles.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/wcm.help.js"></script>
+		<script src="/cs/resources/wcm/./sitestudio/wcm.sitestudio.form.js"></script>
+		<script src="./staticlistrow.form.js"></script>
+		<script src="./../../../custom/sitestudio/elements/staticlist/staticlistrow.form.js"></script>
+
+
+		<script type="text/javascript">
+		$(document).ready(function(e)
+			{
+				
+				<$currentDoctype = #active.dDocType$>
+				<$if not strEquals(currentDoctype,'E-shot-Images')$>
+					$("[name='xEshotHeaderLogo']").parent().parent().hide();
+					$("[name='xEshotFooterLogo']").parent().parent().hide();
+				<$else$>
+					$("[name='primaryFile']").parent().parent().hide();
+				<$endif$>
+				
+			});	
+		function OnSelectLogo(fieldName)
+		{
+			var queryText="";
+			var xCountryVal= $("[name='xCountry']").val();
+			
+			if(xCountryVal!=null && xCountryVal!="")
+			{
+				queryText = 'dDocType <matches> `WebAssets` <AND> xLocale <matches> `'+xCountryVal+'`' ;
+			}
+			else
+			{
+				queryText = 'dDocType <matches> `WebAssets`';
+			}
+			
+			var selectWebAssetsOptions = {};
+			selectWebAssetsOptions.httpCgiPath = '<$HttpCgiPath$>';
+			
+			selectWebAssetsOptions.queryText = 'dDocType <matches> `WebAssets`';
+
+			selectWebAssetsOptions.coreContentOnly = '0';
+			selectWebAssetsOptions.callback = function( returnParams )
+			{
+				returnParams = returnParams || {};
+
+				if( returnParams && returnParams['dDocName'] && ( returnParams.dDocName.length > 0 ) )
+				{
+					// Set the actual metadata value
+						$ID(fieldName).value = returnParams.dDocName;
+						//document.Checkin.xEshotHeaderLogo.value = returnParams.dDocName;
+				}
+			}
+
+			WCM.ContentServerPopup.ChooseManagedDocument(selectWebAssetsOptions);
+		}
+		</script>
+			
+	
+	<$elseif (strIndexOf(#active.fieldName, 'xEshotFooterLogo') GE 0 AND (strIndexOf(#active.IdcService, 'CHECKIN_NEW_FORM') GE 0 OR strIndexOf(#active.IdcService, 'GET_UPDATE_FORM') GE 0))$>
+			<input name="<$fieldName$>" id="<$fieldName$>" value="<$fieldValue$>" type="text" size="30"/>
+			<input type="button" id="browse-button-<$fieldName$>" onclick="OnSelectLogo('<$fieldName$>')" value="Browse...">	
+		
+		<!-- added for Featured Employers -->	
+	<$elseif (strIndexOf(#active.fieldName, 'xHomepageRotation')) GE 0 OR (strIndexOf(#active.fieldName, 'xIsFeatured') GE 0)$>
+		<$if not isStrictList or isMultiOption$>
+				<$include std_edit_entry$>
+		<$endif$>
+
+		<$if hasOptionList$>
+			<$if isQuery$></td><td><$endif$>
+		<$include std_prepare_option_list_id$>
+		<$if isFieldTreeEdit$>
+			<span id="<$optionListId$>_span"></span>
+			<script type="text/javascript">
+				registerTreeControl("<$js(optionListId)$>", "<$js(fieldName)$>");				
+			</script>
+		<$else$>
+			<span id="<$optionListId$>_span">
+							<$if strEquals(fieldName , 'xHomepageRotation')$>
+								<select name="<$fieldName$><$if isMultiOption or not isStrictList$>_Options<$endif$>" disabled="true" id="<$optionListId$>" 
+								onChange="<$strTrimWs(inc('std_on_option_change'))$>;<$strTrimWs(inc('custom_on_option_change'))$>" <$include enter_for_search$>>
+							<$else$>
+								<select name="<$fieldName$><$if isMultiOption or not isStrictList$>_Options<$endif$>" id="<$optionListId$>" 
+								onChange="<$strTrimWs(inc('std_on_option_change'))$>;<$strTrimWs(inc('custom_on_option_change'))$>;makeEnable(this.name)" <$include enter_for_search$>>
+							<$endif$>
+							<$if addEmptyOption or not optionsAllowPreselect$><$inc('clearOptionsAllowPreselect')$><option value="">	<$if #active.emptyOptionLabel$><$#active.emptyOptionLabel$><$else$>&nbsp;<$endif$></option><$endif$>
+							<$if fieldOptionListScript$><$strTrimWs(eval(fieldOptionListScript))$><$endif$>
+								</select>
+							</span>
+
+		<$endif$>
+		<$if hasOptionList and not noSchema$><$include js_build_option_list$><$endif$>
+					<$if isMultiOption and isStrictList$><$include std_strict_optionlist_display_hook$><$endif$>
+					<$optionListId = ""$>	
+				<$endif$>
+
+	
+		<!--end Featured Employers -->
+	<$else$>
+		<$if isFieldInfoOnly$>
+		<$include std_value_label$>
+	<$else$>
+		<$if isFieldTreeEdit$>
+			 <$include std_tree_control_entry$>
+		<$else$>
+			<$if not isStrictList or isMultiOption$>
+				<$include std_edit_entry$>
+			<$endif$>
+
+			<$if hasOptionList$>
+				
+				<$if isQuery$></td><td><$endif$>
+					
+					<$include std_option_list_entry$>
+				<$endif$>
+			<$endif$>
+		<$endif$>			
+	<$endif$>
+	<script type="text/javascript">
+		
+		function makeEnable(name)
+				{					
+					var a = name;
+					var e = document.getElementsByName(a)[0];
+					var selectedValue = e.options[e.selectedIndex].text;
+					if(selectedValue == 'Yes')
+					{		
+						//alert("Select the value of HomepageRotation by-Default Value will be Normal");
+						if(queryString.indexOf('IdcService=CHECKIN_NEW_FORM') != -1)
+						{
+							document.getElementsByName('xHomepageRotation')[0].disabled=false;
+							document.getElementsByName('xHomepageRotation')[0].value='Normal';
+						}
+						else if(queryString.indexOf('IdcService=GET_DOC_PAGE') != -1 || queryString.indexOf('IdcService=GET_UPDATE_FORM') != -1) 
+						{
+							document.getElementsByName('xHomepageRotation')[0].disabled=false;
+						}
+						else
+						{
+							document.getElementsByName('xHomepageRotation_Options')[0].disabled=false;
+							document.getElementsByName('xHomepageRotation')[0].disabled=false;
+						}
+						
+					}
+					else
+					{
+						if(queryString.indexOf('IdcService=CHECKIN_NEW_FORM') != -1)
+						{
+							document.getElementsByName('xHomepageRotation')[0].disabled=true;
+							document.getElementsByName('xHomepageRotation')[0].value='Normal';
+						}
+						else if(queryString.indexOf('IdcService=GET_DOC_PAGE') != -1 || queryString.indexOf('IdcService=GET_UPDATE_FORM') != -1) 
+						{
+							
+							document.getElementsByName('xHomepageRotation')[0].disabled=true;
+							document.getElementsByName('xHomepageRotation')[0].value='Normal';
+						}
+						else
+						{
+							document.getElementsByName('xHomepageRotation_Options')[0].disabled=true;
+							document.getElementsByName('xHomepageRotation')[0].disabled=true;
+							document.getElementsByName('xHomepageRotation')[0].value='';
+						}
+					}					
+									
+				}	
+				
+				
+				
+	</script>
+	
+	
+	
+<@end@>
+
+<!--added for Featured Employers-->
+<@dynamichtml std_checkin_submit_html@>
+
+<$exec inc("compute_std_button_checkin_label")$>
+	<td align=center colspan=2>
+	<$include std_compute_addpreviewbutton_toplevel$>
+	<$if addPreviewButton$>
+		<input type=button name=Preview value="<$lc("wwPreview")$>" onClick="postPreview(this.form)">
+	<$endif$>
+	<$include custom_add_checkin_controls$>
+	<input type=button name=javaSubmit value="<$checkinButtonLabel$>" onClick="checkHomePageRotation(this.form)">
+	<$include homepage_rotation_test_inc$>
+	<$include std_checkin_submit_extra_actions$></td>
+	
+<@end@>
+
+<@dynamichtml homepage_rotation_test_inc@>
+<script  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+<script>
+	function checkHomePageRotation(form)
+	{
+		//alert(form.elements["xHomepageRotation"]);
+		if(form.elements["xHomepageRotation"])
+		{	
+			//alert("field exists");
+			var homepageRotation = form.elements["xHomepageRotation"].value;
+			//alert('homepageRotation::'+homepageRotation);
+		
+			xLocale=form.elements["xLocale"].value;
+		
+			if(homepageRotation != null && homepageRotation.length > 0 && homepageRotation == "Always") 
+			{
+				url = "?IdcService=GET_ROTATION_COUNT&IsSoap=1&xLocale="+xLocale;
+				
+				var loader = dhtmlxAjax.getSync(url);
+				if(loader.xmlDoc.responseXML != null)
+				{
+					var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+				
+					if( list != null) 
+					{		
+						list = list[0];						
+						list = list.getElementsByTagName('idc:row');						
+					}
+					for(var i=0;i<list.length;i++)
+					{					
+						var value =  extractValue( list[i].getElementsByTagName('idc:field')[0] );
+					}
+					if(value == 8)
+					{	//alert("8 has been crossed");
+						var dv = document.getElementById('error_message');
+						dv.style.position="absolute";       
+						dv.style.pixelLeft=30;
+						dv.style.pixelTop=100;
+						dv.style.pixelWidth=20;
+						dv.style.pixelHeight=40;
+						dv.style.color="red"
+						dv.innerHTML='You have exceeded your maximum number of Featured Employers set to an \‘Always\’ rotation. Please make another selection.';	
+												
+						return false;					
+					}
+				
+				}				
+			}
+		}
+	
+	<$if (not strEquals(inThisConfig,'') and checkFlag eq 1 and isDocTypeForSolar eq 1 and isRegionForSolar eq 1) $>
+		<$setSolarflag=1$>
+		<$else$>
+		<$setSolarflag=0$>
+		<$endif$>
+		if(form.elements["xSolarCategory"])
+		
+		{
+			var solarFlag= "<$setSolarflag$>";
+			var solarRegionFlag=0;
+			var xRegionDefinition= $("[name='xRegionDefinition']").val();
+			var solarFeedRequired= form.elements["xSolrFeedRequired"].value;
+			if(xRegionDefinition=="RGDEF_MAIN_REGION_SEC" || xRegionDefinition=="RGDEF_MAIN_REGION")
+			{
+			solarRegionFlag=1;
+			}
+			else
+			{
+			solarRegionFlag=0;
+			}
+			
+			var xSolarCategory = form.elements["xSolarCategory"].value;
+			var xSolarSubCategory = form.elements["xSolarSubCategory"].value;
+			if(solarFeedRequired == ""){
+				alert("Please Select SolrFeedRequired");
+				return false;	
+			}
+
+			if(xSolarCategory == "" && xSolarSubCategory == "" && solarFlag!=0 && solarRegionFlag!=0 && solarFeedRequired=="Yes"  ) 
+			{
+				alert("Please Select Solar Category and Solar SubCategory");
+				return false;	
+			}else if(xSolarCategory == ""  && solarFlag!=0 && solarRegionFlag!=0 && solarFeedRequired=="Yes"  ) 
+			{
+				alert("Please Select Solar Category");
+				return false;	
+			}else if(xSolarSubCategory == ""  && solarFlag!=0 && solarRegionFlag!=0 && solarFeedRequired=="Yes"  ) 
+			{
+				alert("Please Select Solar SubCategory");
+				return false;	
+			}
+			
+		}		
+		postCheckInStandard(form);		
+	}
+	
+	function extractValue(element) 
+	{
+		var value =  element.firstChild;
+		if( value != null)
+			value = value.nodeValue;
+		else value = "";
+			return value;
+		}
+		
+	
+
+</script>
+<@end@>
+
+
+
+
+<@dynamichtml std_memo_entry@>
+	<$if strIndexOf(ontMetadata, ';' & fieldName & ';') GE 0 OR strEquals(fieldName, 'xOfficeCategory') $>
+			<div id="treeboxbox_tree_<$fieldName$>" style="width:400px; height:150px;background-color:#f5f5f5;border :1px solid Silver;; overflow:auto;">
+			</div><br/>
+			<input type="hidden" name="<$fieldName$>" id="<$fieldName$>_tarea" value="<$fieldValue$>"/>
+			<script>
+             //var xLocale=document.getElementById("dDocType").value;
+			//alert(xLocale);
+			</script>
+			<button onClick="popUp('<$fieldName$>', tree_<$fieldName$> , this.form); return false;">Update...</button>
+			<script>
+				tree_<$fieldName$> = new dhtmlXTreeObject("treeboxbox_tree_<$fieldName$>","100%","100%",0);
+				tree_<$fieldName$>.setSkin('dhx_skyblue');
+				tree_<$fieldName$>.setImagePath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/csh_bluefolders/");
+				tree_<$fieldName$>.setIconsPath("<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxTree/codebase/imgs/");
+				tree_<$fieldName$>.lockTree(true);
+				var metaValue_<$fieldName$> = new MetaValue('<$fieldName$>', tree_<$fieldName$>);			
+				metaValue_<$fieldName$>.buildTree( );
+			</script>
+	<$else$>
+		<$include super.std_memo_entry$>
+	<$endif$>
+<@end@>
+
+
+
+
+
+<@dynamichtml ont_custom_javascript@>
+	<script  src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+	<$include ont_javascript_dhtmlx_tree_inc$>
+
+	<script>
+
+		var metaObj = null;
+
+			
+
+		function MetaValue(metadata, aTree) {
+			this.meta = metadata;
+			this.element = document.getElementById(this.meta + "_tarea");
+			this.value = this.element.value; //alert(metadata + ", " +aTree + ", " +this.value)
+			this.aTree = aTree;			
+            			
+			this.buildTree = function(  ) {
+				if( this.value.length > 0) {
+					this.aTree.loadXMLString(this.convert());
+				}
+			}
+			
+			this.convert = function( ) {
+			
+				if(this.meta == 'xOfficeCategory'){
+					var locale = document.forms["Checkin"].elements["xCountry"].value;
+		            var language = locale.split("-"); 
+		             //alert(language[0]);
+					url = "?IdcService=ONT_LOAD_META_VALUES&ont_metadata=xCategory&ont_metadata_value=" + this.value + "&isFullLabel=true&language="+language[0];
+				}
+				else
+					url = "?IdcService=ONT_LOAD_META_VALUES&ont_metadata="+this.meta + "&ont_metadata_value=" + this.value + "&isFullLabel=true&language=<$#active.LanguageCode$>" ;
+				var loader = dhtmlxAjax.getSync(url);
+				if(loader.xmlDoc.responseXML != null){ //alert('loader.doSerialization() '+loader.doSerialization())
+					return(loader.doSerialization());
+				}
+			}
+
+
+			this.extractIds = function( xmlString ) {
+				this.aTree.deleteChildItems(0); 
+				xmlString = xmlString.ReplaceAll('&nbsp;','');
+				this.aTree.loadXMLString(xmlString);
+				url = "?IdcService=ONT_EXTRACT_META_VALUES&xmlString=" + xmlString; //alert(url)
+				var loader = dhtmlxAjax.getSync(url);
+				if(loader.xmlDoc != null){ 		//alert('loader.xmlDoc.responseText '+loader.xmlDoc.responseText)
+					this.value = loader.xmlDoc.responseText;
+					this.element.value = this.value;
+				}
+			}
+
+			
+		}
+		String.prototype.ReplaceAll = function(stringToFind,stringToReplace){
+      var temp = this;
+
+       var index = temp.indexOf(stringToFind);
+
+        while(index != -1){
+
+            temp = temp.replace(stringToFind,stringToReplace);
+
+            index = temp.indexOf(stringToFind);
+
+        }
+
+        return temp;
+
+    }
+
+	
+		
+		function popUp(meta, aTree, form) { 
+			metaObj = new MetaValue(meta, aTree );
+
+			if(meta == 'xOfficeCategory'){
+				var a = form.elements["xCountry"].value;
+				 var country = a.split("-");
+				 //alert(country[1]);
+				window.open("?IdcService=ONT_CLASSIFIER&callback=window.opener.metaObj&language="+country[0]+"&country="+country[1]+"&ont_metadata=xCategory&idcToken=<$idcToken$>", "", "width=650, height=480");
+			}
+			else
+				window.open("?IdcService=ONT_CLASSIFIER&callback=window.opener.metaObj&language=<$#active.LanguageCode$>&country=<$#active.CountryCode$>&ont_metadata="+meta+"&idcToken=<$idcToken$>", "", "width=650, height=480");
+		}
+	</script>
+<@end@>
+
+<@dynamichtml office_uk_cerow_checkin_page@>
+
+ <script>
+  	window.onload=function customizeOfficeCheckin()
+	{
+	   
+		var form = document.forms["Checkin"];
+		form.elements["dDocTitle"].maxLength = '60';
+		form.elements["xAddressLine1"].maxLength = '60';
+		form.elements["xAddressLine2"].maxLength = '60';
+        form.elements["xSuburb"].maxLength = '60';
+       	form.elements["xPhone"].maxLength = '60';
+		form.elements["xFax"].maxLength = '60';
+		form.elements["xEmail"].maxLength = '60';		
+		form.elements["xTown"].maxLength = '60';
+		form.elements["xPostCode"].maxLength = '30';
+		form.elements["xLatitude"].maxLength = '60';
+		form.elements["xLongitude"].maxLength = '60';
+		form.elements["xOfficeCode"].maxLength = '30';
+				
+	}
+   
+	
+	
+</script>
+
+<@end@>
+</body></html>

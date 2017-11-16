@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy>
+	<!--movement from="UK_OAT_CONSUMP" to="LOCAL">
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hreb-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbn-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbf-HRBE" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_sub_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_region_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="GCSubmitYourCV_temp.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="Globalcareer_Application.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="haysresponse_requestcallback_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="widget_prop_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>	
+	</movement>
+	<movement from="APAC_OAT_CONSUMP" to="LOCAL">
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hreb-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbn-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbf-HRBE" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_sub_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_region_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="GCSubmitYourCV_temp.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="Globalcareer_Application.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="haysresponse_requestcallback_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="widget_prop_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>	
+	</movement>
+	<movement from="UK_PROD_CONSUMP" to="LOCAL">
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hreb-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbn-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbf-HRBE" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_sub_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_region_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="GCSubmitYourCV_temp.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="Globalcareer_Application.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="haysresponse_requestcallback_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="widget_prop_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>	
+	</movement-->
+	<movement from="APAC_PROD_CONSUMP" to="LOCAL">
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hreb-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbn-HRBE" destination="" locationtype="relative"/>
+		<file name="cs_strings.htm" sourcelocation="HaysSearchComponent/resources/lang/hrbf-HRBE" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_sub_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="haysgeneralcomponent_region_templates_includes.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="hays_subnav_resource.htm" sourcelocation="HaysGeneralComponent/resources" destination="" locationtype="relative"/>
+		<file name="capture_killer_qs_pg.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="GCSubmitYourCV_temp.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="Globalcareer_Application.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="haysresponse_requestcallback_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>
+		<file name="widget_prop_form.htm" sourcelocation="HaysGeneralComponent/templates" destination="" locationtype="relative"/>	
+	</movement>
+</deploy>

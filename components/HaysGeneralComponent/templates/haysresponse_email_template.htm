@@ -1,0 +1,126 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD vAlign=top width=405 height=81 rowSpan=2><img src="http://testsg.hays-response.it/oat_consump/groups/hays_ta/documents/sitestudio/img_logo_haysresponse.gif" alt="Hays logo" width="183" height="50"/>
+                </TD>
+              </TR>
+              <TR>
+                <TD vAlign=top width="auto" height=0>
+				<$siteLabel="",websiteURL=""$>	
+				<$dSiteId = siteId$>
+				<$executeService("SS_GET_ALL_SITE_DOMAINS")$>
+				<$loop DomainMap$>			
+					<$if strEqualsIgnoreCase(siteId,DomainMap.ssSiteId)$>
+						<$if DomainMap.ssIsDefault == 1$>
+							<$siteLabel=DomainMap.ssKey$>
+							<$websiteURL=DomainMap.ssKey$>
+					<$endif$>
+				<$endif$>
+			<$endloop$>
+			<$siteLabel=strReplace(siteLabel,"testsg.","")$>
+			<$websiteURL="http://"&websiteURL$>
+				
+		   <strong><font size="3" face="Arial" color="#009FDA"><a href="<$websiteURL$>" style="text-decoration:none"><$siteLabel$></a></font></strong>
+		  </TD>
+              </TR>
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+				   <p style="font-size: 12px; font-weight: bolder; font-family: arial; font-style: normal;color:#002776;">
+							
+				
+					<$if strLength(full_name) GT 0$>
+							<$lc("wwHResText2")$> : <$full_name$><br/><br/>
+					 <$endif$>
+					
+					<$if strLength(job_title) GT 0$>
+						<$lc('wwHResText3')$> : <$job_title$><br/><br/>
+					 <$endif$>
+					
+					<$if strLength(org_name) GT 0$>
+						<$lc('wwHResText4')$> : <$org_name$><br/><br/>
+					<$endif$>
+
+					<$if strLength(address1) GT 0$>
+						<$lc('wwHResText5')$> : <$address1$><br/><br/>
+					<$endif$>
+
+					 <$if strLength(address2) GT 0$>
+						<$lc('wwHResText6')$> : <$address2$><br/><br/>
+					 <$endif$>
+
+					<$if strLength(postcode) GT 0$>
+						<$lc('wwHResText7')$> : <$postcode$><br/><br/>
+					<$endif$>
+
+					<$if strLength(town_city) GT 0$>
+						<$lc('wwHResText8')$> : <$town_city$><br/><br/>
+					<$endif$>
+
+					<$if strLength(email) GT 0$>
+						<$lc('wwHResText9')$> : <$email$><br/><br/>
+					<$endif$>
+
+					<$if strLength(phone) GT 0$>
+						<$lc('wwHResText10')$> : <$phone$><br/><br/>
+					<$endif$>
+
+					<$if strLength(group1) GT 0$>
+						<$lc('wwHResText14')$> : <$group1$><br/><br/>
+					<$endif$>
+				
+					<$if strLength(req_nature) GT 0$>
+						<$lc('wwHResText13')$> : <$req_nature$><br/><br/>
+					<$endif$>
+				
+					
+				</p>
+			<br/><br/>
+			<p style="FONT-SIZE: 12px; FONT-FAMILY: Arial;">
+			<$lc("wwHaysMailSignatureText1")$><br/>
+			Hays Team
+			</p>
+			<p style="FONT-SIZE: 10; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+	        </TD></TR>
+			<TR>
+			<TD COLSPAN="2">
+			<$lc("wwHaysMailFooterMessage","@")$>
+			</TD>
+			</TR>
+			</TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>	
+			

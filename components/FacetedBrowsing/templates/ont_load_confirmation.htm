@@ -1,0 +1,38 @@
+<$include std_doctype_html_decl$>
+<head>
+<$defaultPageTitle = "Ontology Confirmation"$>
+<$include std_html_head_declarations$>
+<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+<$include std_page_begin$>
+<div id="ont">
+	<h2>Ontology Confirmation</h2>
+	<form name="OntLoader" enctype="multipart/form-data" method=post action="<$HttpCgiPath$>">
+		<table>
+			<tbody>
+				<tr>
+					<th>For metadata:</th>
+					<td><$ontMetadata$></td>
+				</tr>			
+				<tr>
+					<th>Ontology size:</th>
+					<td><$modelSize$></td>
+				</tr>	
+				<$if rsExists('OntMappingRS') AND rsFindRowPrimary('OntMappingRS', ontMetadata) $>			
+				<tr>
+					<th>Ontology configuration</th>
+					<td>
+						<p><strong>Relationship: </strong><$OntMappingRS.relationship$></p>
+						<p><strong>Main class: </strong><$OntMappingRS.class_root$></p>
+						
+					</td>
+				</tr>
+				<$endif$>
+			</tbody>
+		</table>
+	</form>	
+</div>
+<$include std_page_end$>
+</body>
+</html>

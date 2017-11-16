@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponentR6 htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<@dynamichtml Salary_Guide_inc@>
+<div class="container_24">
+	<div id="pl_left_side" class="grid_5">	
+		<div class="ls_inner">
+				<div class="left_nav">
+
+		<div class="cnr"></div>
+		<div class="ln_inner">
+			<span class="h2">The 2011 Hays Salary Guide</span>
+			<ul id="suckerfish">
+				<$include Build_Salary_Guide_navigation$>
+			</ul>
+			<div class="clear"></div>
+		</div>
+				</div>
+	 </div>
+  </div>
+</div>
+<@end@>
+
+
+
+<@dynamichtml Build_Salary_Guide_navigation@>
+<!---------- loading SiteStudioNavNodes------->
+<$if rsExists("SiteStudioNavNodes") ==0$>
+	<$ssLoadSiteNavResultSet(siteId)$>
+<$endif$>
+
+
+<!--- Filtred the site studio nodes results set with parentNodeId SalaryGuide value -->
+
+<$rsCopyFiltered('SiteStudioNavNodes', 'SalaryGuideLevelTwo', 'parentNodeId', 'SalaryGuide') $>
+
+<$loop SalaryGuideLevelTwo$> 
+	<li ><a href="<$ssGetServerRelativeUrl(siteId, SalaryGuideLevelTwo.nodeId)$>"><$SalaryGuideLevelTwo.label$></a></li>
+<$endloop$>
+
+
+<@end@>
+
+
+
+<@dynamichtml Salary_Guide_Iframe_inc@>
+			<iframe src="<$lc('wwSalaryGuideIFrameURL')$>" name="iframe_a" height="650" width="550" frameBorder="0" onload="scroll(0,0);"></iframe>
+		
+<@end@>
+
+</body></html>

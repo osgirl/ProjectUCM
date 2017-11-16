@@ -1,0 +1,849 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysWorldwide htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+<!--***********************************************************
+	****** HAYS WORLD WIDE : SITE MAP : To get the level wise results set *********
+	************************************************************-->
+<@dynamichtml subtmp_worldwide_levelresultsets@>
+	<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelOne', 'level', '1') $>
+	<$count1 = rsNumRows('haysNavNodesFilteredlevelOne') *4$>
+	
+	<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelTwo', 'level', '2') $>
+	<$count2 = rsNumRows('haysNavNodesFilteredlevelTwo')$>
+	
+	<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelThree', 'level', '3') $>
+	<$count3 = rsNumRows('haysNavNodesFilteredlevelThree')$>
+	
+	<$TotalRows=count1+count2+count3$> 
+	
+<@end@>
+
+<!--***********************************************************
+	****** HAYS WORLD WIDE : SITE MAP *********
+	************************************************************-->
+
+<@dynamichtml subtmp_worldwide_sitemap_inc@>
+
+<$ssLoadSiteNavResultSet(siteId)$>
+<$savedNodeId = #active.nodeId$>
+<$include subtmp_worldwide_levelresultsets$>
+<$count = 0$>
+<$maxcount=(TotalRows/4)$> 
+
+
+<div id="content-wrap">
+	<div id="sitemap">
+		<h1><$strUpper(ssGetNodeProperty(savedNodeId,"label"))$></h1>
+		<div class="sitemap-mod-wrap">
+			<div class="sitemap-col">
+				<$loop SiteStudioNavNodes$>
+					
+					<$if SiteStudioNavNodes.level eq 1$>				
+						<$nodeID = SiteStudioNavNodes.nodeId$>
+						<$include subtmp_worldwide_sitemap_section_inc$>
+					<$endif$>
+				<$endloop$>
+		</div>
+	</div>
+</div>
+
+<@end@>
+<!-- ******************************************* -->
+
+<@dynamichtml subtmp_worldwide_sitemap_section_inc@>
+ 
+	<div class="sitemap-module"> 
+		<div class="sitemap-top"> 
+			<$c1 = rsNumRows("haysNavNodesFilteredlevelOne")$>
+			<$level1count = 0$>
+			<$loop haysNavNodesFilteredlevelOne$>
+				<$level1count = level1count+1$> 
+					
+				<$if strEquals(haysNavNodesFilteredlevelOne.nodeId ,nodeID)$>
+					<h3 class="sitemap-head"><a href="<$haysNavNodesFilteredlevelOne.href$>"><$haysNavNodesFilteredlevelOne.label$></a></h3>	<$count=count+1+2$>
+					<$if domainId == 1005$>
+							<$maxcount = (maxcount - 1)$>
+					<$endif$>
+					<$if count >= (maxcount)$>
+						<$count = 0$>
+						</h3></div></div></div>
+							<div class="sitemap-col">
+								<div class="sitemap-module"> 
+									<div class="sitemap-top"> 
+					<$endif$>
+					<$rsCopyFiltered('haysNavNodesFilteredlevelTwo','haysNavNodesFilteredlevelTwoParentMatch','parentNodeId',haysNavNodesFilteredlevelOne.nodeId)$>
+					<ul class="sitemap-list">
+						<$c2=rsNumRows("haysNavNodesFilteredlevelTwoParentMatch")$>
+						<$level2count = 0$>
+						<$loop haysNavNodesFilteredlevelTwoParentMatch$>	
+							<$level2count=level2count+1$>							<$rsCopyFiltered('haysNavNodesFilteredlevelThree','haysNavNodesFilteredlevelThreeParentMatch','parentNodeId',haysNavNodesFilteredlevelTwoParentMatch.nodeId) $>									 
+							<$numRows = rsNumRows("haysNavNodesFilteredlevelThreeParentMatch")$>
+							<$if numRows == 0$>
+								<li>
+							<$else$>
+								<li class="open">	
+							<$endif$>
+							
+							<a href="<$haysNavNodesFilteredlevelTwoParentMatch.href$>"><$haysNavNodesFilteredlevelTwoParentMatch.label$></a>
+							<$count=count+1$>
+							<$if count == (maxcount - 1)$>
+								<$count = 0 $>
+								</li></ul></div></div></div>
+								<$if level2count < c2 $>
+									<div class="sitemap-col">
+										<div class="sitemap-module"> 
+											<div class="sitemap-top"> 	
+												<ul class="sitemap-list">
+													<li>
+								<$elseif level2count == c2 $>
+														<div class="sitemap-col">
+															<div class="sitemap-module"> 
+																<div class="sitemap-top">
+																	<h3> 
+									<$endif$>
+								<$endif$>
+							<$if numRows >0 $><ul>
+									<$c3 = rsNumRows("haysNavNodesFilteredlevelThreeParentMatch")$>
+									<$level3count = 0$>
+								<$loop haysNavNodesFilteredlevelThreeParentMatch$>
+									<$level3count=level3count+1$>
+									<li><a href="<$haysNavNodesFilteredlevelThreeParentMatch.href$>"><$haysNavNodesFilteredlevelThreeParentMatch.label$></a></li>
+									<$count=count+1$>	
+									<$if domainId == 1005$>
+									<$maxcount = (maxcount + 1)$>
+									<$endif$>
+									<$if count == (maxcount - 1)$>
+										<$count = 0 $>
+										</li></ul></li></ul></div></div></div>
+										<$if level3count < c3 $>					
+											
+											<div class="sitemap-col">
+												<div class="sitemap-module"> 
+													<div class="sitemap-top">
+														<ul class="sitemap-list">
+															<li class="open">
+																<ul>
+																	<li class="open">
+										<$elseif level3count == c3$>
+													<$if level2count < c2 $>
+														<div class="sitemap-col">
+															<div class="sitemap-module"> 
+																<div class="sitemap-top">
+																	<ul class="sitemap-list">
+																		<li>
+													<$elseif level2count == c2 $>
+														<div class="sitemap-col">
+															<div class="sitemap-module"> 
+																<div class="sitemap-top">
+																	<h3> 
+													<$endif$>
+												
+										<$endif$>
+									
+									<$endif$>
+		
+								<$endloop$></ul>
+							<$endif$>
+							</li>
+						<$endloop$>
+					</ul> 
+				<$endif$>
+				
+			<$endloop$>									
+		</div>
+	</div>
+
+<@end@>
+
+<!--****************************************************
+	Hays worldwide commom include
+*******************************************************-->
+
+
+<@dynamichtml subtmp_worldwide_common_inc@>
+	<$include redirect_error_to_haysplc$>
+	[[% extract page title %]]
+	 <script type="text/javascript"> 
+		function newPopup(url) {	 	
+		 popupWindow = window.open(
+		  url,'popUpWindow','height=900,width=700,left=10,top=10,resizable=yes,,titlebar=no,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=no')
+		}
+	</script>
+	
+	<$if isFalse(isSecondaryPage)$>
+
+		<$ metaDescription = ssGetNodeProperty(nodeId, 'MetaDescription')$>
+		<$ metaTitle = ssGetNodeProperty(nodeId, 'MetaTitle')$>
+		<$ metaKeywords = ssGetNodeProperty(nodeId, 'MetaKeywords')$>
+		
+	<$else$>
+
+		<$if getValue("#active","Main Region")$>
+				<$dDocName = getValue("#active","Main Region")$>
+				<$executeService('DOC_INFO_BY_NAME_SIMPLE')$>
+				<$if rsFirst('DOC_INFO') $>			
+					<$ metaDescription = DOC_INFO.xMetaDescription$>
+					<$ metaTitle = DOC_INFO.xMetaTitle$>
+					<$ metaKeywords = DOC_INFO.xMetaKeywords$>	
+				<$endif$>
+		<$endif$>
+		
+	<$endif$>
+	
+	<$if strLength(#active.metaKeywords) GT 0$> 
+		<meta name="keywords" content="<$metaKeywords$>"/>
+	<$endif$>
+	
+	<$if strLength(#active.metaDescription) == 0 OR strLength(#active.metaTitle) == 0$>
+		<$ document_title = ssGetNodeProperty("label")$>
+		<$ document_title = document_title & " | " & "Hays - Recruiting experts worldwide" $>	
+	<$else$>			
+		<meta name="description" content="<$metaDescription$>"/>
+		<meta name="title" content="<$metaTitle$>"/> 
+		<$ document_title = metaTitle$>
+	<$endif$>
+	
+	
+	<$include is_output_social_analytics$>
+        <$if isTrue(#env.SwitchOnGoogleAnalytics) AND (isTrue(doOutput))$>
+	<!--added for IR4 on 19 july 2012-->
+	<meta name="msvalidate.01" content="4E4655158958A2A0CE65684B7DAE6458" />
+	<$if strLength(ssDocName)>0$>
+		<link rel="canonical" href="http://<$HTTP_HOST$><$ssLink(ssDocName,#active.nodeId)$>" />
+		<$else$>
+		<link rel="canonical" href="http://<$HTTP_HOST$><$ssNodeLink(nodeId, siteId)$>" />
+		<$endif$>
+	<$if strEquals(siteId,'HaysWorldwide') GT 0$>
+		<$gacode1="UA-4658834-1"$>		
+	<$else$>
+		<$gacode1="UA-7391736-27"$>
+	<$endif$>
+	<!--end -->
+<script type="text/javascript"> 
+
+   
+			var _gaq = _gaq || [];
+			var HAYS_ww_gacode1="<$gacode1$>";
+			_gaq.push(['_setAccount', HAYS_ww_gacode1]);
+			_gaq.push(['_trackPageview']);
+			<$hostname=HTTP_HOST$>
+			<$hostname=strReplace(hostname, "www.", "")$>
+			<$hostname=strReplace(hostname, "testsg.", "")$>
+			<$if parentSiteId$>
+				<$subDomainIndex = strIndexOf(hostname,'.')$>
+				<$hostname = strSubstring(hostname,subDomainIndex+1)$>
+			<$endif$>
+			_gaq.push(['_setDomainName','<$hostname$>']);
+			
+			_gaq.push(['_setAllowLinker',true]);
+
+			(function() {
+
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+
+			})();
+		
+
+</script>
+
+	<$if domainId==1005$>
+	
+		<$if strEquals(redirect,'y')$>
+			<$name_cookie="redirectto",value="N" $> 
+			<$setHttpHeader("Set-Cookie", name_cookie & "=" & value & "; expires=" & formatDateWithPattern(dateCurrent(7300),'yyyy-MM-dd HH:mm:ss') &  "; path=/")$>
+		<$endif$>
+		<$if not (strEquals(getCookie("redirectto"),'N'))$>
+			<$include redirecttobrowserLocale_BE$>
+		<$endif$>
+		<$endif$>
+	<$endif$>
+	
+
+		<!--BAU REL-4 21118-->
+				<$include include_jquery_js$>
+		<!--BAU REL-4 21118-->
+<link rel="stylesheet" type="text/css" href="<$HttpRelativeWebRoot$>HaysWorldwide/assets/css/prettyPhoto.css" charset="utf-8" media="screen" />
+<script src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function(){
+    $("a[rel^='prettyPhoto']").prettyPhoto();
+  });
+</script>
+
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYSWORLDWIDE  :Top Nav *********
+	************************************************************-->
+	
+ 
+<@dynamichtml subtmp_worldwide_topNav_inc@>
+ 
+
+<$if rsExists("SiteStudioNavNodes") == 0$>
+	<$ssLoadSiteNavResultSet(siteId)$>
+<$endif$>
+
+<$levelnodeCount=1$>
+<!--- 
+
+created result set from node id which needs to be displayed on top nav which hard coded 
+
+into the config file in  #env.TopNavNodeList variable
+
+<$rsMakeFromString("ToplevelOneNodeNavList", #env.TopNavNodeList, "tovNavNodeID")$> 
+
+
+
+-->
+
+<!--- Filtred the site studio nodes results set with level 1 value -->
+<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelOne', 'level', '1') $>
+
+<!--- Filtred the site studio nodes results set with level 2 value -->
+<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelTwo', 'level', '2') $>
+
+<!--- include is used get the node ID of the current node/parrentnodeID/parrent of parrentnodeID-->
+<$include subtmp_worldwide_get_currentNodeID$>
+
+<!--- currentClickLink is used get the current click href or URL-->
+
+<$activeNodeId = #active.nodeId $>
+
+<$ currentClickLink = ssGetServerRelativeUrl(#active.siteId,#active.nodeId)$>
+
+
+<!--- to populate filtered level1 sections -->			  
+	<$if rsExists("haysNavNodesFilteredlevelOne") and rsNumRows("haysNavNodesFilteredlevelOne") >= 1 $>
+		<ul id="nav">
+
+		<li id="n0">
+			<$if domainId == 1005$>
+			<a href="<$wcmUrl('nodelink','home')$>" target=""><img style="float: left;" src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/home-icon.png" id="home-icon" /></a>
+			<$else$>
+           	<a href="<$wcmUrl('nodelink','1963')$>" target=""><img style="float: left;" src="<$HttpRelativeWebRoot$>HaysWorldwide/assets/images/home-icon.png" id="home-icon" /></a>
+			<$endif$>
+        </li>
+
+			<$loop haysNavNodesFilteredlevelOne$> 
+			<$showchild="true"$> 
+				<li id="n<$levelnodeCount$>">
+						 
+					<$if strIndexOf( currentParrentNodeID,haysNavNodesFilteredlevelOne.nodeId)  == 0 $> 					 
+						<h2  class="current"><a href="<$href$>"><$haysNavNodesFilteredlevelOne.label$></a></h2>
+						<$showchild ="false"$>					 
+						 
+					<$else$>							 
+						<h2><a href="<$href$>"><$haysNavNodesFilteredlevelOne.label$></a></h2>				 
+					 
+					<$endif$>					
+					 	 
+					<$if strEquals(showchild ,"true")$>   		
+					  
+				
+						<$rsCopyFiltered('haysNavNodesFilteredlevelTwo',
+									'haysNavNodesFilteredlevelTwoParentMatch','parentNodeId',haysNavNodesFilteredlevelOne.nodeId)$>
+							<$ rowNum =rsNumRows("haysNavNodesFilteredlevelTwoParentMatch") $>
+							<$if rowNum >= 1 $>							
+							 
+								<div class="dropmenu">
+									<div class="menuleft">
+										<h3 class="menuhead">
+											<$ssGetNodeProperty(haysNavNodesFilteredlevelOne.nodeId, "sectionTitle")$>
+										</h3>
+										<!--- to populate filtered level2 sections with parrentnodeID of the level 2 with node 
+										of the level one -->							 
+										 
+											<$ rowNumCount = rowNum/2 $>
+											<$ rowNumCountMod = rowNum%2 $>	
+											<$if rowNumCountMod >0 $>
+												<$rowNumCount = rowNumCount+rowNumCountMod$>										 
+											<$endif$>
+											<$rowCount = 0$>
+										
+											<ul>
+												<$loop haysNavNodesFilteredlevelTwoParentMatch$>									
+													<li><a href="<$haysNavNodesFilteredlevelTwoParentMatch.href$>">
+														<$haysNavNodesFilteredlevelTwoParentMatch.label$></a>
+													</li>
+														<$rowCount = rowCount+1$>
+														<$if rowNumCount == rowCount$>
+															</ul><ul>
+														<$endif$>
+											 
+											<$endloop$>
+										</ul>						
+											 
+									</div>
+								
+									
+										<div class="menuright">
+											<$if strLength(ssGetNodeProperty(nodeId, "imageURL")) >0 $>
+												<div class="menupic"><img width="180" height="129" alt="" src="<$ssGetNodeProperty(nodeId, "imageURL")$>"></div>
+											<$endif$>
+											<$if strLength(ssGetNodeProperty(nodeId, "SectionURL")) >0 $>
+												<ul>
+													<li><a href="<$ssGetNodeProperty(nodeId, "SectionURL")$>">
+														<$ssGetNodeProperty(nodeId, "SectionURLLevel")$></a></li>
+												</ul>
+											<$endif$>
+										</div>
+									</div>
+						
+						<$endif$>
+						
+							<$endif$>
+					<!-- /dropmenu -->
+				</li>
+							<$levelnodeCount = levelnodeCount+1$>
+			
+					
+				
+
+						 
+			<$endloop$>	
+			<$if NOT (strEquals(#active.siteId ,"HaysWorldwide") OR strEquals(#active.siteId , "enHC") OR strEquals(#active.siteId , "enHR"))$>
+				 <$if strEquals(ssGetNodeProperty('809','sectionTitle'),'SubmitCV')$>
+					<$getWebsiteProperties(#active.siteId)$> 
+					<$if rsExists("rsWebsiteProperties") and rsFirst("rsWebsiteProperties")$>
+						<$loop rsWebsiteProperties$>	 
+							<$if strLength(rsWebsiteProperties.siteLocale) GT 0$>
+								<$countryName=rsWebsiteProperties.siteLocale$>		 
+							<$endif$>
+						<$endloop$>
+					<$endif$>
+
+					<!--  $url= HttpRelativeWebRoot&"idcplg?IdcService=GET_GlobalCARRER_SubmitCV&&siteLocale="&countryName&"&siteId="&siteId$-->
+				 		<$url = ssNodeLink(809, #active.siteId)$>
+						<li id="n<$levelnodeCount$>">
+							<h2 class=""><a href="#" onclick="newPopup('<$url$>');"><$lc('wwGCSubmitCvSection')$></a></h2>
+						</li>
+				<$endif$>		
+			<$endif$>
+			<!-- /n1 -->
+		</ul><!-- /nav-->
+	<$endif$>		 
+		
+	
+<@end@>
+
+
+<!--***********************************************************
+	******HAYSWORLDWIDE  : LEFT NAVIGATION *********
+	************************************************************-->
+<@dynamichtml subtmp_worldwide_leftNav_inc@>
+
+<$if rsExists("SiteStudioNavNodes") ==0$>
+	<$ssLoadSiteNavResultSet(siteId)$>
+<$endif$>
+
+<!--- Filtred the site studio nodes results set with level 2 value -->
+						
+<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelTwo', 'level', '2') $>
+
+<!--- Filtred the site studio nodes results set with level 3 value -->
+
+<$rsCopyFiltered('SiteStudioNavNodes', 'haysNavNodesFilteredlevelThree', 'level', '3') $> 
+ 
+<$getparentNodeId= ''$>
+  
+<!--- currentClickLink is used get the current click href or URL-->
+<$ currentClickLink = ssGetServerRelativeUrl(#active.siteId,#active.nodeId)$>
+<$activeNodeId = #active.nodeId $>
+<!--- include to get the parrent or parrent of the current node -->
+<$filterNodeID = ''$>
+<$include subtmp_worldwide_getparrentnodeId$>
+
+<!--- include is used get the node ID of the current node/parrentnodeID/parrent of parrentnodeID-->
+<$include subtmp_worldwide_get_currentNodeID$>
+<!--- Filtred the haysNavNodesFilteredlevelTwo results set on basis of parrentnodeID of the haysNavNodesFilteredlevelTwo
+match with the selected node ID of the level-->
+
+
+<$rsCopyFiltered('haysNavNodesFilteredlevelTwo', 'haysNavNodeslevelTwo', 'parentNodeId', filterNodeID) $>
+
+<!--- to populate level2 sections of selected top level1 section -->					 
+	  
+			<div id="left-col">
+				<ul id="left-nav">
+						<$loop haysNavNodeslevelTwo$>		 
+						 <$if strIndexOf( currentNodeID  ,haysNavNodeslevelTwo.nodeId)  == 0 $>		 
+					 
+							<li class="toplevelcurrent"><a class="parentlevel" href="<$haysNavNodeslevelTwo.href$>">
+							<$haysNavNodeslevelTwo.label$></a>
+												
+						<$else$>					 
+							<li><a class="parentlevel" href="<$href$>"><$haysNavNodeslevelTwo.label$></a> 
+						<$endif$>
+						<!--- to populate level 3 sections for the selected level2 section of selected top level1 section -->
+								<$if rsExists("haysNavNodesFilteredlevelThree") and  rsNumRows("haysNavNodesFilteredlevelThree")  >= 1 and strIndexOf(haysNavNodeslevelTwo.nodeId ,currentNodeID)  == 0$>
+									<ul>
+										<$loop haysNavNodesFilteredlevelThree$>
+												
+
+											<$ if strEquals(haysNavNodeslevelTwo.nodeId,haysNavNodesFilteredlevelThree.parentNodeId)$>
+											
+												<$if strIndexOf(haysNavNodesFilteredlevelThree.nodeId  ,activeNodeId)  == 0 $>
+													<li class="current"><a href="<$haysNavNodesFilteredlevelThree.href$>"><$haysNavNodesFilteredlevelThree.label$></a>
+												 
+											 
+												<$else$>
+													<li><a href="<$haysNavNodesFilteredlevelThree.href$>"><$haysNavNodesFilteredlevelThree.label$></a> 
+												<$endif$>
+												</li>
+											<$endif$>
+										<$endloop$>	
+									</ul>
+								<$endif$>
+								</li>
+						<$endloop$>				 
+				</ul>
+				<$if isTrue(#active.SSContributor) $>
+					<$include subtmp_worldwide_admin_main_inc$>
+		
+				
+				<$endif$>
+			</div>
+ 
+ <@end@>
+ 
+ <@dynamichtml subtmp_worldwide_admin_main_inc@> 
+	<span><br><br><br>
+		<div class="module">
+			<ul id="left-nav">
+				<!--li><a href="/HaysWorldwide/SiteAdmin/index.htm">Site Admin</a></li -->
+				<li><a href="/<$siteId$>/ss-manager/index.htm">SS Manager</a></li>
+				<li><a href="/<$siteId$>/privacy-policy-text/index.htm">Privacy Policy Text</a></li>
+
+			</ul>				
+		</div> 
+	</span>  
+ <@end@>
+ 
+ <!--***********************************************************
+ ****** HAYSWORLDWIDE  : To get number levels*********
+ ************************************************************-->
+<@dynamichtml subtmp_worldwide_getnodelabelCount@> 
+
+ <$getLevalcount = "" $> 
+ <$getnodelabelpath=  ssGetNodeLabelPath(#active.siteId, #active.nodeId)$> 
+ <$getnodelabelpath = strReplace(getnodelabelpath,",","$$")$>	
+ <$strwithcomma =   strReplace(getnodelabelpath,"/",",")$>  
+
+ <$rsMakeFromString("rsNodeLevalListList", strwithcomma )$> 
+ <$getLevalcount =  rsNumRows("rsNodeLevalListList")$> 
+ <$getLevalcount = getLevalcount - 1$>
+<@end@>
+
+<!--***********************************************************
+ ****** HAYSWORLDWIDE  : To get current node lavel ID*********
+ ************************************************************-->
+<@dynamichtml subtmp_worldwide_get_currentNodeID@>
+	<$ include subtmp_worldwide_getnodelabelCount $>
+	
+	<$currentNodeID = #active.nodeId $> 
+	<$currentParrentNodeID = "" $> 
+	<$getparentNodeId=  ssGetRelativeNodeId(#active.siteId, #active.nodeId,"parent")$>
+	 
+	<$if strEquals(getLevalcount ,"2" )$>   
+		<$currentNodeID = currentNodeID$>  
+		<$currentParrentNodeID = getparentNodeId $>
+	<$elseif  strEquals(getLevalcount ,"3")$>   
+		<$currentNodeID=  getparentNodeId$>  
+		<$currentParrentNodeID= ssGetRelativeNodeId(#active.siteId, getparentNodeId,"parent")$> 	
+		 
+	<$elseif  strEquals(getLevalcount ,"1")$>
+		<$currentParrentNodeID =currentNodeID$>
+	<$elseif  strEquals(getLevalcount ,"0")$>
+		<$currentParrentNodeID =''$>
+		<$currentNodeID =''$>
+		 
+	<$endif$>
+   
+<@end@>
+
+<!--***********************************************************
+ ****** HAYSWORLDWIDE  : To get current nodeID or parrentnodeID or parrrent of parrentnodeID*********
+ ************************************************************-->
+<@dynamichtml subtmp_worldwide_getparrentnodeId@>
+<!--- include to get the current node level -->
+<$include subtmp_worldwide_getnodelabelCount$>
+
+<$if getLevalcount == 1 $>
+ 
+<$filterNodeID = #active.nodeId $>
+<$elseif getLevalcount >1$>
+ 
+  	<$getparentNodeId= #active.nodeId$>
+		<$loopwhile getLevalcount-1>0$> 	 
+			<$getparentNodeId= ssGetRelativeNodeId(#active.siteId, getparentNodeId,"parent")$> 	
+			<$getLevalcount=(getLevalcount-1)$>	 
+				 
+		<$endloop$> 
+	<$filterNodeID = getparentNodeId $>
+	 
+<$endif$>
+
+<@end@>
+
+<!-------------------------------------------
+Hays worldwide : Error page
+--------------------------------------------->
+<@dynamichtml subtmp_worldwide_error_page@>
+
+<$include subtmp_worldwide_site_search_javascript_inc$> 
+
+	<div id="content-wrap">
+			<div id="left-col-blank">
+				&nbsp;
+			</div>
+			<div id="right-content-wrap">
+				<div id="content">
+					<h1>PAGE NOT FOUND</h1>
+
+					<div class="search-results">
+						<p>Sorry, the page you are looking for can not be found. This page may have moved or been deleted.</p>
+                        <p>Search the site below or navigate to another area of hays.com using the links provided.</p>
+
+			
+
+						<$include subtmp_worldwide_site_searchagain_form_inc$>
+                            	
+	
+				<ul class="link-list">
+						<li><p></p><a href="<$wcmUrl('nodelink','1963')$>">Home</a></li>                        
+                        <li><a href="<$wcmUrl('nodelink','SiteMap')$>">Sitemap</a></li>
+                        
+    
+						</div>
+						<div class="clear"></div>
+						</div><!-- /search-results -->
+
+					
+				</div><!-- /content -->
+				<div id="module-col">
+					&nbsp;					
+				</div><!-- /module-col -->
+			</div><!-- /right-content-wrap -->
+			<div class="clear"></div>
+		</div><!-- /content-wrap -->
+
+
+
+
+<@end@>
+
+<!--******************************************************************
+******** HAYSWORLDWIDE - RIGHT HAND SIDE Print Block *****************
+***********************************************************************-->
+<@dynamichtml subtmp_worldwide_RHS_print_block@>
+	<ul id="pagetools">
+		<li class="printpage"><a href="javascript:window.print()"><$lc('wwGCPrintPageSection')$></a></li>
+	</ul>
+	
+<@end@>
+
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: assigning data file to header
+	and Footer place holders is only allowed on the home page.
+	The choice is then propogated to the rest of the pages.
+	PL_NAME - is the placeholder name
+*******************************************************-->
+<@dynamichtml extract_datafile_haysWorldwide_header_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_haysWorldwide_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME, datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_haysWorldwide_footer_inc@>
+	<$ PL_NAME = 'Footer' $>
+	<$include extract_datafile_haysWorldwide_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME, datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_sec_header_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_haysWorldwide_from_top_node_inc$>
+	<$wcmPlaceholder('Header_Secondary_Navigation', 'templateDocName=RGTMP_HEADER_SUB', datafileInclude)$>
+<@end@>
+
+
+
+<@dynamichtml extract_datafile_haysWorldwide_from_top_node_inc@>
+	<$ datafile = '', datafileInclude = 'dataFileDocName=' $>
+	<$ navTopNodeId = ssGetFirstNodeId(siteId) $>
+	<$ primaryUrlProp = ssGetNodeProperty(navTopNodeId, 'primaryUrl') $>
+	<$ index = strIndexOf(primaryUrlProp, PL_NAME) $>
+	<$if index GE 0 $>
+		<$ datafile = strSubstring(primaryUrlProp, index + strLength(PL_NAME) + 1) $>
+		<$ index = strIndexOf(datafile, '&') $>
+		<$if index GT 0 $>
+			<$ datafile = strSubstring(datafile, 0, index) $>
+		<$endif$>
+	<$endif$>
+	<$ datafileInclude = datafileInclude & datafile $>
+<@end@>
+
+
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: end
+*******************************************************-->
+
+
+
+
+<!--****************************************************
+	Worldwide RS FEED
+*******************************************************-->
+<@dynamichtml  worldwide_rss_feed@>
+	<$strContentType = ''$>
+	<$strSubContentType = ''$>
+ 	<$ strContentType = ssGetNodeProperty("ContentType"), strSubContentType=ssGetNodeProperty("subContentType")$>
+	 
+ 
+	[[%<!--RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"-->%]]
+	<$RssDateFormat = "EEE, dd MMM yyyy HH:mm:ss"$>
+	<$executeService("CR_GET_SITE_HTTP")$>
+	<$if NOT strEquals(serverRelativeSiteRoot,'/')$>
+		<$siteURL=strReplace(HttpSiteAddress, serverRelativeSiteRoot,'')$>
+	<$else$>
+		<$siteURL=HttpSiteAddress$>
+	<$endif$>
+
+	<$if strEquals(strSubstring(siteURL,strLength(siteURL)-1,strLength(siteURL)),'/')$>
+		<$siteURL=strSubstring(siteURL,0,strLength(siteURL)-1)$>
+	<$endif$>
+ 	 
+	<rss xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+	 
+
+	<channel>	
+			<link><$ HttpSiteAddress $>index.htm</link>
+			 
+			<title> Hays Worldwide <$ssGetNodeProperty(#active.nodeId, "label")$> Feed</title>
+			<description>Latest updates from Hays Worldwide</description>
+			 <image>
+				<url><$getDefaultHttpSiteAddress(siteId)$>haysassets/groups/hays_ta/documents/sitestudio/img_logo_hays.gif</url>
+				<title> Hays Worldwide <$ssGetNodeProperty(#active.nodeId, "label")$>  Feed</title>
+			</image> 
+			 
+			<$include  worldwide_internal_rss_feed_inc$>
+
+		</channel>
+<@end@>
+
+<!--****************************************************
+	Worldwide RS FEED -internal
+*******************************************************-->
+
+
+
+<@dynamichtml  worldwide_internal_rss_feed_inc@>	
+		 
+<$include subtmp_worldwide_RSS_getresults_inc$>
+ 
+	<$loop SearchResults$>
+		<$dID = SearchResults.dID$>
+		<$executeService('DOC_INFO_SIMPLE')$>
+		<$if strLength(SearchResults.xUrlPageName) GT 0 $>
+			<$ url = ssLink(SearchResults.xUrlPageName)$>
+		<$else$>
+		<$ url = ssLink(SearchResults.dDocName)$>
+		<$endif$>
+		<$if strIndexOf(url,'http') LT 0$>
+			<$url=siteURL&url$>
+		<$endif$>
+		<item>
+			<title><$ xml(SearchResults.dDocTitle) $></title>
+
+			<link><$  url $></link>
+			<guid><$  url $></guid>				 
+			<description><$DOC_INFO.xDescription$></description>	 
+
+			<pubDate><$rssFormatTimeZone(formatDateWithPattern(SearchResults.xEventDate, RssDateFormat),RssDateFormat)$></pubDate>
+
+		</item>
+	<$endloop$>	
+	
+	
+<@end@>
+
+
+
+<!--****************************************************
+	Worldwide RS FEED -internal getresults for respective content type 
+*******************************************************-->
+
+<@dynamichtml subtmp_worldwide_RSS_getresults_inc@>   
+	
+	 
+	<$ QueryText = ''$>
+ 
+
+	<$if  strLength(strContentType) GT 0 $>
+		<$if strLength(QueryText) GT 0 $>
+			<$ QueryText = QueryText & ' <AND> ' $>
+		<$endif$>
+		<$ QueryText = QueryText & " dDocType <matches> `" & strContentType  & "` <AND> ( xIsRss <matches> `Yes`)" $>
+		<$if strLength(strSubContentType) GT 0 $>
+			<$ QueryText = QueryText & " <AND> ( xIsRss <matches> `Yes`) <AND> xSubType <matches> `" & strSubContentType & "`" $>
+		<$endif$>
+	<$endif$>
+	
+	<$queryString = QueryText$>
+	<$include subtmp_worldwide_set_query_locale_include$>
+	<$QueryText=queryString$>
+				
+	 
+	<$SortField = "xEventDate", SortOrder = "Desc",  ResultCount = 50 $> 	
+	<$initialQuery =''$>
+	<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & ResultCount $>	
+ 
+	<$executeService("SS_GET_SEARCH_RESULTS")$>
+	
+	<@end@>
+
+
+
+
+
+ 
+<@dynamichtml ss_worldwide_layout_head_info_custom@>
+ 	[[% set default locale %]]
+	  <$SiteLocale = "en-WW", LanguageCode = 'en', CountryCode = 'WW',isoCountryCode = 'WW'$>
+	
+<@end@>
+
+<@dynamichtml extract_google_analytics_inc@> 
+	<$ gadatafile = ''$>	
+	<$UrlProp = ssGetNodeProperty(nodeId, 'primaryUrl') $>
+    <$index = strIndexOf(UrlProp, 'Google Analytics') $>	
+	<$if index GE 0 $>
+		<$ gadatafile = strSubstring(UrlProp, index + strLength('Google Analytics') + 1) $>		
+		<$ index = strIndexOf(gadatafile, '&') $>
+		<$if index GT 0 $>
+			<$ gadatafile = strSubstring(gadatafile, 0, index) $>			
+		<$endif$>
+	<$endif$>	
+<@end@>
+ 
+<@dynamichtml redirect_error_to_haysplc@>
+	 <$if strEquals(siteId,'HaysWorldwide') GT 0$>
+		<$redirectToUrl(#env.Hays.com_redirect)$>
+	 <$endif$>	
+<@end@>
+
+</body></html>

@@ -1,0 +1,467 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysTranslationComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+
+
+
+
+<!-------------------------------------
+Added settings for SiteLocale, LanguageCode and CountryCode
+------------------------------------------>
+<@dynamichtml ss_compute_region_config_object@>
+{
+<$if SSContributor and isTrue(SSContributor) and IsLoggedIn and not SSHideContributorUI$>
+	regionName: "<$js(SS_REGIONID)$>",
+	isNativeDoc: <$if isNativeDoc and isTrue( isNativeDoc )$>true<$else$>false<$endif$>,
+	dataFile: "<$js(SS_DATAFILE)$>",
+	<$loop DOC_INFO$>dataFileID: "<$js(dID)$>",<$break$><$endloop$>
+	<$if SS_TEMPLATE and ( strLength( SS_TEMPLATE ) > 0 )$>template: "<$js(SS_TEMPLATE)$>",<$endif$>
+	<$if SS_TEMPLATE_TYPE and ( strLength( SS_TEMPLATE_TYPE ) > 0 )$>templateType: "<$js(SS_TEMPLATE_TYPE)$>",<$endif$>
+	isLegacyRegionDefinition: <$if isLegacyRegionDefinition and isTrue( isLegacyRegionDefinition )$>true<$else$>false<$endif$>,
+	isSecondaryPage: <$if isSecondaryPage and isTrue( isSecondaryPage )$>true<$else$>false<$endif$>,
+	<$if SS_PLACEHOLDER_DEFINITION$>placeholderDefinition: "<$js(SS_PLACEHOLDER_DEFINITION)$>",<$endif$>
+	<$if SS_URL_PLACEHOLDER_DEFINITION$>urlPlaceholderDefinition: "<$js(SS_URL_PLACEHOLDER_DEFINITION)$>",<$endif$>
+	regionDefinition: "<$js(SS_REGION_DEFINITION)$>",
+	siteId: "<$js(siteId)$>",
+	nodeId: "<$js(nodeId)$>",
+	httpCgiPath: "<$js(HttpCgiPath)$>",
+
+	<$if fromDate$>fromDate: "<$fromDate$>",<$endif$>
+	<$if toDate$>toDate: "<$toDate$>",<$endif$>
+	<$if fmtFromDate$>fmtFromDate: "<$fmtFromDate$>",<$endif$>
+	<$if fmtToDate$>fmtToDate: "<$fmtToDate$>",<$endif$>
+
+	SiteLocale: "<$SiteLocale$>",
+	LanguageCode: "<$LanguageCode$>",
+	CountryCode: "<$CountryCode$>",
+
+	origins :
+		{
+			SS_DATAFILE: "<$if SS_DATAFILE_ORIGINATION$><$js(SS_DATAFILE_ORIGINATION)$><$endif$>",
+			SS_TEMPLATE: "<$if SS_TEMPLATE_ORIGINATION$><$js(SS_TEMPLATE_ORIGINATION)$><$endif$>",
+			SS_REGION_DEFINITION: "<$if SS_REGION_DEFINITION_ORIGINATION$><$js(SS_REGION_DEFINITION_ORIGINATION)$><$endif$>",
+			SS_PLACEHOLDER_DEFINITION: "<$if SS_PLACEHOLDER_DEFINITION_ORIGINATION$><$js(SS_PLACEHOLDER_DEFINITION_ORIGINATION)$><$endif$>"
+		},
+
+	actions :
+		[
+			<$include ss_region_actions$>
+		],
+
+	state :
+		{
+		<$ssNeedSeparator = 0$>
+		<$loop SSState$>
+			<$if ssNeedSeparator and isTrue( ssNeedSeparator )$>,<$endif$>"<$SSState.name$>": <$if SSState.value like "true|false"$><$strLower(SSState.value)$><$else$>"<$js(SSState.value)$>"<$endif$><$ssNeedSeparator = 1$>
+		<$endloop$>
+		<$include ss_region_designer_state$>
+		}
+<$endif$>
+} <@end@>
+
+
+
+
+
+
+<@dynamichtml ss_region_close_extras@>
+	<$include super.ss_region_close_extras$>
+	<$include hays_translate_content_script$>
+	<$include hays_translate_later_content_script$>
+<@end@>
+
+
+
+
+
+<@dynamichtml hays_translate_content_script@>
+	<$if haysIncludeTranslation and isTrue( haysIncludeTranslation )$>
+	<$haysIncludeTranslation = ""$>
+	<script type="text/javascript">
+	
+	//alert("REgion = "+'<$SS_REGIONID$>');
+		WCM.CONTRIBUTOR.Translate = function(regionConfig)
+		{
+			
+			$D().log(function(){ return 'Translate'; }, window);
+			var cgiUrl = window.location.protocol + '//' + window.location.host + WCM.ToString(regionConfig['httpCgiPath']);
+			var suffix = '?IdcService=SELECT_TRANSLATE_LANGUAGE_FORM&contentId='+WCM.ToString(regionConfig['dataFile'])+'&nodeId=<$nodeId$>&siteId=<$siteId$>';
+			suffix += "&coreContentOnly=1";
+			var regionId = escape('<$SS_REGIONID$>');
+			//alert ("region name = "+escape(test));
+			// window.location.href = cgiUrl + suffix;
+			// window.open( cgiUrl + suffix, "_blank" );
+			var options = {url: cgiUrl + suffix};
+			var editTrans = 0;
+			
+			options.callback = function(returnparam)
+			{
+				window.setTimeoutEx(function()
+				{
+					if(returnparam != null) {						
+						if(returnparam.indexOf(":Edit") > 0){							
+							editTrans = 1;
+							returnparam = returnparam.substring(0,returnparam.indexOf(":Edit"));
+						}
+		
+						<$if ssDocName and strLength(ssDocName) gt 0$>							
+							var url = (WCM.GetUrlServer() + "<$HttpCgiPath$>?IdcService=SS_GET_PAGE&ssDocName=" + returnparam);
+						<$else$>
+							if(editTrans==1){								
+								var url = (WCM.GetUrlServer() + "<$HttpCgiPath$>?IdcService=SS_GET_PAGE&ssDocName=" + returnparam);
+								}
+							else{								
+								var url = (WCM.GetUrlServer() + "<$HttpCgiPath$>?IdcService=HAYS_SWITCH_REGION_ASSOCIATION&region=" + regionId + "&ssDocName=" + returnparam);
+					
+							}
+						<$endif$>
+						
+					//editTrans = 0;
+						
+					} else {						
+						var url = (WCM.GetUrlBase() + WCM.RemoveQueryStringValue(WCM.CONTRIBUTOR.editTarget, WCM.GetQueryString()) + WCM.GetBookmark());
+						$D().log(function(){ return '<$lc("wwTranslateContentReloadingMessage")$>' + url; }, window);
+					}
+					if(editTrans==1)
+					{
+					  window.open(url);
+					}
+					else
+					{
+					  WCM.ReloadURL(url);
+					}					
+					editTrans = 0;
+				}, 2000);
+			};
+
+			var popup = new WCM.Popup(options);
+			popup.Open();
+			popup.Focus();
+		}			
+	</script>
+	<$endif$>
+<@end@>
+
+<@dynamichtml hays_translate_later_content_script@>
+	<$if haysIncludeTranslationLater and isTrue( haysIncludeTranslationLater )$>
+	
+		<$haysIncludeTranslationLater = ""$>
+		<$Title=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Title']/text()")$>
+		<$Title=strReplace(Title,"'","\"")$>
+		<$Summary=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Summary']/text()")$>
+		<$Summary=strReplace(Summary,"'","\"")$>
+		<$SecondaryTitle=ssIncludeXml(dDocName,"wcm:root/wcm:element[@name='Secondary_Title']/text()")$>
+		<$SecondaryTitle=strReplace(SecondaryTitle,"'","\"")$>
+		
+		<$count=ssGetXmlNodeCount(dDocName,"wcm:root/wcm:list[@name='Content']/wcm:row")$>	
+		<$ rsCreateResultSet("rsContents", "title,summary,body") $>
+		<$if count gt 0$>    	
+			<$nPos=1$>
+			<$loopwhile nPos <= count$>
+			<$list_Title=ssIncludeXml(dDocName,"wcm:root/wcm:list[@name='Content']/wcm:row[" & nPos & "]/wcm:element[@name='Title']/text()")$>
+			<$list_Title=strReplace(list_Title,"'","\"")$>
+			<$list_Title=strReplace(list_Title,",","~")$>
+    		<$list_Summary=ssIncludeXml(dDocName,"wcm:root/wcm:list[@name='Content']/wcm:row[" & nPos & "]/wcm:element[@name='Summary']/text()")$>
+    		<$list_Summary=strReplace(list_Summary,"'","\"")$>
+			<$list_Summary=strReplace(list_Summary,",","~")$>
+			<$list_Body=ssIncludeXml(dDocName,"wcm:root/wcm:list[@name='Content']/wcm:row[" & nPos & "]/wcm:element[@name='Body']/text()")$>
+			<$list_Body=strReplace(list_Body,"'","\"")$>
+			<$list_Body=strReplace(list_Body,",","~")$>			
+			<$values=list_Title&','&list_Summary&','&list_Body$>
+    		<$ rsAppendRowValues("rsContents",values)$>
+			<$nPos=nPos+1$>
+			<$endloop$>
+		<$endif$>		
+		
+		<script type="text/javascript">
+		
+			WCM.CONTRIBUTOR.TranslateLater = function(regionConfig)
+			{ 
+					$("#dialog10").dialog({
+										autoOpen:false,
+										modal:true,
+										resizable:false,
+										position: 'center',
+										overflow: 'scroll',
+										height: 650,										
+										width: 600,
+										zIndex: 9999
+										});
+								 
+								  $("#dialog10").dialog('open');							  
+			}
+			
+		</script>
+<div id="dialog10" style="display:none;"><$include translate_Later$></div>		
+<$endif$>	
+
+<@end@>
+
+
+
+<@dynamichtml translate_Later@>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+
+function HAYSform() {
+	if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+
+  $(document).ready(function() {	
+	 
+	 $("#TransCancelbutton").click(function() {	
+		$("#dialog10").dialog('close');						
+	 });	 
+	 
+	 $("#TransSubmitbutton").click(function() {		
+		$.watermark.hideAll();	 
+		var validate=$("#TranslationLater").validate().form();
+		
+		if(validate==true)
+			{
+			  $("#TranslationLater").submit();			  
+			  
+			} // end IF(validate)
+		
+    }); //end $(".button").click(function)
+
+  }); //end $()document).Ready(function)
+
+		jQuery.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+
+        jQuery.validator.addClassRules("email", {
+			email:true
+		});
+		
+		
+		jQuery.extend(jQuery.validator.messages, {
+            required: "<$lc("wwJsmandatory_msg_input")$>",
+			email: "<$lc("wwJsinvalid_email_msg")$>"			
+		});
+
+
+		$("#TranslationLater").validate({
+			onkeyup:false
+		});
+	}
+	else {
+		window.setTimeout(HAYSform, 100);
+	}
+}
+HAYSform();
+//--><!]]>
+</script>
+
+
+<$if #active.submitted$>
+
+<$executeService("HAYS_MAIL")$>
+<script type="text/javascript">
+$("#dialog10").dialog('close');
+</script> 
+<$if strEqualsIgnoreCase(mailResponse,"true")$>
+
+<script type="text/javascript">
+function HAYSform1() {
+if (window.jQuery && jQuery.isReady) {
+	
+	var dialogMessage = '<div id="ConfirmationMessage"><p><$lc("wwTranslateConfirmationSummary")$><p></div>';
+    $("#dialog1").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');						    
+					}
+
+                            },
+
+                title: '<$lc('wwTranslateConfirmationTitle')$>'           
+         });
+	      $("#dialog1").dialog('open');
+
+}
+else
+{
+ window.setTimeout(HAYSform1, 100);
+}
+}
+HAYSform1();
+</script>
+
+<$else$>
+
+<script type="text/javascript">
+function HAYSform2() {
+if (window.jQuery && jQuery.isReady) {
+	
+	var dialogMessage = '<$lc('wwDataFormErrorText')$>';
+    $("#dialog2").html(dialogMessage).dialog({
+		        	autoOpen:false,
+				modal:true,
+				resizable:false,
+				position: 'center',
+				buttons: {
+
+				Ok:function(){
+						   $(this).dialog('close');
+
+					}
+
+                            }
+
+                          
+         });
+	      $("#dialog2").dialog('open'); 
+
+}
+else
+{
+ window.setTimeout(HAYSform2, 100);
+}
+}
+HAYSform2();
+</script>
+
+<$endif$>
+<$endif$>
+
+<div id="dialog1"><p></p></div>
+<div id="dialog2"><p></p></div>
+ <div id="ajaxwrapper">
+ 
+<span class="sub_text" style="text-transform: uppercase;"><h1><$lc("wwTranslateTitle")$></h1></span>
+<p><$lc('wwRequiredField')$><$lc('wwDataFormsRequiredText')$></p>
+<form id="TranslationLater" name="TranslationLater" class="hays_form" action="" method="post">
+
+<fieldset class="rc_grey">
+ 
+  <input type="hidden" id="emailTemplate" value="TranslationWorkflow_EmailTemplate" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" name="submitted" value="1" /> 
+ 
+<ol>
+<li>
+  <div class="">
+    <label for="Email"><$lc('wwRequiredField')$> <$lc("wwTranslateTo")$></label>
+   </div>
+   <div class="">
+	<input type="text" name="Email" id="Email" class="mandatory email" value=""/>
+   </div>
+   <div class=""></div>
+</li>
+
+<li>
+  <div class="">
+    <label for="Subject"><$lc("wwTranslateSubject")$></label>
+   </div>
+   <div class="">
+	<input type="text" name="Subject" id="Subject" class="" value="Translation Request	<$dDocName$>"/>
+   </div>
+   <div class=""></div>
+</li>
+
+<li>
+   <div class="">
+    <label for="Content"><$lc("wwTranslateText")$></label>
+   </div>
+   <div class="">
+   <textarea rows="25" cols="100" id="Content" name="Content" class="" value=''>	
+	 <$lc("wwTranslateElement1Label")$>	:	<$Title$>
+	
+	<$lc("wwTranslateElement2Label")$>	:	<$SecondaryTitle$>
+	
+	<$lc("wwTranslateElement3Label")$>	:	<$Summary$>
+	
+	
+	<$lc("wwTranslateListLabel")$>	:
+	
+	<$loop rsContents$>
+	 <$lc("wwTranslateListElement1Label")$>	:	<$strReplace(rsContents.title,"~",",")$>
+	 
+	 <$lc("wwTranslateListElement2Label")$>	:	<$strReplace(rsContents.summary,"~",",")$>
+	 
+	 <$lc("wwTranslateElement3Label")$>	:	<$strReplace(rsContents.body,"~",",")$>
+	 
+    <$endloop$>	
+   </textarea>
+   </div>
+   <div class=""></div>
+</li>  
+</ol>
+
+</fieldset>
+ <div class="ui-dialog-buttonset">
+		<input type="submit" id="TransSubmitbutton" value="<$lc('wwDataFormSendButtonLabel')$>" class="button" />
+		<input id="TransCancelbutton" type="button" value="<$lc('wwJscancel_button')$>" class="button" /> 
+ </div>
+ <div class="clear"></div>
+
+</form>
+ 
+</div>
+<@end@>
+
+
+
+<@dynamichtml ss_create_actions_table@>
+	<$include super.ss_create_actions_table$>
+	<$edited = 0$>
+	<$if strEquals(SS_REGIONID, 'Main Region') ==1  and strEquals(#active.siteId, 'HaysWorldwide') == 0 $>
+		<$main_check = 1$>
+		<$loop SSRegionActionsTable$>
+			<$if strEquals( SSRegionActionsTable.letter, "E" )$>
+				<$edited = 1$>
+				<$break$>
+			<$endif$>
+		<$endloop$>
+		<$if isTrue(edited) $>
+			<$if isTrue(isPrimaryWebsite(siteId)) and SS_DATAFILE and ( strLength( SS_DATAFILE ) > 0 )$>
+				<$haysIncludeTranslation='1'$>
+				<$ssAction = "translate"$>
+				<$ssCaption= "wwTranslateContentLabel"$>
+				<$rsAppendRowValues("SSActions", ssAction & "," & ssCaption & "," & lc(ssCaption) )$>
+			
+				<$haysIncludeTranslationLater='1'$>
+				<$ssAction = "TranslateLater"$>
+				<$ssCaption= "wwTranslateLaterContentLabel"$>
+				<$rsAppendRowValues("SSActions", ssAction & "," & ssCaption & "," & lc(ssCaption) )$>
+				<$endif$>
+		<$endif$>
+	<$else$>
+	<$if strEquals(SS_REGIONID, 'Main Region 1') ==1  and strEquals(#active.siteId, 'HaysWorldwide') == 0 and (main_check !=1) and (domainId == 1005) $>
+		<$loop SSRegionActionsTable$>
+			<$if strEquals( SSRegionActionsTable.letter, "E" )$>
+				<$edited = 1$>
+				<$break$>
+			<$endif$>
+		<$endloop$>
+		<$if isTrue(edited) $>
+			<$if isTrue(isPrimaryWebsite(siteId)) and SS_DATAFILE and ( strLength( SS_DATAFILE ) > 0 )$>
+				<$haysIncludeTranslation='1'$>
+				<$ssAction = "translate"$>
+				<$ssCaption= "wwTranslateContentLabel"$>
+				<$rsAppendRowValues("SSActions", ssAction & "," & ssCaption & "," & lc(ssCaption) )$>
+			
+				<$haysIncludeTranslationLater='1'$>
+				<$ssAction = "TranslateLater"$>
+				<$ssCaption= "wwTranslateLaterContentLabel"$>
+				<$rsAppendRowValues("SSActions", ssAction & "," & ssCaption & "," & lc(ssCaption) )$>
+				<$endif$>
+		<$endif$>
+		<$main_check = 0$>
+	<$endif$>
+	<$endif$>
+	
+<@end@>
+</body></html>

@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>
+RSS service
+</title>
+</head>
+<body>
+
+<@table RSS_Services@>
+<table border=1><caption><strong>Scripts For Custom Services</strong></caption>
+<tr>
+	<td>Name</td><td>Attributes</td><td>Actions</td>
+</tr>
+<tr>
+	<td>MY_RSS_FEEDS</td>
+	<td>DocService
+		1
+		FEED_SELECTION
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GET_OPML</td>
+	<td>DocService
+		1
+		OPML_TEMPLATE
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GET_REMOTE_FEED</td>
+	<td>DocService
+		32
+		GENERIC_RSS_FEED
+		null
+		null<br>
+		!csUnableToLoadRssFeed(feedUrl)</td>
+	<td>3:getRssFeedForUrl::0:!csUnableToLoadRssFeed(feedUrl)</td>
+</tr>
+<tr>
+	<td>GET_SCS_FEED</td>
+	<td>DocService
+		32
+		STELLENT_RSS_FEED
+		null
+		null<br>
+		null</td>
+	<td></td>
+</tr>
+</table>
+<@end@>
+</body></html>

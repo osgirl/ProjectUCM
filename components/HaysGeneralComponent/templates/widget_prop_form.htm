@@ -1,0 +1,578 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>SET WIDGET MAPPING</title>
+		<$defaultPageTitle = "HAYS_WIDGET_PROP_FORM"$>
+		<$include std_html_head_declarations$>
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css" />
+		<!--BAU REL-4 21118-->
+				<$include include_jquery_js$>
+		<!--BAU REL-4 21118-->
+		<style>
+			
+			.on {}
+			.off {display:none;}		
+			#test{ width:500px;}
+		</style>
+	</head>
+	<body id="pg_3col" >
+	<$executeService('SS_GET_ALL_SITES_EX2')$>
+	
+	<script src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+	<script type="text/javascript">
+	
+		var countryLocale="";
+		//var page_name = "";
+		var page_name = "";
+		function onloadCopyForm()
+		{
+				
+			document.getElementById("pname").value = "";
+			document.getElementById("pvalue").value = "";
+			document.getElementById("statauslabel").innerHTML = "";
+			getDBSiteIds();
+		}
+		function validateCopyForm() 
+		{
+				
+				if(countryLocale != "" & page_name != "")
+			{
+				
+				var temp = $("#select-to option").size();
+				//alert(temp);
+				var arr = new Array;
+				$("#select-to option").each  ( function() {
+				
+				if($(this).val().substr(-4)==' (c)'){
+				var len=$(this).val().length - 4;
+				var a =$(this).val().substr(0,len);
+				//var a = $(this).val().replace(' (c)',''); 
+				arr.push(a);
+				} else{
+				arr.push ( $(this).val() );
+				}
+				});
+				//alert(arr);
+				var url = "?IdcService=SET_WIDGET_DATA&page_name="+page_name+"&locale="+countryLocale+"&widget_name="+arr+"&widget_order=";
+				//alert(url);
+				var loader = dhtmlxAjax.getSync(url);
+				alert("Changes have been saved..");
+				}
+				
+			else
+			{
+			alert("Please select locale and Page Name..");
+			}
+  
+		}
+	
+		$('#show').hide();
+		$('#ontGroup_exist').click(function() {
+			$('#show').show();
+		});
+		$('#ontGroup_new').click(function() {
+			$('#show').hide();
+		});
+		
+
+		function setProperty()
+		{
+				
+				var m_pname = document.getElementById("pname").value;
+				var m_pvalue = document.getElementById("pvalue").value;
+			
+				var url = "?IdcService=SS_SET_SITE_PROPERTY&IsSoap=1&Auth=Internet&siteId="+m_siteid + "&property=" + m_pname + "&value=" + m_pvalue + "&idcToken=<$idcToken$>";
+				//alert(url);
+				var loader = dhtmlxAjax.getSync(url);
+				var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				var message = "Property updated successfully."
+				if( list != null) 
+				{
+					for(var i=0;i<list.length;i++) 
+					{
+						if(list[i].attributes[0].value == "StatusCode")
+						{
+							message = "Some error occured. Please try again."
+						}
+						
+					}
+					document.getElementById("statauslabel").innerHTML = message;
+				}
+			
+			//getSiteInfo(siteId);
+		}
+
+		function getDBSiteIds()
+		{    
+		    
+			
+			var selectOptn = document.createElement("OPTION");
+			selectOptn.text = 'Please Select...';
+			selectOptn.value = '';
+			lOldSite.options.add(selectOptn);
+			document.getElementById("pname").value="";
+			document.getElementById("pvalue").value="";
+					
+			var serviceUrl="";
+			var serviceLoader="";
+			var serviceList="";		
+			serviceUrl = "?IdcService=GET_SITEID_UK_HAYS&IsSoap=1";
+			serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+			serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			//alert("test length= "+serviceList.length);
+			var lCount=0;
+			var strArray=[];
+			var strArrayDB=[];
+			var strArrayDiff=[];
+			var lSiteId="";
+			<$loop SiteIds$>
+				lSiteId='<$SiteIds.siteId$>';
+				strArray[lCount]=lSiteId;
+				lCount++;
+			<$endloop$>
+			if( serviceList != null) 
+			{ 
+				for(var i=0;i<serviceList.length;i++)
+				{
+					if (serviceList[i].firstChild){
+											
+					//alert("test = "+serviceList[i].nodeValue);
+					strArrayDB[i]=serviceList[i].firstChild.nodeValue;
+					}
+				}
+			}
+			strArrayDiff=arr_diff(strArrayDB,strArray);
+			if(strArrayDiff.length>0)
+			{				
+				for(var j=0;j<strArrayDiff.length;j++)
+				{
+					var lSiteIdd=strArrayDiff[j];
+					<$loop SiteIds$>
+					 if(lSiteIdd == '<$SiteIds.siteId$>')
+						{
+							var optn = document.createElement("OPTION");
+							optn.text = '<$SiteIds.label$>';
+							optn.value = '<$SiteIds.siteId$>';
+							lOldSite.options.add(optn);
+						}
+						
+					<$endloop$>
+				}
+			}
+			//getAllLocalesForMicrosite();
+			
+			
+		}
+		function getAllLocalesForMicrosite()
+		{
+			document.getElementById("microlocale").options.length = 0;
+			var serviceUrl="";
+			var serviceLoader="";
+			var serviceList="";
+			var lLocales=document.getElementById("microlocale");
+			var selectOptn = document.createElement("OPTION");
+				selectOptn.text = 'Please Select...';
+				selectOptn.value = '';
+				lLocales.options.add(selectOptn);
+			serviceUrl = "?IdcService=GET_ALL_LOCALES&IsSoap=1";
+			serviceLoader = dhtmlxAjax.getSync(serviceUrl);
+			serviceList = serviceLoader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+				
+			if( serviceList != null) 
+			{
+				for(var i=0;i<serviceList.length;i++)
+				{
+					if(serviceList[i].attributes[0].value == "SITELOCALE")
+					{
+						var optn = document.createElement("OPTION");
+						optn.text = serviceList[i].firstChild.nodeValue;
+						optn.value = serviceList[i].firstChild.nodeValue;
+						lLocales.options.add(optn);
+					}
+				}
+			}
+		}
+		function arr_diff(a1, a2)
+		{
+		  var diff = $(a1).not(a2).get();
+		  var a=[], diff=[];
+		  for(var i=0;i<a1.length;i++)
+			a[a1[i]]=true;
+		  for(var i=0;i<a2.length;i++)
+			if(a[a2[i]]) delete a[a2[i]];
+			else a[a2[i]]=true;
+		  for(var k in a)
+			diff.push(k);
+		  return diff;
+		}
+		function getSiteInfo(siteId)
+		{
+		    document.getElementById("ProjectdDocName").value="";
+			document.getElementById("ProjectdDocId").value="";
+			var url = "?IdcService=SS_GET_SITE_INFO&IsSoap=1&siteId="+siteId;
+			var loader = dhtmlxAjax.getSync(url);
+			var Attrlist = loader.xmlDoc.responseXML.getElementsByTagName("idc:row")[0].attributes;
+			if( Attrlist != null) 
+			{
+				for(var j=0;j<Attrlist.length;j++)
+				{
+		
+					if(Attrlist[j].nodeName == "dID")
+					{
+						
+						document.getElementById("ProjectdDocId").value=Attrlist[j].nodeValue;
+					}
+					if(Attrlist[j].nodeName == "dDocName")
+					{
+						
+						document.getElementById("ProjectdDocName").value=Attrlist[j].nodeValue;
+					}
+				}
+				
+			}					
+		}
+		function getDomainForLocale(lLocale)
+		{
+			document.getElementById("newsitedomain").value="";
+			var url = "?IdcService=GET_DOMAIN_FOR_LOCALE&IsSoap=1&siteLocale="+lLocale;
+			var loader = dhtmlxAjax.getSync(url);
+			var Attrlist = loader.xmlDoc.responseXML.getElementsByTagName("idc:field");
+			if( Attrlist != null) 
+			{
+				for(var j=0;j<Attrlist.length;j++)
+				{
+					if(Attrlist[j].attributes[0].value == "DOMAINID")
+					{
+						document.getElementById("newsitedomain").value=Attrlist[j].firstChild.nodeValue;
+					}
+				}
+			}
+		}
+		function extractValue(element) 
+		{
+			var value =  element.firstChild;
+			if( value != null)
+				value = value.nodeValue;
+			else value = "";
+			return value;
+		}
+			  
+		function setValues(element)
+		{
+			countryLocale = element;
+			//alert("page_name   : " + page_name);
+			if(countryLocale != "" & page_name != "")
+			getWidgetData(page_name);
+			else
+			{
+				$("#select-from-aw").html('');
+				$("#select-from-cw").html('');
+			$("#select-to").html('');
+			}
+		}
+		
+		function getWidgetData(element)
+		{
+			page_name = element;
+			var allWidget = new Array;
+			var mappedWidget = new Array;
+			var restWidget = new Array;
+			var availableWidget = new Array;
+			var contentWidget = new Array;
+			//alert($("#Country option:selected").text());
+			if(countryLocale != "" & page_name != "")
+			{
+			//alert("countryLocale   : " + countryLocale);
+			var arr = new Array;
+			//alert(page_name + "  " + countryLocale );
+			
+			//var url2 = "?IdcService=GET_WIDGET_DATA&IsSoap=1&page_name="+page_name+"&locale="+countryLocale;
+			$("#select-from-aw").html('');
+			$("#select-from-cw").html('');
+			$("#select-to").html('');
+			mappedWidget = getWidgetArray(page_name, countryLocale);
+			allWidget = getAllWidgets(countryLocale);
+			restWidget = getDifferenceArray(allWidget,mappedWidget);
+			for(var i=0; i<restWidget.length; i++)
+			{ 
+				if(restWidget[i].substr(-4)==' (c)'){
+				contentWidget.push(restWidget[i]);
+				} else{
+				availableWidget.push(restWidget[i]);
+				}
+			}
+			setoptionsValues(availableWidget,"select-from-aw");
+			setoptionsValues(contentWidget,"select-from-cw");
+			setoptionsValues(mappedWidget,"select-to");
+			}
+			else
+			{
+				$("#select-from-aw").html('');
+				$("#select-from-cw").html('');
+				$("#select-to").html('');
+			}
+			
+		}
+		
+		function getAllWidgets(countryLocale)
+		{
+			var url = "?IdcService=GET_ALL_WIDGET_NAMES&IsSoap=1";
+			var loader = dhtmlxAjax.getSync(url);
+			var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+			var allWidgetRS = getResultSet(list,'allWidgetRS');
+			var value = allWidgetRS.getElementsByTagName("idc:row");
+			var arr = new Array;
+			 for(var i=0; i<value.length; i++)
+			{ 
+				var ps = value[i].getElementsByTagName("idc:field")[0];
+				var ps1 = ps.childNodes[0]
+				arr.push(ps1.nodeValue);
+			}
+			
+			var url_cw = "?IdcService=GET_ALL_CONTENT_WIDGET_NAMES&IsSoap=1&locale="+countryLocale;
+			var loader_cw = dhtmlxAjax.getSync(url_cw);
+			var list_cw = loader_cw.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+			var allCWidgetRS = getResultSet(list_cw,'allCWidgetRS');
+			var value_cw = allCWidgetRS.getElementsByTagName("idc:row");
+			for(var i=0; i<value_cw.length; i++)
+			{
+				var ps = value_cw[i].getElementsByTagName("idc:field")[1];
+				var ps1 = ps.childNodes[0]
+				arr.push(ps1.nodeValue);
+			}
+			return arr;
+		}
+		
+		function getWidgetArray(page_name, countryLocale)
+		{
+			var url = "?IdcService=GET_WIDGET_DATA&IsSoap=1&page_name="+page_name+"&locale="+countryLocale;
+			var loader = dhtmlxAjax.getSync(url);
+			var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+			var widgetRS = getResultSet(list,'widgetRS');
+			var value = widgetRS.getElementsByTagName("idc:row");
+			
+			var arr = new Array;
+			//alert(value + "   " + value.length);
+			for(var i=0; i<value.length; i++)
+			{
+				var ps = value[i].getElementsByTagName("idc:field")[4];
+				var ps1 = ps.childNodes[0]
+				if(ps1!=undefined){
+				arr.push(ps1.nodeValue);
+				}else{
+				var ps = value[i].getElementsByTagName("idc:field")[2];
+				var ps1 = ps.childNodes[0]
+				arr.push(ps1.nodeValue);
+				}
+			}
+			
+			return arr;
+		}
+		
+		function setoptionsValues(arrTemp,selectId)
+		{
+			for(var i=0; i<arrTemp.length; i++)
+			{
+				var selectBox = document.getElementById(selectId);
+				var option = document.createElement('option');
+				option.setAttribute('value', arrTemp[i]);
+				option.innerHTML = arrTemp[i];
+				//setAttribute('text', ps1.nodeValue);
+				selectBox.appendChild(option);
+			}
+		}
+		
+		function getDifferenceArray(allWidget,mappedWidget)
+		{
+				
+				var uniqueAllWidget = [];
+				var finalWidget = [];
+				$.each(allWidget, function(i, el){
+					if($.inArray(el, uniqueAllWidget) === -1) uniqueAllWidget.push(el);
+				});
+
+				$.each(uniqueAllWidget, function(i,e) {
+				if ($.inArray(e, mappedWidget) == -1) finalWidget.push(e);
+			});
+			return finalWidget;
+		}
+		
+		function getResultSet(list,resultsetname)
+		{
+			var returnRS;
+			for (var counter=0;counter<list.length;counter++ )
+			{
+				if(list[counter].getAttribute('name')== resultsetname)
+				{
+					returnRS = list[counter];
+				}
+			}
+			return returnRS;
+		}
+		
+	</script>
+		<$include std_page_begin$>
+		<div id="ont"  style="width:700px;">
+			<h2>SET WIDGET MAPPING</h2>
+	
+				
+				<table style="width:95%;">
+					<$schViewName = "OfficeCountryView"$>
+         <$if NOT rsExists('HAYSWEBSITES')$>
+        
+		<$executeService("GET_SCHEMA_VIEW_VALUES_CUSTOM")$>
+         <$endif$>
+         
+            <thead>
+               <$if rsExists('HAYSWEBSITES') AND rsFirst('HAYSWEBSITES') $>
+               <th><label for="Country">*Country/Website:</label></th>
+               <th>
+                  <select id="Country" name="Country" onChange="setValues(this.options[this.selectedIndex].value);return false;">
+                     <option name="Country" value="" selected>Select...</option>
+                     <$loop HAYSWEBSITES$>
+                     <option name="Country" value="<$HAYSWEBSITES.SITELOCALEDUP$>"><$HAYSWEBSITES.COUNTRY$> <$HAYSWEBSITES.LANGUAGELABEL$></option>
+                     <$endloop$>
+                  </select>
+               </th>
+               </tr>
+               <$endif$>
+            </thead>
+         
+				</table>
+				<table style="width:95%;">
+				<$executeService("GET_PAGE_NAMES")$>
+		 
+		 
+            <thead>
+               <$if rsExists('widgetPagesRS') AND rsFirst('widgetPagesRS') $>
+               <th><label for="page_name">*Page Name:</label></th>
+               <th>
+                  <select id="page_name" name="page_name" onChange="getWidgetData(this.options[this.selectedIndex].value);return false;">
+                     <option name="page_name" value="" selected>Select...</option>
+                     <$loop widgetPagesRS$>
+                     <option name="page_name" value="<$widgetPagesRS.PAGE_NAME$>"><$widgetPagesRS.PAGE_NAME$></option>
+                     <$endloop$>
+                  </select>
+               </th>
+               </tr>
+               <$endif$>
+            </thead>
+         
+				</table>
+				<script>
+				var allWidgets = "";
+				
+				</script>
+				
+			
+	<table style="width:95%;">
+<thead>	
+    <tr>
+	<th>
+	Available Widget<br/>
+	<select name="selectfrom" id="select-from-aw" multiple size="5" style="float:left;">
+     
+      
+    </select>
+	</th>
+	
+   
+	<th style="width:200px;">
+	<br/>
+	<a href="JavaScript:void(0);" id="btn-add">Add</a>&raquo;
+    &laquo;<a href="JavaScript:void(0);" id="btn-remove">Remove</a>
+	</th>
+    
+	
+	<th rowspan="2">
+	Widgets for the selected Page<br/>
+	<select name="selectto" id="select-to" multiple size="12" style="float:right;">
+      
+      
+    </select>
+	</th>
+	
+	
+	</tr>
+	<tr>
+	<th>
+	Content Widget<br/>
+	<select name="selectfrom" id="select-from-cw" multiple size="5" style="float:left;">
+     
+      
+    </select>
+	</th>
+	<th style="width:200px;">
+	<br/><br/><br/>
+	<a href="JavaScript:void(0);" id="btn-up">Up</a> &#8593;
+    <a href="JavaScript:void(0);" id="btn-down">Down</a> &#8595;
+	</th>
+	</tr>
+    </thead>
+	</table>
+	
+ 
+				<table class="no_border">
+					<tfoot>
+						<tr>
+							<td></td>
+							<td>
+							<$if  isTrue(#env.DisableSiteStudioContribution)$>
+								<button disabled="true" onclick="validateCopyForm()">UPDATE PROPERTY</button>
+							<$else$>
+								<button onclick="validateCopyForm()">UPDATE PROPERTY</button>
+							<$endif$>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+		</div>
+		<$include std_page_end$>
+	</body>
+	<script>
+	$(document).ready(function() {
+    $('#btn-add').click(function(){
+        $('#select-from-aw option:selected').each( function() {
+                $('#select-to').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+            $(this).remove();
+        });
+    });
+	$('#btn-add').click(function(){
+        $('#select-from-cw option:selected').each( function() {
+                $('#select-to').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+            $(this).remove();
+        });
+    });
+    $('#btn-remove').click(function(){
+        $('#select-to option:selected').each( function() {
+		if($(this).val().substr(-4)==' (c)'){
+            $('#select-from-cw').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+            } else{
+			$('#select-from-aw').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+			}
+			$(this).remove();
+        });
+    });
+    $('#btn-up').bind('click', function() {
+        $('#select-to option:selected').each( function() {
+            var newPos = $('#select-to option').index(this) - 1;
+            if (newPos > -1) {
+                $('#select-to option').eq(newPos).before("<option value='"+$(this).val()+"' selected='selected'>"+$(this).text()+"</option>");
+                $(this).remove();
+            }
+        });
+    });
+    $('#btn-down').bind('click', function() {
+        var countOptions = $('#select-to option').size();
+        $('#select-to option:selected').each( function() {
+            var newPos = $('#select-to option').index(this) + 1;
+            if (newPos < countOptions) {
+                $('#select-to option').eq(newPos).after("<option value='"+$(this).val()+"' selected='selected'>"+$(this).text()+"</option>");
+                $(this).remove();
+            }
+        });
+    });
+});
+	</script>
+</html>

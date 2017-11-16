@@ -1,0 +1,152 @@
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE height=70 cellSpacing=0 cellPadding=0 width=600 border=0>
+        <TBODY>
+         <TR>
+          <TD vAlign=top width=30 height=20>&nbsp;</TD>
+	  </TR>    
+         <TR>
+          <TD vAlign=top width=30>&nbsp;</TD>
+          <TD vAlign=top>
+            <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <$siteLabel="",websiteURL=""$>	
+				<$dSiteId = siteId$>
+				<$executeService("SS_GET_ALL_SITE_DOMAINS")$>
+				<$loop DomainMap$>			
+					<$if strEqualsIgnoreCase(siteId,DomainMap.ssSiteId)$>				
+						<$if DomainMap.ssIsDefault == 1$>
+							<$siteLabel=DomainMap.ssKey$>
+							<$websiteURL=DomainMap.ssKey$>
+						<$endif$>					
+					<$endif$>
+				<$endloop$>
+				<$siteLabel=strReplace(siteLabel,"testsg.","")$>
+				<$siteLabel=strReplace(siteLabel,"www.","")$>
+				<$websiteURL="http://"&websiteURL$> 
+                <!-- Release 7 [Home page logo]-->
+				<$inThisConfig=#env.HAYS_RESPONSE_LOGO_HOME$>
+				<$checkThisValue=siteId$>
+				<$include checkFlagValue$>
+				<$if checkFlag==1$>
+				<!-- end -->		
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="<$websiteURL & ssWeblayoutUrl('IMG_LOGO_HAYSRESPONSE')$>" alt="Hays logo" width="183" height="50"/>
+					</TD>				
+				<$else$>
+					<TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81"/>
+					</TD>
+				<$endif$>
+              </TR>
+              <TR>
+                <TD vAlign=top width="auto" height=0>	          
+				<$if siteId like 'frHRBE' OR  siteId like 'nlHRBE' OR  siteId like 
+				'enHRBE'$>
+					<a href="<$websiteURL$>" style="text-decoration:none"><strong>
+					<font size="3" face="Arial" color="#052B79"><$siteLabel$>
+					</font></strong></a>
+				<$else$>
+					<a href="<$websiteURL$>" style="text-decoration:none"><strong>
+					<font size="3" face="Arial" color="#009FDA"><$siteLabel$>
+					</font></strong></a>
+				<$endif$>
+				</TD>
+              </TR>
+              </TBODY>
+              </TABLE>
+            </TD>
+          </TR>
+         </TBODY>
+       </TABLE>
+     </TD>
+    </TR>
+  <TR>
+    <TD>
+      <TABLE cellSpacing=0 cellPadding=30 width=600 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width=570 border=0>
+              <TBODY>
+               <TR>
+                <TD vAlign=top colSpan=2>
+                  <TABLE style="WIDTH: 568px" cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                     <TD>
+		    <p>
+			<$lc("wwReferAFriend_RefereeText1_new")$><br/><br/><br/><br/>
+			<$lc("wwReferAFriend_RefereeTitle_new",friends_name)$><br/><br/><br/>
+			<$lc("wwReferAFriend_RefereeText2_new")$><br/><br/><br/>
+			<$lc("wwReferAFriend_RefereeText3_new")$><br/><br/><br/>
+			<$lc("wwReferAFriend_RefereeText4_new")$><br/><br/><br/>
+				
+			<$lc("wwReferAFriend_FriendHeading_new1")$><br/><br/>
+			<$if friends_name $>
+			<$lc("wwReferAFriendEmailText4")$>: <$sanitizeHtml(friends_name)$><br/><br/>
+			<$endif$>
+			<$if friends_location $>
+			<$lc("wwReferAFriendEmailText5")$>: <$sanitizeHtml(friends_location)$><br/><br/>
+			<$endif$>
+			<$if friends_email $>
+			<$lc("wwReferAFriendEmailText6")$>: <$sanitizeHtml(friends_email)$><br/><br/>
+			<$endif$>
+			<$if friends_phoneno $>
+			<$lc("wwReferAFriendEmailText7")$>: <$sanitizeHtml(friends_phoneno)$><br/><br/>
+			<$endif$>
+			<$if friends_jobtitle $>
+			<$lc("wwReferAFriendEmailText8")$>: <$sanitizeHtml(friends_jobtitle)$><br/><br/>
+			<$endif$>
+			<$if friends_town $>
+			<$lc("wwReferAFriendEmailText9")$>: <$sanitizeHtml(friends_town)$><br/><br/><br/><br/>
+			<$endif$>
+			
+			<$lc("wwReferAFriend_RefereeHeading_new")$><br/><br/>
+			
+			
+			<$if name $>
+			<$lc("wwReferAFriendEmailText11")$>: <$sanitizeHtml(name)$><br/><br/>
+			<$endif$>
+			<$if youraddress $>
+			<$lc("wwReferAFriendEmailText12")$>: <$sanitizeHtml(youraddress)$><br/><br/>
+			<$endif$>
+			<$if postcode $>
+			<$lc("wwReferAFriendEmailText13")$>: <$sanitizeHtml(postcode)$><br/><br/>
+			<$endif$>
+			<$if emailaddress $>
+			<$lc("wwReferAFriendEmailText14")$>: <$sanitizeHtml(emailaddress)$><br/><br/>
+			<$endif$>
+			<$if phoneno $>
+			<$lc("wwReferAFriendEmailText15")$>: <$sanitizeHtml(phoneno)$><br/><br/>
+			<$endif$>
+			
+			
+			<img src="http://www9.hays.com/eshots/EMAILMAKER/H_Corporate.jpg" alt="H" width="165" height="166" align="right" />
+			<$lc("wwHaysMailSignatureText1")$><br/>
+			<$lc("wwHaysMailSignatureText2")$>
+			</p>
+			
+			
+			<p style="FONT-SIZE: 10; FONT-FAMILY: Arial"><$lc("wwHaysMailSystemGeneratedText")$></p><br/><br/>			      
+			</TD>
+			</TD></TR>
+			<TR>
+			<TD COLSPAN="2">
+			
+				<$lc("wwHaysMailFooterMessage","@")$>
+			
+			</TD>
+			</TR>
+			</TBODY>
+			</TABLE>
+			</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+		    </TD></TR></TBODY></TABLE>
+				
+			
+
+                     
+

@@ -1,0 +1,356 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager Shortcuts
+</title>
+</head>
+<body>
+
+
+<@dynamichtml widget_shortcuts_javascript@>
+<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function ShortcutsWidgetObject(name) {
+					this.name = name;
+				};
+
+				ShortcutsWidgetObject.prototype = new WidgetObjectAPI();
+
+
+
+
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+
+				ShortcutsWidgetObject.prototype.getResultDataStr = function()
+				{
+						var selectEl = $ID('shortcut_type');
+						var shortcut_type = selectEl.options[selectEl.selectedIndex].value;
+						selectEl = $ID('shortcut_value');
+						var shortcut_value = selectEl.options[selectEl.selectedIndex].value;
+
+						var quotationStr = "<Widget><Name>shortcuts</Name>";
+						quotationStr += "<shortcut_type>" + shortcut_type + "</shortcut_type>";
+						quotationStr += "<shortcut_value>" + shortcut_value + "</shortcut_value></Widget>";
+
+						 return 	quotationStr;
+
+				};
+
+
+				//************************************************************************
+
+
+				ShortcutsWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+						var isSet = false;
+						var val = xmlObject.getElementsByTagName('shortcut_type')[0].firstChild.data || '';
+						var option = $ID('shortcut_type');
+						for (var i=0; i < option.options.length; i++){
+							 if (option.options[i].value == val ){
+								option.options[i].selected = true;
+								isSet = true;
+								break
+							 }
+						}
+						addOptions('shortcut_value', val, 'sc_op_div');
+
+						val = xmlObject.getElementsByTagName('shortcut_value')[0].firstChild.data || '';
+						option = $ID('shortcut_value');
+						for (var i=0; i < option.options.length; i++){
+							 if (option.options[i].value == val ){
+								option.options[i].selected = true;
+								break
+							 }
+						}
+						if( isSet)
+							WCM.DHTML.SetStyle( 'sc_op_div', "display", "block");
+
+					};
+
+
+
+
+			//*****************************************************************************
+
+
+				ShortcutsWidgetObject.prototype.isValid = function(  )
+				{
+					var selectEl = $ID('shortcut_type');
+					var value1 = selectEl.options[selectEl.selectedIndex].value;
+					selectEl = $ID('shortcut_value');
+					var value2 = selectEl.options[selectEl.selectedIndex].value;
+
+					if( value1.length == 0 || value2.length == 0) {
+						this.errorMessage = "<$lc('wwshortcutWidgetEmpty')$>";
+						return false;
+					}
+					return true;
+				};
+
+		//*******************************************************************************
+
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new ShortcutsWidgetObject("shortcuts"));
+
+		</script>
+<@end@>
+
+
+
+
+<@dynamichtml widget_shortcuts_form@>
+	<h2><$lc('wwshortcutsTitle')$></h2>
+	<$if strLength(#env.shortcuts) GT 0 AND strLength(#env.shortcutsLabels) GT 0 $>
+		<$ rsMakeFromString("shortcutsRS", #env.shortcuts, "id") $>
+		<$ rsMakeFromString("shortcutsLabelsRS", #env.shortcutsLabels, "label") $>
+		<$if rsFirst("shortcutsLabelsRS") $>
+			<form name="shortcuts_form" id="shortcuts_form" class="polls" method="get" action="#">
+				<div class="text">
+					<label for="shortcut_type"><$lc('wwshortcutsTypeTitle')$></label>
+					<select name="shortcut_type" id="shortcut_type" onChange="val=this.options[this.selectedIndex].value; addOptions('shortcut_value', val, 'sc_op_div'); return false;" >
+						<option id="shortcuts_types_none" name="shortcuts_types_none" value=""><$lc('wwdefaultOptionLabel')$></option>
+						<$loop shortcutsRS $>
+							<option value="<$ shortcutsRS.id $>"><$ shortcutsLabelsRS.label $></option>
+							<$exec rsNext("shortcutsLabelsRS") $>
+						<$endloop$>
+					</select>
+				</div>
+				<div name="sc_op_div" id="sc_op_div" style="display: none">
+				<select name="shortcut_value" id="shortcut_value" ></select>
+				</div>
+			</form>
+
+			<script>
+				var data = new Array();
+
+				<$loop shortcutsRS $>
+					<$ opId = shortcutsRS.id, index = 0 $>
+					data['<$opId$>'] = new Array();
+					<$ rsName = opId & "_RS", rsValue = getValue("#env", opId) $>
+					<$ rsMakeFromString(rsName, rsValue, "id") $>
+					<$ rsNameLbl = opId & "_RS_Labels", rsValueLbl = getValue("#env", opId & "Labels") $>
+					<$ rsMakeFromString(rsNameLbl, rsValueLbl, "label") $>
+					<$if rsFirst(rsNameLbl) $>
+						<$loopwhile getValue(rsName, "#isRowPresent")$>
+							data['<$opId$>'][<$index$>] = ['<$ getValue(rsName, "id") $>', '<$ getValue(rsNameLbl, "label") $>'];
+							<$ index = index + 1$>
+							<$exec rsNext(rsName) $><$exec rsNext(rsNameLbl) $>
+						<$endloop$>
+
+					<$endif$>
+					<$ index = 0 $>
+				<$endloop$>
+
+
+				function addOptions(selectboxId, optionId, divId ) {
+					selectbox = $ID(selectboxId);
+					selectbox.options.length = 0;
+					if( optionId.length > 0) {
+						for( i = 0; i < data[optionId].length; i++) {
+							var optn = document.createElement("OPTION");
+							optn.value = data[optionId][i][0];
+							optn.text = data[optionId][i][1];
+							selectbox.options.add(optn);
+						}
+						WCM.DHTML.SetStyle( divId, "display", "block");
+					} else {
+						WCM.DHTML.SetStyle( divId, "display", "none")
+					}
+				}
+			</script>
+		<$endif$>
+	<$endif$>
+
+	<$include widget_shortcuts_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_shortcuts_display@>
+	<$inc( getValue("widgetRS", "shortcut_value") & "_display") $>
+<@end@>
+
+
+<@dynamichtml widget_shortcuts_generic_display@>
+	<$ shortcutValue = getValue("widgetRS", "shortcut_value") $>
+	<$ shortcutTitle = lc('widget_' & shortcutValue & 'Title'), shortcutText = lc('widget_' & shortcutValue & 'Text')$>
+	<$if strEquals(shortcutValue,'recruiting_now') and isProjectSEnabled eq 1$>
+		<$target = portalUrl & #env.ProjectS_EmployerAccount$>	
+	<$elseif strEquals(shortcutValue,'office_locator') and isProjectSEnabled eq 1$>
+		<$target = portalUrl & #env.ProjectS_Find_Us$>
+	<$else$>
+		<$ target = lc('widget_' & shortcutValue & 'Target') $><$include processLink $>
+	<$endif$>
+	<$ shortcutTarget = target $>
+	<$ shortcutLink = lc('widget_' & shortcutValue & 'Link')$>
+<@end@>
+
+
+<@dynamichtml processLink@>
+	<$if strIndexOf(target, 'section') GE 0$>
+		<$ target = strReplace(target, 'section', 'ssNODELINK') $>
+		<$target="/"&siteId&"/"&target$>
+	<$elseif strIndexOf(target, 'content') GE 0$>
+		<$ target = strReplace(target, 'content', 'ssLINK') $>
+	<$elseif strIndexOf(target, 'environment') GE 0$>
+		<$target = strReplace(target,'environment/','')$>
+		<$if strIndexOf(target,"WC_") ge 0$>
+			<$linkToWC="true"$>
+		<$endif$>
+		<$target = getValue("#env",target)$>
+		<$if linkToWC and isTrue(linkToWC)$>
+			<$target=target&"?domainId="& domainId & "&siteLocale=" & #active.SiteLocale$>
+		<$endif$>
+[[%	<$elseif strIndexOf(target, 'new window') GE 0$>
+		<$ target = strReplace(target, 'new window', '') $>
+		<$ target = strSubstring(target, 1) $>
+%]]
+	<$endif$>
+<@end@>
+
+<@dynamichtml office_locator_display@>
+	<p class="color1"><$lc('widget_office_locatorText')$></p>
+	<$ target = lc('widget_office_locatorTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_office_locatorLink')$></a></li>
+	</ul>
+<@end@>
+
+
+<@dynamichtml widget_display_LHB @>
+	<$include widget_shortcuts_generic_display $>
+		<div class="side_box">
+			<div class="rc_<$className$>">
+					<div class="cnr"></div>
+					<span class="h2"><$ shortcutTitle$></span>
+			</div>
+			<div class="rc_grey sb_inner pull">
+					<p class="color1"><$ shortcutText $></p>
+					<ul class="rc_white link_list">
+							<li><a href="<$shortcutTarget$>"><$ shortcutLink $></a></li>
+					</ul>
+			</div>
+		</div>
+<@end@>
+
+<@dynamichtml enhance_career_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml create_account_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml salary_benchmark_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml jobseeker_distance_learning_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml job_alerts_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml career_advice_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml refer_a_friend_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml recruiting_now_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+
+<@dynamichtml transform_your_business_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml candidate_alerts_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml create_an_account_display@>
+	<$include widget_display_LHB $>
+<@end@>
+
+<@dynamichtml client_loyalty_scheme_display@>
+	<p class="color1"><$lc('widget_client_loyalty_schemeText')$></p>
+	<$ target = lc('widget_client_loyalty_schemeTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_client_loyalty_schemeLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml recruitment_process_outsourcing_display@>
+	<p class="color1"><$lc('widget_recruitment_process_outsourcingText')$></p>
+	<$ target = lc('widget_recruitment_process_outsourcingTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_recruitment_process_outsourcingLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml public_sector_recruitment_display@>
+	<p class="color1"><$lc('widget_public_sector_recruitmentText')$></p>
+	<$ target = lc('widget_public_sector_recruitmentTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_public_sector_recruitmentLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml self_service_recruitment_display@>
+	<p class="color1"><$lc('widget_self_service_recruitmentText')$></p>
+	<$ target = lc('widget_self_service_recruitmentTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_self_service_recruitmentLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml outplacement_services_display@>
+	<p class="color1"><$lc('widget_outplacement_servicesText')$></p>
+	<$ target = lc('widget_outplacement_servicesTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_outplacement_servicesLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml workplace_diversity_display@>
+	<p class="color1"><$lc('widget_workplace_diversityText')$></p>
+	<$ target = lc('widget_workplace_diversityTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_workplace_diversityLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml candidate_assessment_display@>
+	<p class="color1"><$lc('widget_candidate_assessmentText')$></p>
+	<$ target = lc('widget_candidate_assessmentTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_candidate_assessmentLink')$></a></li>
+	</ul>
+<@end@>
+
+<@dynamichtml digital_recruitment_campaigns_display@>
+	<p class="color1"><$lc('widget_digital_recruitment_campaignsText')$></p>
+	<$ target = lc('widget_digital_recruitment_campaignsTarget') $><$include processLink $>
+	<ul class="rc_white link_list">
+		<li><a href="<$target$>"><$lc('widget_digital_recruitment_campaignsLink')$></a></li>
+	</ul>
+<@end@>
+<@dynamichtml social_media_blogs_display@>
+	<$include Social_Media_Widget_inc$>
+<@end@>
+
+</body></html>

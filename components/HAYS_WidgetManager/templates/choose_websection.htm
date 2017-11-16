@@ -1,0 +1,85 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<$include widget_choose_section_javascript_head_inc $>
+
+<title>
+Choose Website Section
+</title>
+</head>
+<body>
+	<p>
+	<button id="sp_select_button" type="button" onClick="doSubmit(false); return false;"><$lc('wwChooseWebsiteSectionSelectButton')$></button>
+	<button id="sp_uncheck_button" type="button" onClick="doCheck(false); return false;"><$lc('wwChooseWebsiteSectionUnSelectButton')$></button>
+	</p>
+
+	<div id="treeboxbox_website"></div>
+
+	<$include widget_choose_websection_javascript_inc $>
+
+	<SCRIPT>
+
+			function doSubmit( clearValues )
+			{
+				selectedSection = tree.getAllChecked();
+				selectedSection = selectedSection.replace(/[\,]{2,}/g,',');
+				selectedSection = selectedSection.replace(/\,$/,'');
+
+				list = selectedSection.split(',');
+				docs = new Array(list.length);
+				for( i = 0; i < list.length; i++) {
+					docs[i] = tree.getUserData(list[i], 'dDocName') || '';
+				}
+
+				selectedSection += '$' + docs.join(); 
+
+				// Set the collected values into the calling page
+				if (window.callback && window.callback.OnIDValue)
+				{
+					window.callback.OnIDValue( selectedSection, selectedSection);
+				}
+
+				if (window.ext)
+				{
+					window.ext.Close(selectedSection);
+				}
+				else
+				{
+					CloseDialog();
+				}
+			}
+
+
+
+			var ssOnLoadFunction = new Function("doOnLoadActivities();");
+			<$include ss_add_onload_event$>
+
+
+			function doOnLoadActivities()
+			{
+				window.ext = window.top.opener.WCM.GetExternal(window);
+
+				if (window.opener && window.opener.OnReset)
+				{
+					window.opener.OnReset(window);
+				}
+			}
+
+
+			function CloseDialog()
+			{
+				self.close();
+			}
+
+
+			function SetCallback(object)
+			{
+				window.callback=object
+			}
+
+
+			window.SetCallback=SetCallback;
+</SCRIPT>
+
+</body>
+</html>

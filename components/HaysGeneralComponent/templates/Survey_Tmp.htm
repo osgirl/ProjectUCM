@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent Survey_Tmp
+</title>
+</head>
+<body>
+<$include apac_country_check_inc$>
+<$if ((isAPACCountry EQ 1)  OR (strEquals(siteId,'uk')))$>
+
+		<$executeService('INSERT_SURVEY_DETAILS')$>
+		<$random = strGenerateRandom(10)$>
+		<$redirectURL = (ssGetServerRelativeUrl(siteId,"survey")) & "?nocache="& random $>
+		<$redirectToUrl(redirectURL)$>
+<$else$>
+
+	   <$executeService('INSERT_SURVEY_DETAILS')$>
+       <$random = strGenerateRandom(10)$>
+       <$redirectURL1 = ssGetServerRelativeUrl(siteId,"survey")$>
+       <$redirectURL1 = strReplace(redirectURL1,"index.htm","")$>
+       <$redirectURL = (redirectURL1)&SER_DDOCNAME & "?nocache="& random $>
+       <$redirectToUrl(redirectURL)$>
+
+<$endif$>
+
+
+</body></html>

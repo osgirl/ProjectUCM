@@ -1,0 +1,317 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* Hays Worldwide drop nav ======================================================= */
+
+#worldwide {
+	float: right;
+	background: url(../images/bg-worldwide.gif) no-repeat;
+	margin: 2px 0 0 0;
+	height: 29px;
+	width: 182px;
+}
+#worldwide:hover, #worldwide.sfhover {
+	background: url(../images/bg-worldwide-over.gif) no-repeat;
+	color: #2C2F78;
+}
+#worldwide h3 {
+	color: #808080;
+	font-size: .8em;
+	font-weight: normal;
+	line-height: 16px;
+	margin: 6px 0 6px 50px;
+}
+#worldwide:hover h3, #worldwide.sfhover h3 {color: #2C2F78;}
+
+/* Hays Worldwide Dropmenu structure =========== */
+#worldwide #worldwide-menu {
+	position: absolute;
+	left: -999em;
+/*
+*/
+	background: #f6f6f6;
+	border: 1px solid #a5a5a5;
+	
+	padding: 15px 0 5px 20px;
+	width: 480px;
+	z-index: 99;
+}
+#worldwide:hover #worldwide-menu, #worldwide.sfhover #worldwide-menu {left: auto;margin: 0 0 0 -320px;}
+
+#worldwide #worldwide-menu .worldwide-col {
+	float: left;
+	width: 160px;
+}
+#worldwide #worldwide-menu .worldwide-col ul {
+	list-style: none;
+	margin: 0;
+	padding: 0 20px 20px 0;
+}
+#worldwide #worldwide-menu .worldwide-col ul li {
+	display: inline;
+	line-height: 100%;
+	padding: 0;
+	margin: 0;
+}
+#worldwide #worldwide-menu .worldwide-col ul li h4 {
+	border-bottom: 1px solid #d8d8d8;
+	color: #4d4d4d;
+	font-size: .7em;
+	line-height: 19px;
+	margin: 0;
+	padding: 0 8px 0 8px;
+}
+#worldwide #worldwide-menu .worldwide-col ul li a {
+	display: block;
+	color: #4d4d4d;
+	font-size: .7em;
+	line-height: 20px;
+	padding: 0 8px;
+	text-decoration: none;
+}
+#worldwide #worldwide-menu .worldwide-col ul li a:hover {
+	background: #DDEDF3;
+}
+
+
+
+
+/* Main nav and drop nav ======================================================================= */
+
+
+/* Primary level Nav =========== */
+ul#nav {
+	clear: both;
+	list-style: none;
+	background: url(../images/bg-nav.gif) bottom repeat-x;
+	margin: 0;
+	padding: 0 0 0 20px;
+	width: 960px;
+	height: 51px;
+}
+
+ul#nav li {
+	float: left;
+	background: url(../images/bg-sep-nav.gif) no-repeat;
+	height: 51px;
+}
+ul#nav li#n1 {/*width: 119px; */background: none;}
+/*
+ul#nav li#n2 {width: 140px;}
+ul#nav li#n3 {width: 97px;}
+ul#nav li#n4 {width: 198px;}
+ul#nav li#n5 {width: 128px;}
+ul#nav li#n6 {width: 143px;}
+ul#nav li#n7 {width: 115px;}
+*/
+ul#nav li h2 {
+	float: left;
+	font-size: .75em;
+	font-weight: bold;
+	line-height: 50px;
+	margin: 0;
+	padding: 0 0 1px 0;
+}
+
+ul#nav li a {
+	float: left;
+/*
+	margin-right: 15px;
+	display: block;
+*/
+	background: url(../images/bg-nav-chev.gif) right no-repeat;
+	color: #4c4c4c;
+	padding: 0 30px 0 15px;
+	text-decoration: none;
+	text-align: left;
+	white-space: nowrap;
+}
+ul#nav li h2.current a {
+	background: url(../images/bg-nav-chev-over.gif) right no-repeat;
+	color: #2C2F78;
+}
+
+
+
+ul#nav li:hover h2, ul#nav li h2.current, ul#nav li.sfhover h2 {
+	background: url(../images/bg-sep-nav-over.gif) no-repeat;
+}
+
+ul#nav li#n1:hover h2, ul#nav li#n1 h2.current, ul#nav li#n1.sfhover h2 {
+	background: url(../images/bg-nav-over.gif) no-repeat;
+}
+
+
+/* Dropmenu structure =========== */
+ul#nav .dropmenu {
+	position: absolute;
+	clear: both;
+	background: url(../images/bg-dropmenu-repeat.png) bottom repeat-x;
+	left: -999em;
+/*
+*/
+	padding: 25px 0 25px 25px;
+	width: 605px;
+	text-align: left;
+	z-index: 99;
+}
+ul#nav .dropmenu .menuleft {
+	float: left;
+	line-height: 100%;
+	width: 400px;
+}
+ul#nav .dropmenu .menuright {
+	float: left;
+	line-height: 100%;
+	width: 200px;
+}
+ul#nav .dropmenu .menuright .menupic {
+	margin: 0 0 8px 0;
+}
+ul#nav .dropmenu h3.menuhead {
+	color: #2C2F78;
+	font-size: 1.2em;
+	font-weight: normal;
+	line-height: 1.2em;
+	margin: 0 90px 13px 0;
+}
+
+/* Dropmenu Nav =========== */
+
+ul#nav .dropmenu ul {
+	display: block;
+	float: left;
+	list-style: none;
+	margin: 0;
+	padding: 0 20px 0 0;
+	width: 180px;
+}
+ul#nav .dropmenu ul li {
+	background: none;
+	font-size: .8em;
+	line-height: 1.9em;
+	height: auto;
+	text-align: left;
+	width: 180px;
+}
+ul#nav .dropmenu ul li a {
+	display: block;
+	background: url(../images/bullet-nav-chev.gif) left 8px no-repeat;
+	color: #009FDA;
+	padding: 0 0 0 11px;
+	text-align: left;
+}
+ul#nav .dropmenu ul li a:hover {
+	background: url(../images/bullet-nav-chev-over.gif) left 8px no-repeat;
+	color: #2C2F78;
+}
+
+ul#nav li:hover .dropmenu, ul#nav li.sfhover .dropmenu {left: auto; top: 154px;}
+/* ###### Position the drop nav menu relative to the left side of it's parent primary nav item ###### */
+/* ###### Needs to be adjusted when Main nav header text are changed ###### */
+ul#nav li#n4:hover .dropmenu, ul#nav li#n4.sfhover .dropmenu {margin-left: -40px;}
+ul#nav li#n5:hover .dropmenu, ul#nav li#n5.sfhover .dropmenu {margin-left: -235px;}
+ul#nav li#n6:hover .dropmenu, ul#nav li#n6.sfhover .dropmenu {margin-left: -362px;}
+ul#nav li#n7:hover .dropmenu, ul#nav li#n7.sfhover .dropmenu {margin-left: -503px;}
+
+/* ##### OLD Fixed width nav positions #####
+ul#nav li#n4:hover .dropmenu, ul#nav li#n4.sfhover .dropmenu {margin-left: -46px;}
+ul#nav li#n5:hover .dropmenu, ul#nav li#n5.sfhover .dropmenu {margin-left: -244px;}
+ul#nav li#n6:hover .dropmenu, ul#nav li#n6.sfhover .dropmenu {margin-left: -372px;}
+ul#nav li#n7:hover .dropmenu, ul#nav li#n7.sfhover .dropmenu {margin-left: -515px;}
+*/
+
+/* Left nav ======================================================================= */
+
+/* Level 2 */
+#left-col ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#left-col ul#left-nav {
+	float: left;
+	background: url(../images/bg-leftnav-grad-repeat.gif) right top repeat-y;
+	font-size: .8em;
+	width: 220px;
+}
+#left-col ul#left-nav li {
+	float: left;
+	margin: 0;
+	width: 220px;
+}
+#left-col ul#left-nav li.current {
+	background: #fff url(../images/bg-leftnav-div.gif) right bottom no-repeat;
+	border-left: 1px solid #009fda;
+	width: 219px;
+}
+
+/* Level 3 */
+#left-col ul#left-nav li ul {
+	background: url(../images/bg-leftnav-div.gif) right bottom no-repeat;
+	font-size: 90%;
+}
+#left-col ul#left-nav li.current ul li {
+	background-image: none;
+	width: 219px;
+}
+#left-col ul#left-nav li.current ul li.current {
+	border: 0;
+	color: #009fda;
+}
+
+/* Level 4 */
+#left-col ul#left-nav li ul li ul {
+}
+#left-col ul#left-nav li ul li ul li {
+}
+
+
+/* Left nav links ========== */
+/* Level 2 links */
+#left-col ul#left-nav li a {
+	display: block;
+	background: url(../images/bg-leftnav-div.gif) right bottom no-repeat;
+	color: #4C4C4C;
+	padding: 8px 0 10px 15px;
+	text-decoration: none;
+}
+#left-col ul#left-nav li a:hover {
+	display: block;
+	background: #f7f7f7 url(../images/bg-leftnav-div-vert.gif) right bottom no-repeat;
+}
+#left-col ul#left-nav li.current a {
+	background-image: none;
+	color: #009fda;
+	padding: 8px 0 10px 14px;
+}
+#left-col ul#left-nav li.current a:hover {
+	background: none;
+	text-decoration: underline;
+}
+#left-col ul#left-nav li.current a.current {
+	text-decoration: none;
+}
+
+/* Level 3 links */
+#left-col ul#left-nav li.current ul li a {
+	display: block;
+	background-image: none;
+	color: #808080;
+	padding: 0 0 11px 24px;
+	text-decoration: none;
+}
+#left-col ul#left-nav li.current ul li a:hover {
+	display: block;
+	background-image: none;
+	color: #4C4C4C;
+	text-decoration: underline;
+}
+#left-col ul#left-nav li.current ul li.current a {
+	color: #009fda;
+}
+#left-col ul#left-nav li.current ul li.current a:hover {
+	text-decoration: none;
+}
+
+

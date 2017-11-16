@@ -1,0 +1,637 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml widget_survey_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function SurveyWidgetObject(name) {
+					this.name = name;
+				};
+
+				SurveyWidgetObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SurveyWidgetObject.prototype.getResultDataStr = function()
+					{	
+						
+							var quotationStr = "<Widget><Name>survey</Name></Widget>";
+							 return 	quotationStr;
+							
+					};
+
+		
+				//************************************************************************
+
+				
+				SurveyWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{
+					
+					};
+
+			//*****************************************************************************
+
+
+				SurveyWidgetObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new SurveyWidgetObject("survey")); 
+
+		</script>
+<@end@>
+
+
+<@dynamichtml widget_survey_cerow_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function SurveyWidgetObject(name) {
+					this.name = name;					
+				};
+
+				SurveyWidgetObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//***************************MR9 9411 Changes*******************************************
+		
+					SurveyWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var selectSurvey = $ID('survey_type');							
+							var sf_include = selectSurvey.options[selectSurvey.selectedIndex].value; 
+							var quotationStr = "<Widget><Name>survey</Name>";
+								quotationStr+= "<SurveyId>"+sf_include+"</SurveyId></Widget>";
+							return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				SurveyWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+						//alert(xmlObject);
+						var sf_url = xmlObject.getElementsByTagName('SurveyId')[0].firstChild.data || '';	
+						//alert(sf_url);
+						var sf_include = $ID('survey_type');	
+						//alert(sf_include.options.length);
+						for (var i=0; i<sf_include.options.length; i++){
+							 //alert("Value:"+sf_include.options[i].value);
+							 if (sf_include.options[i].value == sf_url){
+								sf_include.options[i].selected = true;
+																
+								break;
+							 }
+						}
+					};
+
+			//******************************MR9 9411 Changes******************************************
+
+
+				SurveyWidgetObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new SurveyWidgetObject("survey")); 
+
+		</script>
+<@end@>
+
+<!--MR9 9411 Changes-->
+<@dynamichtml widget_survey_form@>
+
+<$if strEqualsIgnoreCase(#env.CheckUKCEROWSurvey,"True")$>
+
+					<$executeService('GET_ALL_CEROW_LOCALE')$>
+					<$loop CEROW_LOCALE_RESULT_SET$>
+						<$if strEqualsIgnoreCase(CEROW_LOCALE_RESULT_SET.SITELOCALE,"en-GB") $>
+							<$currentLocale= CEROW_LOCALE_RESULT_SET.SITELOCALE$>
+							<$break$>
+						<$endif$>
+					<$endloop$>
+		
+		<$SiteLocale=getCookie("country_cookie")$>
+    
+		<$if strEqualsIgnoreCase(currentLocale,SiteLocale) $>
+				<h2>Survey Widget</h2> 
+				<$include widget_survey_javascript$>
+		<$else$>
+		
+				<$include widget_survey_cerow_form$>
+		<$endif$>
+<$else$>
+	<h2>Survey Widget</h2>
+	<$include widget_survey_javascript$>	
+<$endif$>
+	
+<@end@>
+
+<!--MR9 9411 Changes-->
+
+<@dynamichtml widget_survey_cerow_form@>
+ <h2>Survey Widget</h2> 
+ 
+
+			 
+			 <$QueryText = ''$>
+	         <$executeService("SS_GET_SEARCH_RESULTS")$>
+	         <$SiteLocale=getCookie("country_cookie")$>
+	         <$QueryText="(dDocType <matches> `Survey`<AND> xLocale <matches> `" & SiteLocale  & "`) " $>
+	         <$queryString = QueryText$>
+	         <$QueryText=queryString$>
+	         <$ssLimitScope  = "false",  SortField="xEventDate", SortOrder="desc" $>
+	         <$initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & '40'  & '&LimitScope='&ssLimitScope$>
+	         <$executeService("SS_GET_SEARCH_RESULTS")$>
+	
+
+	         <$if rsFirst("SearchResults") $>
+	         		<form name="survey_form" id="survey_form" class="polls" method="get" action="#">
+	         			<div class="text">
+	         				<label for="survey_type"><$lc('wwWidgetSurveyEmpty')$></label>
+	         				<select name="survey_type" id="survey_type"  >
+	         					<$loop SearchResults$>
+	         				<option value='<$SearchResults.dDocName$>' name=''><$SearchResults.dDocTitle$></option>
+	         				
+	         					<$endloop$>
+	         				</select>
+	         			</div>
+	         		</form>
+	         	<$include widget_survey_cerow_javascript$>	
+			<$else$>
+			<h2 style="color:red;"> No Survey Exsits.</h2>
+	         <$endif$>			
+<@end@>
+
+<!--MR9 9411 Changes-->
+
+
+<@dynamichtml widget_survey_display@>
+
+<$if ((strEquals(SiteLocale,'en-GB')) OR (strEquals(SiteLocale,'en-AUS')) OR (strEquals(SiteLocale,'en-HKG')) OR (strEquals(SiteLocale,'cn-CHN')) OR (strEquals(SiteLocale,'en-CHN')) OR (strEquals(SiteLocale,'jp-JP')) OR (strEquals(SiteLocale,'en-JP')) OR (strEquals(SiteLocale,'en-MLS')) OR (strEquals(SiteLocale,'en-NZL')) OR (strEquals(SiteLocale,'en-SGP')) )$>
+
+<$ResultCount = 1$>
+<$isRHS = "false"$>
+<$PrimaryTemplateUrl=ssGetNodeProperty("primaryTemplateUrl")$> 
+<$if regexMatches(PrimaryTemplateUrl,".*Right Block.*=SUBTMP_SURVEY_DISPLAY.*")$>
+  <$isRHS = "true"$>
+<$endif$>
+ <$include widget_search_survey_queryresults$>
+
+<$JobSearchDirName=ssGetNodeProperty('jobs-search','urlDirName')$>
+<$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0$>
+	 <div class="survey_widget side_box">
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+				[[%<fieldset class="rc_grey">%]]
+						 <h2 class="rev1"><$lc('wwWidgetSurveyTitle')$></h2>
+							<$loop SearchResults$>
+								
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+							
+
+								<p>	<$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+								<ol>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="A" id="option_1" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false" >
+											<label for="option_1">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+										</div>
+									</li>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_2">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+										</div>
+									</li>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_3">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+										</div>
+									</li>
+								</ol>
+							<$endloop$>
+				[[%</fieldset>%]]
+				<div class="clearfix">
+					<input type="submit" name="SubmitButton" class="button" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled">
+				</div>
+			</form>
+		</div>	
+<$else$>
+
+<$if strEquals(isRHS,"true") $>
+		<div class="side_box" id="pg_home" >
+		<div class="rc_blue">
+<$endif$>
+ 
+			<div class="pb_inner">
+				<h2 class="rev1"><$lc('wwWidgetSurveyTitle')$></h2>
+				<div class="med_inner">
+					<div class="survey_widget">
+
+						<form name="SurveySubmit" class="hays_form" id="survey_widget" action="">
+					<input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"/>
+  <$if strEquals(isRHS,"true") $>
+							<fieldset class="rc_white" style="padding:5px 8px 10px">   <!--padding between the white and grey area-->
+	<$else$>				
+                            <fieldset class="rc_white">	
+  <$endif$>						 
+							<$loop SearchResults$>
+
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<p>	<$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+								<ol>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="A" id="option_1" name="SER_RES_A"  onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_1">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+										</div>
+									</li>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_2">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+										</div>
+									</li>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_3">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+										</div>
+									</li>
+								</ol>
+							<$endloop$>
+							
+						</fieldset>
+						<div class="clearfix">
+						<input type="submit" name="SubmitButton" class="button" value="<$lc('wwWidgetSendMsg')$>" disabled="disabled">
+						</div>
+						</form>
+					</div>			
+				</div>
+			</div>
+			
+<$if strEquals(isRHS,"true") $>
+	
+	</div>
+		</div>
+<$endif$>
+		
+<$endif$>
+
+<$else$>
+
+<!--From Here below 9411 requirment is implemented for CEROW Regions-->
+       <$include widget_survey_cerow_display$>
+    
+<$endif$>
+<@end@>
+
+
+<@dynamichtml widget_survey_cerow_display@>
+
+<$ ResultCount = 1$>
+    <$isRHS = "false"$>
+    <$PrimaryTemplateUrl=ssGetNodeProperty("primaryTemplateUrl")$> 
+    <$if regexMatches(PrimaryTemplateUrl,".*Right Block.*=SUBTMP_SURVEY_DISPLAY.*")$>
+      <$isRHS = "true"$>
+    <$endif$>
+    <$include widget_search_survey_queryresults$>
+    <$widgetXMLsurvey=strReplace(widgetXML,"survey","")$> 
+    <$crXmlToResultSet(widgetXMLsurvey, "rstSurvey")$>
+	
+
+  <$JobSearchDirName=ssGetNodeProperty('jobs-search','urlDirName')$>
+  <$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0 and strEqualsIgnoreCase(isRHS,'false')$>
+	 <div class="survey_widget side_box">
+			<form name="SurveySubmit" class="hays_form" id="survey_widget" action="" method="">
+			 <input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"id="surveySubmit"/>
+				[[%<fieldset class="rc_grey"> %]]
+						 <h2 class="rev1"><$lc('wwWidgetSurveyTitle')$> </h2>
+							<$loop rstSurvey$>
+								
+								<input type="hidden" name="SER_DDOCNAME" value="<$rstSurvey.SurveyId$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								
+								<p>	<$ssIncludeXml(rstSurvey.SurveyId,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+								<ol>
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="A" id="option_1" name="SER_RES_A"  onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_1">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans2) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_2">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_3">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_4">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_5">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+										</div>
+									</li>
+								<$endif$>
+									
+								</ol>
+							<$endloop$>
+				[[%</fieldset>%]]
+				<div class="clearfix">
+					<input type="submit" name="SubmitButton" class="button" value="<$lc('wwWidgetSendMsg')$>"  disabled="disabled">
+				</div>
+			</form>
+		</div>
+		<$elseif strIndexOf(ssoriginalurl,JobSearchDirName)>=0 and strEqualsIgnoreCase(isRHS,'true')$>	
+			 <$include widget_cerow_subtemplate_survey_display$>
+		<$else$>
+			<$if strEquals(isRHS,"true") $>		
+				 <$include widget_cerow_subtemplate_survey_display$>
+			<$else$>
+				 <$include widget_cerow_other_survey_display$>
+			<$endif$>			
+		<$endif$>
+<@end@>
+
+<!--MR9 9411 Changes-->
+<@dynamichtml widget_search_survey_queryresults@> 
+ [[%Query text%]]
+	<$ QueryText = ''$>
+	<$strdocContentType = "Survey" $>
+	<$ QueryText = QueryText & "dDocType <matches> `" & strdocContentType  & "`"  $> 
+
+	<$queryString = QueryText$>
+	<$include subtmp_worldwide_set_query_locale_include$>
+	<$QueryText=queryString$>
+	<$ ssLimitScope  = "false",  SortField="xEventDate", SortOrder="desc" $>
+	<$ initialQuery = 'QueryText=' & QueryText & '&SortField=' & SortField & '&SortOrder=' & SortOrder & '&ResultCount=' & #active.ResultCount  & '&LimitScope='&ssLimitScope$>
+ 	<$executeService("SS_GET_SEARCH_RESULTS")$>
+<@end@>
+
+<@dynamichtml widget_cerow_subtemplate_survey_display@>
+<div class="side_box" id="pg_home" >
+	<div class="rc_blue">
+	<div class="pb_inner">
+			<h2 class="rev1"><$lc('wwWidgetSurveyTitle')$></h2> 
+			<div class="med_inner">
+			<div class="survey_widget">
+
+
+					<form name="SurveySubmit" class="hays_form" id="survey_widget" action="">
+					<input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"/>
+			
+					<fieldset class="rc_white" style="padding:5px 8px 10px">   
+					<!--padding between the white and grey area-->
+									 
+							<$loop SearchResults$>
+
+								<input type="hidden" name="SER_DDOCNAME" value="<$SearchResults.dDocName$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(SearchResults.dDocName,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								
+								<p>	<$ssIncludeXml(SearchResults.dDocName,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+								<ol>
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="A" id="option_1" name="SER_RES_A"  onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_1">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans2) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_2">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_3">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_4">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_5">	<$ssIncludeXml(SearchResults.dDocName,
+											"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+										</div>
+									</li>
+								<$endif$>
+									
+								</ol>
+							<$endloop$>
+							
+						</fieldset>
+						<div class="clearfix">
+						<input type="submit" name="SubmitButton" class="button" value="<$lc('wwWidgetSendMsg')$>" disabled="disabled">
+						</div>
+						</form>
+					</div>			
+				</div>
+			</div>     
+	
+	</div>
+		</div>
+     
+<@end@> 
+
+<@dynamichtml widget_cerow_other_survey_display@> 
+
+	
+	
+	
+	<$if regexMatches(SS_PLACEHOLDER_DEFINITION,"PLDEF_RIGHT_HAND_BLOCK.*")$>
+ 
+		<div class="rc_blue">
+		<$else$>
+		<div class="pb_inner">
+		<$endif$>
+			<h2 class="rev1"><$lc('wwWidgetSurveyTitle')$></h2>
+			<div class="med_inner">
+			<div class="survey_widget">
+
+
+					<form name="SurveySubmit" class="hays_form" id="survey_widget" action="">
+					<input type="hidden" name="IdcService" value="REDIRCT_SURVEY_TEMP"/>
+						
+                     <fieldset class="rc_white">	
+								 
+							<$loop rstSurvey$>
+
+								<input type="hidden" name="SER_DDOCNAME" value="<$rstSurvey.SurveyId$>"/>
+								<input type="hidden" name="SER_CREATIONDATE" value="<$SearchResults.dInDate$>"/>
+								
+								<$Ans1 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$>	
+                                <$Ans2 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$>
+                                <$Ans3 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$>
+								<$Ans4 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$>
+                                <$Ans5 = ssIncludeXml(rstSurvey.SurveyId,"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$>
+                              
+								
+								<p>	<$ssIncludeXml(rstSurvey.SurveyId,
+								"wcm:root/wcm:element\[@name='SurveyQuestion'\]/text()")$></p>
+								<ol>
+								<$if strLength(Ans1) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="A" id="option_1" name="SER_RES_A"  onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_1">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer1'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans2) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="B" id="option_2" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_2">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer2'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans3) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="C" id="option_3" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_3">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer3'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans4) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="D" id="option_4" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_4">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer4'\]/text()")$></label>
+										</div>
+									</li>
+									<$endif$>
+									<$if strLength(Ans5) GT 0 $>
+									<li>
+										<div class="select_row">
+											<input type="radio" value="E" id="option_5" name="SER_RES_A" onclick="javascript:document.SurveySubmit.SubmitButton.disabled=false">
+											<label for="option_5">	<$ssIncludeXml(rstSurvey.SurveyId,
+											"wcm:root/wcm:element\[@name='SurveyAnswer5'\]/text()")$></label>
+										</div>
+									</li>
+								<$endif$>
+									
+								</ol>
+							<$endloop$>
+							
+						</fieldset>
+						<div class="clearfix">
+						<input type="submit" name="SubmitButton" class="button" value="<$lc('wwWidgetSendMsg')$>" disabled="disabled">
+						</div>
+						</form>
+					</div>			
+				</div>
+			</div>
+      
+<@end@>
+
+</body>
+
+</html>

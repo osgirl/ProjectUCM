@@ -1,0 +1,730 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponentR6 htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml jobs_by_location@>
+	<div style="margin-left:20px;margin-right:20px;"><div style="display:inline-block;width:450px;"><$include job_search_form$></div></div>
+	
+	[[% check if index page or inner page %]]
+	<$if strEquals(wbsrvrkey,"index.htm") OR strEquals(wbsrvrkey,"") $>
+		[[% index page %]]
+		<$include jobs_by_location_index$>
+	<$else$>
+		[[% inner location page %]]
+		<$include jobs_by_location_inner$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml jobs_by_location_inner@>
+	[[% get location id from name%]]
+	<$location=strReplace(wbsrvrkey,"-"," ")$>
+	<$locationColumn = locationColumn$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$ResultCount = 1$>
+	<$executeService('SEARCH_LOCATIONS')$>
+	<$if rsExists('LOCATION_RESULT_LIST') AND rsFirst('LOCATION_RESULT_LIST') $>
+		<$loop LOCATION_RESULT_LIST$>
+			<$locationId=LOCATION_RESULT_LIST.LOCATION_ID$>
+		<$endloop$>
+	<$endif$>	
+	
+	
+	[[% getall locations under parent %]]
+	<$loc_descr = locationColumn$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$parentLocationId = locationId$>
+	<$executeService('GET_ALL_LOCATIONS_BY_PARENT')$>
+
+	<div style="margin-left:20px;margin-right:20px;"><h1><a title="<$location$> Jobs" style="text-decoration:underline;" href="../jobs-in-<$strReplace(location," ","-")$>"><$location$> Jobs</a></h1></div><br>
+
+	<$if rsExists('LOCATIONS_RESULT_LIST') AND rsFirst('LOCATIONS_RESULT_LIST') $>
+			<$count = rsNumRows("LOCATIONS_RESULT_LIST")$>
+		[[% Display the locations in 3 column format %]]
+		<$column = rsNumRows("LOCATIONS_RESULT_LIST")/3$>
+		<$if (column*3) < count $>
+			<$column = column +1 $>
+		<$endif$>
+		
+		<$counter = 0$>
+		<$rows = 0$>
+		<div style="margin-left:20px;margin-right:20px;">
+		<h3>Top cities under <$location$></h3>
+		<hr style="border-width:0 0 2px;">
+		</div>
+		<div class="grid_8 searchbox">
+		<ul class="latetjobs">
+		<$loop LOCATIONS_RESULT_LIST$>
+			<li><h2><a title="jobs-in-<$LOCATIONS_RESULT_LIST.LOCATION_DESC$>" href="../jobs-in-<$strReplace(LOCATIONS_RESULT_LIST.LOCATION_DESC," ","-")$>">jobs-in-<$LOCATIONS_RESULT_LIST.LOCATION_DESC$></h2></a></li>
+			<$counter = counter+1$>
+			<$rows = rows+1$>
+			<$if rows < count and counter eq column $>
+				</ul>
+				</div>
+				<div class="grid_8 searchbox latetjobs">
+				<ul class="latetjobs">
+				<$counter = 0$>
+			<$endif$>
+		<$endloop$>
+		</ul>
+		</div>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml jobs_by_location_index@>
+	[[% getall locations for domain and level %]]
+	<$loc_descr = locationColumn$>
+	<$level = 4$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$executeService('GET_ALL_LOCATIONS_BY_LEVEL')$>
+	
+	<$if rsExists('LOCATIONS_RESULT_LIST') AND rsFirst('LOCATIONS_RESULT_LIST') $>
+			<$count = rsNumRows("LOCATIONS_RESULT_LIST")$>
+		[[% Display the locations in 3 column format %]]
+		<$column = rsNumRows("LOCATIONS_RESULT_LIST")/3$>
+		<$if (column*3) < count $>
+			<$column = column +1 $>
+		<$endif$>
+		
+		<$counter = 0$>
+		<$rows = 0$>
+		<div style="margin-left:20px;margin-right:20px;">
+		<h1>Jobs by Locations</h1>
+		<hr style="border-width:0 0 2px;">
+		</div>
+		<div class="grid_8 searchbox">
+		<ul class="latetjobs">
+		<$loop LOCATIONS_RESULT_LIST$>
+			<li><h2><a title="<$LOCATIONS_RESULT_LIST.LOCATION_DESC$>" href="<$strReplace(LOCATIONS_RESULT_LIST.LOCATION_DESC," ","-")$>"><$LOCATIONS_RESULT_LIST.LOCATION_DESC$></a></h2></li>
+			<$counter = counter+1$>
+			<$rows = rows+1$>
+			<$if rows < count and counter eq column $>
+				</ul>
+				</div>
+				<div class="grid_8 searchbox latetjobs">
+				<ul class="latetjobs">
+				<$counter = 0$>
+			<$endif$>
+		<$endloop$>
+		</ul>
+		</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml jobs_by_category@>
+	<div style="margin-left:20px;margin-right:20px;"><div style="display:inline-block;width:450px;"><$include job_search_form$></div></div>
+		
+	[[% getall specialisms for locale %]]
+	<$locale = #active.SiteLocale$>
+	<$if strLength(locale) GT 0 $>
+		<$ index = strIndexOf(locale, '-') $>
+		<$if index GT 0 $>
+			<$Language = strSubstring(locale, 0, index)$>
+		<$endif$>
+	<$endif$>
+	<$metadata = "xCategory" , language = Language , country = isoCountryCode, ontClass = "hays:Specialism"$>
+	<$if NOT rsExists('IndividualsList')$>
+		<$executeService('ONT_GET_INDIVIDUALS')$>
+	<$endif$>
+	
+	
+	<$if rsExists('IndividualsList') AND rsFirst('IndividualsList') $>
+		<$count = rsNumRows("IndividualsList")$>
+		[[% Display the specialisms in 3 column format %]]
+		<$column = rsNumRows("IndividualsList")/3$>
+		<$if (column*3) < count $>
+			<$column = column +1 $>
+		<$endif$>
+		
+		<$counter = 0$>
+		<$rows = 0$>
+		<div style="margin-left:20px;margin-right:20px;">
+		<h1>Jobs by Category</h1>
+		<hr style="border-width:0 0 2px;">
+		</div>
+		<div class="grid_8 searchbox">
+		<ul class="latetjobs">
+		<$loop IndividualsList$>
+			<li><h2><a title="<$IndividualsList.label$>" href="../<$strReplace(IndividualsList.label," ","-")$>-specialists-jobs"><$IndividualsList.label$></h2></a></li>
+			<$counter = counter+1$>
+			<$rows = rows+1$>
+			<$if rows < count and counter eq column $>
+				</ul>
+				</div>
+				<div class="grid_8 searchbox latetjobs">
+				<ul class="latetjobs">
+				<$counter = 0$>
+			<$endif$>
+		<$endloop$>
+		</ul>
+		</div>
+	<$endif$>	
+<@end@>
+
+<@dynamichtml jobs_by_title@>
+	<div style="margin-left:20px;margin-right:20px;"><div style="display:inline-block;width:450px;"><$include job_search_form$></div></div>
+	[[% check if index page or inner page %]]
+	<$if strEquals(wbsrvrkey,"index.htm") OR strEquals(wbsrvrkey,"") $>
+		[[% index page %]]
+		<$include jobs_by_title_index$>
+	<$else$>
+		<$separatorIndex = strIndexOf(wbsrvrkey,'/')$>
+		<$if separatorIndex > -1 $>
+			[[% inner title-town page %]]
+			<$include jobs_by_title_town$>
+		<$else$>
+			[[% inner title-region page %]]
+			<$include jobs_by_title_region$>
+		<$endif$>	
+	<$endif$>
+<@end@>
+
+<@dynamichtml jobs_by_title_town@>
+	[[% get title and location from wbsrvrkey obtained from webserver%]]
+	<$jobTitle=strSubstring(wbsrvrkey,0,separatorIndex)$>
+	<$regionLocation=strSubstring(wbsrvrkey,separatorIndex+1)$>
+	
+	[[% clean title and location %]]
+	<$jobTitle=strReplace(jobTitle,"-"," ")$>
+	<$regionLocation=strReplace(regionLocation,"-"," ")$>
+	
+	
+	[[% get location id from name%]]
+	<$location=regionLocation$>
+	<$locationColumn = locationColumn$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$ResultCount = 1$>
+	<$executeService('SEARCH_LOCATIONS')$>
+	<$if rsExists('LOCATION_RESULT_LIST') AND rsFirst('LOCATION_RESULT_LIST') $>
+		<$loop LOCATION_RESULT_LIST$>
+			<$locationId=LOCATION_RESULT_LIST.LOCATION_ID$>
+		<$endloop$>
+	<$endif$>	
+	
+	<div style="margin-left:20px;margin-right:20px;"><h1><a title="<$jobTitle$> Jobs in <$regionLocation$>" style="text-decoration:underline;" href="../../<$strReplace(jobTitle," ","-")$>-jobs-in-<$strReplace(regionLocation," ","-")$>"><$jobTitle$> Jobs in <$regionLocation$></a></h1></div><br>
+	
+	[[% getall locations under parent %]]
+	<$loc_descr = locationColumn$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$parentLocationId = locationId$>
+	<$executeService('GET_ALL_LOCATIONS_BY_PARENT')$>
+	
+	<$if rsExists('LOCATIONS_RESULT_LIST') AND rsFirst('LOCATIONS_RESULT_LIST') $>
+			<$count = rsNumRows("LOCATIONS_RESULT_LIST")$>
+		[[% Display the locations in 3 column format %]]
+		<$column = rsNumRows("LOCATIONS_RESULT_LIST")/3$>
+		<$if (column*3) < count $>
+			<$column = column +1 $>
+		<$endif$>
+		
+		<$counter = 0$>
+		<$rows = 0$>
+		<div style="margin-left:20px;margin-right:20px;">
+		<h3>Top cities for <$jobTitle$> in <$regionLocation$></h3>
+		<hr style="border-width:0 0 2px;">
+		</div>
+		<div class="grid_8 searchbox">
+		<ul class="latetjobs">
+		<$loop LOCATIONS_RESULT_LIST$>
+			<li><h2><a title="<$jobTitle$> Jobs in <$LOCATIONS_RESULT_LIST.LOCATION_DESC$>" href="../../<$strReplace(jobTitle," ","-")$>-jobs-in-<$strReplace(LOCATIONS_RESULT_LIST.LOCATION_DESC," ","-")$>"><$jobTitle$> Jobs in <$LOCATIONS_RESULT_LIST.LOCATION_DESC$></h2></a></li>
+			<$counter = counter+1$>
+			<$rows = rows+1$>
+			<$if rows < count and counter eq column $>
+				</ul>
+				</div>
+				<div class="grid_8 searchbox latetjobs">
+				<ul class="latetjobs">
+				<$counter = 0$>
+			<$endif$>
+		<$endloop$>
+		</ul>
+		</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml jobs_by_title_region@>
+	<$jobTitle=strReplace(wbsrvrkey,"-"," ")$>
+	[[% getall locations for domain and level %]]
+	<$loc_descr = locationColumn$>
+	<$level = 4$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$executeService('GET_ALL_LOCATIONS_BY_LEVEL')$>
+	
+	<div style="margin-left:20px;margin-right:20px;"><h1><a title="<$jobTitle$> Jobs" style="text-decoration:underline;" href="../<$strReplace(jobTitle," ","-")$>-jobs"><$jobTitle$> Jobs</a></h1></div><br>
+	
+	<$if rsExists('LOCATIONS_RESULT_LIST') AND rsFirst('LOCATIONS_RESULT_LIST') $>
+			<$count = rsNumRows("LOCATIONS_RESULT_LIST")$>
+		[[% Display the locations in 3 column format %]]
+		<$column = rsNumRows("LOCATIONS_RESULT_LIST")/3$>
+		<$if (column*3) < count $>
+			<$column = column +1 $>
+		<$endif$>
+		
+		<$counter = 0$>
+		<$rows = 0$>
+		<div style="margin-left:20px;margin-right:20px;">
+		<h3><$jobTitle$> Jobs by Region</h3>
+		<hr style="border-width:0 0 2px;">
+		</div>
+		<div class="grid_8 searchbox">
+		<ul class="latetjobs">
+		<$loop LOCATIONS_RESULT_LIST$>
+			<li><h2><a title="<$LOCATIONS_RESULT_LIST.LOCATION_DESC$>" href="<$strReplace(jobTitle," ","-") & "/" & strReplace(LOCATIONS_RESULT_LIST.LOCATION_DESC," ","-")$>"><$LOCATIONS_RESULT_LIST.LOCATION_DESC$></h2></a></li>
+			<$counter = counter+1$>
+			<$rows = rows+1$>
+			<$if rows < count and counter eq column $>
+				</ul>
+				</div>
+				<div class="grid_8 searchbox latetjobs">
+				<ul class="latetjobs">
+				<$counter = 0$>
+			<$endif$>
+		<$endloop$>
+		</ul>
+		</div>
+	<$endif$>
+<@end@>
+
+<@dynamichtml jobs_by_title_index@>
+	[[% initialise pageSize and pageNumber for pagination %]]
+	<$pageSize = 30$>
+	<$paginationSize = 10$>
+
+	<$if not #active.PageNumber or #active.PageNumber lt 1$>
+			<$PageNumber=1$>
+	<$endif$>
+	
+	[[% getall titles for locale %]]
+	<$xLocale = "en-UK"$>
+	<$startrow =pageSize*(PageNumber-1)+1$>
+	<$endrow = PageNumber*pageSize$>
+	<$executeService('GET_ALL_TITLES')$>
+
+	
+	<$if rsExists('TITLE_RESULT_LIST') AND rsFirst('TITLE_RESULT_LIST') $>
+		<$count = rsNumRows("TITLE_RESULT_LIST")$>
+		
+		[[% include code for pagination - pageNumber, pagseSize has been already initialised %]]
+		<$total_rows = GetTitleCount(xLocale)$>
+		<$nodeId = 'jobs-title'$>
+		<$include pagination_include$>
+		
+		[[% Display the titles in 3 column format %]]
+		<$column = rsNumRows("TITLE_RESULT_LIST")/3$>
+		<$if (column*3) < count $>
+			<$column = column +1 $>
+		<$endif$>
+		
+		<$counter = 0$>
+		<$rows = 0$>
+		<div style="margin-left:20px;margin-right:20px;">
+		<h1>Popular Job titles</h1>
+		<hr style="border-width:0 0 2px;">
+		</div>
+		<div class="grid_8 searchbox">
+		<ul class="latetjobs">
+		<$loop TITLE_RESULT_LIST$>
+			<li><h2 style="margin-bottom:0px;"><a title="<$TITLE_RESULT_LIST.TITLE$> jobs" href="../<$strReplace(TITLE_RESULT_LIST.TITLE," ","-")$>-jobs"><$TITLE_RESULT_LIST.TITLE$> jobs</h2></a>
+			<p><a href="<$strReplace(TITLE_RESULT_LIST.TITLE," ","-")$>">Select Region</h3></a></p>
+			</li>
+			<$counter = counter+1$>
+			<$rows = rows+1$>
+			<$if rows < count and counter eq column $>
+				</ul>
+				</div>
+				<div class="grid_8 searchbox latetjobs">
+				<ul class="latetjobs">
+				<$counter = 0$>
+			<$endif$>
+		<$endloop$>
+		</ul>
+		</div>
+	<$endif$>		
+<@end@>
+
+[[% Inputs 
+	PageNumber - the active page number
+	pageSize	- the number of elements to be displayed in a page
+	total_rows	- the total number of elements to be paginated
+	nodeId		- the nodeID where the pagination links will point to 
+	paginationSize	- the number of page links to show in pagination %]]
+<@dynamichtml pagination_include@>
+
+	<$if total_rows > pageSize$>
+			<div style="margin-left:20px;margin-right:20px;float:right;">
+	    	
+	    	<$include find_page_pagination_bucket$>
+			<$if PageNumber > paginationSize $>
+				<a href="<$ssNodeLink(nodeId, siteId)$>?PageNumber=<$(paginationSize*(pageBucket-2))+1$>">Previous</a>
+			<$endif$>
+		    
+		    <$counter = (paginationSize*(pageBucket-1))+1$>
+		    <$loopwhile ((total_rows > counter*pageSize) and (counter <= (paginationSize*pageBucket)))$>
+		        <$include show_page$>
+		        <$counter = counter + 1$>
+		    <$endloop$> 
+			<$if (total_rows > counter*pageSize) $>
+				<a href="<$ssNodeLink(nodeId, siteId)$>?PageNumber=<$(paginationSize*pageBucket)+1$>">Next</a>   
+			<$endif$>
+		
+			</div>
+     <$endif$>
+	
+<@end@>
+
+<@dynamichtml find_page_pagination_bucket@>
+<$pageBucket = PageNumber/paginationSize$>
+<$if ((pageBucket*paginationSize) < PageNumber)$>
+	<$pageBucket = pageBucket+1$>
+<$endif$>
+<@end@>
+
+
+<@dynamichtml show_page@>
+<$if PageNumber==counter $>
+	<a href="<$ssNodeLink('jobs-title', siteId)$>?PageNumber=<$counter$>" style="color:red;"><$counter$></a>
+<$else$>
+	<a href="<$ssNodeLink('jobs-title', siteId)$>?PageNumber=<$counter$>"><$counter$></a>
+<$endif$>
+<@end@>
+
+
+<@dynamichtml jobs_results@>
+<$SiteLocale='en-GB'$>
+<$domainId='1'$>
+
+<$if title$>
+	<$job_keywords=strReplace(title,"-"," ")$>
+<$endif$>
+
+<$if location$>
+	[[% location search results page %]]
+	[[% get location id from name%]]
+	<$location=strReplace(location,"-"," ")$>
+	<$locationColumn = locationColumn$>
+	<$domainId = 1 $> [[% domainId is required for service, hard coded to 1%]]
+	<$ResultCount = 1$>
+	<$executeService('SEARCH_LOCATIONS')$>
+	<$if rsExists('LOCATION_RESULT_LIST') AND rsFirst('LOCATION_RESULT_LIST') $>
+		<$loop LOCATION_RESULT_LIST$>
+			<$location_id=LOCATION_RESULT_LIST.LOCATION_ID$>
+			<$location_level = LOCATION_RESULT_LIST.LEVEL_NO$>
+			<$location_name = url(LOCATION_RESULT_LIST.LOCATION_DESC)$>
+		<$endloop$>
+	<$endif$>
+<$endif$>
+
+<$if titlespecialism$>
+	<$specialistsIndex = strIndexOf(titlespecialism,'-specialists')$>
+	<$if specialistsIndex > -1 $>
+		[[% search URL of type 4 "specialism-specialists-jobs" %]]
+		<$specialismName=strSubstring(titlespecialism,0,specialistsIndex)$>
+	
+		[[% get specialism Id from name%]]
+		<$locale = #active.SiteLocale$>
+		<$if strLength(locale) GT 0 $>
+			<$ index = strIndexOf(locale, '-') $>
+			<$if index GT 0 $>
+				<$Language = strSubstring(locale, 0, index)$>
+			<$endif$>
+		<$endif$>
+		<$metadata = "xCategory" , language = Language , country = isoCountryCode, ontClass = "hays:Specialism", ontValue = strReplace(specialismName,"-"," ")$>
+		<$executeService('ONT_GET_INDIVIDUALS')$>
+		<$if rsExists('IndividualsList') AND rsFirst('IndividualsList') $>
+			<$loop IndividualsList$>
+				<$job_category=IndividualsList.id$>
+			<$endloop$>
+		<$endif$>	
+	<$else$>
+		[[% search URL of type 2 "jobtitle-jobs" %]]
+		<$job_keywords=strReplace(titlespecialism,"-"," ")$>
+	<$endif$>
+<$endif$>
+<$ResultCount = ""$>
+<$executeService('GET_GOOGLE_SEARCH_RESULTS')$>	
+<$Output$>
+<@end@>
+
+
+
+<@dynamichtml job_search_form@>
+<style type="text/css">
+ .bg_blue label.error {background:url("/haysassets/HaysGeneralComponent/assets/css/img/bg/error_up.png") no-repeat scroll center top #E98300;margin:-5px 0 10px 50px}
+</style>
+<$include check_nav_type$>
+<$contentType="Jobs", searchSectionName = 'jobs-search', dialog='jobs_dialog'$>
+<$formName='Job_Search', searchTitle=lc('wwJobsSearchSpecialism_title')$>
+
+<$locale = #active.SiteLocale$>
+
+<$ category = ssGetNodeProperty(nodeId, 'xCategory'), subTerms = '' $>
+
+
+<$include search_form_home_google_js_inc$>
+
+<div class="container_flex">
+<div>
+	<div style="text-align:left;">
+		<h3><$searchTitle$></h3>
+		<form id="<$formName$>" class="hays_form search_widget specialism_search_form" action="<$ssGetServerRelativePath(siteId, 'home') & lc('wwGoogleSearchAction')$>">
+				<div class="grid_q_40">
+					<div class="search_inner">
+						<label class="access" for="<$formName$>q"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+						<input id="<$formName$>q" class="textbox require_group" autocomplete="off" type="text" name="q" value="<$#active.q$>">
+					</div>
+				</div>
+				
+				
+				<div class="grid_q_40">
+					<div class="search_inner search_sml_pad">
+						<label class="access" for="<$formName$>locationToSearch"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+			[[%default location set for Local jobs%]]
+						
+						<$if #active.localTownLocationId$>
+							<$locationToSearch=#active.Townlocation$>
+								<input id="<$formName$>locationToSearch" class="textbox require_group localjob" type="text" name="locationToSearch" value="<$#active.locationToSearch$>">
+						<$else$>
+							<input id="<$formName$>locationToSearch" class="textbox require_group" type="text" name="locationToSearch" value="<$#active.locationToSearch$>">
+						<$endif$>
+						[[%end%]]
+					</div>
+				</div>
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+				
+				<div class="grid_q_20">
+					<div class="search_button_inner">
+						<input type="submit" class="button" value="<$lc('wwSearch')$>">
+					</div>
+				</div>
+			[[%<div id="<$formName$>_error"></div>%]]
+				<div class="bg_blue" id="<$formName$>_error"></div>	
+				<div class="grid_q_40">
+				<!-- Release 7 [Hide search only in job title]-->
+				<$if countryName like 'Hays Response BE' or countryName like 'Hays Response MX' or countryName like 'Hays Response BR' or countryName like 'Hays Response PT'$>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				<$else$>
+					<div class="search_inner">
+						<input id="<$formName$>isOnlyJobTitle" class="checkbox" type=
+						"checkbox" value="<$#active.isOnlyJobTitle$>" name=
+						"isOnlyJobTitle">
+						<label for="<$formName$>isOnlyJobTitle">
+						<$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>				
+				<$endif$>
+				</div>
+				<$if strLength(category) GT 0 $>
+					<div class="grid_q_40">
+						<div class="search_inner search_sml_pad">
+							<input id="<$formName$>x_search" type="checkbox" name="x_title_only" checked>
+							<label for="<$formName$>x_search"><$expertiseLabel$><$if contentType like "Jobs"$>&nbsp;<$lc('wwSearchInSpecialismOnlyTitle')$><$elseif contentType like "Candidates"$>&nbsp;<$lc('wwSearchInSpecialismCandidateOnlyTitle')$><$endif$></label>
+						</div>
+					</div>
+					<$else$>
+						<$if strEqualsIgnoreCase(nodeId,"job-not-available")$>	 
+							&nbsp;
+						<$else$>
+							<div class="grid_q_40">
+								<div class="search_inner search_sml_pad">
+								&nbsp;
+								</div>
+							</div>
+						<$endif$>	
+					<$endif$>				
+					
+				
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+					<$level=3$>
+				<$endif$>
+			
+			[[%hidden fields%]]
+			
+			<$if #active.locationLevel$>	
+				<$level=#active.locationLevel$>
+				<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+			<$else$>
+				<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>	
+			<$endif$>
+	
+			[[%default location id set for Local jobs%]]
+			<$if #active.localTownLocationId$>		
+				<$id=#active.localTownLocationId$>
+				<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<$else$>
+				<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+			<$endif$>
+			
+			<$if #active.locationLatitude$>	
+				<$ne_latitude=#active.locationLatitude$>
+				<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<$else$>
+				<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+			<$endif$>
+			
+			<$if #active.locationLongitude$>	
+				<$ne_longitude=#active.locationLongitude$>
+				<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<$else$>
+				<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+			<$endif$>
+			
+			[[%end%]]
+			
+			<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+			<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+			<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+			<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+			<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+			<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+			<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+			<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+			<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+			<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+			<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>		
+			<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" onload="locale_update_google();" value="<$#active.locale$>"/>
+			<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+			<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+			<input type="hidden" name="sort" value="date:D:L:d1"/>
+			<input type="hidden" value="<$#active.contentType$>" name="contentType">
+		
+			</form>
+		</div>
+
+	<div id="<$dialog$>" title="Heading"> </div>
+</div>
+ </div> [[% added for Release 8.0 sec 7.2 8A%]]
+<@end@>
+
+
+<@dynamichtml home_job_search_form@>
+<style type="text/css">
+ #pg_home #<$formName$>{background:transparent;padding:0;}
+ .home_search_form .left_search {width:49%;}
+ .home_search_form .right_search {width:49%;}
+ .home_search_form .textbox {width: 250px;}
+ .home_search_form .button {margin-right: 2px;margin-top: 20px;}
+</style>
+
+<$locale = #active.SiteLocale$>
+<$temp2 = ""$>
+
+<div class="lrg_inner">
+<script type="text/javascript">
+function onsubmitform(formValue)
+{
+  /*if(document.pressed == 'Insert')
+  {
+   document.myform.action ="insert.html";
+  }
+  else
+  if(document.pressed == 'Update')
+  {
+    document.myform.action ="update.html";
+  }*/
+  var keywordValue = document.getElementById("<$formName$>q").value;
+  var locationValue = document.getElementById("<$formName$>locationToSearch").value;
+  //alert("Form Name = "+formValue);
+  //alert("Keyword = "+keywordValue);
+  //alert("Location Value = "+locationValue);
+  var uuu = "<$lc('wwHomePageSrchJobTitleRefWaterMark')$>";
+  //alert("test = "+uuu);
+  //alert("test = "+document.getElementById('"<$formName$>"'));
+  if ((keywordValue !="") && (locationValue !="") && (locationValue !="<$lc('wwSearchJobCandLocationWaterMark')$>" ) && (keywordValue !="<$lc('wwHomePageSrchJobTitleRefWaterMark')$>" )) {
+  keywordValue = keywordValue.replace(" ","-");
+  locationValue = locationValue.replace(" ","-");
+  //alert("Keyword  after change = "+keywordValue);
+  //alert("Location Value after change= "+locationValue);
+  document.getElementById("<$formName$>").action = keywordValue + "-jobs-in-" + locationValue;
+  }
+  else if((keywordValue !="") && (keywordValue !="<$lc('wwHomePageSrchJobTitleRefWaterMark')$>") && ((locationValue =="") || (locationValue =="<$lc('wwSearchJobCandLocationWaterMark')$>"))){
+	keywordValue = keywordValue.replace(" ","-");
+	//alert("Keyword  after change = "+keywordValue);
+	document.getElementById("<$formName$>").action = keywordValue + "-jobs";
+	
+  }
+  else if( (locationValue !="") && (locationValue !="<$lc('wwSearchJobCandLocationWaterMark')$>") && ((keywordValue =="<$lc('wwHomePageSrchJobTitleRefWaterMark')$>") || (keywordValue ==""))){
+
+  locationValue = locationValue.replace(" ","-");
+
+  //alert("Location Value after change= "+locationValue);
+	document.getElementById("<$formName$>").action = "jobs-in-" + locationValue;
+  }
+  return true;
+  //alert("test");
+  //return true;
+}
+</script>	
+<$include search_form_home_google_js_inc$>
+        	<form id="<$formName$>" method="post" class="home_search_form hays_form rc_white" onsubmit="return onsubmitform('<$formName$>');">
+				<div class="left_search">
+					<label for="<$formName$>q" class="access"><$lc('wwHomePageSrchJobTitleRefWaterMark')$></label>
+					<input id="<$formName$>q" class="textbox require_group" type="text" name="q" autocomplete="off"  value="<$#active.q$>"/>
+				<input type="hidden" name="level" id="test" value="<$#active.q$>"/>
+				</div>
+				<div class="right_search">
+					<label for="<$formName$>locationToSearch" class="access"><$lc('wwSearchJobCandLocationWaterMark')$></label>
+					<input type="text" name="locationToSearch" id="<$formName$>locationToSearch" value="<$#active.locationToSearch$>" class="textbox require_group"/>					
+					
+				</div>
+				
+				<label for="<$formName$>partialfields" ></label>
+				<input id = "<$formName$>partialfields" name="partialfields" type="hidden" />	
+				
+				<div id="<$formName$>_error"></div>
+				<$if not #active.level or (#active.level and #active.level lt 3)$>
+						<$level=3$>
+				<$endif$>
+					<input type="hidden" name="level" id="<$formName$>level" value="<$#active.level$>"/>
+					<input type="hidden" name="location_id" id="<$formName$>location_id" value="<$#active.id$>"/>
+					<input type="hidden" value="<$#active.contentType$>" name="contentType">
+					<input type="hidden" name="ne_longitude" id="<$formName$>ne_longitude" value="<$#active.ne_longitude$>"/>
+					<input type="hidden" name="ne_latitude" id="<$formName$>ne_latitude" value="<$#active.ne_latitude$>"/>
+					<input type="hidden" name="site" id="<$formName$>site" value="<$#env.GoogleSite$>"/>
+					<input type="hidden" name="proxyreload" id="<$formName$>proxyreload" value="0"/>
+					<input type="hidden" name="filter" id="<$formName$>filter" value="0"/>
+					<input type="hidden" name="btnG" id="<$formName$>btnG" value="<$#env.GoogleBtnG$>"/>
+					<input type="hidden" name="client" id="<$formName$>client" value="<$lc('GoogleClient')$>"/>
+					<input type="hidden" name="proxystylesheet" id="<$formName$>proxystylesheet" value="<$lc('GoogleProxyStyleSheet')$>"/>
+					<input type="hidden" name="getfields" id="<$formName$>getfields" value="*"/>
+					<input type="hidden" name="entsp" id="<$formName$>entsp" value="<$lc('GoogleEntsp')$>"/>
+					<input type="hidden" name="oe" id="<$formName$>oe" value="UTF-8"/>
+					<input type="hidden" name="exclude_apps" id="<$formName$>exclude_apps" value="1"/>
+					<input type="hidden" name="ud" id="<$formName$>ud" value="1"/>
+					<input type="hidden" name="siteLocale" id="<$formName$>siteLocale" value="<$#active.locale$>"/>
+					<input type="hidden" name="requiredfields" id="<$formName$>requiredfields" value="xlocale:<$#active.locale$>" />
+					<input type="hidden" name="sort" value="date:D:L:d1"/>
+					<input type="hidden" name="domainId" id="<$formName$>domainId" value="<$#active.domainId$>"/>
+					<div class="extra_search1" style="width: 150px;display:none;">
+						<input type="checkbox"  class="checkbox"  name="isOnlyJobTitle" 
+						id="<$formName$>isOnlyJobTitle" value= 
+						"<$#active.isOnlyJobTitle$>"/>
+						<label for="<$formName$>isOnlyJobTitle">
+						<$lc('wwHomePageOnlySearchJobTitle')$></label>
+					</div>
+				
+				<div><input type="submit" class="button" value="<$lc('wwSearch')$>"></div>
+        	</form>
+<div id="<$dialog$>"></div>
+<div class="clear"></div>
+</div>
+<@end@>
+
+
+<@dynamichtml rgtmp_home_main_block_ukjobs_inc@>
+<div class="lrg_inner" style="text-align:left; padding-right: 24px;margin-bottom:25px;">
+	<$image=wcmElement("Image")$>
+	<$if strIndexOf(image,"width") == -1 $>
+		<$image = strReplace(image,"/>","width='540px' />")$>
+	<$endif$>	
+	<$image$>
+	[[%-- <img style="opacity: 0.338041; height: 200px; width: 540px;" src="/idc_dev/groups/hays_common/@be/@content/documents/digitalasset/hays_554482.jpg" alt="Hays UK Background Image" class="last-active active">--%]]
+</div>
+<div class="lrg_inner" style="text-align:left; padding-right: 24px;margin-bottom:25px;">	<$wcmElement("Text")$></div>
+<@end@>
+
+</body></html>

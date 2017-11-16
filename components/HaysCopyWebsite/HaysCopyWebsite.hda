@@ -1,0 +1,70 @@
+﻿<?hda version="10.1.3.5.1 (100623)" jcharset=UTF8 encoding=utf-8?>
+@Properties LocalData
+serverVersion=7.1
+version=2012_10_12
+classpath=$COMPONENT_DIR/classes
+blFieldTypes=
+ComponentName=HaysCopyWebsite
+hasPreferenceData=false
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+environment
+hayscopywebsite_environment.cfg
+null
+10
+resource
+resources/hayscopywebsite_resource.htm
+null
+10
+service
+resources/hayscopywebsite_service.htm
+HaysCopyWebsite_Services
+10
+resource
+resources/hayscopywebsite_handlers.htm
+null
+10
+template
+templates/hayscopywebsite_template.hda
+null
+10
+query
+resources/hayscopywebsite_query.htm
+HaysCopyWebsite_Queries
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+HaysCopyWebsite_Handler
+ServiceHandlers
+null
+10
+HaysCopyWebsite_Templates
+IntradocTemplates
+name
+10
+@end
+

@@ -1,0 +1,100 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysTranslationComponent
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_01_09 (MR10 Build1)
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+validateStandard
+hays.custom.multilingual.HaysWebsitesLoadFilter
+onValidateStandardFileParams
+1
+extraBeforeCacheLoadInit
+hays.custom.multilingual.HaysWebsitesLoadFilter
+extraBeforeCacheLoadInit
+50
+afterInitLocale
+hays.custom.multilingual.HaysWebsitesLoadFilter
+afterInitLocale
+50
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/haystranslationcomponent_ss_extra_resource.htm
+null
+10
+service
+resources/haystranslationcomponent_service.htm
+HaysTranslationComponent_Services
+10
+template
+templates/haystranslationcomponent_template.hda
+null
+10
+query
+resources/haystranslationcomponent_query.htm
+HaysTranslationComponent_Queries
+10
+resource
+resources/haystranslationcomponent_idoc_extention_resource.htm
+null
+10
+resource
+resources/haystranslationcomponent_resource.htm
+null
+100
+resource
+resources/haystranslationcomponent_service_handler_resource.htm
+null
+10
+environment
+hays_translation_environment.cfg
+null
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+HaysTranslationComponent_Templates
+IntradocTemplates
+name
+10
+HaysTranslationComponent_Idoc
+IdocScriptExtensions
+name
+10
+HaysTranslationComponent_ServiceHandlers
+ServiceHandlers
+null
+10
+@end
+@ResultSet StateCfgExportedVars
+2
+name
+value
+LanguageSource_HaysTranslationComponent
+$COMPONENT_DIR/resources/lang
+@end

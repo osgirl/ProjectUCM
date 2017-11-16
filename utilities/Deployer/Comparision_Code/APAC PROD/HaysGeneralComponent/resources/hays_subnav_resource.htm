@@ -1,0 +1,1491 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysGeneralComponent Sub-Navigation Includes
+</title>
+</head>
+<body>
+<!--*******************************COUNTRY COOKIE*****************************************-->
+<@dynamichtml country_cookie_inc@>
+	<$hostname=HTTP_HOST$>
+	<$if strIndexOf(hostname,"www")==0$>
+		<$hostname=strSubstring(hostname,(strIndexOf(hostname, ".")+1))$>
+	<$endif$>
+	<$hostname=strReplace(hostname, "testsg.", "")$>
+<@end@>
+<!--****************************************************
+	SETS SITE'S LOCALE
+*******************************************************-->
+<@dynamichtml hays_common_inc@>
+	<!-- no cache headers --> 
+		<$setHttpHeader("Cache-Control", "no-cache, no-store, must-revalidate")$>
+		<$setHttpHeader("Pragma", "no-cache")$>
+		<$setHttpHeader("Expires", 0)$>
+	<!-- end no cache headers -->
+<$wcmPlaceholder("Meta Tags", "placeholderDefinitionDocName=PLDEF_META_TAGS","templateDocName=RGTMP_HEADER_TAGS")$>
+<$include javascript_Hays_gaq_push$>
+<$if NOT strCmp(countryName,'Colombia') $>
+<$include googleanalytics_for_Colombia$>
+<$elseif NOT strCmp(countryName,'Chile') $>
+<$include googleanalytics_for_Chile$>
+<$else$>
+<$include googleanalytics_for_UK$>
+<$endif$>
+<$include adwords_remarketing_code_cz$>
+<$if strEquals(redirect,'y')$>	
+	<$name_cookie="redirectto",value="N" $> 
+	<$setHttpHeader("Set-Cookie", name_cookie & "=" & value & "; expires=" & formatDateWithPattern(dateCurrent(7300),'yyyy-MM-dd HH:mm:ss') &  "; path=/")$>
+<$endif$>
+<$if not (strEquals(getCookie("redirectto"),'N'))$>
+<$include redirecttobrowserLocale_BE$>
+<$endif$>
+<$JobSearchDirName=urlEncode(ssGetNodeProperty('jobs-search','urlDirName'))$>
+<$CandidateSearchDirName=urlEncode(ssGetNodeProperty('candidates-search','urlDirName'))$>
+<$ErrorPageDirName=urlEncode(ssGetNodeProperty('error-page','urlDirName'))$>
+<$userAgent = UserAgent(HTTP_USER_AGENT)$>
+<$userAgent_tab = UserAgent_UK(HTTP_USER_AGENT)$>
+<$trace(" User agent value = " & userAgent, "#console", "useragent")$>
+<$fullUrl=QUERY_STRING$>
+<$trace(" Complete URL value = " & fullUrl, "#console", "useragent")$>
+<$ssSiteRelativeURLIndex=strIndexOf(fullUrl,"siteRelativeUrl")$>
+<$ssSiteRelativeURLSubString = strSubstring(fullUrl,ssSiteRelativeURLIndex)$>
+<$ssSiteRelativeURLAmperIndex = strIndexOf(ssSiteRelativeURLSubString,"&")$>
+<$if ssSiteRelativeURLAmperIndex ne -1 $>
+<$ssSiteRelativeURLAmperSubString = strSubstring(ssSiteRelativeURLSubString,16,ssSiteRelativeURLAmperIndex)$>
+<$else$>
+<$ssSiteRelativeURLAmperSubString = strSubstring(ssSiteRelativeURLSubString,16)$>
+<$endif$>
+<$trace(" ssSiteRelativeURLIndex value = " & ssSiteRelativeURLIndex, "#console", "useragent")$>
+<$trace(" ssSiteRelativeURLSubString value = " & ssSiteRelativeURLSubString, "#console", "useragent")$>
+<$trace(" ssSiteRelativeURLAmperIndex value = " & ssSiteRelativeURLAmperIndex, "#console", "useragent")$>
+<$trace(" ssSiteRelativeURLAmperSubString value = " & ssSiteRelativeURLAmperSubString, "#console", "useragent")$>
+<$ssDomainNumIndex=strIndexOf(fullUrl,"ssDomainNum")$>
+<$trace(" ssDomainNumIndex value = " & ssDomainNumIndex, "#console", "useragent")$>
+<$if ssDomainNumIndex eq -1$>
+<$ssDomainNumSubString = strSubstring(fullUrl,ssSiteRelativeURLIndex)$>
+<$else$>
+<$ssDomainNumSubString = strSubstring(fullUrl,ssDomainNumIndex)$>
+<$endif$>
+<$trace(" RelativeUrl value = " & ssDomainNumSubString, "#console", "useragent")$>
+<$AmperIndex=strIndexOf(ssDomainNumSubString,"&")$>
+<$trace(" AmperIndex value = " & AmperIndex, "#console", "useragent")$>
+<$FinalParams=strSubstring(ssDomainNumSubString,AmperIndex+1)$>
+<$trace(" Final Parameters value = " & FinalParams, "#console", "useragent")$>
+<$ssoriginalurl = ssSiteRelativeURLAmperSubString & "?" & FinalParams$>
+<$trace(" SSOriginalURL value = " & ssoriginalurl, "#console", "useragent")$>
+<$include tab_enabled_countries$>
+	<$if isTabCountry eq 1 AND strIndexOf(nodeId,"jobs-search")>=0 AND ((userAgent gt 0) OR (userAgent_tab gt 0))$>
+	<$trace(" Inside if for Tablet devices= ", "#console", "useragent")$>
+	<$include support_old_localerecordid_mobile_inc$>
+<$else$>
+<$if isTabCountry ne 1 AND strIndexOf(nodeId,"jobs-search")>=0 AND (userAgent gt 0) $>
+	<$trace(" Inside if = ", "#console", "useragent")$>
+	<$include support_old_localerecordid_mobile_inc$>
+<$endif$>
+<$endif$> 
+
+<$if strIndexOf(nodeId,"error-page")>=0$>		
+		<$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0$>
+			<$include support_old_localerecordid_inc$>
+			[[%<$redirectToUrl(ssGetServerRelativeUrl(siteId,"job-not-available"))$>%]]
+		<$elseif strIndexOf(ssoriginalurl,CandidateSearchDirName)>=0$>	
+			<$include support_old_localerecordid_inc$>
+		    [[%<$redirectToUrl(ssGetServerRelativeUrl(siteId,"candidate-not-available"))$>%]]
+		<$endif$>		
+<$endif$>
+<$if #active.submitted and (#active.job_title or #active.job_keywords or #active.job_title_ref or #active.job_industry or #active.job_location or #active.job_category or #active.location_set)$>
+	<$ executeService('HAYS_VALIDATE_SEARCH_PARAMS')$>
+	
+	<$if strLength(#active.STATUS) == 0$>		
+		<$if #active.contentType like "Jobs"$>
+			<$urlToRedirectTo = ssGetServerRelativeUrl(siteId, "jobssearchresults") $>
+		<$elseif #active.contentType like "Candidates"$>
+			<$urlToRedirectTo = ssGetServerRelativeUrl(siteId, "candidatessearchresults") $>
+		<$endif$>
+		<$if #active.QueryParameters $>
+		   	<$ urlToRedirectTo = urlToRedirectTo & "?submit=1" & QueryParameters$>
+		<$endif$>
+		
+		<$if #active.debug$>URL=<$urlToRedirectTo$><$endif$>
+		<$setValue("#local","ssRedirectHTTPHeader","true")$>
+		<$redirectToUrl(urlToRedirectTo)$>
+	<$endif$>
+<$endif $>
+
+
+	[[% extract page title %]]
+	<$include seo_common_inc$>
+     	[[% set caching header %]]
+	<$if isTrue(getValue("#env","isCachingEnabled")) and not ((strEquals(nodeId,'jobssearchresults')) or (strEquals(nodeId,'candidatessearchresults')))$>
+  <$setHttpHeader("Surrogate-Control","content=ORAESI/9.0.4, max-age=1800")$>
+<$endif$>	
+[[% Cookie code%]]
+	[[%Candidate Basket:<$#active.pcb$><br/>
+	Job Basket:<$#active.pjb$><br/>
+	User Name:<$#active.pun$><br/>
+	Tg Taud:<$#active.pej$><br/>
+	Prz_inf:<$#active.prz$>%]]    	
+    <$if strLength(#active.pcb) gt 0$>    	
+	<$name="candbkt",value=#active.pcb$>
+	<$include cookie_set$>
+	<$endif$>
+	
+	<$if strLength(#active.pjb) gt 0$>     	
+	<$name="jobbkt",value=#active.pjb$>	
+	<$include cookie_set$>
+	<$endif$>
+	
+	<$if strLength(#active.pun) gt 0$>	
+	<$name="usrname",value=#active.pun$>
+	<$include cookie_set$>
+	<$endif$>
+	
+	<$if strLength(#active.pej) gt 0$>	
+	<$name="tgtaud",value=#active.pej$>
+    <$include cookie_set$>
+    <$endif$>
+	
+	<$if strLength(#active.prz) gt 0$>   	
+	<$name="prz_inf",value=#active.prz$>
+    <$include cookie_set$>	
+	<$endif$>	
+	[[% End Cookie code%]]	
+	
+	<!-- added for MR Sprint 23 on 17 Apr 2012 -->
+	
+	<$if strLength(#active.utm_campaign) gt 0$>   	
+		<$name="utm_campaign",value=#active.utm_campaign$>
+		<$include cookie_set$>	
+	<$endif$>
+	
+
+	<!-- end -->
+	<$include check_webapi_full_website$>
+	
+	<$include add_canonical_tag_job_page$>
+	<$include add_baidu_script$>
+	<$include add_zopium_script$>
+	<$include add_ogtag_script$> [[% Relaease 8 [Add OG tags] %]]
+<@end@>
+
+<@dynamichtml add_ogtag_script@> 
+	[[% Relaease 8 [Add OG tags] %]]
+	<$primaryUrl = ssGetNodeProperty(#active.nodeId, 'primaryUrl') $>
+	[[%<!-- og debug <$primaryUrl$>-->%]]
+	
+	<$if strIndexOf(primaryUrl, "MainImage=") GT 0$>
+		<$ datafile = MainImage$>
+		<$imageUrl=ssIncludeXml(datafile, "wcm:root/wcm:list[@name='BackgroundImages']/wcm:row/wcm:element[@name='Image']/text()")$>
+		[[%<!-- og debug <$imageUrl$>-->%]]
+		<$imageUrl=strSubstring(imageUrl, strIndexOf(imageUrl, 'src=\"')+5, strLength(imageUrl)) $>
+		<$imageUrl = strSubstring(imageUrl, 0, strIndexOf(imageUrl, '\"')) $>
+	<$elseif strIndexOf(primaryUrl, "Main Region=") GT 0$>
+		<$ datafile = strSubstring(primaryUrl, strIndexOf(primaryUrl, "Main Region=") ) $>
+		<$if strIndexOf(datafile, "&") GT 0$>
+			<$ datafile = strSubstring(datafile, 12, strIndexOf(datafile, "&") ) $>
+		<$else$>
+			<$ datafile = strSubstring(datafile, 12, strLength(datafile)) $>
+		<$endif$>
+		<$imageUrl=ssIncludeXml(datafile, "wcm:root/wcm:element[@name='Summary']/text()")$>	
+		<$ imageUrl = strSubstring(imageUrl, strIndexOf(imageUrl, '<img src=\"') ) $>	
+		<$ imageUrl = strSubstring(imageUrl, 10, strIndexOf(imageUrl, '\" alt=') ) $>
+	<$endif$>	
+	<meta property="og:title" content="<$document_title$>">
+	<$if strIndexOf(nodeId,"home")>=0 $>	
+	<meta property="og:type" content="website" >
+	<$else$>
+	<meta property="og:type" content="article" >
+	<$endif$>
+	<$if not strEquals(imageUrl,"")$>
+	<meta property="og:image" content="http://<$HTTP_HOST$><$imageUrl$>">
+	<$endif$>
+	<$if not (strEquals(og_url,"set") OR strEquals(og_url,""))$>
+	<meta property="og:url" content="<$eval(og_url)$>">
+	<$endif$>	
+<@end@>
+
+<@dynamichtml add_zopium_script@>
+	<$if domainId eq 13 $><!--POLAND-->
+			 <!--Start of Zopim Live Chat Script-->
+				<script type="text/javascript">
+				window.$zopim||(function(d,s){var z=$zopim=function(c){
+				z._.push(c)},$=z.s=
+				d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
+				_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
+				$.src='//v2.zopim.com/?2SfCzrC8fQC6u5Mn6KEr6KMcqQoU4nJL';z.t=+new Date;$.
+				type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
+				</script>
+			<!--End of Zopim Live Chat Script-->
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml add_baidu_script@>
+	<$if domainId eq 27 $>
+			 <script>
+				var _hmt = _hmt || [];
+				(function() {
+				var hm = document.createElement("script");
+				hm.src = "//hm.baidu.com/hm.js?02857f80b022155e4f49531bcde1c8f0";
+				var s = document.getElementsByTagName("script")[0]; 
+				s.parentNode.insertBefore(hm, s);
+				})();
+			</script>
+	<$endif$>
+<@end@>
+
+<@dynamichtml add_canonical_tag_job_page@>
+	<$if strEqualsIgnoreCase(siteId,'enOG') AND strEquals(nodeId,'jobs-search')$>
+			<link rel="canonical" href="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>jobdetails/<$localeRecordId$>?dDocName=<$JOB_ID$>" />
+			<$og_url="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>jobdetails/<$localeRecordId$>?dDocName=<$JOB_ID$>"$> [[% Relaease 8 [Add OG tags] %]]
+			<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" /> <!-- MR11 14040 -->	
+	<$else$>
+		<$if (strEqualsIgnoreCase(nodeId,'jobs-search')) AND strLength(ssDocName)>0$>
+			<meta property="og:url" content="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$><$ssGetNodeProperty("urlDirName")$>/<$DOC_INFO.dDocName$>"  />
+			<$og_url="set"$> [[% Relaease 8 [Add OG tags] %]]
+			<link rel="canonical" href="<$SS_SERVER_NAME$><$ssLink(ssDocName,'jobs-search')$>" />
+			<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" /><!-- MR11 14040 -->
+		<$else$>
+			<$if strLength(ssDocName)>0$>
+			<link rel="canonical" href="http://<$HTTP_HOST$><$ssLink(ssDocName,#active.nodeId)$>" />
+			<$og_url="http://<$HTTP_HOST$><$ssLink(ssDocName,#active.nodeId)$>"$> [[% Relaease 8 [Add OG tags] %]]
+			<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" />
+			<$else$>
+			<link rel="canonical" href="http://<$HTTP_HOST$><$ssNodeLink(nodeId, siteId)$>" />
+			<$og_url="http://<$HTTP_HOST$><$ssNodeLink(nodeId, siteId)$>"$> [[% Relaease 8 [Add OG tags] %]]
+			<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" /> <!-- MR11 14040 -->
+			<$endif$>
+		<$endif$>
+	<$endif$>
+	<!-- MR9 9411 Changes start-->
+    <$name_cookie="country_cookie",value=#active.SiteLocale $> 
+
+   <$include country_cookie_inc$>
+	<$setHttpHeader("Set-Cookie", name_cookie & "=" & value & "; expires=" & formatDateWithPattern(dateCurrent(480),'yyyy-MM-dd HH:mm:ss') &  "; path=/ ; domain=" & hostname & ";")$>
+	<!-- MR9 9411 Changes Ends-->
+<@end@>
+
+<@dynamichtml cookie_set@>   	
+	<$maxAge = ""$>
+	<$if strEquals(name,'logout')$>
+		<$maxAge = "; Max-Age=0"$>
+	<$endif$>
+	<$httpOnly = "; path=/; HTTPOnly"$>	
+  		<$if strEquals(name,'jobbkt') OR strEquals(name,'candbkt')$>
+  			<$httpOnly = "; path=/ "$>
+		<$endif$>		
+  		<$days=1$>
+  		<$if strEquals(name,'usrname')$>
+  			<$days=#env.username_expiry$>
+  			<$setHttpHeader("Set-Cookie", name & "=" & value & "; expires=" & formatDateWithPattern(dateCurrent(days),'EEE, dd-MMM-yyyy HH:mm:ss') & httpOnly & maxAge)$>
+  	  	<$elseif strEquals(name,'prispc')$>
+  			<$days=#env.specialism_expiry$>
+  			<$setHttpHeader("Set-Cookie", name & "=" & value & httpOnly & maxAge & "; expires=" & formatDateWithPattern(dateCurrent(days),'EEE, dd-MMM-yyyy HH:mm:ss') )$>  
+  		<$else$>		
+  			<$setHttpHeader("Set-Cookie", name & "=" & value & httpOnly & maxAge)$>   		
+  		<$endif$>
+		
+<@end@>
+
+<!--************Adding Office specialism to the Tray*************-->
+<@dynamichtml custom_finish_layout_init@>
+	<$include super.custom_finish_layout_init$>
+    <$if IsLoggedIn and userHasRole(#env.AdminRole) $>
+            <$include OfficeSpecialismMenu$>
+            <$include OfficeSpecialismSubMenu$>
+    <$endif$>
+
+<@end@>
+
+<!-- add a drop-down menu or a new tray to contain the Office Speciailm Page -->
+<@dynamichtml OfficeSpecialismMenu@>
+    
+
+        // add a drop-down menu, or a tray to the UI
+        navBuilder.addChildNodeTo('NAVTREE', 'collection', 'id==OfficeHaysSpecialismMain', 'label==Office Specialism');
+              navBuilder.menuB.addTopLevelNode("OfficeHaysSpecialismMain");    
+           
+<@end@>
+
+<@dynamichtml OfficeSpecialismSubMenu@>
+    navBuilder.addChildNodeTo('OfficeHaysSpecialismMain', 'item', 'id==Office',
+  'label==Office and Hays Specialism', 'url==<$HttpCgiPath$>?IdcService=GET_OFFICE_HAYS_SPECIALISMS_PAGE');
+<@end@>
+
+<@dynamichtml yandex_metric_code_inc@>
+<!-- Yandex.Metrika informer -->
+<a href="http://metrika.yandex.ru/stat/?id=7857820&amp;from=informer"
+target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/7857820/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+style="width:88px; height:31px; border:0;" alt="ßíäåêñ.Ìåòðèêà" title="ßíäåêñ.Ìåòðèêà: äàííûå çà ñåãîäíÿ (ïðîñìîòðû, âèçèòû è óíèêàëüíûå ïîñåòèòåëè)" /></a>
+<!-- /Yandex.Metrika informer -->
+
+<!-- Yandex.Metrika counter -->
+<div style="display:none;"><script type="text/javascript">
+(function(w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter7857820 = new Ya.Metrika({id:7857820, enableAll: true});
+        }
+        catch(e) { }
+    });
+})(window, 'yandex_metrika_callbacks');
+</script></div>
+<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
+<noscript><div><img src="//mc.yandex.ru/watch/7857820" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<@end@>
+
+<@dynamichtml javascript_check_browser_details_top_inc@>
+<div id="warnings">
+    <div class="container_24">        
+            <noscript><p>JavaScript is not enabled in your browser. Please enable JavaScript or upgrade to a JavaScript-capable browser.</p></noscript>
+            <div id="cookies"></div>
+            <div id="browser"></div>
+            <div id="flash"></div>            
+    </div>
+</div>
+<@end@>
+
+<@dynamichtml javascript_check_browser_details_bottom_top_inc@>
+
+
+<script type="text/javascript">
+$().ready(function () {
+     var TEST_COOKIE = 'hays_test';
+    $.cookie(TEST_COOKIE, true);
+    if (!$.cookie(TEST_COOKIE)) {
+	//alert("working");
+        $('#cookies').prepend('<$lc('wwCookiesAreNotEnabled')$>');
+    } else {
+	//alert("working1");
+	$.cookie(TEST_COOKIE, null);}
+    
+    if ($.browser.opera || ($.browser.msie && $.browser.version=="6.0")) {
+	//alert("working2");
+        $('#browser').prepend('<p>Your browser is not supported. Please use Firefox, Chrome, Safari or IE7+.</p>');
+    }
+    
+    if (!window.swfobject) {        
+//	alert("working3");
+        $('#flash').prepend('<p>Flash support has not been detected in your browser. Please download the <a href="http://get.adobe.com/flashplayer/">Adobe Flash plugin</a>.</p>');    
+    }
+});
+</script>
+<@end@>
+
+
+<@dynamichtml get_user_role@>
+	<$user_role=getCookie("tgtaud")$>
+<@end@>
+
+<@dynamichtml is_employer@>
+	<$isEmployer=0$>
+	<$if #active.nodeId$>
+		<$url=ssGetServerRelativeUrl(siteId,#active.nodeId)$>
+		<$if strIndexOf(url,'employer') != -1 OR strIndexOf(url,'candidate') != -1 OR strIndexOf(url,'candidates-search') != -1 $>
+			<$isEmployer=1$>
+		<$else$>
+			<$if strIndexOf(url,'jobseeker') != -1 OR strIndexOf(url,'jobs-search') != -1$>
+				<$isEmployer=0$>
+			<$else$>
+				<$if #active.contentType and strEquals(contentType,"Jobs")$>
+					<$isEmployer=0$>
+				<$else$>
+					<$if #active.contentType and strEquals(contentType,"Candidates")$>
+						<$isEmployer=1$>
+					<$endif$>
+				<$endif$>
+			<$endif$>
+		<$endif$>
+	<$else$>
+		<$include get_user_role$>
+		<$if strEquals(user_role,"2")$>
+			<$isEmployer=1$>
+		<$endif$>
+	<$endif$>
+		<$if #active.ssDocName$>
+			<$ docinfo = #active.ssDocName$>	
+				<$if strIndexOf(docinfo,'CANDIDATE_') != -1 $>
+				<$isEmployer=1$>
+				<$else$>
+					<$if strIndexOf(docinfo,'JOB_') != -1 $>
+						<$isEmployer=0$> 
+					<$endif$>
+				<$endif$>
+	<$endif$>
+<@end@>
+
+
+
+
+
+
+<@dynamichtml AddRemoveFromJobBasket@>
+	<$include ReadJobBasket$>
+	<$include check_nav_type$>
+	<$if isEmployer==1$>
+		<$type="candidate"$>
+		<$currentbaskt=candbkt$>
+		<$currentappd=reqInfo$>
+		<$addBasketKey="wwAddToCandidateBasket"$>
+		<$removeBasketKey="wwRemoveFromCandidateBasket"$>
+		<$alreadyappliedKey="wwAlreadyRequested"$>
+	<$else$>
+		<$type="job"$>
+		<$currentbaskt=baskt$>
+		<$currentappd=applied$>
+		<$addBasketKey="wwAddToJobBasket"$>
+		<$removeBasketKey="wwRemoveFromJobBasket"$>
+		<$alreadyappliedKey="wwAlreadyApplied"$>
+	<$endif$>
+	
+	
+	<$if strIndexOf(#active.currentbaskt, "," & dDocName & ",") ge 0$>
+		<$queryString = WC_JOB_BASKET_ADD_DELETE & "?action=bsktdel&amp;user=" & userId & "&amp;" & type & "=" & dDocName & "&amp;callback=?" $>
+		<$include include_domainId_n_siteLocale$>
+		
+		<$ if domainId ==1$>
+			<li class="jaccess"><a href="<$queryString$>" onclick="" class="job_basket remove" rel="<$dDocName$>"><span><$lc(removeBasketKey)$></span><span class="access"><$dDocTitle$></span></a></li>
+			<$else$>
+			<li class="jaccess"><a href="<$queryString$>" class="job_basket remove" rel="<$dDocName$>"><span><$lc(removeBasketKey)$></span><span class="access"><$dDocTitle$></span></a></li>
+		<$endif$>
+		
+		
+	<$elseif strIndexOf(#active.currentappd,  "," & dDocName & ",") ge 0$>
+			[[%<li class="applied"><$lc(alreadyappliedKey)$></li>commented for release 8.0 "add to job shortlist" %]]
+			[[% added for release 8.0 start%]]
+			[[% <li class="jaccess"><a href="<$queryString$>" class="job_basket " rel="<$dDocName$>"><span><$lc(addBasketKey)$></span><span class="access"><$dDocTitle$></span></a></li>%]]
+			[[%<li class="applied"><$lc(addBasketKey)$></li> commented after OAT Deployment%]]
+			[[%<li class="applied"><a href="#" ><span><$lc(addBasketKey)$></span><span class="access"></span></a></li>  Commented  after UAT APAC  testing defect%]]
+			
+			
+			[[% Added  after APAC UAT testing defect---start%]]
+			
+			<$if strEquals(type,"job") $>
+				<li class="applied"><a href="#" ><span><$lc(addBasketKey)$></span><span class="access"></span></a></li> [[% Added after OAT Deployment%]]
+			<$else$>
+				<li class="jaccess"><a href="<$queryString$>" class="job_basket " rel="<$dDocName$>"><span><$lc(addBasketKey)$></span><span class="access"><$dDocTitle$></span></a></li>
+			<$endif$>
+			[[% Added  after APAC UAT testing defect---end%]]
+			[[%added for release 8.0 end%]]
+	<$else$>
+			<$extraCssBasketClass = ""$>
+			<$if strEquals(#active.xPostingType,"multihayspost")$>
+				<$extraCssBasketClass = " multipost"$>
+			<$endif$>
+			<$queryString = WC_JOB_BASKET_ADD_DELETE & "?action=bskt&amp;user=" & userId & "&amp;" & type & "=" & dDocName & "&amp;callback=?" $>
+			<$include include_domainId_n_siteLocale$>
+			
+			<$ if domainId ==1$>
+				<li class="jaccess<$#active.extraCssClass$>"><a href="<$queryString$>" onclick="" class="job_basket<$extraCssBasketClass$>" rel="<$dDocName$>"><span><$lc(addBasketKey) $></span><span class="access"><$dDocTitle$></span></a></li>
+				<$else$>
+				<li class="jaccess<$#active.extraCssClass$>"><a href="<$queryString$>" class="job_basket<$extraCssBasketClass$>" rel="<$dDocName$>"><span><$lc(addBasketKey) $></span><span class="access"><$dDocTitle$></span></a></li>
+			<$endif$>
+	<$endif$>
+	
+	
+<@end@>
+
+
+
+<@dynamichtml include_domainId_n_siteLocale@>
+	<$if strIndexOf(queryString,"?") == -1 $> 
+		<$queryString = queryString & "?" $>
+	<$else$>
+		<$queryString = queryString & "&" $>	
+	<$endif$>
+	<$queryString = queryString & "domainId=" & domainId & "&siteLocale=" & SiteLocale $>
+<@end@>
+
+<@dynamichtml include_header_sub@>
+	<$if strEqualsIgnoreCase(IdcService,"WCM_PLACEHOLDER")$>	
+		<$include ss_layout_head_info_custom$>
+	<$endif$> 
+	<$include set_displayLanguageFlag$> 
+		<$include add_create_account_popup$>
+			
+			<$username=getCookie("usrname")$>
+			<$userid=getCookie("prz_inf")$>
+			
+			<$if isProjectSEnabled eq 1$>
+				<$loginUrl = portalUrl & #env.ProjectS_Login$>
+				<$myAccountUrl = portalUrl & #env.ProjectS_My_Account$>
+				<$logoutUrl = portalUrl & #env.ProjectS_Logout$>
+			<$else$>
+				<$queryString = #active.WC_LOGIN & '?isEmployer=2'$>
+				<$include check_nav_type$>
+				<$if isEmployer==1$>
+					<$queryString = #active.WC_LOGIN & '?isEmployer=1'$>
+				<$endif$>
+				<$include include_domainId_n_siteLocale$>
+				<$loginUrl = queryString$>
+				
+				<$myAccountUrl = #active.WC_ACCOUNT$>
+				
+				<$queryString = #active.WC_LOGOUT$>
+				<$if strEquals(userid,"") AND NOT strEquals(username,"")$>
+					<$queryString = #active.WC_LOGOUT & "?logoutcomplete=true"$>
+				<$endif$>
+				<$include include_domainId_n_siteLocale$>
+				<$logoutUrl = queryString$>
+			<$endif$>	
+			
+			<div onload="javascript:functionalityCookie()">
+				<$if isTrue(displayLanguageFlag)== 0$>
+					<div class="acc_nav_display">
+				<$endif$>
+				<$if not strEquals(getCookie("usrname"),"")$>
+				<script type="text/javascript">
+				
+					function functionalityCookie() 
+					{ 
+					if(window.jQuery && jQuery.ui && jQuery.isReady) 
+						{
+							var functionalcookie = $.cookie('functnl');
+							if (functionalcookie =='N')
+							{	
+								var showusername = document.getElementById("showusername_functionality");
+								showusername.className=(showusername.className=='usr-unhidden')?'usr-hidden':'usr-unhidden';
+								
+								var hideusername = document.getElementById("hideusername_functionality");
+								hideusername.className=(hideusername.className=='usr-hidden')?'usr-unhidden':'usr-hidden';
+								
+								
+								//document.getElementById("hideusername_functionality").style.display="none";
+								
+								
+							}
+							
+						}
+					else 
+						{
+							window.setTimeout(functionalityCookie, 100);
+						}
+					};
+					
+					functionalityCookie();
+				</script>
+				
+				
+				<div id="showusername_functionality" class="usr-unhidden">
+					<ul class="acc_nav">
+						<li><span class="user">
+								<!-- WEBCACHETAG="Personalised_Greeting_01"-->
+							<$lc('wwGreeting', strReplace(username,'+',' ') )$>
+								<!-- WEBCACHEEND-->
+						</span></li>
+						<$if (#active.nodeId) and (strEqualsIgnoreCase(#active.nodeId,"home"))$>
+							<li id="my-account"><a href="<$myAccountUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwMyAccount')$></span></a></li>	
+						<$endif$>
+								
+						<li id="un-login"><a href="<$logoutUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwLogout')$></span></a></li>
+					</ul>
+				</div>
+				<div id="hideusername_functionality" class="usr-hidden">
+					<$if isTrue(displayLanguageFlag)== 0$>
+						<ul class="acc_nav">
+						<div class="jaccess">
+					<$else$>
+						<div class="jaccess"><ul class="acc_nav">					
+					<$endif$>
+					<li id="un-login"><a class="un-login hays-login" href="<$loginUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwLogin')$></span></a></li>						
+					<li id="un-create"><a href="" class="un-create" ><span><$lc('wwCreateAccount')$></span></a></li>
+					<$if isTrue(displayLanguageFlag)== 0$>
+						</div></ul>
+					<$else$>
+						</ul></div>				
+					<$endif$>
+				</div>
+			<$else$>
+			
+						<$if isTrue(displayLanguageFlag)== 0$>
+							<ul class="acc_nav">
+							<div class="jaccess">
+						<$else$>
+						<div class="jaccess"><ul class="acc_nav">					
+						<$endif$>
+						<li id="un-login"><a class="un-login hays-login" href="<$loginUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwLogin')$></span></a></li>						
+						<li id="un-create"><a href="" class="un-create" ><span><$lc('wwCreateAccount')$></span></a></li>
+						<$if isTrue(displayLanguageFlag)== 0$>
+				 			</div></ul>
+						<$else$>
+							</ul></div>				
+						<$endif$>
+					
+			 
+			<$endif$>
+					<$if isTrue(displayLanguageFlag)== 0$>
+					</div>
+				
+				<$endif$>
+</div>
+
+<@end@>
+
+<!--****************************************************
+	New include for home page
+*******************************************************-->
+
+<@dynamichtml include_header_sub_home@>	
+	<$include set_displayLanguageFlag$> 
+	<$include add_create_account_popup$> 
+		
+		<$username=getCookie("usrname")$>
+		<$userid=getCookie("prz_inf")$>
+		
+		<$if isProjectSEnabled eq 1$>
+			<$loginUrl = portalUrl & #env.ProjectS_Login$>
+			<$myAccountUrl = portalUrl & #env.ProjectS_My_Account$>
+			<$logoutUrl = portalUrl & #env.ProjectS_Logout$>
+		<$else$>
+			<$queryString = #active.WC_LOGIN$>
+			<$include include_domainId_n_siteLocale$>
+			<$loginUrl = queryString$>
+			
+			<$queryString = #active.WC_ACCOUNT$>
+			<$include include_domainId_n_siteLocale$>
+			<$myAccountUrl = queryString$>
+			
+			<$queryString = #active.WC_LOGOUT$>
+			<$if strEquals(userid,"") AND NOT strEquals(username,"")$>
+				<$queryString = #active.WC_LOGOUT & "?logoutcomplete=true"$>
+			<$endif$>
+			<$include include_domainId_n_siteLocale$>
+			<$logoutUrl = queryString$>
+		<$endif$>	
+		
+		
+		<div onload="javascript:functionalityCookie()">
+		<$if isTrue(displayLanguageFlag)== 0$>
+      	<div class="acc_nav_display"  >
+		<$endif$>
+			<$if not strEquals(username,"")$>
+				
+				
+				<script type="text/javascript">
+				
+					function functionalityCookie() 
+					{ 
+					if(window.jQuery && jQuery.ui && jQuery.isReady) 
+						{
+							var functionalcookie = $.cookie('functnl');
+							if (functionalcookie =='N')
+							{	
+								var showusername = document.getElementById("showusername_functionality");
+								showusername.className=(showusername.className=='usr-unhidden')?'usr-hidden':'usr-unhidden';
+								
+								var hideusername = document.getElementById("hideusername_functionality");
+								hideusername.className=(hideusername.className=='usr-hidden')?'usr-unhidden':'usr-hidden';
+								
+								
+								//document.getElementById("hideusername_functionality").style.display="none";
+								
+								
+							}
+							
+						}
+					else 
+						{
+							window.setTimeout(functionalityCookie, 100);
+						}
+					};
+					
+					functionalityCookie();
+				
+				</script>
+				
+			
+			
+				<div id="showusername_functionality" class="usr-unhidden">
+	
+					<ul class="acc_nav" >
+						<li>
+							<span class="user">
+								<$lc('wwGreeting', strReplace(username,'+',' ') )$>
+							</span>
+						</li>
+						<$if (#active.nodeId) and (strEqualsIgnoreCase(#active.nodeId,"home"))$>
+							<li id="my-account"><a href="<$myAccountUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwMyAccount')$></span></a></li>
+						<$endif$>
+						<li id="un-login"><a href="<$logoutUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwLogout')$></span></a></li>
+					</ul>
+				</div>
+				<div id = "hideusername_functionality"  class="usr-hidden">
+				
+					<$if isTrue(displayLanguageFlag)== 0$>
+						<ul class="acc_nav" >
+							<div class="jaccess" >
+							 
+					<$else$>
+						<div class="jaccess"><ul class="acc_nav" >	
+					<$endif$>
+							
+					<li id="un-login"><a class="un-login" href="<$loginUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwLogin')$></span></a></li>
+					<li id="un-create"><a href="" class="un-create" ><span><$lc('wwCreateAccount')$></span></a></li>
+					<$if isTrue(displayLanguageFlag)== 0$>
+						</div></ul>
+					<$else$>
+						</ul></div>	
+					<$endif$>
+				</div>
+		
+      		<$else$>
+		
+				<$if isTrue(displayLanguageFlag)== 0$>
+				<ul class="acc_nav" >
+					<div class="jaccess" id="">
+					 
+				<$else$>
+				<div class="jaccess" id="hideusername_functionality"><ul class="acc_nav" >	
+				 		
+				<$endif$>
+					
+						<li id="un-login"><a class="un-login" href="<$loginUrl$>" onclick="return Hays_gaq_push(this.href)"><span><$lc('wwLogin')$></span></a></li>
+						
+					
+					<li id="un-create"><a href="" class="un-create" ><span><$lc('wwCreateAccount')$></span></a></li>
+				
+				<$if isTrue(displayLanguageFlag)== 0$>
+			 
+					</div></ul>
+				<$else$>
+			 
+				</ul></div>				
+				<$endif$>
+			
+      		<$endif$>
+			<$if isTrue(displayLanguageFlag)== 0$>
+				</div>
+			<$endif$>
+			</div>
+	<!-- change for Hays Response-->
+	<$if siteId like 'itITHR' OR siteId like 'esESHR'$>
+		<div style="clear:both;"></div>
+		<$include subtmp_response_site_search_inc$>
+		<$include call_us$>		
+			<div id="callus_display">
+					<ul class="acc_nav">
+						<div class="jaccess">
+							<li id="un-login1"><$lc('wwCallUsResponse')$>:<$callUs$></li>
+						</div>
+					</ul>
+			</div>
+		
+	<$endif$>
+	<!-- end -->
+<@end@>
+
+
+<@dynamichtml ReadJobBasket@>
+	<$baskt="," & getCookie("jobbkt") & ","$>
+	<$applied="," & getCookie("jobapd")& ","$>
+	<$candbkt="," & getCookie("candbkt")& ","$>
+	<$reqInfo="," & getCookie("candRqsd")& ","$>
+	<$userId=getCookie("usr")$>
+<@end@>
+
+
+
+
+
+
+
+<!--****************************************************
+	TOP HEADER TABS: tabListName - defines Jobseeker or Employer menu
+*******************************************************-->
+<@dynamichtml top_tab_navigation@>   
+	<ul class="user_nav">
+	<$wcmListStart(tabListName)$>
+	<$if wcmListRowCount() gt 0$>
+		<$ nNumRecords = (wcmListRowCount() - 1), nPos = 0, isSet = '0', className = '' $>
+		<$loopwhile nPos LE nNumRecords$>
+			<$ aLink = wcmListElement("Link", nPos) $>
+			<$ aLink = strReplace(aLink, '">', '"> <span>') $>
+			<$ aLink = strReplace(aLink, '</a>', '</span></a>') $>
+			<$if nPos == 0 $>
+				<$ className = 'first' $>
+			<$elseif nPos == nNumRecords $>
+				<$ className = 'last' $>
+			<$else$>
+				<$ className = '' $>
+			<$endif$>
+			<$username=getCookie("usrname")$>
+			<$if ssNavNodeList$>
+				<$loop ssNavNodeList$>
+					<$if (strIndexOf(aLink, '/' & ssNavNodeList.nodeId & '/') GT 0) OR ( strIndexOf(aLink, ssGetNodeProperty(ssNavNodeList.nodeId, 'urlDirName')) GT 0) $>
+						<$ aLink = strReplace(aLink, '<a', '<a class="active" ') $>
+						<li class="<$className$>"><$ aLink $></li>
+						<$ isSet = '1' $>
+						<$break$>
+					<$endif$>
+				<$endloop$>
+			<$elseif (strIndexOf(aLink,"SSOController") gt 0) and not strEquals(username,"")$>[[%This is for the webcenter pages to make the my account tab active%]]
+				<$ aLink = strReplace(aLink, '<a', '<a class="active" ') $>
+				<li class="<$className$>"><$ aLink $></li>
+				<$ isSet = '1' $>
+			<$endif$>
+			
+			<$if isFalse(isSet) $>
+				<li class="<$className$>"><$ aLink $></li>
+			<$endif$>
+		<$ nPos = nPos + 1, isSet = '0'$>
+		<$endloop$>
+	<$endif$>
+	<$wcmListEnd(tabListName)$>
+	</ul>
+<@end@>
+
+
+
+
+
+
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: assigning data file to header
+	and Footer place holders is only allowed on the home page.
+	The choice is then propogated to the rest of the pages.
+	PL_NAME - is the placeholder name
+*******************************************************-->
+<@dynamichtml extract_datafile_header_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME, datafileInclude)$>
+<@end@>
+
+<@dynamichtml extract_datafile_footer_inc@>
+	<$ PL_NAME = 'Footer' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder(PL_NAME, datafileInclude)$>
+	 <$if domainId eq 29$>
+       <$include yandex_metric_code_inc$>
+      <$endif$>
+<@end@>
+
+<@dynamichtml extract_datafile_sec_header_inc@>
+	<$ PL_NAME = 'Header' $>
+	<$include extract_datafile_from_top_node_inc$>
+	<$wcmPlaceholder('Header_Secondary_Navigation', 'templateDocName=RGTMP_HEADER_SUB', datafileInclude)$>
+<@end@>
+
+
+
+<@dynamichtml extract_datafile_from_top_node_inc@>
+	<$ datafile = '', datafileInclude = 'dataFileDocName=' $>
+	<$ navTopNodeId = ssGetFirstNodeId(siteId) $>
+	<$ primaryUrlProp = ssGetNodeProperty(navTopNodeId, 'primaryUrl') $>
+	<$ index = strIndexOf(primaryUrlProp, PL_NAME) $>
+	<$if index GE 0 $>
+		<$ datafile = strSubstring(primaryUrlProp, index + strLength(PL_NAME) + 1) $>
+		<$ index = strIndexOf(datafile, '&') $>
+		<$if index GT 0 $>
+			<$ datafile = strSubstring(datafile, 0, index) $>
+		<$endif$>
+	<$endif$>
+	<$ datafileInclude = datafileInclude & datafile $>
+<@end@>
+<!--****************************************************
+	HEADER/FOOTER DATA FILES: end
+*******************************************************-->
+<@dynamichtml inc_isCookieLawBanner@>
+	<$include cookieLaw_enabled_countries$>
+	<$isCookieLawBanner=0$>  	
+  	<$if isCookieLaw EQ 1$>
+		<$isCookieLawBanner=1$>  	
+	<$endif$>	
+<@end@>
+
+
+<@dynamichtml inc_cookie_law_banner_javascript@>
+	<$include inc_isCookieLawBanner$>
+	<$if isCookieLawBanner EQ 1$>
+		<$include cookie_law_banner_javascript$>
+	<$else$>
+		
+		<$if bannerEnabled EQ 1$>
+		<script type="text/javascript">
+		function HAYSBannerTextLoad() 
+				{ 
+				if	(window.jQuery && jQuery.ui && jQuery.isReady) 
+					{
+						checkCounter();
+					}
+				else 
+					{
+						window.setTimeout(HAYSBannerTextLoad, 100);
+					}
+				};
+			HAYSBannerTextLoad();
+		</script>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+
+<@dynamichtml cookie_law_banner_javascript@>
+<$if strLength(#active.SiteLocale) GT 0 $>
+	<$ index = strIndexOf(#active.SiteLocale, '-') $>
+	<$if index GT 0 $>
+		<$bannerlanguage = strSubstring(#active.SiteLocale, 0, index)$>
+	<$endif$>
+<$endif$>
+		<div id="banner" class="banner-hidden" onload = "javasrcipt:HAYSCookieBannerHideonLoad()">
+		
+		<$lc('wwCookieLawBanner')$>  
+				<button  type="button"  class = "banner-button" onclick="javascript:HAYSCookieBannerHideOnClick()"><$lc('wwCookieContinue')$></button>
+		</div>
+		<$include country_cookie_inc$>
+		<script type="text/javascript">
+			var options = { path: '/', expires: 10 , domain:'<$hostname$>'};
+			function HAYSCookieBannerHideOnClick() 
+			{ 
+			if	(window.jQuery && jQuery.ui && jQuery.isReady) 
+				{
+					document.getElementById("banner").style.display="none";	 
+					<$if bannerEnabled == 1$>
+						checkCounter();
+					<$endif$>
+				}
+				else 
+					{
+						window.setTimeout(HAYSCookieBannerHideOnClick, 100);
+					}
+			};
+			function HAYSCookieBannerHideonLoad() 
+				{ 
+				if	(window.jQuery && jQuery.ui && jQuery.isReady) 
+					{						
+						var banner_display = $.cookie('bannercookie_<$bannerlanguage$>');
+						if(banner_display == null || banner_display === '') 
+						{
+							var bannercode = document.getElementById("banner");							
+							if (g_CountryCode == "OG"){
+							bannercode.className=(bannercode.className=='banner-hidden')?'banner-unhidden cookieheight':'banner-hidden';
+							}
+							else if (g_CountryCode == "GB"){
+							bannercode.className=(bannercode.className=='banner-hidden')?'banner-unhidden cookieheight uk_width':'banner-hidden';
+							}							
+							else {
+								bannercode.className=(bannercode.className=='banner-hidden')?'banner-unhidden cookieheight':'banner-hidden';
+							}
+							
+						}
+						$.cookie('bannercookie_<$bannerlanguage$>', 'Y',options);
+						<$if bannerEnabled == 1$>
+							checkCounter();
+						<$endif$>
+					}
+				else 
+					{
+						window.setTimeout(HAYSCookieBannerHideonLoad, 100);
+					}
+				};
+			HAYSCookieBannerHideonLoad();
+	
+		</script>		
+<@end@>
+
+<@dynamichtml javascript_Hays_gaq_push@>
+
+	<script type="text/javascript">
+				//javascript:Hays_gaq_push()
+				function Hays_gaq_push(link)
+				{
+					 if ($.cookie('performz')!='N')
+					{
+						_gaq.push(['_link', link]); 
+						return false;	
+						
+					}
+				}
+				
+				function Hays_gaq_push_UK_eligible()
+				{
+					if ($.cookie('performz')!='N')
+					{
+						_gaq.push(['_trackEvent', 'Registration', 'UK_eligible', 'jobseeker eligible to work in UK']);
+					}
+				};
+				
+				function Hays_gaq_push_UK_eligible_submit(form)
+				{
+					if ($.cookie('performz')!='N')
+					{
+						_gaq.push(['_trackEvent', 'Registration', 'UK_eligible', 'jobseeker eligible to work in UK']);
+						form.submit();
+					}
+				};
+				
+				function Hays_gaq_push_jobseeker_app()
+				{
+					if ($.cookie('performz')!='N')
+					{
+						_gaq.push(['_trackEvent', 'Application', 'apply', 'jobseeker application']);
+
+						<$if domainId eq 5$>
+							$('#conversion-iframe').attr('src', '/cz/load_conversion_code');
+						<$endif$>
+					}
+				};
+	</script>
+	
+	
+<@end@>
+
+
+<@dynamichtml javascript_string_files_inc@>
+	
+	<script type="text/javascript">
+		var HAYS = {
+				ww_newWindow 					: "<$lc("wwJsnewWindow")$>",
+				ww_multiOptions 				: "<$lc("wwJsmultiOptions")$>",
+				ww_checkAll 					: "<$lc("wwJscheckAll")$>",
+				ww_all 					: "<$lc("wwJsall")$>",
+				ww_egIndustries 				: "<$lc("wwJsegIndustries")$>",
+				ww_unSelAll 					: "<$lc("wwJsunSelAll")$>",
+				ww_showText 					: "<$lc("wwJsshowText")$>",
+				ww_hideText 					: "<$lc("wwJshideText")$>",
+				ww_fields 					: "<$lc("wwJsfields")$>",
+				ww_password 					: "<$lc("wwJspassword")$>",
+				ww_msg_hello 					: "<$lc("wwJsmsg_hello")$>",
+				ww_invalid_salary_msg 			: "<$lc("wwJsinvalid_salary_msg")$>",
+				ww_mandatory_msg_input 			: "<$lc("wwJsmandatory_msg_input")$>",
+				ww_mandatory_msg_select 			: "<$lc("wwJsmandatory_msg_select")$>",
+				ww_invalid_ukpostcode_msg 			: "<$lc("wwJsinvalid_ukpostcode_msg")$>",
+				ww_invalid_telnumber_msg 			: "<$lc("wwJsinvalid_telnumber_msg")$>",
+				ww_invalid_salary_ran_msg 			: "<$lc("wwJsinvalid_salary_ran_msg")$>",
+				ww_invalid_email_msg 			: "<$lc("wwJsinvalid_email_msg")$>",
+				ww_invalid_maxlength_60_msg 		: "<$lc("wwJsinvalid_maxlength_60_msg")$>",
+				ww_invalid_maxlength_30_msg 		: "<$lc("wwJsinvalid_maxlength_30_msg")$>",
+				ww_invalid_digit_msg 			: "<$lc("wwJsinvalid_digit_msg")$>",
+				ww_invalid_equalTo_email_msg 		: "<$lc("wwJsinvalid_equalTo_email_msg")$>",
+				ww_invalid_equalTo_password_msg 		: "<$lc("wwJsinvalid_equalTo_password_msg")$>",
+				ww_mandatory_expertise_msg 			: "<$lc("wwJsmandatory_expertise_msg")$>",
+				ww_invalid_file_type 			: "<$lc("wwJsinvalid_file_type")$>",
+				ww_invalid_password_rule_msg 		: "<$lc("wwJsinvalid_password_rule_msg")$>",
+				ww_mandatory_msg_tel_mob 			: "<$lc("wwJsmandatory_msg_tel_mob")$>",
+				ww_mandatory_msg_workeligible 		: "<$lc("wwJsmandatory_msg_workeligible")$>",
+				ww_upload_cv_dialog_title 			: "<$lc("wwJsupload_cv_dialog_title")$>",
+				ww_upload_cv_dialog_body 			: "<$lc("wwJsupload_cv_dialog_body")$>",
+				ww_mandatory_title_industry_keword 	: "<$lc("wwJsmandatory_title_industry_keword")$>",
+				ww_selectCvOrMsgValidation 			: "<$lc("wwJsselectCvOrMsgValidation")$>",
+				ww_jobapply_title 				: "<$lc("wwJsjobapply_title")$>",
+				ww_maxmin_msg 				: "<$lc("wwJsmaxmin_msg")$>",
+				ww_select_2_specialisms 			: "<$lc("wwJsselect_2_specialisms")$>",
+				ww_file_not_supported 			: "<$lc("wwJsfile_not_supported")$>",
+				ww_ok_button 					: "<$lc("wwJsok_button")$>",
+				ww_cancel_button 				: "<$lc("wwJscancel_button")$>",
+				ww_cancel_button_1 				: "<$lc("wwJscancel_button_1")$>",
+				ww_create_button 				: "<$lc("wwJscreate_button")$>",
+				ww_yes_sure_button 				: "<$lc("wwJsyes_sure_button")$>",
+				ww_close_button 				: "<$lc("wwJsclose_button")$>",
+				ww_login_same_ID 				: "<$lc("wwJslogin_same_ID")$>",
+				ww_login_diff_ID 				: "<$lc("wwJslogin_diff_ID")$>",
+				ww_switch_to 					: "<$lc("wwJsswitch_to")$>",
+				ww_account 					: "<$lc("wwJsaccount")$>",
+				ww_yes 					: "<$lc("wwJsyes")$>",
+				ww_no 						: "<$lc("wwJsno")$>",
+				ww_sure_delete 				: "<$lc("wwJssure_delete")$>",
+				ww_verification_popup_title  : "<$lc("wwJsverificationPopupTitle")$>",
+				ww_verification_popup_body1  : "<$lc("wwJsverificationPopupBody1")$>",
+				ww_verification_popup_body2  : "<$lc("wwJsverificationPopupBody2")$>",
+				ww_fill_atleast_one_field  : "<$lc("wwSearchFormRequiredMessage")$>",
+				ww_delete_confirm_txt  : "<$lc("wwJssure_deleteAlert")$>",
+				ww_login_button 				: "<$lc("wwDialogLoginButton")$>",
+				ww_myaccount_button 				: "<$lc("wwMyAccount")$>",
+				ww_gacode1						: "<$lc("wwgacode1")$>",
+				ww_gacode2						: "<$lc("wwgacode2")$>",
+				ww_confirm_button						: "<$lc("wwJs_Confirm_button")$>",
+				ww_FR_suffix                         :   "<$lc("wwJssure_deleteAlert_suffix")$>",
+				ww_Please_select_atleastone   : "<$lc("wwJsMultiplelocationsselected")$>",
+				ww_attachCV                    :  "<$lc("wwJsAttachCV")$>",
+				ww_pleaseSelect                :  "<$lc("wwJspleaseSelect")$>",
+                ww_selectRegion                :  "<$lc("wwJsselectRegion")$>",
+                ww_selectLocation              : "<$lc("wwJsselectLocation")$>",
+				wwFilter					   : "<$lc("wwFilter")$>",
+				wwClear				   : "<$lc("wwDialogCancelButton")$>",
+				ww_moreOptions			: "<$lc("wwMoreoptions")$>",
+				ww_invalid_maxlength_20_msg : "<$lc("wwInvalidmaxlengthmsg")$>",
+				ww_DOBinvalid_msg           : "<$lc("wwDOBinvalidmsg")$>"  ,
+				ww_MainJobSearchKeywordWatermark :"<$lc("wwMainJobSearchKeywordWatermark")$>",
+				ww_SearchMinSalWatermark :"<$lc("wwSearchMinSalWatermark")$>",
+				ww_SearchMaxSalWatermark :"<$lc("wwSearchMaxSalWatermark")$>",
+				ww_mandatory_msg_input_position_required:"<$lc("wwJsmandatory_msg_input_position")$>",
+				ww_min_phone_length:"<$lc("wwJsPhoneLength")$>",
+				ww_min_mobile_length:"<$lc("wwJsMobileLength")$>",
+				ww_create_account:"<$lc("wwCreateAccount")$>",
+				ww_doc_format_msg:"<$lc("wwDocFormatMsg")$>",
+				ww_accept_terms:"<$lc("wwAcceptTerms")$>",
+				wwCVJsmandatory_forename:"<$lc("wwCVJsmandatory_forename")$>",
+				wwCVJsmandatory_lastname:"<$lc("wwCVJsmandatory_lastname")$>"
+		}
+	</script>
+<@end@>
+<@dynamichtml check_webapi_full_website@>
+	<$if strLength(#active.ver) gt 0 AND strEqualsIgnoreCase(#active.ver , 'd')$>		
+		<$name="ver",value=#active.ver$> 
+		<$setHttpHeader("Set-Cookie", name & "=" & value & httpOnly & maxAge)$>  
+	<$endif$>
+	
+	<$if (strLength(#active.ver) gt 0 AND strEqualsIgnoreCase(#active.ver , 'd') ) OR (strLength(getCookie("ver")) GT 0)$> 
+		<script type="text/javascript">
+		function mobile_full_website() {
+		if (window.jQuery && jQuery.ui && jQuery.isReady) {
+			$(document).ready(function() {
+				$("a").attr('href', function(i, h) {
+				return h + (h.indexOf('?') != -1 ? "&ver=d" : "?ver=d");
+				});
+			});
+		 }
+      else {
+	     window.setTimeout(mobile_full_website, 100);
+		}
+     }
+	 mobile_full_website();
+		</script>
+	<$endif$>
+<@end@>
+
+<@dynamichtml support_old_localerecordid_inc@>
+<$if strIndexOf(ssoriginalurl,"?")>=0$>
+	<$jobLength=strIndexOf(ssoriginalurl,"?")$>	
+	<$jobParams=strSubstring(ssoriginalurl,jobLength+1,strLength(ssoriginalurl))$>	
+<$else$>
+	<$jobLength=strLength(ssoriginalurl)$>
+	<$jobParams=""$>
+<$endif$>
+<$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0$>
+<$docType='Jobs',jobcand_nodeId='jobs-search',jobcand_not_available='job-not-available'$>	<$extractedJobCandId=strSubstring(ssoriginalurl,strIndexOf(ssoriginalurl,JobSearchDirName)+strLength(JobSearchDirName)+1,jobLength)$>
+<$else$>
+<$docType='Candidates',jobcand_nodeId='candidates-search',jobcand_not_available='candidate-not-available'$>	<$extractedJobCandId=strSubstring(ssoriginalurl,strIndexOf(ssoriginalurl,CandidateSearchDirName)+strLength(CandidateSearchDirName)+1,jobLength)$>
+<$endif$>
+<$extractedLocale=strSubstring(extractedJobCandId,0,strIndexOf(extractedJobCandId,"_"))$>
+<$extractedRecordId=strSubstring(extractedJobCandId,strIndexOf(extractedJobCandId,"_")+1,strLength(extractedJobCandId))$>
+<$ QueryText = "xLocale <MATCHES> `"& extractedLocale & "` <AND> xRecordId <MATCHES> `"& extractedRecordId & "` <AND> dDocType <MATCHES> `"& docType & "`"$>
+<$executeService("GET_SEARCH_RESULTS")$>
+<$if rsFirst('SearchResults') $>	
+<$redirectToUrl(ssLink(SearchResults.dDocName,jobcand_nodeId,siteId)&"?"&jobParams)$>
+<$else$>
+<$redirectToUrl(ssGetServerRelativeUrl(siteId,jobcand_not_available))$>
+<$endif$>
+<@end@>
+
+
+<@dynamichtml support_old_localerecordid_mobile_inc@>
+
+<$if strIndexOf(ssoriginalurl,"?")>=0$>
+	<$trace(" inside if ssoriginal loop ", "#console", "useragent")$>
+	<$jobLength=strIndexOf(ssoriginalurl,"?")$>	
+	<$jobParams=strSubstring(ssoriginalurl,jobLength+1,strLength(ssoriginalurl))$>	
+<$else$>
+	<$trace(" inside else ssoriginal loop ", "#console", "useragent")$>
+	<$jobLength=strLength(ssoriginalurl)$>
+	<$jobParams=""$>
+<$endif$>
+<$if strIndexOf(ssoriginalurl,JobSearchDirName)>=0$>
+<$docType='Jobs',jobcand_nodeId='jobs-search',jobcand_not_available='job-not-available'$>	<$extractedJobCandId=strSubstring(ssoriginalurl,strIndexOf(ssoriginalurl,JobSearchDirName)+strLength(JobSearchDirName)+1,jobLength)$>
+<$else$>	
+<$docType='Candidates',jobcand_nodeId='candidates-search',jobcand_not_available='candidate-not-available'$>	<$extractedJobCandId=strSubstring(ssoriginalurl,strIndexOf(ssoriginalurl,CandidateSearchDirName)+strLength(CandidateSearchDirName)+1,jobLength)$>
+<$endif$>
+<$temp=strIndexOf(extractedJobCandId,"_")$>
+<$if domainId == 3 OR domainId ==14 OR domainId ==15 OR domainId ==16 OR domainId ==22 OR domainId ==23 OR domainId ==27 OR domainId ==28 OR domainId ==33 OR domainId ==37 OR domainId ==36$>
+<$temp1=temp-6$>
+<$trace(" temp1 inside if value = " & temp1, "#console", "useragent")$>
+<$elseif domainId == 38$>
+<$temp1=temp-9$>
+<$trace(" temp1 inside elseif value = " & temp1, "#console", "useragent")$>
+<$else$>
+<$temp1=temp-5$>
+<$trace(" temp1 inside else value = " & temp1, "#console", "useragent")$>
+<$endif$>
+<$extractedLocale1=strSubstring(extractedJobCandId,temp1,temp)$>
+<$trace(" extractedLocale1 value = " & extractedLocale1, "#console", "useragent")$>
+
+<$extractedRecordId=strSubstring(extractedJobCandId,strIndexOf(extractedJobCandId,"_")+1,strLength(extractedJobCandId))$>
+<$trace(" extractedRecordId value = " & extractedRecordId, "#console", "useragent")$>
+<$extractedCountry=strSubstring(SiteLocale,strIndexOf(SiteLocale,"-")+1)$>
+<$trace(" extractedCountry value = " & extractedCountry, "#console", "useragent")$>
+
+
+<$ QueryText = "xLocale <MATCHES> `"& extractedLocale1 & "` <AND> xRecordId <MATCHES> `"& extractedRecordId & "` <AND> dDocType <MATCHES> `"& docType & "`"$>
+<$trace(" QueryText value = " & QueryText, "#console", "useragent")$>
+<$executeService("GET_SEARCH_RESULTS")$>
+
+<$if domainId == 36$>
+<$temp_val1 = "#env.Mobile_URL_ITHR"  $>
+<$elseif domainId == 37$>
+<$temp_val1 = "#env.Mobile_URL_ESHR" $>
+<$else$>
+<$temp_val1 = "#env.Mobile_URL_" & extractedCountry $>
+<$endif$>
+<$trace(" temp_val1 value = " & temp_val1, "#console", "useragent")$>
+<$temp_val2 = "<$" & temp_val1 & "$>"$> 
+<$trace(" temp_val2 value = " & temp_val2, "#console", "useragent")$>
+<$temp_val3 = eval(temp_val2) &SearchResults.dDocName$> 
+<$trace(" temp_val3 value = " & temp_val3, "#console", "useragent")$>
+<$job_temp=strIndexOf(extractedJobCandId,"JOB_")$>
+<$trace(" job_temp value = " & job_temp, "#console", "useragent")$>
+
+<$if job_temp >=0 $>
+	<$temp_val3 = eval(temp_val2) &extractedJobCandId$> 
+	<$temp_val3 = temp_val3 & "?" & FinalParams$>
+	<$trace(" Final value inside if= " & temp_val3, "#console", "useragent")$>
+	<$if strIndexOf(eval(temp_val2),"http") >=0$>
+				<$redirectToUrl(temp_val3)$>
+			<$endif$>
+<$else$>
+	<$if not strEquals(extractedRecordId,"") $>
+		<$if rsFirst('SearchResults') $>
+		<$temp_val3 = temp_val3 & "?" & FinalParams$>
+		<$trace("Final value inside else = " & temp_val3, "#console", "useragent")$>
+			<$if strIndexOf(eval(temp_val2),"http") >=0$>
+				<$redirectToUrl(temp_val3)$>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<$endif$>
+
+<@end@>
+
+
+<@dynamichtml seo_common_inc@>
+
+	<$if isFalse(isSecondaryPage)$>
+
+		<$ metaDescription = ssGetNodeProperty(nodeId, 'MetaDescription')$>
+		<$ metaTitle = ssGetNodeProperty(nodeId, 'MetaTitle')$>
+		<$ metaKeywords = ssGetNodeProperty(nodeId, 'MetaKeywords')$>
+		
+	<$else$>
+
+		<$if getValue("#active","Main Region")$>
+				<$dDocName = getValue("#active","Main Region")$>
+				<$executeService('DOC_INFO_BY_NAME_SIMPLE')$>
+				<$if rsFirst('DOC_INFO') $>			
+					<$ metaDescription = DOC_INFO.xMetaDescription$>
+					<$ metaTitle = DOC_INFO.xMetaTitle$>
+					<$ metaKeywords = DOC_INFO.xMetaKeywords$>	
+				<$endif$>
+		<$endif$>
+		
+	<$endif$>
+	
+	<$if strLength(#active.metaKeywords) GT 0$> 
+		<meta name="keywords" content="<$metaKeywords$>"/>
+	<$endif$>
+
+	<$if wbsrvrkey$>
+		[[% added for ukjobs %]] 		
+		<$separatorIndex = strIndexOf(wbsrvrkey,'/')$>
+		<$if separatorIndex > -1 $>
+			[[% inner title-town page %]]
+			[[% get title and location from wbsrvrkey obtained from webserver%]]
+			<$jobTitle=strSubstring(wbsrvrkey,0,separatorIndex)$>
+			<$regionLocation=strSubstring(wbsrvrkey,separatorIndex+1)$>
+			
+			[[% clean title and location %]]
+			<$jobTitle=strReplace(jobTitle,"-"," ")$>
+			<$regionLocation=strReplace(regionLocation,"-"," ")$>
+			<$document_title=jobTitle & " Jobs in " & regionLocation$>
+		<$else$>
+			[[% inner title-region page OR inner location page%]]
+			<$document_title=strReplace(wbsrvrkey,"-"," ") & " Jobs"$>
+		<$endif$>
+		<meta name="description" content="<$document_title & " " & lc('wwMetaDescriptionString')$>"/>
+		<$document_title = document_title & " | " & lc('wwHaysGeneralShortTitle')$>
+	<$else$>
+		[[% old logic - not uk jobs %]] 
+		<$if strLength(#active.metaDescription) == 0 OR strLength(#active.metaTitle) == 0$>
+			<$include seo_common_inc_oldlogic$>			
+		<$else$>			
+			<meta name="description" content="<$metaDescription$>"/>
+			<$ document_title = metaTitle$>
+		<$endif$>	
+	<$endif$>	
+
+<@end@>
+
+<@dynamichtml seo_common_inc_oldlogic@>
+<!--BAU REL-4 21118-->
+		 <$if (domainId eq 27) AND strIndexOf(nodeId,"home")>=0 $>	
+		 <meta name="baidu-site-verification" content="0vFllT9IOv" />
+		 <$endif$>
+<!--BAU REL-4 21118-->
+
+	<$if domainId eq 36$>
+		 <meta name="description" content="<$lc('wwHaysMetaDescription')$>"/>
+		 <$ document_title = lc("wwHaysGeneralShortTitle")$>
+	<$elseif domainId eq 37$>
+		 <meta name="description" content="<$lc('wwHaysMetaDescription')$>"/>
+		 <$ document_title = lc("wwHaysGeneralShortTitle")$>
+	<$else$>
+		<$if getValue("#active","Main Region")$>
+			<$dDocName = getValue("#active","Main Region")$>
+			<$if #active.SSContributor$>
+				<$RevisionSelectionParameters = 'Latest'$>
+			<$else$>
+				<$RevisionSelectionParameters = 'LatestReleased'$>
+			<$endif$>
+			<$executeService('DOC_INFO_BY_NAME_SIMPLE')$>
+			<$if rsFirst('DOC_INFO') $>
+				<$ document_title = DOC_INFO.dDocTitle$>
+				<$ record_id=DOC_INFO.xRecordId$>
+				<$ if DOC_INFO.dDocType like "Jobs" $>
+					<$ document_title =  strSubstring(document_title,0,38) & " " & strSubstring(DOC_INFO.xLocationDescription,0,15) & " " & record_id & " | " & lc('wwHaysUkJobsNew') $>
+				<$ elseif DOC_INFO.dDocType like "Candidates" $>
+					<$ document_title =  document_title & " " & record_id & " | " & lc('wwHaysUkRecruitment') $>
+				<$else$>
+			<!--12645 changes start-->
+				<$include apac_country_check_inc$>
+				<$if (isAPACCountry EQ 1) $>
+					<$ document_title =  document_title & " "$>
+				<$else$>
+				<$ document_title =  document_title & " " &lc('wwHaysUkJobsRecruitment') $>
+				<$endif$>
+				<!--12645 changes end-->
+				<$endif$>
+					<$description=stripHTML(DOC_INFO.xDescription)$>
+					<$if strLength(description)>160$>
+						<$description=strSubstring(description,0,160)$>
+					<$endif$>
+					<meta name="description" content="<$strReplace(description,'"',"'")$>"/>
+			<$endif$>
+		<$else$>
+			<$if domainId eq 13$>
+				<$dDocName='HAYS_161721'$>
+				<$executeService('DOC_INFO_BY_NAME_SIMPLE')$>	 
+				<meta name="description" content="<$DOC_INFO.xDescription$>"/>
+			<$endif$>   
+			<$ document_title = ssGetNodeProperty("label")$>
+			<$if (domainId eq 1) and (strEquals(ssGetNodeProperty("nodeId"),"home")) $> <!--MR 204-->
+			  <meta name="description" content="<$lc('wwHaysMetaDescription')$>"/>
+			<$endif$>
+		<$endif$>
+		
+		<$if strEqualsIgnoreCase(siteId,'jpJP') and strEquals(nodeId,'home')$>
+			<$ document_title = lc('wwHaysGeneralShortTitle')$>
+		<$elseif strEqualsIgnoreCase(siteId,'enOG')$> 			
+			<$if strEquals(nodeId,'home')$>
+				<$ document_title =  document_title & " | " & lc('wwHaysGeneralShortTitleOg')$>
+			<$elseif strEquals(nodeId,'jobs-search')$>
+				<$exec rsRemove("DOC_INFO")$>
+			    <$JOB_ID = #active.JOB_ID$>
+				<$locale= SiteLocale$>
+				<$executeService('GET_INT_JCD')$>				
+				<$exec rsRename("DOC_INFO", "OilAndGas_DOC_INFO")$>
+				<$ document_title = OilAndGas_DOC_INFO.dDocTitle$>				
+				<$ document_title =  document_title & " " & OilAndGas_DOC_INFO.xRecordId & " | " &  lc('wwHaysGeneralShortTitleOg')$>
+			<$else$>
+				<$ document_title = document_title & " | " & lc('wwHaysGeneralShortTitleOg') $>
+			<$endif$>		
+		<$else$>
+			<$if isFalse(strEquals(DOC_INFO.dDocType,"Jobs"))$>
+				<$ document_title = document_title & " | " & lc('wwHaysGeneralShortTitle') $>
+			<$endif$>
+		<$endif$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml cookieLaw_enabled_countries@>
+	<$countrylist=#env.CookieLawEnabledCountries$>
+	<$countrylist=","&CookieLawEnabledCountries&","$>
+	
+	<$CountryCookieLaw = #active.isoCountryCode$>
+	<$CountryCookieLaw=","&CountryCookieLaw&","$>
+	
+	<$if strIndexOf(countrylist,CountryCookieLaw) >=0$> 
+		<$isCookieLaw=1$>	
+	<$else$>
+		<$isCookieLaw=0$>
+	<$endif$>
+<@end@>
+
+<@dynamichtml isCookieSettingsDisabled@>
+<script type="text/javascript">	
+	function cookiebannerHide() {
+		if (window.jQuery && jQuery.ui && jQuery.isReady) {
+			$(document).ready(function() {
+				if (navigator.cookieEnabled == false)  {
+				//alert("Cookie disabled");
+					$('#banner').attr('style','display:none;');			
+				}
+		});
+		 }
+       else {
+	     window.setTimeout(cookiebannerHide, 100);
+		}
+     }
+	 cookiebannerHide();		
+</script>	
+<@end@>
+
+<@dynamichtml adwords_remarketing_code_cz@>
+<$if domainId eq 5$>
+	<!-- Google Code for RMK-all Remarketing List by INBORN.cz -->
+	<!--------------------------------------------------
+	Znaèka pro remarketing nesmí být spojena s údaji umožòujícími identifikaci osob nebo umístìna na stránkách týkajících se citlivých kategorií. Další informace a postup nastavení znaèky naleznete na stránce: http://google.com/ads/remarketingsetup
+	--------------------------------------------------->
+	<script type="text/javascript">
+	/* <![CDATA[ */
+	var google_conversion_id = 980794947;
+	var google_custom_params = window.google_tag_params;
+	var google_remarketing_only = true;
+	var google_conversion_format = 3;
+	/* ]]> */
+	</script>
+	<div style="display:none">
+	<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+	</script>
+	</div>
+	<noscript>
+	<div style="display:inline;">
+	<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/980794947/?value=0&amp;guid=ON&amp;script=0"/>
+	</div>
+	</noscript>
+<$endif$>	
+<@end@>
+
+<@dynamichtml tab_enabled_countries@>
+	<$countrylistTab=#env.TabEnabledCountries$>
+	<$countrylistTab=","&TabEnabledCountries&","$>
+	
+	<$CountryCodeTab = #active.isoCountryCode$>
+	<$CountryCodeTab=","&CountryCode&","$>
+	
+	<$if strIndexOf(countrylistTab,CountryCodeTab) >=0$> 
+		<$isTabCountry=1$>	
+	<$else$>
+		<$isTabCountry=0$>
+	<$endif$>
+
+<@end@>
+<!-- multi_country added by Vikas-->
+<@dynamichtml multi_country_cookie_inc@>
+	<$include country_cookie_inc$>
+	<$name_cookie="multi_country",value=#active.SiteLocale $> 
+	<$setHttpHeader("Set-Cookie", name_cookie & "=" & value & "; expires=" & formatDateWithPattern(dateCurrent(480),'yyyy-MM-dd HH:mm:ss') &  "; path=/; domain=" & hostname & ";")$>
+<@end@>
+<!-- REL-5 22037-->
+<@dynamichtml google_tag_manager@>
+<!-- Google Tag Manager -->
+
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PPWFCT"
+
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+
+})(window,document,'script','dataLayer','GTM-PPWFCT');</script>
+
+<!-- End Google Tag Manager -->
+<@end@>
+<!-- REL-5 22037-->
+
+</body></html>

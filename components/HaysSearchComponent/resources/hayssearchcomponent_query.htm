@@ -1,0 +1,126 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysSearchComponent query
+</title>
+</head>
+<body>
+
+<@table HaysSearchComponent_Queries@>
+<table border=1><caption><strong>Query Definition Table</strong></caption>
+<tr>
+	<td>name</td><td>queryStr</td><td>parameters</td>
+</tr>
+
+<!-- Search Query -->
+<tr>
+	<td>(ORACLE.CALLABLE)CotsSearchQuery</td>
+	<td>{call content_search.hays_search(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}</td>
+	<td>indexName varchar
+		tableName varchar
+		queryText varchar
+		returnFields:* varchar
+		resultDescriptor varchar
+		result out:clob
+		metaResult out:resultset
+		baseResult out:resultset
+		count out:int
+		qvSnippetStartTag:<span class=largeTableEntry><span class=highlightField> varchar
+		qvSnippetEndTag:</span></span> varchar
+		qvSnippetTranslation:true varchar
+		qvSnippetSeparator:<b>...</b> varchar
+		procFlags:2 int
+		trace out:clob		
+		ne_latitude decimal
+		ne_longitude decimal
+		sw_latitude decimal
+		sw_longitude decimal
+		radius int
+		exclude int</td>
+</tr>
+<tr>
+	<td>(ORACLE.CALLABLE)CotsSearchQueryFullTextSnippet</td>
+	<td>{call content_search.hays_search(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}</td>
+	<td>indexName varchar
+		tableName varchar
+		queryText varchar
+		parsedQueryTextNoSecurity varchar
+		returnFields:* varchar
+		resultDescriptor varchar
+		result out:clob
+		metaResult out:resultset
+		baseResult out:resultset
+		count out:int
+		qvSnippetStartTag:<span class=largeTableEntry><span class=highlightField> varchar
+		qvSnippetEndTag:</span></span> varchar
+		qvSnippetTranslation:true varchar
+		qvSnippetSeparator:<b>...</b> varchar
+		procFlags:2 int
+		trace out:clob		
+		ne_latitude decimal
+		ne_longitude decimal
+		sw_latitude decimal
+		sw_longitude decimal
+		radius int
+		exclude int</td>
+</tr>
+<tr>
+	<td>PIInsertSelectQuery</td>
+	<td>{call USER_SELECT_INSERT(?, ?)}</td>
+	<td>prz_info int
+	    out_cc out:int</td>
+</tr>
+
+<tr>
+	<td>QSavedSearch</td>
+	<td>SELECT  
+	    ss.savedsearchid,
+	    ss.searchname,
+	    ss.keywords,
+	    ss.distance,
+	    ss.sectorids,
+	    ss.postcode,
+	    ss.jobtitle,
+	    ss.location,
+	    ss.distanceunit,
+ 	    sss.Perm,
+	    sss.Temp,
+	    sss.Cont,
+	    ss.job_title_full,
+	    ss.job_title_ref,
+	    ss.longitude,
+	    ss.latitude,
+	    ss.levelno,
+		ss.showinternationaljobsonly,
+		ss.availabletononeucitizens,
+		ss.specialism,
+		ss.locations,
+		ss.isonlyjobtitle,
+		ss.subspecialism,
+		ss.jobtypes
+	 FROM savedsearch  ss, 
+	  (select savedsearchid,
+         max(decode( jobtypeid, 1, 1 || '*' || minsalary || '*' || maxsalary || '*' ||salarytype))  Temp,
+         max(decode( jobtypeid, 2, 2 || '*' || minsalary  || '*' || maxsalary || '*' ||salarytype))  Perm,
+         max(decode( jobtypeid, 3, 3 || '*' || minsalary  || '*' || maxsalary || '*' ||salarytype))  cont
+         from savedsearchsalary group by savedsearchid order by savedsearchid) sss
+	where 
+	 ss.savedsearchid = sss.savedsearchid(+) and
+	 ss.portalprofileid=?  and  ss.usertypeid=?
+	 and ss.domainid=?
+	 order by ss.searchname</td>
+	<td>portalProfileId varchar
+	    usertypeid int
+	    domainId int</td>
+</tr>
+<tr>
+	<td>QGetJobTypes</td>
+	<td>SELECT jobtype_permanent,jobtype_temporary,jobtype_contract	    
+	 FROM hayswebsites
+	where sitelocale=?</td>
+	<td>sitelocale varchar</td>
+</tr>
+</table>
+<@end@>
+</body></html>

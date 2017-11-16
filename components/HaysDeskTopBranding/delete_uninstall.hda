@@ -1,0 +1,84 @@
+<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysDeskTopBranding
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=1
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/haysdesktopbranding_includes.htm
+null
+10
+resource
+resources/haysdesktopbranding_region_templates_includes.htm
+null
+10
+resource
+resources/haysdesktopbranding_region_templates_includes_x.htm
+null
+10
+resource
+resources/haysdesktopbranding_sub_templates_includes.htm
+null
+10
+resource
+resources/haysdesktopbranding_sub_templates_includes_x.htm
+null
+10
+service
+resources/haysdesktopbranding_service.htm
+HaysDeskTopBranding_Services
+10
+query
+resources/haysdesktopbranding_query.htm
+HaysDeskTopBranding_Queries
+10
+resource
+resources/haysdesktopbranding_handlers.htm
+null
+10
+environment
+haysdesktopbranding_environment.cfg
+null
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+HaysDeskTopBranding_Handlers
+ServiceHandlers
+null
+10
+@end
+@ResultSet StateCfgExportedVars
+2
+name
+value
+LanguageSource_HaysDeskTopBranding
+$COMPONENT_DIR/resources/lang
+@end

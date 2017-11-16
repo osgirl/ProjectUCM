@@ -1,0 +1,130 @@
+<?xml version="1.0" standalone="yes" ?>
+<project magicid="68687365" generator="Transit 4.2" format="1.2">
+  <mapfile output="MapFile.xml" timestamp="01/16/2006 15:34:31" />
+  <publication>
+    <toc title="RSS Sample - OPML" timestamp="01/16/2006 15:34:31">
+      <docspec output="RSS%20Sample%20-%20OPML.opml" id="22" title="RSS Sample - OPML" />
+    </toc>
+    <publication title="Memos">
+      <toc title="Memo RSS Feed" timestamp="01/16/2006 15:34:25">
+        <docspec output="Memos/Memo%20RSS%20Feed.rss" id="5" title="Memos Memo RSS Feed" />
+      </toc>
+      <directory>
+        <document title="Contemporary Memo" dynamic="1" timestamp="01/16/2006 15:34:25">
+          <docspec output="Memos/Contemporary%20Memo.htm" id="1" title="Contemporary Memo" />
+          <grafspec output="Memos/Contemporary%20Memo-1.gif" type="graphic" />
+          <grafspec output="Memos/invebkg.gif" type="gallery" />
+          <grafspec output="Memos/inveppv.gif" type="gallery" />
+          <grafspec output="Memos/invetoc.gif" type="gallery" />
+          <grafspec output="Memos/inveidx.gif" type="gallery" />
+          <grafspec output="Memos/invepnx.gif" type="gallery" />
+          <grafspec output="Memos/inveseps.gif" type="gallery" />
+          <grafspec output="Memos/invetop.gif" type="gallery" />
+        </document>
+        <document title="Acquisition Memo" dynamic="1" timestamp="01/16/2006 15:34:25">
+          <docspec output="Memos/Acquisition%20Memo.htm" id="2" title="Acquisition Memo" />
+          <grafspec output="Memos/invebkg.gif" type="gallery" />
+          <grafspec output="Memos/inveppv.gif" type="gallery" />
+          <grafspec output="Memos/invetoc.gif" type="gallery" />
+          <grafspec output="Memos/inveidx.gif" type="gallery" />
+          <grafspec output="Memos/invepnx.gif" type="gallery" />
+          <grafspec output="Memos/inveseps.gif" type="gallery" />
+          <grafspec output="Memos/invetop.gif" type="gallery" />
+        </document>
+        <document title="Professional Memo" dynamic="1" timestamp="01/16/2006 15:34:25">
+          <docspec output="Memos/Professional%20Memo.htm" id="3" title="Professional Memo" />
+          <grafspec output="Memos/invebkg.gif" type="gallery" />
+          <grafspec output="Memos/inveppv.gif" type="gallery" />
+          <grafspec output="Memos/invetoc.gif" type="gallery" />
+          <grafspec output="Memos/inveidx.gif" type="gallery" />
+          <grafspec output="Memos/invepnx.gif" type="gallery" />
+          <grafspec output="Memos/inveseps.gif" type="gallery" />
+          <grafspec output="Memos/invetop.gif" type="gallery" />
+        </document>
+        <document title="Elegant Memo" dynamic="1" timestamp="01/16/2006 15:34:25">
+          <docspec output="Memos/Elegant%20Memo.htm" id="4" title="Elegant Memo" />
+          <grafspec output="Memos/invebkg.gif" type="gallery" />
+          <grafspec output="Memos/inveppv.gif" type="gallery" />
+          <grafspec output="Memos/invetoc.gif" type="gallery" />
+          <grafspec output="Memos/inveidx.gif" type="gallery" />
+          <grafspec output="Memos/invepnx.gif" type="gallery" />
+          <grafspec output="Memos/inveseps.gif" type="gallery" />
+          <grafspec output="Memos/invetop.gif" type="gallery" />
+        </document>
+      </directory>
+    </publication>
+    <publication title="Policies">
+      <toc title="Policy RSS Feed" timestamp="01/16/2006 15:34:28">
+        <docspec output="Policies/Policy%20RSS%20Feed.rss" id="13" title="Policies Policy RSS Feed" />
+      </toc>
+      <directory>
+        <document title="Professional Policy" dynamic="1" timestamp="01/16/2006 15:34:26">
+          <docspec output="Policies/Professional%20Policy.htm" id="6" title="Blue Sky Marketing Plan" />
+          <docspec output="Policies/Professional%20Policy-01.htm" id="7" title="Blue Sky Marketing Plan" />
+          <grafspec output="Policies/gtabbkg.gif" type="gallery" />
+          <grafspec output="Policies/gtabppv.gif" type="gallery" />
+          <grafspec output="Policies/gtabtoc.gif" type="gallery" />
+          <grafspec output="Policies/gtabidx.gif" type="gallery" />
+          <grafspec output="Policies/gtabpnx.gif" type="gallery" />
+          <grafspec output="Policies/gtabseps.gif" type="gallery" />
+        </document>
+        <document title="Elegant Policy" dynamic="1" timestamp="01/16/2006 15:34:27">
+          <docspec output="Policies/Elegant%20Policy.htm" id="8" title="Elegant Policy" />
+          <docspec output="Policies/Elegant%20Policy-01.htm" id="9" title="Elegant Policy" />
+          <docspec output="Policies/Elegant%20Policy-02.htm" id="10" title="Elegant Policy" />
+          <grafspec output="Policies/gtabbkg.gif" type="gallery" />
+          <grafspec output="Policies/gtabppv.gif" type="gallery" />
+          <grafspec output="Policies/gtabtoc.gif" type="gallery" />
+          <grafspec output="Policies/gtabidx.gif" type="gallery" />
+          <grafspec output="Policies/gtabpnx.gif" type="gallery" />
+          <grafspec output="Policies/gtabseps.gif" type="gallery" />
+        </document>
+        <document title="Contemporary Policy" dynamic="1" timestamp="01/16/2006 15:34:28">
+          <docspec output="Policies/Contemporary%20Policy.htm" id="11" title="FilmWatch Division Marketing Plan" />
+          <docspec output="Policies/Contemporary%20Policy-01.htm" id="12" title="FilmWatch Division Marketing Plan" />
+          <grafspec output="Policies/gtabbkg.gif" type="gallery" />
+          <grafspec output="Policies/gtabppv.gif" type="gallery" />
+          <grafspec output="Policies/gtabtoc.gif" type="gallery" />
+          <grafspec output="Policies/gtabidx.gif" type="gallery" />
+          <grafspec output="Policies/gtabpnx.gif" type="gallery" />
+          <grafspec output="Policies/gtabseps.gif" type="gallery" />
+        </document>
+      </directory>
+    </publication>
+    <publication title="Reports">
+      <toc title="Reports RSS Feed" timestamp="01/16/2006 15:34:31">
+        <docspec output="Reports/Reports%20RSS%20Feed.rss" id="21" title="Reports Reports RSS Feed" />
+      </toc>
+      <directory>
+        <document title="Professional Report" dynamic="1" timestamp="01/16/2006 15:34:29">
+          <docspec output="Reports/Professional%20Report.htm" id="14" title="Blue Sky Marketing Plan" />
+          <docspec output="Reports/Professional%20Report-01.htm" id="15" title="Blue Sky Marketing Plan" />
+          <grafspec output="Reports/scalbkg.gif" type="gallery" />
+          <grafspec output="Reports/scalppv.gif" type="gallery" />
+          <grafspec output="Reports/scaltoc.gif" type="gallery" />
+          <grafspec output="Reports/scalpnx.gif" type="gallery" />
+          <grafspec output="Reports/scalseps.gif" type="gallery" />
+        </document>
+        <document title="Elegant Report" dynamic="1" timestamp="01/16/2006 15:34:30">
+          <docspec output="Reports/Elegant%20Report.htm" id="16" title="Elegant Report" />
+          <docspec output="Reports/Elegant%20Report-01.htm" id="17" title="Elegant Report" />
+          <docspec output="Reports/Elegant%20Report-02.htm" id="18" title="Elegant Report" />
+          <grafspec output="Reports/scalbkg.gif" type="gallery" />
+          <grafspec output="Reports/scalppv.gif" type="gallery" />
+          <grafspec output="Reports/scaltoc.gif" type="gallery" />
+          <grafspec output="Reports/scalpnx.gif" type="gallery" />
+          <grafspec output="Reports/scalseps.gif" type="gallery" />
+        </document>
+        <document title="Contemporary Report" dynamic="1" timestamp="01/16/2006 15:34:31">
+          <docspec output="Reports/Contemporary%20Report.htm" id="19" title="FilmWatch Division Marketing Plan" />
+          <docspec output="Reports/Contemporary%20Report-01.htm" id="20" title="FilmWatch Division Marketing Plan" />
+          <grafspec output="Reports/scalbkg.gif" type="gallery" />
+          <grafspec output="Reports/scalppv.gif" type="gallery" />
+          <grafspec output="Reports/scaltoc.gif" type="gallery" />
+          <grafspec output="Reports/scalpnx.gif" type="gallery" />
+          <grafspec output="Reports/scalseps.gif" type="gallery" />
+        </document>
+      </directory>
+    </publication>
+  </publication>
+</project>

@@ -1,0 +1,102 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HAYS_WidgetManager htmlIncludeOrString
+</title>
+</head>
+<body>
+<@dynamichtml widget_socialmediablogs_javascript@>
+		<script type="text/javascript">
+
+
+	//*****************************************************************************
+
+				function SocialMediaBlogsWidgetObject(name) {
+					this.name = name;					
+				};
+
+				SocialMediaBlogsWidgetObject.prototype = new WidgetObjectAPI();
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					SocialMediaBlogsWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var quotationStr = "<Widget><Name>socialmediablogs</Name></Widget>";
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				
+				SocialMediaBlogsWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+					};
+
+			//*****************************************************************************
+
+
+				SocialMediaBlogsWidgetObject.prototype.isValid = function(  )	
+				{					
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new SocialMediaBlogsWidgetObject("socialmediablogs")); 
+
+		</script>
+<@end@>
+
+
+
+<@dynamichtml widget_socialmediablogs_form@>
+	<h2>Social Media Blogs</h2>
+	<$include widget_socialmediablogs_javascript$>	
+<@end@>
+
+
+
+
+<@dynamichtml widget_socialmediablogs_display@>
+<$count=0$>
+<$executeService('GET_SOCIALMEDIA_BLOGS')$>
+
+<$if rsFirst('BLOGS_RESULT_SET') $>
+<div class="pb_inner">
+	<h2><$lc('wwSocialBlogsHeading')$></h2>
+	<div class="med_inner">
+		<ul>
+		<$loop BLOGS_RESULT_SET$>	
+		<$if strEqualsIgnoreCase(#active.nodeId,'home') AND count==1$>	
+			<$break$>
+		<$endif$>	
+		<li style="overflow:hidden;">
+			<img style="clear:both;float:right;width:100px;height:66px;" src="<$BLOGS_RESULT_SET.Thumbnail$>"/>
+			<p><a href="<$BLOGS_RESULT_SET.Url$>"><$BLOGS_RESULT_SET.Title$></a></p>	
+		</li>
+		<$count=count+1$>
+		<$endloop$>
+		</ul>		
+		<ul>
+			<li>
+				<a href="<$#env.SocialMediaDirectUrl$>"><$lc('wwViewMore')$></a>
+			</li>
+		</ul>		
+	</div>	
+</div>
+<$endif$>	
+
+<@end@>
+
+</body>
+
+</html>

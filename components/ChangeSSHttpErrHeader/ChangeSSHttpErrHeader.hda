@@ -1,0 +1,41 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=ChangeSSHttpErrHeader
+blDateFormat=M/d/yy {h:mm[:ss] {aa}[zzz]}!mAM,PM!tAmerica/Los_Angeles
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+libpath=$COMPONENT_DIR/lib
+preventAdditionalComponentDowngrade=0
+version=11g
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+editHttpResponseHeader
+changeHttpHeader.detectHttpHeader
+editHttpResponseHeader
+999
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+@end
+@ResultSet ClassAliases
+2
+classname
+location
+@end

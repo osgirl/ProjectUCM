@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  	<meta name="title" content="<$lc('wwGCApplyJobText14')$> "/>  
+ 
+  	<meta name="google-site-verification" content="<$lc('wwGoogleKeyContent')$>" /> 
+<title> <$lc('wwGCApplyJobText14')$> </title>
+
+   	<!--css -->
+	<link rel="shortcut icon" href="<$HttpRelativeWebRoot$>HaysGeneralComponent/assets/img/favicon.ico" />
+	<link rel="stylesheet" type="text/css"  href="/haysassets/HaysGeneralComponent/assets/css/ucm_regions_r6.css" />
+	<link rel="canonical" href="http://www.hays.co.uk" /> 
+</head>
+<body id="pg_3col">
+  
+ <$if #active.submitted$>
+			<$executeService("HAYS_MAIL")$>	
+			<$if strEqualsIgnoreCase(mailResponse,"true")$>
+				<div class="container_24" style="padding-left: 35px;">
+			 
+				<div class="grid_14">
+				<div id="pl_main"> 
+				 <TABLE style="WIDTH: 566px" cellSpacing=0 cellPadding=0 border=0>
+					  <TBODY>
+						  <TR>
+							<TD vAlign=top width=405 height=81 rowSpan=2><img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />
+							</TD>
+						  </TR>
+						 <TR>                
+					  </TR>
+					  </TBODY>
+				  </TABLE>
+				 <form  class="hays_form"> 				 
+					<fieldset class="rc_grey">					
+						<div id="ConfirmationMessage">
+							<h2><$lc('wwGCApplicationConfirmation1')$></h2>
+						<br/>
+							<p><$lc('wwGCApplicationConfirmation2')$><p>
+						</div> 
+						<div>       
+						</p> 
+					  </div> 
+					</fieldset>
+				<div class="s_mrg">
+				 
+				 <input style="text-align: center;" onclick="self.close();" id="submitbutton" value="Close this window" class="button">					 
+				 </div></form>
+			<div>  <div><div> 
+		  <$endif$>
+<$endif$>	 
+ 
+ 
+<$if isFalse(strEqualsIgnoreCase(#active.submitted,"false")) AND isFalse(strEqualsIgnoreCase(mailResponse,"true"))$>
+ 
+
+<div class="container_24" style="padding-left: 35px;">
+<div class="grid_14">
+<div id="pl_main"> 
+ <img src="http://www9.hays.com/eshots/LOGOS/elogoWORLDWIDExmas.gif" alt="Hays logo" width="300" height="81" />
+
+					
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+function HAYSform() {
+ 
+   if (window.jQuery && jQuery.validator && jQuery.watermark && jQuery.isReady) {
+	 
+	 
+		$.validator.addClassRules("mandatory", {
+			required: true,
+			nowatermark:true
+		});
+		
+		 
+		
+		
+		$("#haysres_application_form").validate({
+			focusInvalid: true,
+			onkeyup: false,			 
+			rules:{			
+			    
+				email:{
+					email:true
+				} 
+		},
+
+			 
+			messages:{			 
+				full_name:{
+					required:"Please enter your full name."
+				},
+				address1:{
+					required:"Please enter your address"
+				},
+				postcode:{
+					required:"Please enter your postcode."
+				},
+				town_city:{
+					required:"Please enter your town/city."
+				},
+				
+				email:{
+					required:"<$lc('wwJsmandatory_email')$>",
+					email:"<$lc('wwJsmandatory_emailformate')$>"
+				},		
+				
+				phone:{
+					required:"Please enter your telephone."
+				}
+			},
+			
+			errorPlacement: function(error, element) {				 
+					error.insertAfter(element);
+				 
+			}
+			 
+		}); 
+	}
+	
+	
+	
+	else {
+			window.setTimeout(HAYSform, 100);
+	}
+	
+ 
+	
+	
+}
+	HAYSform()
+//--><!]]>
+</script>
+<$SiteLocale = siteLocale$> 
+<$ exec setLocale(SiteLocale) $> 
+<$strcode =   strReplace(SiteLocale,"-","")$> 
+
+<div class="content_main">
+<h1 style="font-weight: normal;"><$lc('wwHResCallBack')$></h1>
+	<p><em class="red">* </em> <$lc('wwRequiredField')$></p>
+</div>
+<form id="haysres_application_form" class="hays_form"  method="post" enctype="multipart/form-data"> 
+  <input type="hidden" id="DataFormName" value="CustomForm1" name="DataFormName"/>
+  <input type="hidden" id="SubjectLine" value="" name="SubjectLine"/>
+  <input type="hidden" id="Subject" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="Subject"/>
+  <input type="hidden" id="emailTemplate" value="haysresponse_email_template" name="emailTemplate"/>
+  <input type="hidden" id="websiteURL" value="<$SS_SERVER_NAME$><$ssServerRelativeSiteRoot$>" name="websiteURL"/>
+  <input type="hidden" id="EmailID" value="komal.srivastava@hays.com" name="EmailID"/> 
+ <!-- <input type="hidden" id="Job_ID" value="<$job_id$>" name="Job_ID"/>-->
+  <input type="hidden" id="SiteLocale" value="<$siteLocale$>" name="SiteLocale"/>
+  <input type="hidden" name="submitted" value="1" /> 
+
+	<fieldset class="rc_grey">
+	<legend><$lc('wwHResText1')$></legend>
+	<ol class="abc">
+ 
+		<li>
+			<div class="grid_4 alpha" >
+				<label for="full_name"><em>* </em><$lc("wwHResText2")$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="full_name" name="full_name" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="job_title"><$lc('wwHResText3')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="" id="job_title" name="job_title" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="org_name"><$lc('wwHResText4')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="" id="org_name" name="org_name" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="address1"><em>* </em><$lc('wwHResText5')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="address1" name="address1" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="address2"><$lc('wwHResText6')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="" id="address2" name="address2" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="postcode"><em>* </em><$lc('wwHResText7')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="postcode" name="postcode" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="town_city"><em>* </em><$lc('wwHResText8')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="town_city" name="town_city" />
+			</div>
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="email"><em>* </em><$lc('wwHResText9')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="email" name="email" />
+			</div>
+		</li>
+		
+		<li>
+			<div class="grid_4 alpha">			 
+				<label for="phone"><em>* </em><$lc('wwHResText10')$></label>
+			</div>
+			<div class="grid_9 suffix_1 omega">
+				<input type="text" class="mandatory" id="phone" name="phone" />
+			</div>
+		</li>
+		<li class="grid_4 alpha1">
+				<div class="select_row">
+					<input type="radio" name="group1"  value="Call Back Request" checked="true" align="center"/>
+					<label for="req_type"><$lc('wwHResText11')$></label>
+				</div>
+
+		</li>
+			<li >
+				<div class="select_row">
+					<input type="radio" name="group1"  value="Call Back Request" align="right"/>
+					<label for="req_type"><$lc('wwHResText12')$></label>
+				</div>
+			</li>
+			
+		</li>
+		<li>
+			<div class="grid_4 alpha">
+				<label for="req_nature"><$lc('wwHResText13')$></label>
+			</div>
+
+			<div class="grid_9 suffix_1 omega">
+				<textarea class="" id="req_nature" name="req_nature" ></textarea>
+			</div>
+		</li>
+
+		 
+	</ol> 
+</fieldset>
+ <div class="s_mrg">
+	<input type="submit" class="button" value="Send" id="submitbutton">
+ </div>
+<div class="clear"></div>
+</form></div></div></div>
+ 	 <$endif$>
+ 
+  <p><!--/end footer -->
+  		<!--BAU REL-4 21118-->
+				<$include include_jquery_js$>
+		<!--BAU REL-4 21118-->
+  </script> <script src="/haysassets/HaysGeneralComponent/assets/js/document_r6.js" type="text/javascript">
+  </script>
+  </p>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<$include std_doctype_html_decl$>
+<head>
+   <$defaultPageTitle = "Create Questions"$>
+   <$include std_html_head_declarations$>
+   <link type="text/css" rel="stylesheet" href="<$HttpRelativeWebRoot$>FacetedBrowsing/css/ontology.css"/>
+    <style>
+    #ont table {
+        width: 85%;
+	}
+	#ont table td, #ont table th {
+		width: 25%;
+		padding: 12px;
+	}
+	#ont table tbody {
+     border-width: 0px 1px 20px;
+ }
+    .multiselect {
+    min-height: 23px;
+}
+
+.js .multiselect > div {
+    background: url("/cs/HaysGeneralComponent/assets/css/img/sprites/icons.png") no-repeat scroll 104% -1070px #FFFFFF;
+    border: 1px solid #B2B2B2;
+    color: #000000;
+    height: 19px;
+    line-height: 19px;
+    margin: 1px 1px 4px;
+    overflow: hidden;
+}
+
+.js .jaccess {
+    display: block;
+}
+
+.multitoggle {
+    padding: 0 20px 0 3px;
+}
+
+.js .grid_8 .multiselect > ol, .grid_q_40 .multiselect > ol {
+    margin: 0 1px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 5px 0 2px;
+    width: 306px;
+}
+
+.js .multiselect > ol {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #B2B2B2;
+    display: block;
+    max-height: 208px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    visibility: hidden;
+    width: auto;
+    z-index: 999;
+}
+
+.multiselect > ol, .filterdialog {
+    display: none;
+    margin: 0;
+}
+
+.hays_form ol {
+    clear: both;
+    overflow: hidden;
+}
+
+.js .multiselect .checkbox_row {
+}
+
+.js .multiselect .checkbox_row {
+    overflow: hidden;
+    padding-top: 0;
+}
+
+.js .multiselect .checkbox_row {
+}
+
+.js .multiselect li {
+}
+
+.js .multiselect li {
+    padding: 0 3px 5px;
+}
+
+.js .multiselect li {
+}
+
+.ehc_box li, .hays_form ol li {
+}
+
+.ehc_box li, .hays_form ol li {
+}
+
+.checkbox_row, .select_row {
+    overflow: hidden;
+    padding: 5px 0 0;
+}
+
+form ol li {
+    list-style: none outside none;
+    margin-bottom: 0;
+    overflow: hidden;
+    padding: 6px 0;
+}
+</style>
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+   <$include std_page_begin$>
+   <div id="pl_main">
+   <div id="ont">
+      <h2>Create Questions</h2>
+      <form name="CreateQuestions" enctype="multipart/form-data" method="POST" action="<$HttpCgiPath$>" onsubmit="return validateForm(); ">
+         <input type="hidden" name="IdcService" value="UPDATE_KILLER_QUESTIONS"/>
+         <input type="hidden" name="submitted" value="1" id="submitted"/>
+         <input type="hidden" name="count" value="0" id="count"/>        
+         <input type="hidden" name="initialQuestions" value="" id="initialQuestions"/>
+         <input type="hidden" name="removedQuestions" value="" id="removedQuestions"/>     
+         <div id="ConfirmationMessage" style = "visibility:hidden">
+            <p><font color = "green">Questions have been saved successfully.</font></p>
+         </div>
+         <$schViewName = "OfficeCountryView"$>
+         <$if NOT rsExists('HAYSWEBSITES')$>
+         <$executeService("GET_SCHEMA_VIEW_VALUES_CUSTOM")$>
+         <$endif$>
+         <table>
+            <thead>
+            	<th></th>
+               <$if rsExists('HAYSWEBSITES') AND rsFirst('HAYSWEBSITES') $>
+               <th><label for="Country">Country/Website:</label></th>
+               <th>
+                  <select id="Country" name="Country" onChange="getQuestions(this.options[this.selectedIndex].value,null);return false;">
+                     <option name="Country" value="" selected>Select...</option>
+                     <$loop HAYSWEBSITES$>
+                     <option name="Country" value="<$HAYSWEBSITES.SITELOCALEDUP$>"><$HAYSWEBSITES.COUNTRY$> <$HAYSWEBSITES.LANGUAGELABEL$></option>
+                     <$endloop$>
+                  </select>
+               </th>
+               <th></th>
+               </tr>
+               <$endif$>
+            </thead>
+         </table>
+         <table id ="questions" style="margin-bottom:0px;">
+            <thead>	
+               <tr class="loader">
+                  <td colspan="6">
+                     <div id="waiting" style="visibility: hidden">Loading</div>
+                  </td>
+               </tr>
+               </thead>
+               <tbody>
+            </tbody>
+         </table>
+         <table class="no_border" id="buttons">
+         	<tfoot>
+            <tr>
+            	<td ></td>
+                  <td ></td>
+                  <td ></td>
+                  <td>
+               		<input type="button" name="Add Row" value="Add Row" class="button" onClick="createEmptyTableRow();"/>  
+               		<!-- input type="button" name="Remove Row" value="Remove" class="button" onClick="removeTableRow();"/-->     
+                  </td>
+               </tr>
+               </tfoot>
+         </table>
+         <table class="no_border">
+            <tfoot>
+               <tr>
+                  <td></td>
+                  <td><input type="submit" name="Add" value="Add/Update" class="button"/></td>
+               </tr>
+            </tfoot>
+         </table>
+      </form>
+   </div>
+   </div>
+   <$include std_page_end$>
+   <script  type="text/javascript" src="<$HttpRelativeWebRoot$>FacetedBrowsing/dhtmlxAjax/codebase/dhtmlxcommon.js"></script>
+   <script type="text/javascript">
+      var rows = 0;
+      function removeAllOptions(selectbox)	
+      {
+      	var i;
+      	for(i=selectbox.options.length-1;i>=0;i--)
+      	{
+      		selectbox.remove(i);
+      	}
+      }
+      
+      function removeValue(element)
+      {
+      	 element.value = "";
+      }
+      
+      function getQuestions(locale,seloffice)
+      {	
+    	  waiting();
+    	  rows = 0;
+          //removeCurrentRows
+          $("#questions tbody").empty();
+          //addQuestionsForSelectedLocale(locale)
+          if( locale.length > 0)
+      	  {
+      		url = "?IdcService=GET_QUESTIONS_BY_LOCALE&IsSoap=1&questionType=KILLER&xLocale="+locale;
+			loader = dhtmlxAjax.getSync(url);
+			//populatesQuestions(loader)
+			if(loader.xmlDoc.responseXML != null)
+      		{
+      			var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+      			if( list != null)
+      			{					
+      				list = fixUserAttribRS(list);					
+      				list = list.getElementsByTagName('idc:row'); 
+      			}	
+      			for(var i=0;i<list.length;i++)
+          		{
+          			var question =  extractChildValue( list[i].getElementsByTagName('idc:field')[1] );
+          			var categories =  extractChildValue( list[i].getElementsByTagName('idc:field')[2]);
+          			var id = extractChildValue( list[i].getElementsByTagName('idc:field')[3]);
+          			createTableRow(locale, question, categories, i+1, id);
+          			updateInitialQs(id);
+          		}
+      			bindMultiSelects();			
+      		 }
+      		}
+    		hide('waiting');
+      }
+
+  	  function updateInitialQs(id){
+  	  	var initalQs = $('#initialQuestions').val();
+  	  	if(initalQs == ''){
+  			$('#initialQuestions').val(id);
+  	  	}else{
+  	  		$('#initialQuestions').val(initalQs+','+id);
+  	  	}
+  	  }
+  	  
+      function createEmptyTableRow()
+      {
+          var locale = $("#Country").find(":selected").val();
+          if(locale == ''){
+              alert('Please select a locale first');
+              return;
+          }
+          var questiontext="";
+          var catgeoryIds = "";
+          var order = rows+1;
+          waiting();
+          createTableRow(locale, questiontext, catgeoryIds, order, '00');
+          bindMultiSelects();
+          hide('waiting');
+      }
+
+      function removeTableRow(row)
+      {
+		  var confm = confirm('Do You Really Want To Remove It');
+		  if(confm){
+    	  	updateRemovedQuestions(row);
+    	  	$(row).parent().parent().remove();
+		  }
+      }
+
+      function updateRemovedQuestions(row)
+      {
+    	  var removedQs = $('#removedQuestions').val();
+    	  var id = $(row).parent().parent().find('#questionId').val();
+    	  if(id != ''){
+	    	  if(removedQs == ''){
+	    			$('#removedQuestions').val(id);
+	    	  }else{
+	    	  		$('#removedQuestions').val(removedQs+','+id);
+	    	  }
+    	  }
+      }
+      
+      function createTableRow(locale, questiontext, catgeoryIds, order, id)
+      {
+    	  $('#questions tbody').append('<tr id=\"question'+order+'\"><td style=\"width:2%;\">'+order+'.</td><td style=\"width:3%;\"><label for=\"question\"><font color =\"red\">*</font>Question:</label></td><td style=\"width:37%;\">'+
+    	    	  '<input type=\"text\" name=\"question'+order+'\" id=\"question1text\" value=\"'+questiontext+'\" size=\"85\" maxlength=\"200\"/></td><td style=\"width:10%;\">'+
+                  '<label for=\"category\"><font color =\"red\"\>*</font>Select Specialism:</label></td><td style=\"width:35%;\"><div class=\"multiselect google question'+order+'\" ><ol>'+
+					'</ol><input name=\"job_category'+order+'\" id=\"job_category\" type=\"hidden\" value=\"\" class=\"require_group\"  /></div></td>'+
+					'<td style=\"width:5%;\"><input type=\"button\" name=\"Remove Row\" value=\"Remove\" class=\"button\" onClick=\"removeTableRow(this);\"/>'+
+					' <input type=\"hidden\" name=\"questionId'+order+'\" value=\"'+id+'\" id=\"questionId\"/>   </td> </tr>');    
+    	  if(locale.length>0)
+          {
+          	var langcont= locale.split('-');
+        	var language = langcont[0];
+        	var country1 = langcont[1];
+          }
+	   	  	url = "?IdcService=ONT_GET_INDIVIDUALS&IsSoap=1&metadata=xCategory&ontClass=hays:specialism&language="+language+"&country="+country1;
+	   		var loader = dhtmlxAjax.getSync(url);
+	   		if(loader.xmlDoc.responseXML != null)
+	   	     {
+	   	      	var list = loader.xmlDoc.responseXML.getElementsByTagName("idc:resultset");
+	   	      	if( list != null)
+	   	      	{
+	   	      		list = fixUserAttribRS(list);
+	   	      		list = list.getElementsByTagName('idc:row'); 
+	   	      	}
+	   	      	for(var i=0;i<list.length;i++)
+	   	      	{
+	   	      		var id =  extractChildValue( list[i].getElementsByTagName('idc:field')[0] );
+	   	      		var text = extractChildValue( list[i].getElementsByTagName('idc:field')[1]);
+	   	      		if(catgeoryIds.indexOf(id) > -1){
+	   	      		$('.multiselect.google.question'+order+' ol').append('<li class=\"checkbox_row\">'+
+						'<input type=\"checkbox\" name=\"cg\" id=\"job_category'+order+i+'\" value=\"'+id+'\" checked />'+
+						'<label for=\"job_category'+order+i+'\" id=\"job_category'+id+'\">'+text+'</label></li>');
+	   	      		}else{
+	   	      			$('.multiselect.google.question'+order+' ol').append('<li class=\"checkbox_row\">'+
+	   							'<input type=\"checkbox\" name=\"cg\" id=\"job_category'+order+i+'\" value=\"'+id+'\"  />'+
+	   							'<label for=\"job_category'+order+i+'\" id=\"job_category'+id+'\">'+text+'</label></li>');
+	   	      		}
+	   	      	}			
+	   	      }
+	   		rows = order; 
+      }
+      
+      
+      
+      function waiting()
+      {      	
+      	document.getElementById('waiting').style.visibility = "visible";
+      }
+      
+      function hide(id)
+      {
+      	document.getElementById(id).style.visibility = "hidden";
+      }
+      
+      function show(id)
+      {
+      	document.getElementById(id).style.visibility = "visible";
+      }
+      
+      function extractValue(element,attribute)
+      {      	
+      	var value =  element.getAttributeNode(attribute);
+      	if( value != null)
+      		value = value.nodeValue;
+      	else value = "";
+      	return value;
+      }
+      
+      function extractChildValue(element) 
+      {
+      	var value =  element.firstChild;
+      	if( value != null)
+      		value = value.nodeValue;
+      	else value = "";
+      	return value;
+      }
+      
+      function validateForm()
+      {    
+    	  var locale = $("#Country").find(":selected").val();
+          if(locale == ''){
+              alert('Please select a locale and try again');
+              return false;
+          }  	
+          var questionCount = $('#questions tbody tr').length;
+          if(questionCount == 0){
+              alert('Please add some questions and try again');
+              return false;
+          }
+          $('#count').val(questionCount);
+
+          //check if all questions and their specialisms have been filled in
+          var isValid = true;
+    	  $('#questions tbody tr').each(function() 
+    	  {
+    		  		var rown = $(this).children(":first").text();
+              		var rowno = rown.substring(0,rown.length-1);
+			  			
+    			   //alert($(this).find('input[type="text"]').val());
+    			   if($.trim($(this).find('input[type="text"]').val()) == ""){
+    			          alert('Question text in row '+(rowno)+' is empty. Please input and try again');
+    			          isValid = false;
+    			          return false;
+    			      }
+    			   //alert($(this).find('input[type="hidden"]').val());
+    			       if($(this).find('input[type="hidden"]').val() == ""){
+    			          alert('Specialism has not been selected in row '+(rowno)+'. Please select and try again');
+    			          isValid = false;
+    			          return false;
+    			      }
+    			    
+    		});
+			if(!isValid){
+				return false;
+			}
+			
+		  //check if no 2 questions inputted are similar
+    	  $('#questions tbody tr').each(function(i) 
+    			  {
+    			      outerText = $(this).find('input[type="text"]').val();
+    			      outerrown = $(this).children(":first").text();
+                	  outerrowno = outerrown.substring(0,outerrown.length-1);
+    			      $('#questions tbody tr').each(function(j) 
+    			  	{
+    			  		if(i < j)
+    			  		{
+    			  			innerText = $(this).find('input[type="text"]').val();
+    			  			innerrown = $(this).children(":first").text();
+    	                	innerrowno = innerrown.substring(0,innerrown.length-1);
+    			  			//alert('innerText '+innerText);
+    			  			if( outerText == innerText)
+    			  				{
+    			  					alert("Question at row "+(outerrowno)+" and "+(innerrowno)+" are similar. Please update and try again");
+    			  					isValid = false;
+    			  				}
+    			  		 }
+    			  	});    
+    			  });
+			return isValid;
+       }
+      	
+      	
+
+      	function fixUserAttribRS(list){
+    		if(list[0] != null){
+    	  	  if(list[0].getAttribute("name") == "UserAttribInfo"){
+    				return list[1];							
+    			}
+    		}
+    			return list[0];
+          }
+        
+           
+   </script>
+   <$if #active.submitted$>
+   <script>
+      show("ConfirmationMessage"); 
+      var selcountry = '<$#active.Country$>';
+      var seloffice = '<$#active.officeId$>';      
+      var country = document.getElementById("Country");
+      /*
+      for(var i=0;i<country.length;i++) { if(country.options[i].value==selcountry) { break; } } 
+      country.options.selectedIndex = i;       
+      country.options[country.options.selectedIndex].setAttribute("selected", "selected") ;      
+      getOffices(selcountry,seloffice);
+      getSpecialisms(seloffice,selcountry,hide);    
+      */  
+   </script>
+   <$endif$>
+   		<!--BAU REL-4 21118-->
+				<$include include_jquery_js$>
+		<!--BAU REL-4 21118-->
+<script type="text/javascript" src="/cs/HaysGeneralComponent/assets/js/document_r6.js"></script>
+<script type="text/javascript">
+function bindMultiSelects(){
+DDDEV.multiselects = $('.multiselect');
+if (DDDEV.multiselects.length > 0 && DDDEV.ucm) {
+	$(DDDEV.multiselects).each(function() {
+		var multi_object = $(this).get();
+
+		if($(multi_object).find('.jaccess.multitoggle').length == 0)
+		{
+		$(multi_object).prepend('<div class="jaccess multitoggle" tabindex="0"></div>');
+		
+		if ($(multi_object).find('input').is(':checked')) {	
+			// This function needs to be combined with other to form one that will rule them all. 
+			var ms_selected  = '';
+			var ms_value ='';
+			$(multi_object).find('input:checked').each (function(i) {
+				
+				if (i > 0){
+					ms_selected = 'Multiple options selected';
+				}
+				else {
+					ms_selected = ms_selected + $('label[for='+$(this).attr('id')+']',multi_object).text();
+					
+				}
+				ms_value = ms_value + $(this).attr('value') + ', ';
+			});
+			
+			$(multi_object).find('.multitoggle').text(ms_selected);
+			$(multi_object).find('input[type=hidden]').val(ms_value.substring(0, ms_value.length - 2));
+		}
+		else {
+			$(multi_object).find('.multitoggle').text($(multi_object).attr('title'));
+		}
+		
+		$('.multitoggle',this).click (function() {
+			$('.multitoggle.ms_hover').not(this).trigger('click');
+			$(this).hasClass('ms_hover') ? $(this).removeClass('ms_hover').next('ol').removeAttr('style') : $(this).addClass('ms_hover').next('ol').css('visibility', 'visible');
+		});	
+		$('.multitoggle',this).keypress (function(e) {
+			e.keyCode == 13 ? $(this).trigger('click') : 0;
+		});
+		
+		$('input',this).click(function() {
+			var ms_selected = '';
+			var ms_value = '';
+			var ms_locationvalue = '';
+			var test = '';
+			if ($(this).attr('name') == 'check_all') {
+				$(this).hasClass('checked') ? $(this).removeClass('checked').next('label').html(HAYS.ww_all +' <span class="watermark">('+ HAYS.ww_egIndustries +')</span>') : $(this).addClass('checked').next('label').text(HAYS.ww_unSelAll);
+			 	$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);	
+			}
+			
+			$(multi_object).find('input:checked').each (function(i) {
+					
+				if (i > 0){
+					ms_selected = HAYS.ww_multiOptions;
+				}
+				else {
+					ms_selected = ms_selected + $('label[for='+$(this).attr('id')+']',multi_object).text();
+				}
+
+				ms_value = ms_value + $(this).attr('value') + ', ';
+				ms_locationvalue = ms_locationvalue  + $(this).attr('value') + '@'; 
+			});
+			$(multi_object).find('.multitoggle').text(ms_selected);
+			$(multi_object).find('input[type=hidden]').val(ms_value.substring(0, ms_value.length - 2));
+		});
+	}
+	});
+
+	$(document).bind('click keyup', function(e) {
+		if(!$(e.target).is('.multiselect *')) {
+			$('.multitoggle').removeClass('ms_hover').next('ol').removeAttr('style');
+		}
+	});
+
+}
+}
+var HAYS = {
+		ww_multiOptions 				: "Multiple options selected",
+		ww_checkAll 					: "Check All",
+		ww_all 					: "All",
+		ww_egIndustries 				: "e.g. IT or HR jobs in all industries",
+		ww_unSelAll 					: "Unselect All"
+}
+</script>
+</body>
+</html>

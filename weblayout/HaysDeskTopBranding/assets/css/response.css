@@ -1,0 +1,15 @@
+#header-main{padding-top: 54px}
+#menu nav > ul > li{line-height: 20px}
+.container{overflow: hidden}
+#hero-area-content .job-search .form li > label, #banner-job-info h2, #banner-job-info h2 *{color: #fff}
+
+
+@media screen and (max-width: 980px){
+	#logo{width: 183px}
+	#header-main{padding-top: 18px}
+}
+
+@media screen and (max-width: 360px){
+	#banner-job-info h2.has-switch-search a{color: #97d7e9}
+	#banner-job-info h2.has-switch-search a.active{color: #fff}
+}

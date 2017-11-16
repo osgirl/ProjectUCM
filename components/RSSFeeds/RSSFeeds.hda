@@ -1,0 +1,86 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=RSSFeeds
+blDateFormat=M/d/yy {h:mm[:ss] {aa}[zzz]}!mAM,PM!tAmerica/Chicago
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes;$COMPONENT_DIR/lib/jdom.jar;$COMPONENT_DIR/lib/rome-0.8.jar;
+hasPreferenceData=0
+libpath=$COMPONENT_DIR/lib
+preventAdditionalComponentDowngrade=0
+serverVersion=10gR3
+version=11g
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+RSSFeeds_Templates
+IntradocTemplates
+name
+1
+RSSFeeds_IdocExtensions
+IdocScriptExtensions
+name
+1
+RSSFeeds_Handlers
+ServiceHandlers
+null
+1
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+template
+templates/rss_template.hda
+null
+1
+resource
+resources/rss_resource.htm
+null
+1
+resource
+resources/rss_handler.htm
+null
+1
+resource
+resources/rss_extensions.htm
+null
+1
+resource
+resources/rss_logger_resource.htm
+null
+1
+resource
+resources/lang/ww_strings.htm
+null
+1
+resource
+resources/lang/cs_strings.htm
+null
+1
+service
+resources/rss_service.htm
+RSS_Services
+1
+resource
+resources/rss_sitestudio_resource.htm
+null
+200
+@end
+@ResultSet ClassAliases
+2
+classname
+location
+@end

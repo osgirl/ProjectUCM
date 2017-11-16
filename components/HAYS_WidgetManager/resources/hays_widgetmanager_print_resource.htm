@@ -1,0 +1,246 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_print_javascript@>
+		<script type="text/javascript" src="<$HttpCommonRoot$>custom/JavaScript/ajax.js"></script>
+		<script type="text/javascript" src="<$HttpCommonRoot$>custom/JavaScript/commonParseXML.js"></script>
+
+		<script type="text/javascript">
+
+
+			var SP_GET_SITE_STRUCTURE_SERVICE = "<$HttpCgiPath$>?IdcService=CR_GET_SITE_DEFINITION&siteId=";
+
+	//**************************************************************************
+
+
+			populateSectionList = function(projectDom) {
+					list = $ID('sect_list').value;
+					if( projectDom != null && list.length > 0) {
+						sections = projectDom.getElementsByTagName("section");
+						printSelectedList = $ID('print_selected_list');
+						this.clearList( printSelectedList );
+
+						list += ',';
+						for(i = 0; i < sections.length; i++) {
+								value = ':' + sections[i].getAttribute('nodeId')  + ',';
+								if( list.indexOf( value ) > 0 ) {
+										var li = document.createElement("option");
+										li.text =  sections[i].getAttribute('label') ;
+										li.value =  sections[i].getAttribute('label') ;
+										try	{
+											printSelectedList.add( li);
+										} catch (e)	{ printSelectedList.appendChild( li);}
+
+
+								}
+						}
+					}
+			}
+
+	//**************************************************************
+
+			clearList = function( list) {
+					while( list.hasChildNodes() ) {
+							list.removeChild( list.lastChild );
+					}
+			}
+
+	//*************************************************************
+
+
+			selectSection = function(options) {
+
+				options = options || {};
+				options.params = options.params || {};
+
+				var qs = '';
+
+				qs = WCM.SetQueryStringValue('IdcService', 'CR_CHOOSE_WEBSITE_SECTION', qs);
+
+				for (var param in options.params)
+				{
+					qs = WCM.SetQueryStringValue(param, options.params[param], qs);
+				}
+
+				options.url = ElementAPI.GetFormProperty('httpCgiPath') + qs;
+				options.width = 600;
+				options.height = 800;
+
+				var popup = ElementAPI.GetModalPopup(WCM.ContentServerPopup, options);
+				popup.Open();
+				popup.Focus();
+			}
+
+
+	//*****************************************************************************
+
+				function PrintWidgetObject(name) {
+					this.name = name;
+					this.siteId = null;
+				};
+
+				PrintWidgetObject.prototype = new WidgetObjectAPI();
+
+
+
+
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+
+					PrintWidgetObject.prototype.getResultDataStr = function()
+					{
+
+							var quotationStr = "<Widget><Name>print</Name>";
+							quotationStr += "<Nodes>" + $ID('sect_list').value + "</Nodes>";
+							quotationStr += "<DataFiles>" + $ID('df_list').value + "</DataFiles>";
+							quotationStr += "</Widget>";
+							 return 	quotationStr;
+					};
+
+
+				//************************************************************************
+
+
+				PrintWidgetObject.prototype.setResultDataStr = function( xmlObject )	{
+						var list = xmlObject.getElementsByTagName('Nodes')[0].firstChild.data || '';
+						var dataFiles = xmlObject.getElementsByTagName('DataFiles')[0].firstChild.data || '';
+						$ID('sect_list').value = list;
+						$ID('df_list').value = dataFiles;
+				};
+
+			//***********************************************************************
+
+			PrintWidgetObject.prototype.setSiteId = function( siteId ) {
+				if( siteId != null) {
+						this.siteId = siteId;
+						this.uploadWebsite();
+				}
+			}
+
+			//************************************************************************
+
+				PrintWidgetObject.prototype.registerEventHandlers = function(  )
+					{
+						WCM.DHTML.AddEvent( $ID("print_sec_button"), 'click', PrintTargetEventHandler);
+					};
+
+
+			//*****************************************************************************
+
+			PrintTargetEventHandler =  function(e) {
+
+						var options = {};
+						var sectionsList = {};
+						options.params = {};
+
+
+						options.params.siteId = ElementAPI.GetFormProperty('siteId')  || '';
+						options.params.nodeId = $ID('sect_list').value || '';
+
+						options.callback = function(returnValue)	{
+							if (WCM.IsValid(returnValue)) 	{
+								returnValue = returnValue.split('�$');
+								$ID('sect_list').value = returnValue[0];
+								$ID('df_list').value = returnValue[1];
+								populateSectionList( projectDom );
+							}
+						};
+
+						selectSection(options);
+						return WCM.DHTML.CancelEvent(e);
+			}
+
+
+			//*****************************************************************************
+
+
+
+
+				PrintWidgetObject.prototype.isValid = function(  )
+				{
+						if( WCM.DHTML.GetAttribute("sect_list", 'value').length == 0 ) {
+							this.errorMessage = "At least one section must be selected";
+							return false;
+						}
+					return true;
+				};
+
+
+		//*******************************************************************************
+
+
+			PrintWidgetObject.prototype.uploadWebsite = function() {
+					if( this.siteId == null )
+						return true;
+					projectDom = getDomObject(SP_GET_SITE_STRUCTURE_SERVICE + this.siteId, false);
+					populateSectionList( projectDom );
+			}
+
+
+			//*********************************************************
+
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget(  new PrintWidgetObject("print") );
+
+			var projectDom = null;
+
+
+		</script>
+<@end@>
+
+
+
+<@dynamichtml widget_print_form@>
+		<h2>Print this section</h2>
+			<form class="printsection" method="get" action="#">
+				<input type='hidden' id="sect_list"/><input type='hidden' id="df_list"/>
+				<div class="select">
+					<label for="print_selected_list">Select a section to print:</label>
+					<select id="print_selected_list" name="print_selected_list" size="8">
+					</select>
+				</div>
+				<div class="submit">
+					<input id="print_sec_button" name="print_sec_button" type="button" value="Choose sections&hellip;" />
+				</div>
+			</form>
+
+	<$include widget_print_javascript $>
+<@end@>
+
+
+
+
+<@dynamichtml widget_print_display@>
+	<$if strLength(title) lt 1 and strLength(content) lt 1$>
+		<div class="panel <$if strLength(#active.dropDownColoursValue) eq 0$>bg-000<$else$><$#active.dropDownColoursValue$><$endif$>">
+			<div class="header"><div class="content"><h2>Print this section</h2></div></div>
+			<div class="body">
+				<div class="content">
+	<$endif$>
+
+	<$if strLength(getValue("widgetRS", "Nodes") ) > 0 $>
+		<div class="widget print-section">
+			<div class="button"><a href="<$ssNodeLink(siteId & 'print')$>?files=<$getValue('widgetRS', 'DataFiles')$>&parentfile=<$#active.MainRegion$>" target="_blank">Print section</a></div>
+		</div>
+	<$endif$>
+
+	<$if strLength(title) lt 1 and strLength(content) lt 1$>
+				</div>
+			</div>
+			<div class="footer"><div class="content">&nbsp;</div></div>
+		</div>
+	<$endif$>
+
+<@end@>
+
+
+
+</body></html>

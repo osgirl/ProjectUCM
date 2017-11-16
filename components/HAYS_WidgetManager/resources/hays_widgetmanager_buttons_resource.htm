@@ -1,0 +1,414 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+CRUKWidgetsForm htmlIncludeOrString
+</title>
+</head>
+<body>
+
+<@dynamichtml widget_buttons_javascript@>
+		<script type="text/javascript">
+
+
+				function ButtonsWidgetObject(name, designList) {
+					this.name = name;
+					if( typeof designList == 'string')
+						this.designList = designList.split(',');
+					else this.designList = designList;
+				};
+
+				ButtonsWidgetObject.prototype = new WidgetObjectAPI();
+
+			
+
+				
+				//**********************************************************************
+				// Public Methods - overriding super class WidgetObjectAPI methods
+				//**********************************************************************
+		
+					ButtonsWidgetObject.prototype.getResultDataStr = function()
+					{	
+							var design = "";
+					//		var imageLocation = "";
+
+							for( i = 0; i < this.designList.length;  i++) { 
+								if( WCM.DHTML.GetAttribute( this.designList[i] + "_radio", 'checked')  == true ) { 
+									design = WCM.DHTML.GetAttribute( this.designList[i] + "_radio", 'value') ; 
+					//				imageLocation = WCM.DHTML.GetAttribute( this.designList[i] + "_img", 'src') ;	 
+									break;
+								}
+							}
+
+							var label = WCM.DHTML.GetAttribute("button_label", 'value') || '';
+							var href = WCM.DHTML.GetAttribute("gethyperlink_href", 'value') || '';
+							var target = WCM.DHTML.GetAttribute("gethyperlink_target", 'value') || '';
+							if( $ID("button_position_left").checked ) {
+								position = "left";
+							} else {
+								position = 'right';
+							}
+
+							// Google Analytics
+							var ga_category = WCM.DHTML.GetAttribute("gethyperlink_ga_category", 'value') || '';
+							var ga_action = WCM.DHTML.GetAttribute("gethyperlink_ga_action", 'value') || '';
+							var ga_label = WCM.DHTML.GetAttribute("gethyperlink_ga_label", 'value') || '';
+							var ga_value = WCM.DHTML.GetAttribute("gethyperlink_ga_value", 'value') || '';
+							var ga_externalLink = $ID("gethyperlink_ga_externalLink").value ;
+
+							var quotationStr = "<Widget><Name>button</Name>";
+							quotationStr += "<Design>" + design + "</Design>";
+						//	quotationStr += "<imageLocation>" + imageLocation + "</imageLocation>";
+							quotationStr += "<Label>" + label + "</Label>";
+							quotationStr += "<Href>" + href + "</Href>";
+							quotationStr += "<Target>" + target + "</Target>";
+							quotationStr += "<Position>" + position + "</Position>";
+
+							if( ga_externalLink.length == 0 && ga_category.length > 0 && ga_action.length > 0 ) {
+								quotationStr += "<GA_Category>" + ga_category + "</GA_Category>";
+								quotationStr += "<GA_Action>" + ga_action + "</GA_Action>";
+								if( ga_label.length > 0)
+									quotationStr += "<GA_Label>" + ga_label + "</GA_Label>";
+								if( ga_value.length > 0)
+									quotationStr += "<GA_Value>" + ga_value + "</GA_Value>";
+							}
+							if( ga_externalLink.length > 0)
+							quotationStr += "<GA_ExternalLink>" + ga_externalLink + "</GA_ExternalLink>";
+							quotationStr += "</Widget>";
+							 return 	quotationStr;
+					};
+
+		
+				//************************************************************************
+
+				ButtonsWidgetObject.prototype.setResultDataStr = function( xmlObject )
+					{	
+						var design = xmlObject.getElementsByTagName('Design')[0].firstChild.data || '';	 
+						$ID(design + "_radio").checked = true;	
+
+		//				var imageLocation = xmlObject.getElementsByTagName('imageLocation')[0].firstChild.data || ''; 
+			//			WCM.DHTML.SetAttribute(design + "_radio", 'src', imageLocation);
+
+						var label = xmlObject.getElementsByTagName('Label')[0].firstChild.data || '';	
+						WCM.DHTML.SetAttribute("button_label", 'value', label);
+						
+						var href = xmlObject.getElementsByTagName('Href')[0].firstChild.data || '';	
+						WCM.DHTML.SetAttribute("gethyperlink_href", 'value', href);
+						
+						if (xmlObject.getElementsByTagName('Target')[0].firstChild != null ) {
+							var target = xmlObject.getElementsByTagName('Target')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("gethyperlink_target", 'value', target);
+						}
+						if (xmlObject.getElementsByTagName('Position')[0] && xmlObject.getElementsByTagName('Position')[0].firstChild != null ) {
+							var position = xmlObject.getElementsByTagName('Position')[0].firstChild.data || '';	
+							$ID("button_position_" + position).checked = true;
+						}
+
+						// Google Analytics
+						var el = xmlObject.getElementsByTagName('GA_Category');
+						if(el != null && el[0] != null ) {
+							var ga_category = xmlObject.getElementsByTagName('GA_Category')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("gethyperlink_ga_category", 'value', ga_category);
+						}
+				
+						el = xmlObject.getElementsByTagName('GA_Action');
+						if(el != null && el[0] != null) {
+							var ga_action = xmlObject.getElementsByTagName('GA_Action')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("gethyperlink_ga_action", 'value', ga_action);
+						}
+
+						el = xmlObject.getElementsByTagName('GA_Label');
+						if(el != null && el[0] != null) {
+							var ga_label = xmlObject.getElementsByTagName('GA_Label')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("gethyperlink_ga_label", 'value', ga_label);
+						}
+
+						el = xmlObject.getElementsByTagName('GA_Value');
+						if(el != null && el[0] != null) {
+							var ga_value = xmlObject.getElementsByTagName('GA_Value')[0].firstChild.data || '';	
+							WCM.DHTML.SetAttribute("gethyperlink_ga_value", 'value', ga_value);
+						}
+
+						el = xmlObject.getElementsByTagName('GA_ExternalLink');
+						if(el != null && el[0] != null) {
+							var ga_externalLink = xmlObject.getElementsByTagName('GA_ExternalLink')[0].firstChild.data || '';
+							WCM.DHTML.SetAttribute("gethyperlink_ga_externalLink", 'value', ga_externalLink);		
+						}
+							
+					};
+
+					
+
+			//************************************************************************
+
+				ButtonsWidgetObject.prototype.registerEventHandlers = function(  )
+					{	
+						WCM.DHTML.AddEvent( document.getElementById("button_href_target"), 'click', ButtonTargetEventHandler );	
+					};
+
+			//*****************************************************************************
+
+
+				ButtonsWidgetObject.prototype.isValid = function(  )	
+				{ 
+					if( WCM.DHTML.GetAttribute("button_label", 'value').length == 0 ) {
+						this.errorMessage = "Label field is mandatory";
+						return false;
+					}
+					if( WCM.DHTML.GetAttribute("gethyperlink_href", 'value').length == 0 ) { 
+						this.errorMessage = "Href target field is mandatory";
+						return false;
+					}
+					// validate Google Analytics
+					var ga_cat_length = WCM.DHTML.GetAttribute("gethyperlink_ga_category", 'value').length;
+					var ga_act_length = WCM.DHTML.GetAttribute("gethyperlink_ga_action", 'value').length;
+					var ga_externalLink_length = $ID("gethyperlink_ga_externalLink").value.length;
+
+					if((ga_cat_length == 0 && ga_act_length > 0) || (ga_cat_length > 0 && ga_act_length == 0) || (ga_cat_length == 0 && ga_act_length == 0)) {
+						if(ga_externalLink_length == 0){
+							this.errorMessage = "Google Analytics Category and Action fields are mandatory";
+							return false;
+						}else{
+						 	return true;
+						}
+					}
+					
+					if((ga_act_length > 0 && ga_cat_length > 0 && ga_externalLink_length > 0) || (ga_cat_length > 0 && ga_externalLink_length > 0) || (ga_act_length > 0 && ga_externalLink_length > 0)){
+						this.errorMessage = "Please choose either Page View or Category and Action fields.";
+						return false;
+					}
+					
+					return true;
+				};
+
+
+
+				//*****************************************************************************
+
+
+
+			ButtonTargetEventHandler =  function(e)
+				{
+					options = {};
+					options.href = $ID('gethyperlink_href').value || '';
+					options.target = $ID('gethyperlink_target').value || '';
+
+					var sections = "<$ #env.HLWebsiteSection$>".split(':');
+					options.siteId = sections[0] || '';
+					options.nodeId = sections[1] || '';
+
+					options.config = {};
+					options.config.choosemanagedquerytext = {};
+					options.config.choosemanagedquerytext.querytext = "<$ #env.HLDefaultQuery$>" || '';
+					options.config.choosemanagedquerytext.corecontentonly = WCM.ToBool("<$ #env.HLCoreContentOnly $>");
+
+					//options.config.choosenone = WCM.ToBool($ID('gethyperlink_choosenone').checked);
+					options.config.chooselocal = WCM.ToBool("<$ #env.HLChooseLocal $>");
+					options.config.choosemanaged = WCM.ToBool("<$ #env.HLChooseManaged $>");
+					options.config.createnewxml = WCM.ToBool("<$ #env.HLCreateNewXml $>");
+					options.config.createnewnative = WCM.ToBool("<$ #env.HLCreateNewNative $>");
+
+					var count = 0;
+					options.config.createnewnativedoctypes = [];
+					<$ rsMakeFromString("nativeDocsRS",  #env.HLCreateNewNativeDocTypes, "type") $>
+					<$loopwhile getValue("nativeDocsRS", "#isRowPresent")$>
+								options.config.createnewnativedoctypes[count++] = '<$getValue("nativeDocsRS","type")$>';
+								<$exec rsNext("nativeDocsRS")$>
+					<$endloop$>
+
+					options.pageLocation = "<$ #env.HLPageLocation $>";
+
+					options.callback = function(returnValue)
+					{
+						if (WCM.IsValid(returnValue))
+						{
+							$D().log(function(){ return $J(returnValue, true); }, window);
+							$ID('gethyperlink_href').value = returnValue.href;
+							$ID('gethyperlink_target').value = returnValue.target;
+						}
+			
+					};
+
+					ElementAPI.GetHyperlink(options);
+					return WCM.DHTML.CancelEvent(e);
+			}
+
+			//****************************************************************************
+
+			// register with WidgetCollection
+			WidgetCollection.addWidget( new ButtonsWidgetObject("button", "<$designList$>") ); 
+
+		</script>
+
+
+
+<@end@>
+
+<@dynamichtml widget_button_form@>
+	<div class="editwidget">
+
+		<h2>Buttons</h2>
+			<$rsCreateResultSet("ButtonsDesignRS", "d_button_type,d_button_label,d_button_imageurl")$> 
+			<$if #env.ButtonDesigns $>
+					<$rsAppendRowValues("ButtonsDesignRS", #env.ButtonDesigns) $>
+			<$endif$> 
+			
+			<$ designList = ""$>
+			<form class="buttons" method="get" action="#">
+
+				<div class="left">
+					<$if ButtonsDesignRS.#numRows > 0 $>	
+						<table border="1">
+						<$loop ButtonsDesignRS $>
+								<tr>
+									<td class="radiobutton">
+										<input  type="radio"  id="<$ButtonsDesignRS.d_button_type$>_radio" name="button_design" value = "<$ButtonsDesignRS.d_button_type$>"/>
+										<label for="button-<$ButtonsDesignRS.d_button_type$>"><$ButtonsDesignRS.d_button_label$><br /> <img src="/cr_weblayout<$ButtonsDesignRS.d_button_imageurl$>" alt="<$ButtonsDesignRS.d_button_label$>"/></label>
+									</td>
+								</tr>
+							<$ designList = designList & ButtonsDesignRS.d_button_type & "," $>
+							
+						<$endloop$>
+						<$if strLength( designList ) > 0 $>
+								<$ designList = strSubstring(designList, 0, strLength( designList ) -1) $>
+						<$endif $>
+						</table>
+					<$endif$>
+				</div>
+			
+				<div class="right">
+					<table>
+						<tr>
+							<td class="text">
+								<label for="button_label">Label</label>
+								<input  id="button_label" name="button_label"  type="text" />
+							</td>
+						</tr>
+						<tr>
+							<td class="text">
+								<label for="gethyperlink_href">Href</label>
+								<input id="gethyperlink_href" type="text" />
+							</td>
+						</tr>
+						<tr>
+							<td class="text">
+								<label for="gethyperlink_target">Target</label>
+								<input id="gethyperlink_target" name="gethyperlink_target" type="text" />
+							</td>
+						</tr>
+						<tr>
+							<td class="submit">
+								<input id="button_href_target" name="button_href_target" type="submit" value="Set link..." />
+							</td>			
+						</tr>
+						<tr>
+							<td class="text">
+								<label for="button_position">Position</label>
+								<input id="button_position_left" type="radio" name="button_radio_position" value="left" checked/>Left 
+								<input id="button_position_right" type="radio" name="button_radio_position" value="right"/>Right
+							</td>			
+						</tr>	
+						<tr>
+							<td class="text">
+								<label for="button_position">Page View:</label>
+								<input id="gethyperlink_ga_externalLink" name="gethyperlink_ga_externalLink" type="text" value=""/>
+							</td>			
+						</tr>
+						<tr>
+							<td class="text">
+								<label for="button_position">or</label>
+							</td>			
+						</tr>
+						<tr>
+							<td class="text" id="tdCategory">
+								<label for="button_position">Category:<font color="red">*</font></label>
+								<input id="gethyperlink_ga_category" name="gethyperlink_ga_category" type="text" value="" />
+							</td>			
+						</tr>
+						<tr>
+							<td class="text" id="tdAction">
+								<label for="button_position">Action:<font color="red">*</font></label>
+								<input id="gethyperlink_ga_action" name="gethyperlink_ga_action" type="text" value="" />
+							</td>			
+						</tr>
+						<tr>
+							<td class="text" id="tdLabel">
+								<label for="button_position">Label:</label>
+								<input id="gethyperlink_ga_label" name="gethyperlink_ga_label" type="text" value=""/>
+							</td>			
+						</tr>
+						<tr>
+							<td class="text" id="tdValue">
+								<label for="button_position">Value:</label>
+								<input id="gethyperlink_ga_value" name="gethyperlink_ga_value" type="text" value=""/>
+							</td>			
+						</tr>
+					</table>
+				</div>				
+			</form>
+	</div>
+		<$include widget_buttons_javascript $>
+<@end@>
+
+
+
+<@dynamichtml widget_button_display@>
+		<$if strLength(getValue("widgetRS","Target") ) > 0 $>
+			<$targetVal = "target='" & getValue("widgetRS","Target") & "'" $>	
+		<$else$>
+			<$targetVal = "" $>
+		<$endif$>
+		<$ class = "button" $>
+		<$if strLength(getValue("widgetRS","Design") ) > 0 $>
+				<$ class= class &  " " & getValue("widgetRS","Design")$>
+		<$endif$>
+		<$if strLength(getValue("widgetRS","Position") ) > 0 $>
+				<$ class= class &  " " & getValue("widgetRS","Position")$>
+		<$endif$>
+
+		<$ c = "Additional Google Analytics tracking event" $>
+		<$ gaTracking = "" $>
+		<$ gaTrackingPageView = "" $>
+		<$if isFalse(#env.ContributionEnvironment)$>
+				<$extLinkVal =  getValue("widgetRS","GA_ExternalLink") $>
+				<$if strLength(extLinkVal) GT 0$>
+					<$if strEquals(siteId,"news")$>
+						<$siteName = "info"$>
+					<$elseif strEquals(siteId,"ch")$>
+						<$siteName = "CancerHelp"$>
+					<$elseif strEquals(siteId,"sunsmart")$>
+						<$siteName = "sunsmart"$>
+					<$elseif strEquals(siteId,"cancercampaigns")$>
+						<$siteName = "cancercampaigns"$>
+					<$elseif strEquals(siteId,"openuptomouthcancer")$>
+						<$siteName = "openuptomouthcancer"$>
+					<$elseif strEquals(siteId,"lgc")$>
+						<$siteName = "legacies"$>
+					<$endif$>
+					<$ gaTrackingPageView = "onclick=\"javascript: pageTracker._trackPageview('" & "/outgoing/" & extLinkVal & "/" & siteName & "');\"" $>
+				<$else$>	
+					<$ gaCategory = getValue("widgetRS","GA_Category"), gaAction = getValue("widgetRS","GA_Action"), gaLabel = getValue("widgetRS","GA_Label"), gaValue = getValue("widgetRS","GA_Value") $>
+					<$if strLength(gaCategory) GT 0 AND strLength(gaAction) GT 0 $>
+						<$ gaTracking =  "onclick=\"javascript: pageTracker._trackEvent('" & gaCategory & "', '" & gaAction & "'" $>
+					<$if strLength(gaLabel) GT 0 $>
+						<$ gaTracking = gaTracking & ", '" & gaLabel & "'" $>
+					<$endif$>
+					<$if strLength(gaValue) GT 0 $>
+						<$ gaTracking = gaTracking & ", '" & gaValue & "'" $>
+					<$endif$>
+
+					<$ gaTracking = gaTracking & ");\"" $>
+					<$endif$>
+				<$endif$>
+		<$endif$>
+
+		<div class="<$class$>"><a href="<$getValue("widgetRS","Href") $>"<$if NOT strEquals(targetVal,"")$>  <$targetVal$><$endif$>
+		<$if NOT strEquals(gaTracking,"")$> 
+			<$gaTracking$>
+		<$else$>
+			<$gaTrackingPageView$>
+		<$endif$>> 
+		<$getValue("widgetRS","Label") $></a></div>
+<@end@>
+
+</body></html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="<!--$PageCharset-->" ?>
+<!--$setContentType("text/xml") -->
+<!--$exec inc("std_rss_feed_variables") -->
+<!--$titleXPath = "officelocations/officelocations/location"-->
+<!--$if not xmlDocName -->
+	<!--$xmlDocName = ssGetNodeProperty(nodeId, "xmlDocName") -->
+	<!--$if not xmlDocName-->
+		<!--$xmlDocName = ssGetNodeProperty(sourceId, "xmlDocName") -->
+	<!--$endif-->
+<!--$endif-->
+<rss version="2.0">
+<channel>
+  <title><!--$if CaptionText --><!--$CaptionText--><!--$else--><!--$dDocTitle--><!--$endif--></title>
+  <link><!--$HttpAbsoluteCgiPath-->?IdcService=SS_GET_PAGE&amp;nodeId=<!--$if sourceId--><!--$sourceId--><!--$else--><!--$nodeId--><!--$endif--></link>
+<!--$strNumRecords=ssGetXmlNodeCount(xmlDocName, titleXPath)-->
+<!--$nNumRecords=toInteger(strTrimWs(strNumRecords))-->
+<!--$nPos=1-->
+<!--$loopwhile nPos <= nNumRecords -->
+	<item>
+	<guid><!--$xml(HttpAbsoluteCgiPath & "?IdcService=SS_GET_PAGE&amp;ssDocName=" & xmlDocName &
+		"&amp;title=" & url(ssIncludeXml(xmlDocName, titleXPath & "[" & nPos & "]/node()")))--></guid>
+	<title><!--$xml(ssIncludeXml(xmlDocName, titleXPath & "[" & nPos & "]/node()"))--></title>
+	<pubDate><!--$formatDateWithPattern(dInDate, RssDateFormat)--></pubDate>
+	<author><!--$xml(dDocAuthor)--></author>
+	<!--$address = ssIncludeXml(xmlDocName,
+			"officelocations/officelocations/address" & "[" & nPos & "]/node()") -->
+	<!--$image = ssIncludeXml(xmlDocName,
+			"officelocations/officelocations/image" & "[" & nPos & "]/node()") -->
+	<!--$oldPrefix = "src=&quot;" & HttpRelativeWebRoot -->
+	<!--$newPrefix = "src=&quot;" & rssHttpHost & HttpRelativeWebRoot -->
+	<!--$image = strReplace(image, oldPrefix, newPrefix) -->
+	<description><![CDATA[<!--$image--> <!--$address-->]]></description>
+	</item>
+	<!--$ nPos = nPos + 1-->
+<!--$endloop-->
+  </channel>
+</rss>
+<!-- the HEAD element is required by SiteStudio
+	<head><!--$include ss_layout_head_info-->
+	</head>
+-->

@@ -1,0 +1,61 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysWorldwide
+blDateFormat=dd/MM/yy {h:mm:ss {aa}[zzz]}!mAM,PM!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+version=2014_01_11 (MR10 Build 1)
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+validateStandard
+hays.com.UpdateFilter.EventDateUpdate
+null
+1
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/haysworldwide_region_templates.htm
+null
+10
+resource
+resources/haysworldwide_sub_templates.htm
+null
+10
+resource
+resources/hayswordwide_ss_extra_resource.htm
+null
+10
+environment
+haysworldwide.cfg
+null
+10
+resource
+resources/haysworldwide_sub_siteSearchResult.htm
+null
+10
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+@end

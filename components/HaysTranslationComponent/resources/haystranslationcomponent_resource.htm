@@ -1,0 +1,697 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysTranslationComponent htmlIncludeOrString
+</title>
+</head>
+<body>
+<!------------------------
+Change the site's locale on the fly
+------------------------->
+<@dynamichtml ss_layout_head_info@>
+<$setHttpHeader("P3P",'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"')$>
+	<$include change_http_header_for_error_page$>
+	<$include ss_layout_head_info_custom$>
+	<$include is_output_social_analytics$>
+	<$include is_include_optimizely_url$>
+	<$if isTrue(doOutput) and (isOptimizely EQ 0)$>
+		<script src="<$#env.CDN_URL$>"></script>
+	<$endif$>
+
+	<script type="text/javascript">
+   var _U = "undefined";
+   var g_HttpRelativeWebRoot = "<$HttpRelativeWebRoot$>";
+   var SSContributor = <$if SSContributor and isTrue(SSContributor) and IsLoggedIn$>true<$else$>false<$endif$>;
+   var SSForceContributor = <$if SSForceContributor and isTrue(SSForceContributor) and IsLoggedIn$>true<$else$>false<$endif$>;
+   var SSHideContributorUI = <$if SSHideContributorUI and isTrue( SSHideContributorUI )$>true<$else$>false<$endif$>;
+   var ssUrlPrefix = "<$if ssUrlPrefix$><$js(ssUrlPrefix)$><$endif$>";
+   var ssUrlType = "<$if ssUrlType$><$js(ssUrlType)$><$endif$>";
+   <$if ssDomainNum and ( strLength( ssDomainNum ) > 0 )$>var ssDomainNum = "<$js(ssDomainNum)$>";<$endif$>
+   var g_navNode_Path = new Array();
+   <$loop ssNavNodeList$>
+       g_navNode_Path[<$ssNavNodeList.#row$>] = '<$ssNavNodeList.nodeId$>';
+   <$endloop$>
+   var g_ssSourceNodeId = "<$nodeId$>";
+   var g_ssSourceSiteId = "<$siteId$>";
+   var g_strLanguageId = "<$UserLanguageId$>";
+  var g_LanguageCode = "<$strSubstring(SiteLocale, 0, index)$>";
+    var g_CountryCode = "<$CountryCode$>";
+   <$if SSContributor and isTrue(SSContributor)$>
+      var g_httpCgiPath = '<$js(HttpCgiPath)$>';
+      var g_ssIsSecondaryPage = <$if isSecondaryPage and isTrue(isSecondaryPage)$>true<$else$>false<$endif$>;
+   <$endif$>
+</script>
+
+<script id="SSNavigationFunctionsScript" type="text/javascript" src="<$HttpRelativeWebsitesRoot$><$siteId$>/sitenavigationfunctions.js"></script>
+
+[[%Start Changes to remove the below java scripts form consum for testing, Remove the if statement to roll back%]]
+<$if DisableSiteStudioContribution and not isTrue(DisableSiteStudioContribution)$>
+<script id="SSNavigationScript" type="text/javascript" src="<$HttpRelativeWebsitesRoot$><$siteId$>/sitenavigation.js"></script>
+
+<$include ss_contributor_scripts$>
+<$include ss_ajax_include$>
+<$endif$>
+
+<$if SSContributor and isTrue(SSContributor) and IsLoggedIn and not SSHideContributorUI$>
+	<$setHttpHeader( "Expires", "-1" )$>
+<$else$>
+	<$include ss_page_cache_control$>
+<$endif$>
+	
+<@end@>
+<@dynamichtml change_http_header_for_error_page@>
+	<$errorPageNodeId = ssGetSiteProperty(siteId,"errorNodeId")$>
+	<$if strEquals(nodeId,errorPageNodeId) or strEquals(nodeId,"job-not-available") or strEquals(nodeId,"candidate-not-available")$>
+		<$setValue("#local","ssChangeHTTPHeader","true")$>
+	<$endif$>
+<@end@>
+<@dynamichtml ss_layout_head_info_custom@>
+  	[[% set default locale %]]
+	<$SiteLocale = "en_GB", LanguageCode = 'en',LanguageLabel = 'English', CountryCode = 'GB',isoCountryCode = 'GB',domainId="1",languageId="1",distance_unit="miles",display_salary_rate="1",searchWidgetSuffix="",countryCordinates="54.07103205,-2.78397635",countryName="United Kingdom",searchFacetsSuffix="",websiteDateFormat="dd MMM yyyy",display_postcode="1",leftNavInclude="LeftHandNav_r6",countryRegion="uk", locationColumn="default_description", countryNameISO="United Kingdom", portalUrl=""$>
+	<$if #active.siteId $>
+		[[% change for jobs.hays.co.uk %]]
+		<$parentSiteId = ssGetSiteProperty(siteId,"isSubSiteOf")$>
+		<$if parentSiteId$>
+			<$getWebsiteProperties(parentSiteId)$>
+		<$else$>
+			<$getWebsiteProperties(siteId)$>
+		<$endif$>
+		[[% end change for jobs.hays.co.uk %]]
+		<$if rsExists("rsWebsiteProperties") and rsFirst("rsWebsiteProperties")$>
+			<$loop rsWebsiteProperties$>
+			  	<$if strLength(rsWebsiteProperties.siteLocale) GT 0$>
+					<$SiteLocale=rsWebsiteProperties.siteLocale$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.domainId) GT 0$>
+					<$domainId=rsWebsiteProperties.domainId$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.languageId) GT 0$>
+					<$languageId=rsWebsiteProperties.languageId$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.distanceUnit) GT 0$>
+					<$distance_unit=rsWebsiteProperties.distanceUnit$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.displaySalaryRate) GT 0$>
+					<$display_salary_rate=rsWebsiteProperties.displaySalaryRate$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.isoCountryCode) GT 0$>
+					<$isoCountryCode=rsWebsiteProperties.isoCountryCode$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.searchWidgetSuffix) GT 0$>
+					<$searchWidgetSuffix=rsWebsiteProperties.searchWidgetSuffix$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.countryCordinates) GT 0$>
+					<$countryCordinates=rsWebsiteProperties.countryCordinates$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.countryName) GT 0$>
+					<$countryName=rsWebsiteProperties.countryName$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.searchFacetsSuffix) GT 0$>
+					<$searchFacetsSuffix=rsWebsiteProperties.searchFacetsSuffix$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.websiteDateFormat) GT 0$>
+					<$websiteDateFormat=rsWebsiteProperties.websiteDateFormat$>			
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.displayPostcode) GT 0$>
+					<$display_postcode=rsWebsiteProperties.displayPostcode$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.languageCode) GT 0$>
+					<$LanguageCode=rsWebsiteProperties.languageCode$>	
+				<$endif$>	
+				<$if strLength(rsWebsiteProperties.languageLabel) GT 0$>
+					<$LanguageLabel=rsWebsiteProperties.languageLabel$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.leftNavInclude) GT 0$>
+					<$leftNavInclude=rsWebsiteProperties.leftNavInclude$>	
+				<$endif$>	
+				<$if strLength(rsWebsiteProperties.jobtype_permanent) GT 0$>
+					<$job_type_Perm=rsWebsiteProperties.jobtype_permanent$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.jobtype_temporary) GT 0$>
+					<$job_type_Temp=rsWebsiteProperties.jobtype_temporary$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.jobtype_contract) GT 0$>
+					<$job_type_Cont=rsWebsiteProperties.jobtype_contract$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.jobtype_widget_suffix) GT 0$>
+					<$jobtypeWidgetSuffix=rsWebsiteProperties.jobtype_widget_suffix$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.jobtype_currency_pos) GT 0$>
+					<$jobtypeCurrencyPos=rsWebsiteProperties.jobtype_currency_pos$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.country_region) GT 0$>
+					<$countryRegion=rsWebsiteProperties.country_region$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.location_column) GT 0$>
+				    <$locationColumn=rsWebsiteProperties.location_column$>	
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.countryNameISO) GT 0$>
+					<$countryNameISO=rsWebsiteProperties.countryNameISO$>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.portal_url) GT 0$>
+					<$portalUrl=rsWebsiteProperties.portal_url$>
+				<$endif$>		
+			<$endloop$>
+		<$else$>
+			<$microsite_locale = ssGetSiteProperty(siteId,"siteLocale")$>
+			<$if microsite_locale$>
+				<$SiteLocale = microsite_locale$>
+			<$endif$>	
+		<$endif$>
+	<$endif$>
+		<$if strLength(SiteLocale) GT 0 $>
+		<$ index = strIndexOf(SiteLocale, '-') $>
+		<$if index LT 0 $>
+			<$ index = strIndexOf(SiteLocale, '_') $>
+		<$endif$>
+		<$if index GT 0 $>
+			[[%<!-- LanguageCode = strSubstring(SiteLocale, 0, index),-->%]]
+			<$CountryCode = strSubstring(SiteLocale, index + 1) $>
+		<$endif$>
+	<$endif$>
+	[[% set locale accoriding to the site id %]]
+	<$if parentSiteId$>
+		<$getWebsiteProperties(siteId)$>
+		<$if rsExists("rsWebsiteProperties") and rsFirst("rsWebsiteProperties")$>
+			<$loop rsWebsiteProperties$>
+			  	<$if strLength(rsWebsiteProperties.siteLocale) GT 0$>
+					<$SiteLocaleJobs=rsWebsiteProperties.siteLocale$>					
+					<$ exec setLocale(SiteLocaleJobs) $>
+				<$endif$>
+				<$if strLength(rsWebsiteProperties.domainId) GT 0$>
+					<$domainIdParent=rsWebsiteProperties.domainId$>
+				<$endif$>
+			<$endloop$>
+		<$endif$>
+	<$else$>
+		<$ OriginalLocaleId = UserLocaleId $>
+		<$ exec setLocale(SiteLocale) $>
+		<$ UserLocaleId = OriginalLocaleId $>
+	<$endif$>
+	<$include check_portal_url$>
+	<$include multi_country_cookie_inc$>
+<@end@>
+
+<!-- Change locale to the original user's locale before creating action's captions-->
+<@dynamichtml ss_region_actions@>
+	<$if SSDesignMode and isTrue(SSDesignMode) and #local.ssDesignModeAllowed and isTrue(#local.ssDesignModeAllowed)$>
+		<$include ss_assign_content_actions$>
+	<$elseif SSForceContributor and isTrue(SSForceContributor)$>
+		<$include ss_region_designer_actions$>
+	<$else$>
+		<$ssNeedSeparator = 0$>
+		<$ exec setLocale(#active.OriginalLocaleId) $>
+		<$loop SSActions$>
+			<$if ssNeedSeparator and isTrue( ssNeedSeparator )$>,<$endif$>{
+				action: "<$SSActions.action$>",
+				caption: "<$js(lc(SSActions.captionToken))$>"
+			}<$ssNeedSeparator = 1$>
+		<$endloop$>
+		<$include ss_region_extra_actions$>
+		<$ exec setLocale(SiteLocale) $>
+	<$endif$>
+<@end@>
+
+
+<!--------------------------
+Override SS Standard include to put primaryFile:Path hidden parameters on the 
+contributor data file checkin form to use the master content file for the translated
+content checkin.
+------------------------------->
+
+<@dynamichtml ss_default_document_file_options@>
+<$if not isUploadFieldScript$>
+	<$if ssDefaultDocumentToken$>
+		<input type="hidden" name="ssDefaultDocumentToken" value="<$ssDefaultDocumentToken$>">
+		<$fileInputType = "text"$>
+		[[%Customisation start%]]
+		<$if doMasterFileCopy and strEquals(doMasterFileCopy,"1")$>
+			<input type="hidden" name="primaryFile:path" value="<$primaryFile:path$>">
+			<input type="hidden" name="doFileCopy" value="1">
+		<$endif$>
+		[[%Customisation end%]]
+	<$endif$>
+<$endif$>
+<@end@>
+
+
+
+
+<!-----------------------------
+Override SS standard include to pass an additional parameter 'ForceUserLocale'
+to the SS_GET_CONTRIBUTOR_STRINGS service call in order to fetch strings 
+in the correct language
+-------------------------------->
+<@dynamichtml ss_contributor_base_scripts_DEPRICATED@>
+	<$if not ssContributorBaseScriptsIncluded$><$ssContributorBaseScriptsIncluded=1$>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/wcm.js"></script>
+		<script type="text/javascript" src="<$HttpCgiPath$>?IdcService=SS_GET_CONTRIBUTOR_STRINGS"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/base/wcm.dhtml.js"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/base/wcm.get.js"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/base/wcm.http.js"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/sitestudio/wcm.idc.js"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/base/wcm.popup.js"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/form/wcm.popupform.js"></script>
+		<script type="text/javascript" src="<$HttpRelativeWebRoot$>resources/<$SSContributorSourceDir$>/sitestudio/wcm.sitestudio.popupform.js"></script>
+	<$endif$>
+<@end@>
+
+
+
+<!--------------------------
+Java copy of  HaysTranslationIdocExtension was old so I create a new IDOC function
+in multilingual/UserLocaleIdocExtension.java that gets the translations
+------------------------------->
+<@dynamichtml set_displayLanguageFlag@>
+<$displayLanguageFlag = "false"$>
+		<$mainRegionContent = "false"$>
+		<$mainRegionContentId = getValue("#active","Main Region")$>
+		<$mainRegion1ContentId = getValue("#active","Main Region 1")$>
+		<$ contentRegionContentId = getValue("#active","Content")$>
+		<$ subtemplate = getValue("#active","template_Main Region")$>
+		[[%contentRegionContentId:<$contentRegionContentId$>:
+		mainRegionContentId:<$mainRegionContentId$>:
+		subtemplate:<$subtemplate$>%]]
+		<$if strIndexOf(subtemplate,"SUBT") >= 0$>
+			<$mainRegionContentId = subtemplate$>
+		<$endif$>
+		<$res = getWebsitesForDomain(#active.domainId, siteId)$>
+		<$if rsExists("WebsitesForDomain") and rsFirst("WebsitesForDomain")$>
+	         	<$if strEquals(nodeId, "home")$>
+			
+				<$displayLanguageFlag = "true"$>
+			<$elseif contentRegionContentId and strLength(contentRegionContentId) gt 0$>
+			
+				<$if not strIndexOf(#env.translationFlagExcludeList,contentRegionContentId) gt 0$>
+				
+					<$displayLanguageFlag = "true"$>
+				<$endif$>
+			<$endif$>
+			<$if mainRegionContentId and strLength(mainRegionContentId) gt 0$>
+			
+				<$if strIndexOf(mainRegionContentId,"SUBT") >= 0 and strIndexOf(#env.translationFlagExcludeList,',' & mainRegionContentId & ',') lt 0$>
+			
+					<$displayLanguageFlag = "true"$>
+				<$elseif strIndexOf(mainRegionContentId,"SUBT") lt 0$>
+			
+					<$displayLanguageFlag = "true"$>
+					<$mainRegionContent = "true"$>
+				<$endif$>
+			<$else$>
+				<$if domainId==1005 and mainRegion1ContentId and strLength(mainRegion1ContentId) gt 0$>		
+				
+					<$if strIndexOf(mainRegion1ContentId,"SUBT") >= 0 and strIndexOf(#env.translationFlagExcludeList,',' & mainRegion1ContentId & ',') lt 0$>
+						<$displayLanguageFlag = "true"$>
+					<$elseif strIndexOf(mainRegion1ContentId,"SUBT") lt 0$>
+						<$displayLanguageFlag = "true"$>
+						<$mainRegion1Content = "true"$>
+					<$endif$>
+				<$endif$>
+			<$endif$>
+		<$endif$> 
+<@end@>
+<@dynamichtml translation_flags_inc@> 
+	
+		[[%<$include set_displayLanguageFlag$> %]]
+		[[% displayLanguageFlag:<$displayLanguageFlag$>:
+		mainRegionContent:<$mainRegionContent$>:
+		#active.SiteLocale: <$#active.SiteLocale$> %]]
+		
+		<$if isTrue(displayLanguageFlag)$>
+				<$if isTrue(mainRegionContent)$>
+			    <$executeService('DOC_INFO_LATESTRELEASE')$>
+			    <$getTranslation(mainRegionContentId,siteId,dDocType)$>
+				<$if rsExists("rsContentTranslations") and rsFirst("rsContentTranslations")$>
+				 	<ul class="acc_nav lang_nav">
+					 <$loop rsContentTranslations$>
+					 <$if strLength( rsContentTranslations.dID ) GT 0 $>
+						<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1) OR (domainId==1005)$>
+							<li><a href="<$rsContentTranslations.url$>?redirect=y" title="<$rsContentTranslations.language$>"><$rsContentTranslations.language$></a></li>
+						<!-- added for linkedin functionality-->	
+						<$elseif strIndexOf(nodeId , 'linkedin_consent') GT 0$>
+							<$if getCookie("OTid") GT 0$>
+								<li><a href="<$rsContentTranslations.url$>?OTId=<$getCookie("OTid")$>" title="<$rsContentTranslations.language$>"><$rsContentTranslations.language$></a></li>
+							<$endif$>
+						<!-- end linkedin-->
+						<$else$>
+						
+							<li><a href="<$rsContentTranslations.url$>" title="<$rsContentTranslations.language$>"><$rsContentTranslations.language$></a></li>
+						<$endif$>
+					<$endif$>				
+					 <$endloop$>
+				</ul>
+				<$endif$>
+			<$elseif isTrue(mainRegion1Content)$>
+			    <$executeService('DOC_INFO_LATESTRELEASE')$>
+			    <$getTranslation(mainRegion1ContentId,siteId,dDocType)$>
+				<$if rsExists("rsContentTranslations") and rsFirst("rsContentTranslations")$>
+				 	<ul class="acc_nav lang_nav">
+					 <$loop rsContentTranslations$>
+					 <$if strLength( rsContentTranslations.dID ) GT 0 $>
+						<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1) OR (domainId==1005)$>
+							<li><a href="<$rsContentTranslations.url$>?redirect=y" title="<$rsContentTranslations.language$>"><$rsContentTranslations.language$></a></li>
+						<!-- added for linkedin functionality-->	
+						<$elseif strIndexOf(nodeId , 'linkedin_consent') GT 0$>
+							<$if getCookie("OTid") GT 0$>
+								<li><a href="<$rsContentTranslations.url$>?OTId=<$getCookie("OTid")$>" title="<$rsContentTranslations.language$>"><$rsContentTranslations.language$></a></li>
+							<$endif$>
+						<!-- end linkedin-->
+						<$else$>
+							
+							<li><a href="<$rsContentTranslations.url$>" title="<$rsContentTranslations.language$>"><$rsContentTranslations.language$></a></li>
+						<$endif$>
+					<$endif$>				
+					 <$endloop$>
+				</ul>
+				<$endif$>
+			<$else$>
+			<ul class="acc_nav lang_nav">
+				<$loop WebsitesForDomain$>
+					<$websiteLink = haysNodeLink(nodeId,WebsitesForDomain.SITEID)$>
+					<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1) OR (domainId==1005)$>
+						<li><a href="<$websiteLink$>?redirect=y" title="<$WebsitesForDomain.LANGUAGELABEL$>"><$WebsitesForDomain.LANGUAGELABEL$></a></li>
+					<$else$>
+						<li><a href="<$websiteLink$>" title="<$WebsitesForDomain.LANGUAGELABEL$>"><$WebsitesForDomain.LANGUAGELABEL$></a></li>
+					<$endif$>
+				<$endloop$>
+			</ul>
+			<$endif$>
+		<$endif$>
+<@end@>
+
+
+
+
+
+<!-- -----------------------
+Add Locale to the JASON format of the request
+------------------ -->
+<@dynamichtml ss_switch_content_config@>
+<$include ss_switch_content_config_defs$>
+{
+	"url": "<$js(ss_form_url)$>",
+
+	<$if siteId and ( strLength( siteId ) > 0 )$>
+		"siteId": "<$js(siteId)$>",
+	<$endif$>
+	<$if nodeId and ( strLength( nodeId ) > 0 )$>
+		"nodeId": "<$js(nodeId)$>",
+	<$endif$>
+	<$if userLanguageId and ( strLength( userLanguageId ) > 0 )$>
+		"userLanguageId": "<$js(userLanguageId)$>",
+	<$endif$>
+	<$if regionDefinition and ( strLength( regionDefinition ) > 0 )$>
+		"regionDefinition": "<$js(regionDefinition)$>",
+	<$endif$>
+	<$if dDocName and ( strLength( dDocName ) > 0 )$>
+		"dDocName": "<$js(dDocName)$>",
+	<$endif$>
+	<$if isSecondaryPage and ( strLength( isSecondaryPage ) > 0 )$>
+		"isSecondaryPage": "<$js(isSecondaryPage)$>",
+	<$endif$>
+	<$if regionName and ( strLength( regionName ) > 0 )$>
+		"regionName": "<$js(regionName)$>",
+	<$endif$>
+	<$if placeholderDefinition and ( strLength( placeholderDefinition ) > 0 )$>
+		"placeholderDefinition": "<$js(placeholderDefinition)$>",
+	<$endif$>
+
+
+
+
+[[% CUSTOMISATION start%]]
+	<$if SiteLocale and ( strLength( SiteLocale ) > 0 )$>
+		"siteLocale": "<$js(SiteLocale)$>",
+	<$endif$>
+	<$if LanguageCode and ( strLength( LanguageCode ) > 0 )$>
+		"languageCode": "<$js(LanguageCode)$>",
+	<$endif$>
+	<$if CountryCode and ( strLength( CountryCode ) > 0 )$>
+		"countryCode": "<$js(CountryCode)$>",
+	<$endif$>
+[[% CUSTOMISATION end%]]
+
+
+
+
+	<$if ssRegionConfig$>
+	"config": <$ssRegionConfig$>,<$endif$>
+
+	<$if regionDefinitions$>
+	"regionDefinitions": [
+	<$loop regionDefinitions$>
+		"<$js(regionDefinitions.name)$>"<$if regionDefinitions.#row < ( regionDefinitions.#numRows - 1 )$>,<$endif$>
+	<$endloop$>
+	],
+
+	"regionMappings": {
+		<$loop regionDefinitions$>
+			"<$js(strLower(regionDefinitions.name))$>": [
+					<$rsName="splitFields"$>
+					<$if ssSplitString( regionDefinitions.regionTemplates, ":", rsName ) > 0$>
+						<$needComma = 0$>
+						<$exec rsFirst(rsName)$>
+						<$loopwhile getValue(rsName, "#isRowPresent")$>
+							<$regionTemplateName = getValue(rsName,"String")$>
+							<$if strLength( regionTemplateName ) > 0 $>
+								<$if isTrue( needComma )$>,<$endif$><$needComma = 1$>"<$js(regionTemplateName)$>"
+							<$endif$>
+							<$exec rsNext(rsName)$>
+						<$endloop$>
+					<$endif$>
+				]<$if regionDefinitions.#row < ( regionDefinitions.#numRows - 1 )$>,<$endif$>
+		<$endloop$>
+	},
+	<$endif$>
+
+	<$if subTemplates$>
+	"subTemplates": [
+	<$loop subTemplates$>
+		"<$js(subTemplates.name)$>"<$if subTemplates.#row < ( subTemplates.#numRows - 1 )$>,<$endif$>
+	<$endloop$>
+	],
+	<$endif$>
+
+	<$if NodeUrls$>
+	"nodeUrlMappings": {
+	<$needMapComma = 0$>
+	<$loop NodeUrls$>
+		<$rsName = NodeUrls.name$>
+		<$if rsExists( rsName ) and ( getValue(rsName, "#numRows") > 0 )$>
+			<$if isTrue(needMapComma)$>,<$endif$><$needMapComma = 1$>
+			"<$js(rsName)$>": {
+			<$needComma = 0$>
+			<$exec rsFirst(rsName)$>
+			<$loopwhile getValue(rsName, "#isRowPresent")$>
+				<$key = getValue(rsName,"name")$>
+				<$value = getValue(rsName,"value")$>
+					<$if isTrue( needComma )$>,<$endif$><$needComma = 1$>"<$js(key)$>": "<$js(value)$>"
+				<$exec rsNext(rsName)$>
+			<$endloop$>
+			}
+		<$endif$>
+	<$endloop$>
+	},
+	<$endif$>
+
+	"httpCgiPath": "<$js(HttpCgiPath)$>"
+}
+<@end@>
+<@dynamichtml std_field_entry@>
+	<$if (#active.isInfo AND isTrue(isInfo)) AND (strEqualsIgnoreCase(fieldName,"xIndustry" ))$>
+	
+		<$if strLength(fieldValue) GT 0 $>
+			<$if #active.xLocale and strLength(#active.xLocale) gt 0$>
+				<$localeInUse=#active.xLocale$>
+			<$else$>
+				<$localeInUse="en-GB"$>
+			<$endif$>
+			<$fieldValue=strReplace(fieldValue,";",",")$>
+			<$rsMakeFromString("industryReultSet",fieldValue)$>
+			<$industryLabelToDisplay=""$>
+			<$loop industryReultSet$>
+				<$if strLength(industryLabelToDisplay) gt 0$>
+					<$industryLabelToDisplay = industryLabelToDisplay&","&haysGetFieldViewDisplayValue("HaysIndustryList", industryReultSet.row, localeInUse)$>
+				<$else$>
+					<$industryLabelToDisplay = haysGetFieldViewDisplayValue("HaysIndustryList", industryReultSet.row, localeInUse)$>
+				<$endif$>
+			<$endloop$>
+			<span title="banking" id="xIndustry_label" class="tableEntry"><$industryLabelToDisplay$></span>
+		<$endif$>
+	<$else$>
+		<$include super.std_field_entry$>
+	<$endif$>
+<@end@>
+
+
+
+[[% This include is used to redirected hayswebsite as per "10 Browser Language and Website Language
+ Requirement" %]]
+
+
+<@dynamichtml redirecttobrowserLocale@>
+
+[[% Get the user's browser locale.%]]
+
+<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1) AND strEquals(redirect,'y')!=1 AND strEquals(DisableSiteStudioContribution,'true')==1$>
+
+<$BrowserLocale = HTTP_ACCEPT_LANGUAGE$>
+<$BrowserLocaleStr = regexReplaceAll(regexReplaceAll(regexReplaceAll(BrowserLocale,'q=0.','')
+,'\\d{1}',''),';','')$> 
+[[% convert Browser Locale string to a results set by using rsMakeFromString idoc function.%]]
+ 
+ 
+ <$rsMakeFromString("rsBrowserLcoale", BrowserLocaleStr, "brwserLcoaleName")$> 
+
+
+[[% Called getAllWebsitesForDomain function to get the all hayswebsite of the particular domain %]]
+ 
+<$res = getAllWebsitesForDomain(#active.domainId)$>  
+<$websiteRedirectSITEID =''$>
+<$LocaleMatches ='false'$>
+	<$if rsNumRows("rsBrowserLcoale") >0 and rsNumRows("allWebsitesForDomain")>0$>	 
+		 <$loop rsBrowserLcoale$>	 
+  
+				<$loop allWebsitesForDomain$>	
+				 		<$websiteRedirectSITEID =''$>
+					 <$websiteLink =''$>						
+					 <$if isTrue(strEqualsIgnoreCase(strSubstring(brwserLcoaleName,0,2),
+					 allWebsitesForDomain.LANGUAGECODE)==1) and
+						isTrue(strEqualsIgnoreCase(allWebsitesForDomain.SITELOCALE,
+					 #active.SiteLocale)==1)
+						$>
+					 <$LocaleMatches ='true'$>				 
+						<$websiteRedirectSITEID =allWebsitesForDomain.SITEID$>
+						<$websiteLink = haysNodeLink(nodeId,allWebsitesForDomain.SITEID)$> 					
+						<$break$>						
+					<$endif$>						 
+					 
+				<$endloop$>	
+ 
+				<$if (isTrue(strLength(websiteLink) >0))and
+						(strEqualsIgnoreCase(websiteRedirectSITEID,siteId) ==0 )$> 
+					 
+					  <$redirectToUrl(websiteLink)$>  
+					 
+					 <$websiteLink =''$>
+					<$break$>
+				<$elseif isTrue(strEquals(LocaleMatches,'true')==1 and (isTrue(strLength(websiteLink) >0)))$>
+				 
+					<$break$>			
+				<$endif$>	 
+				
+		<$endloop$>
+	<$endif$>
+	  
+	 <$if isTrue(strEquals(LocaleMatches,'false')==1)$>
+
+			<$ if isTrue(isPrimaryWebsite(siteId)) ==0$>		 
+				<$loop allWebsitesForDomain$>	
+				
+					<$ if isTrue(isPrimaryWebsite(allWebsitesForDomain.SITEID)) ==1
+					and strEquals(allWebsitesForDomain.ISOCOUNTRYCODE,isoCountryCode)$>
+						
+						<$redirectWebsiteURL = haysNodeLink(nodeId,allWebsitesForDomain.SITEID)$> 
+				 
+						  <$redirectToUrl(redirectWebsiteURL)$>   
+						<$break$>					
+					<$endif$>
+				
+				<$endloop$>	
+		  <$endif$>
+	 
+	<$endif$> 
+<$endif$>	
+<@end@>
+
+<@dynamichtml redirecttobrowserLocale_BE@>
+
+<$if strEquals(#active.nodeId,"home") $>
+[[% Get the user's browser locale.%]]
+
+<$if (strEquals(countryName,'Belgium')==1 OR strEquals(countryName,'Hays Response BE')==1 OR (domainId == 1005)) AND strEquals(redirect,'y')!=1 AND strEquals(DisableSiteStudioContribution,'true')==1 $>
+
+	<$BrowserLocale = HTTP_ACCEPT_LANGUAGE$> 
+	<$BrowserLocaleStr = regexReplaceAll(regexReplaceAll(regexReplaceAll(BrowserLocale,'q=0.',''),'\\d{1}',''),';','')$> 
+[[% convert Browser Locale string to a results set by using rsMakeFromString idoc function.%]]
+ 
+ 
+		<$rsMakeFromString("rsBrowserLcoale", BrowserLocaleStr, "brwserLcoaleName")$> 
+
+
+[[% Called getAllWebsitesForDomain function to get the all hayswebsite of the particular domain %]]
+ 
+		<$res = getAllWebsitesForDomain(#active.domainId)$>  
+	<$websiteRedirectSITEID =''$>
+	<$LocaleMatches ='false'$>
+	<$if strIndexOf(ssoriginalurl,"?")>=0$>
+		<$paramLength=strIndexOf(ssoriginalurl,"?")$>	
+		<$urllParams="?" & strSubstring(ssoriginalurl,paramLength+1,strLength(ssoriginalurl))$>	
+	<$else$>
+		<$paramLength=strLength(ssoriginalurl)$>
+		<$urllParams=""$>
+	<$endif$>
+		<$if rsNumRows("rsBrowserLcoale") >0 and rsNumRows("allWebsitesForDomain")>0$>
+		
+				
+			 
+						<$loop rsBrowserLcoale$>					
+								<$loop allWebsitesForDomain$>
+								
+									<$websiteRedirectSITEID =''$> 
+								 <$websiteLink =''$>
+										
+								 <$if isTrue(strEqualsIgnoreCase(strSubstring(brwserLcoaleName,0,2),
+								 allWebsitesForDomain.LANGUAGECODE)==1) $>
+								 <$LocaleMatches ='true'$>				 
+									<$websiteRedirectSITEID =allWebsitesForDomain.SITEID$>
+									<$websiteLink = haysNodeLink(nodeId,allWebsitesForDomain.SITEID) & urllParams $> 					
+									<$break$>						
+								<$endif$>						 
+								 
+								<$endloop$>	
+							
+							<$if (isTrue(strLength(websiteLink) >0))and
+									(strEqualsIgnoreCase(websiteRedirectSITEID,siteId) ==0 )$> 
+													 
+								  <$redirectToUrl(websiteLink)$>  
+								 
+								 <$websiteLink =''$>
+								<$break$>
+							<$elseif isTrue(strEquals(LocaleMatches,'true')==1 and (isTrue(strLength(websiteLink) >0)))$>
+							 
+								<$break$>			
+							<$endif$>	 
+							
+						<$endloop$>
+				<$endif$>
+				  
+				 <$if isTrue(strEquals(LocaleMatches,'false')==1)$>
+							
+					<$ if not strEquals(LanguageCode,"en") $>
+						<$loop allWebsitesForDomain$>	
+							<$ if strEquals(allWebsitesForDomain.LANGUAGECODE,"en") and strEquals(allWebsitesForDomain.ISOCOUNTRYCODE,isoCountryCode)$>
+								<$redirectWebsiteURL = haysNodeLink(nodeId,allWebsitesForDomain.SITEID) & urllParams $>
+								<$redirectToUrl(redirectWebsiteURL)$>  
+								<$break$>
+							<$endif$>							
+						<$endloop$>	
+					<$endif$>
+				<$endif$> 
+<$endif$>
+<$endif$>
+<@end@>
+
+<@dynamichtml check_portal_url@>
+	<$countrylist=","&#env.ProjectSEnabledCountries&","$>
+	<$currentCountryCode = #active.isoCountryCode$>
+	<$currentCountryCode=","&currentCountryCode&","$>
+	
+	<$if strIndexOf(countrylist,currentCountryCode) >=0$> 
+		<$isProjectSEnabled=1$>	
+	<$else$>
+		<$isProjectSEnabled=0$>
+	<$endif$>
+<@end@>
+</body></html>

@@ -1,0 +1,31 @@
+	 <p>
+		The following job application have recieved:<br/><br/>
+		<$if strLength(full_name) GT 0$>
+			First name: <$full_name$><br/><br/>
+		<$endif$>
+		<$if strLength(sur_name) GT 0$>
+			Last name : <$sur_name$><br/><br/>
+		<$endif$>
+		<$if strLength(email) GT 0$>
+			Email address: <$email$><br/><br/>
+		<$endif$>
+		<$if strLength(mobile) GT 0$>
+			Mobile number: <$mobile$><br/><br/>
+		<$endif$>
+		<$if strLength(daytimephone) GT 0$>
+			Daytime number: <$daytimephone$><br/><br/>
+		<$endif$>
+		<$if strLength(waytocontact) GT 0$>
+			<$if waytocontact==1$>
+				<$contact_value = 'Mobile Phone' $>
+			<$elseif waytocontact ==2$>
+				<$contact_value = 'Daytime Phone' $>
+			<$else$>
+				<$contact_value = 'Email' $>
+			<$endif$>
+			Preferred method of contact: <$contact_value$><br/><br/>
+		<$endif$>
+		[[%<$if strLength(addinfo) GT 0$>%]]
+			Additional Information: <$addinfo$><br/><br/>
+		[[%<$endif$>%]]		
+	<p>			

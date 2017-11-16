@@ -1,0 +1,50 @@
+﻿<?hda version="11.1.1.8.0-2013-07-11 17:07:21Z-r106802" jcharset="UTF8" encoding="utf-8"?>
+@Properties LocalData
+ComponentName=HaysCareer
+blDateFormat=dd/MM/yyyy {H:mm[:ss] [zzz]}!tEurope/London
+blFieldTypes=
+classpath=$COMPONENT_DIR/classes;
+hasPreferenceData=0
+preventAdditionalComponentDowngrade=0
+serverVersion=7.1
+version=2014_01_11 (MR10 Build1)
+@end
+@ResultSet ResourceDefinition
+4
+type
+filename
+tables
+loadOrder
+resource
+resources/hayscareers_region_templates.htm
+null
+10
+resource
+resources/hays_career_sub_tmplt_include.htm
+null
+10
+environment
+HaysCareer.cfg
+null
+10
+@end
+@ResultSet ClassAliases
+3
+classname
+location
+loadOrder
+@end
+@ResultSet Filters
+4
+type
+location
+parameter
+loadOrder
+@end
+@ResultSet MergeRules
+4
+fromTable
+toTable
+column
+loadOrder
+@end

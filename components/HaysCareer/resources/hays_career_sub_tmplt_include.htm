@@ -1,0 +1,324 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>
+HaysCareers htmlIncludeOrString
+</title>
+</head>
+<body>
+
+ <!--***********************************************************
+	****** HAYS CAREER : Sub Template Right Side Country List ******
+	************************************************************-->
+
+<@dynamichtml subtmp_hayscareers_right_country_inc@>
+ <div class="select_country">
+	<div class="sc_top"></div>
+							
+		 <div class="sc_content"> <img width="174" height="100" src="<$HttpRelativeWebRoot$>HaysCareer/assets/images/world.jpg" alt="Select Country" /> 
+		 <p>Ready to apply? Choose your country to begin application.</p>
+					
+		<div class="select"> 	<a id="select_country" title="Select country" href="#">
+<span>Select country</span>
+</a>			
+			<nav class="country_list" id="sliding"> 
+			<$include rgtmp_haycareer_selectcountrylist$> 
+			</nav>	
+		</div>
+	&nbsp		
+   </div>
+		<div class="sc_bottom"></div>
+							
+</div>
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Sub Template Right Region *********
+	************************************************************-->
+
+<@dynamichtml subtmp_hayscareers_right_region_inc@>
+
+<section class="section_right">
+	<div class="recruitment">
+	
+	<$wcmPlaceholder("Right Block 1", "placeholderDefinitionDocName=PLDEF_RIGHT_BLOCK")$>
+	
+	</div>
+	<$wcmPlaceholder("RightBlock2", "placeholderDefinitionDocName=PLDEF_SUBTMP_RIGHT_COUNTRYLIST") $>
+	
+	</section>
+
+<@end@>
+
+<!--***********************************************************
+	****** HAYS CAREER : Sub Template Main Centre Generic *********
+	************************************************************-->
+
+	<@dynamichtml subtmp_hayscareer_main_centre_inc@>
+
+ <section class="section_center">
+	<div class = "rendering">
+	
+		<$wcmPlaceholder("Main Image", "placeholderDefinitionDocName=PLDEF_MAIN_IMAGE")$>
+			
+			
+		<$wcmPlaceholder("Main Region", "placeholderDefinitionDocName=PLDEF_MAIN_REGION_GENERIC")$>
+			
+			
+	</div>
+
+	<div class="information">
+		<$wcmPlaceholder("Main Region - Content", "placeholderDefinitionDocName=PLDEF_MAIN_REGION_CONTENT")$>	
+	</div>
+
+	<div class="services">
+	 	<$wcmPlaceholder("Main Promotional Block - 1", "placeholderDefinitionDocName=PLDEF_LOWER_REGION_GENERIC")$>
+	 
+	</div>
+	</section>
+<@end@>
+
+<!--***********************************************************
+	****** HAYS CAREER : Sub Template Main Centre Home *********
+	************************************************************-->
+
+	<@dynamichtml subtmp_hayscareers_main_centre_home_inc@>
+
+ <section id="content">
+  			
+  			 
+  		 <section class="overview"> 
+  		 
+		<$wcmPlaceholder("Background Image", "placeholderDefinitionDocName=PLDEF_BACKGROUND_IMAGE_CAREER")$>
+
+				<$wcmPlaceholder("Top Block - Left", "placeholderDefinitionDocName=PLDEF_MAIN_REGION_CAREER")$>
+
+				<div class="select_category">
+				
+			    </div>
+ 		 </section>
+<$wcmPlaceholder("Lower Region - Home", "placeholderDefinitionDocName=PLDEF_LOWER_REGION_HOME")$>
+ </section>
+  		
+
+<@end@>
+
+
+<!--***********************************************************
+	****** HAYS CAREER : Sub Template Left Region *********
+	************************************************************-->
+
+<@dynamichtml subtmp_hayscareers_left_region_inc@>
+
+
+
+	
+	<div class="find_the_career">
+
+	<$wcmPlaceholder("Left Block 2", "placeholderDefinitionDocName=PLDEF_LEFT_BLOCK")$>
+	</div>
+
+
+<@end@>
+
+
+<!--***********************************************************
+ ****** HAYS CAREER : Tab Top Navigation *********
+ ************************************************************-->
+ 
+<@dynamichtml rgtmp_haycareer_top_tab_navigation@>
+ 
+<$ssLoadSiteNavResultSet(siteId)$>  
+<$TotalRows2=0$> 
+<$start="false"$> 
+<$start=1$>
+<$leval1start=0$>
+<$leval2start=0$> 
+<$start=1$> 
+<$lebalTwoStatus ="false"$>
+<$showchild="false"$> 
+ 
+<$ currentLink = ssGetServerRelativeUrl(#active.siteId,#active.nodeId)$>
+<$ include rgtmp_haycareer_get_currentNodeID $>
+<nav class="tab_navigation"> 
+<ul>
+<$getparentNodeId=  ssGetRelativeNodeId(#active.siteId, #active.nodeId,"parent")$> 
+
+<$getSecondparentNodeId=  ssGetRelativeNodeId(#active.siteId, #active.nodeId,"parent")$>
+<$getThirdparentNodeID=  ssGetRelativeNodeId(#active.siteId, getSecondparentNodeId,"parent")$> 
+ 
+<$ include rgtmp_haycareer_getnodelabelCount $>
+	 
+
+<$if strEquals(getLevalcount ,"2")$>
+	<$getparentNodeId = getSecondparentNodeId$>
+
+<$elseif strEquals(getLevalcount ,"3")$>
+	<$getparentNodeId = getThirdparentNodeID$>
+<$else$>
+	<$getparentNodeId$>
+<$endif$>
+
+ <$loop SiteStudioNavNodes$>
+	<$if level==2$>
+		<$getLevalTwoParentNodeId=  ssGetRelativeNodeId(#active.siteId, SiteStudioNavNodes.nodeId,"parent")$> 
+		<$if strEquals(getparentNodeId,getLevalTwoParentNodeId)$>
+				<$leval1start=1$>
+				<$if leval2start ==1$>  
+					<$if strEquals(showchild ,"true")$>   
+						</ul>
+					<$endif$>	
+					<$leval2start=0$>
+				<$endif$>
+				<$if start ==1$>     
+					<$if strIndexOf(currentLink,href)  == 0$> 
+						<$showchild="false"$> 
+						<li>  <a  class="current" href=<$href $> ><span><$label $>  </span> </a>
+					<$elseif strEquals(SiteStudioNavNodes.nodeId,currentNodeID)$>
+						<$showchild="false"$> 
+						<li>  <a  class="current" href=<$href $> ><span><$label $>  </span> </a>
+					<$else$>
+						<$showchild="true"$> 
+						<li>  <a    href=<$href $> ><span><$label $>  </span> </a>
+					<$endif$>     
+				<$else$>
+					<$if strIndexOf(currentLink,href)  == 0 $>
+						<$showchild="false"$> 
+						</li> <li> <a  class="current" href=<$href $> ><span><$label $>  </span> </a>		  
+					<$elseif strEquals(SiteStudioNavNodes.nodeId,currentNodeID)$>
+							<$showchild="false"$> 
+							</li> <li>   <a  class="current" href=<$href $> ><span><$label $>  </span> </a>		 	
+					<$else$>
+						<$showchild="true"$> 
+						</li> <li>  <a   href=<$href $> ><span><$label $>  </span> </a>
+					<$endif$>
+				<$start=0$>
+			<$endif$>   
+		<$endif$>
+	<$endif$> 
+  
+	<$if level==3$>
+		<$getSecondLevalParentNodeId=  ssGetRelativeNodeId(#active.siteId, SiteStudioNavNodes.nodeId,"parent")$> 
+		<$getThirdLevalParentNodeId=  ssGetRelativeNodeId(#active.siteId, getSecondLevalParentNodeId,"parent")$>    	 
+		<$if strEquals(getparentNodeId,getThirdLevalParentNodeId)$>
+			<$leval2start=1$> 
+			<$if leval1start ==1$>     
+					  
+ 
+					<$if strEquals(showchild ,"true")$>	
+						<ul> 
+						<li>  <a   href=<$href $>> <span>   <$label $>   </span> </a>
+		    
+					<$endif$>           
+     
+			<$leval1start=0$>
+			<$else$>       
+ 
+				<$if strEquals(showchild ,"true")$>
+     				 </li> <li> <a   href=<$href $>>  <span> <$label $>  </span> </a>
+				<$endif$>
+				<$start=0$>
+			<$endif$>
+		<$endif$> 
+	<$endif$>
+   
+ 
+   
+ <$endloop$>
+<$if strEquals(showchild ,"true")$>
+	</li> </ul>
+<$endif$>
+
+</li> </ul> 
+</nav>
+<div class="cleaner"></div>
+ 
+
+ 
+ 
+<@end@>
+ 
+ 
+<!--***********************************************************
+ ****** HAYS CAREER : Left Nav*********
+ ************************************************************-->
+ 
+<@dynamichtml rgtmp_haycareer_left_tab_navigation@>
+ 
+ <$ssLoadSiteNavResultSet(siteId)$>
+<$ currentLink= ssGetServerRelativeUrl(#active.siteId,#active.nodeId)$>
+<$ currentNodeID = ""$>
+<$ include rgtmp_haycareer_get_currentNodeID $>
+ 
+<nav class="sidebar_menu">
+ <ul>
+<$loop SiteStudioNavNodes$> 
+ 
+ <$if strEquals(SiteStudioNavNodes.parentNodeId,currentNodeID)$>     
+  
+  <$if level==3$>              
+    <$if strIndexOf(currentLink,href)  == 0 $> 
+       <li><a class="current" title="<$label $>" href="<$href $>"><span> <$label $></span></a></li>
+    <$else$>
+     <li><a  title="<$label $>" href="<$href $>"><span> <$label $></span></a></li>
+ 
+    <$endif$>
+  <$endif$>
+      
+ <$endif$>
+      
+<$endloop$>
+  </ul>
+</nav>
+ 
+<@end@>
+ 
+<!--***********************************************************
+ ****** HAYS CAREER : To get current node lavel ID*********
+ ************************************************************-->
+<@dynamichtml rgtmp_haycareer_get_currentNodeID@>
+	<$levalcount = "" $> 
+	<$currentNodeID = "" $> 
+ 
+	<$getparentNodeId=  ssGetRelativeNodeId(#active.siteId, #active.nodeId,"parent")$> 
+	<$getnodelabelpath=  ssGetNodeLabelPath(#active.siteId, #active.nodeId)$>  
+ 
+	<$strwithcomma =   strReplace(getnodelabelpath,"/",",")$>  
+	<$rsMakeFromString("rsNodeLevalListList", strwithcomma )$>
+	    
+ 	
+	<$TotalRows =  rsNumRows("rsNodeLevalListList")$>
+	<$if strEquals(TotalRows ,"1" )$>   
+		<$currentNodeID = #active.nodeId$>   
+	<$elseif  strEquals(TotalRows ,"2")$>   
+		<$currentNodeID=  #active.nodeId$>    
+	<$elseif  strEquals(TotalRows ,"3")$> 
+		<$currentNodeID=  getparentNodeId$> 
+	<$endif$>
+   
+<@end@>
+
+<!--***********************************************************
+ ****** HAYS CAREER : To get parrent node lavel ID*********
+ ************************************************************-->
+<@dynamichtml rgtmp_haycareer_getnodelabelCount@>
+
+ 
+ <$getLevalcount = "" $>    
+
+ <$getnodelabelpath=  ssGetNodeLabelPath(#active.siteId, #active.nodeId)$>  
+ 
+ <$strwithcomma =   strReplace(getnodelabelpath,"/",",")$>  
+ <$rsMakeFromString("rsNodeLevalListList", strwithcomma )$> 
+
+ <$getLevalcount =  rsNumRows("rsNodeLevalListList")$>
+
+ 
+<@end@>
+
+</body>
+</html>
+
+
+ 
